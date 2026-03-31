@@ -51,3 +51,6 @@ debug-request.json
 AGENTS.md
 docs
 agent
+docker-logs/
+.next/
+*.log
