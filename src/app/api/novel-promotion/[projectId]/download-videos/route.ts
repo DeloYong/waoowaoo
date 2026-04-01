@@ -173,75 +173,61 @@ export const POST = apiHandler(async (
 
   _ulogInfo(`Preparing to download ${indexedVideos.length} videos for project ${projectId}`)
 
-  const archive = archiver('zip', { zlib: { level: 9 } })
+  // MP4 视频已经是压缩格式，level 1 只做存储归档，节省 CPU 开销
+  const archive = archiver('zip', { zlib: { level: 1 } })
 
-  // 创建一个 Promise 来追踪归档完成状态
-  const archiveFinished = new Promise<void>((resolve, reject) => {
-    archive.on('end', () => resolve())
-    archive.on('error', (err) => {
-      reject(err)
-    })
-  })
-
-  // 使用 PassThrough 流来收集数据
-  const chunks: Uint8Array[] = []
-  archive.on('data', (chunk) => {
-    chunks.push(chunk)
-  })
-
-  // 处理视频并打包
-  for (const video of indexedVideos) {
-    try {
-      _ulogInfo(`Downloading video ${video.index}: ${video.videoUrl}`)
-
-      let videoData: Buffer
-      const storageKey = await resolveStorageKeyFromMediaValue(video.videoUrl)
-
-      if (video.videoUrl.startsWith('http://') || video.videoUrl.startsWith('https://')) {
-        const response = await fetch(toFetchableUrl(video.videoUrl))
-        if (!response.ok) {
-          throw new Error(`Failed to fetch: ${response.statusText}`)
-        }
-        const arrayBuffer = await response.arrayBuffer()
-        videoData = Buffer.from(arrayBuffer)
-      } else if (storageKey) {
-        videoData = await getObjectBuffer(storageKey)
-      } else {
-        const response = await fetch(toFetchableUrl(video.videoUrl))
-        if (!response.ok) {
-          throw new Error(`Failed to fetch: ${response.statusText}`)
-        }
-        const arrayBuffer = await response.arrayBuffer()
-        videoData = Buffer.from(arrayBuffer)
-      }
-
-      // 文件名使用描述，清理非法字符
-      const safeDesc = video.description.slice(0, 50).replace(/[\\/:*?"<>|]/g, '_')
-      const fileName = `${String(video.index).padStart(3, '0')}_${safeDesc}.mp4`
-      archive.append(videoData, { name: fileName })
-      _ulogInfo(`Added ${fileName} to archive`)
-    } catch (error) {
-      _ulogError(`Failed to download video ${video.index}:`, error)
+  // 使用 ReadableStream 流式传输，边压缩边发给浏览器（与 download-images 保持一致）
+  // 避免旧方案中把所有视频攒在内存后才发送响应，导致浏览器长时间看到 0 B/s
+  const stream = new ReadableStream({
+    start(controller) {
+      archive.on('data', (chunk) => controller.enqueue(chunk))
+      archive.on('end', () => controller.close())
+      archive.on('error', (err) => controller.error(err))
+      processVideos()
     }
+  })
+
+  async function processVideos() {
+    for (const video of indexedVideos) {
+      try {
+        _ulogInfo(`Downloading video ${video.index}: ${video.videoUrl}`)
+
+        let videoData: Buffer
+        const storageKey = await resolveStorageKeyFromMediaValue(video.videoUrl)
+
+        if (video.videoUrl.startsWith('http://') || video.videoUrl.startsWith('https://')) {
+          const response = await fetch(toFetchableUrl(video.videoUrl))
+          if (!response.ok) {
+            throw new Error(`Failed to fetch: ${response.statusText}`)
+          }
+          const arrayBuffer = await response.arrayBuffer()
+          videoData = Buffer.from(arrayBuffer)
+        } else if (storageKey) {
+          videoData = await getObjectBuffer(storageKey)
+        } else {
+          const response = await fetch(toFetchableUrl(video.videoUrl))
+          if (!response.ok) {
+            throw new Error(`Failed to fetch: ${response.statusText}`)
+          }
+          const arrayBuffer = await response.arrayBuffer()
+          videoData = Buffer.from(arrayBuffer)
+        }
+
+        // 文件名使用描述，清理非法字符
+        const safeDesc = video.description.slice(0, 50).replace(/[\\/:*?"<>|]/g, '_')
+        const fileName = `${String(video.index).padStart(3, '0')}_${safeDesc}.mp4`
+        archive.append(videoData, { name: fileName })
+        _ulogInfo(`Added ${fileName} to archive`)
+      } catch (error) {
+        _ulogError(`Failed to download video ${video.index}:`, error)
+      }
+    }
+
+    await archive.finalize()
+    _ulogInfo('Archive finalized')
   }
 
-  // 完成归档
-  await archive.finalize()
-  _ulogInfo('Archive finalized')
-
-  // 等待归档完成
-  await archiveFinished
-
-  // 合并所有数据块
-  const totalLength = chunks.reduce((acc, chunk) => acc + chunk.length, 0)
-  const result = new Uint8Array(totalLength)
-  let offset = 0
-  for (const chunk of chunks) {
-    result.set(chunk, offset)
-    offset += chunk.length
-  }
-
-  return new Response(result, {
+  return new Response(stream, {
     headers: {
       'Content-Type': 'application/zip',
       'Content-Disposition': `attachment; filename="${encodeURIComponent(project.name)}_videos.zip"`
