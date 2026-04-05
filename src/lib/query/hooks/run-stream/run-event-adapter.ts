@@ -1,6 +1,10 @@
 import type { RunStreamEvent } from '@/lib/novel-promotion/run-stream/types'
 import { apiFetch } from '@/lib/api-fetch'
-import { sleep } from '@/lib/workers/utils'
+
+// 前端专用sleep函数，不依赖任何Node.js模块
+function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
 
 type JsonRecord = Record<string, unknown>
 
