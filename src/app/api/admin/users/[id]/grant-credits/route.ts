@@ -3,8 +3,9 @@ import { grantCredits } from '@/lib/credit-billing/service'
 
 export const POST = async (
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) => {
+  const { id } = await params
   // const adminId = await requireAdmin()
   const adminId = 'admin-user-id'
   const body = await request.json()
@@ -18,7 +19,7 @@ export const POST = async (
     return NextResponse.json({ error: 'Invalid credits' }, { status: 400 })
   }
 
-  const success = await grantCredits(params.id, credits, 'admin_grant', {
+  const success = await grantCredits(id, credits, 'admin_grant', {
     reason: reason || '管理员充值',
     operatorId: adminId,
     isPermanent,

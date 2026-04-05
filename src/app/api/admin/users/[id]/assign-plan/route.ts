@@ -3,8 +3,9 @@ import { assignPlan } from '@/lib/subscription'
 
 export const POST = async (
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) => {
+  const { id } = await params
   // const adminId = await requireAdmin()
   const adminId = 'admin-user-id'
   const body = await request.json()
@@ -17,7 +18,7 @@ export const POST = async (
     return NextResponse.json({ error: 'Invalid planId' }, { status: 400 })
   }
 
-  await assignPlan(params.id, planId, { operatorId: adminId, billingCycle })
+  await assignPlan(id, planId, { operatorId: adminId, billingCycle })
 
   return NextResponse.json({ success: true })
 }
