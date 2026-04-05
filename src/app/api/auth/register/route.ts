@@ -4,6 +4,7 @@ import { logAuthAction } from '@/lib/logging/semantic'
 import { apiHandler, ApiError } from '@/lib/api-errors'
 import { prisma } from '@/lib/prisma'
 import { checkRateLimit, getClientIp, AUTH_REGISTER_LIMIT } from '@/lib/rate-limit'
+import { generateUniqueInviteCode, processInviteOnRegistration } from '@/lib/invite'
 
 export const POST = apiHandler(async (request: NextRequest) => {
   // 🛡️ IP 限流
@@ -24,6 +25,7 @@ export const POST = apiHandler(async (request: NextRequest) => {
   const body = await request.json()
   name = body.name || 'unknown'
   const { password } = body
+  const inviteCodeFromQuery = body.inviteCode as string | undefined
 
   // 验证输入
   if (!name || !password) {
@@ -51,11 +53,24 @@ export const POST = apiHandler(async (request: NextRequest) => {
 
   // 创建用户（事务）
   const user = await prisma.$transaction(async (tx) => {
+    // 生成邀请码
+    const inviteCode = await generateUniqueInviteCode()
+
+    // 查找邀请人
+    const inviter = inviteCodeFromQuery
+      ? await tx.user.findUnique({
+          where: { inviteCode: inviteCodeFromQuery },
+          select: { id: true },
+        })
+      : null
+
     // 创建用户
     const newUser = await tx.user.create({
       data: {
         name,
-        password: hashedPassword
+        password: hashedPassword,
+        inviteCode,
+        invitedBy: inviter?.id ?? null,
       }
     })
 
@@ -65,9 +80,17 @@ export const POST = apiHandler(async (request: NextRequest) => {
         userId: newUser.id,
         balance: 0,
         frozenAmount: 0,
-        totalSpent: 0
+        totalSpent: 0,
+        subscriptionCredits: 0,
+        permanentCredits: 0,
+        frozenCredits: 0,
       }
     })
+
+    // 处理邀请奖励
+    if (inviter) {
+      await processInviteOnRegistration(tx, newUser, inviter.id, inviteCodeFromQuery!)
+    }
 
     return newUser
   })
