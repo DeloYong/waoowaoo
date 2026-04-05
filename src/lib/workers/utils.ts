@@ -107,9 +107,47 @@ export async function waitExternalResult(
 
   await trySetTaskExternalId(job.data.taskId, externalId)
 
+  // 轮询错误重试配置
+  const MAX_POLL_ERROR_RETRIES = 5
+  let consecutivePollErrors = 0
+
   while (Date.now() - startAt <= timeoutMs) {
     await assertTaskActive(job, 'polling_external')
-    const status = await pollAsyncTask(externalId, userId)
+
+    let status: Awaited<ReturnType<typeof pollAsyncTask>> | null = null
+    try {
+      status = await pollAsyncTask(externalId, userId)
+      consecutivePollErrors = 0 // 重置错误计数
+    } catch (pollError) {
+      consecutivePollErrors++
+      logger.warn({
+        message: `轮询外部任务失败 (${consecutivePollErrors}/${MAX_POLL_ERROR_RETRIES})`,
+        errorCode: 'POLL_NETWORK_ERROR',
+        details: {
+          externalId,
+          error: pollError instanceof Error ? pollError.message : String(pollError),
+          consecutiveErrors: consecutivePollErrors
+        }
+      })
+
+      // 如果连续错误超过阈值，才抛出错误
+      if (consecutivePollErrors >= MAX_POLL_ERROR_RETRIES) {
+        logger.error({
+          message: '轮询外部任务连续失败，终止任务',
+          errorCode: 'NETWORK_ERROR',
+          durationMs: Date.now() - startAt,
+          details: {
+            externalId,
+            consecutiveErrors: consecutivePollErrors
+          }
+        })
+        throw new Error(`网络异常，轮询任务连续失败${MAX_POLL_ERROR_RETRIES}次: ${externalId}`)
+      }
+
+      // 等待后重试
+      await sleep(intervalMs)
+      continue
+    }
 
     if (status.status === 'completed') {
       const url = status.resultUrl || status.imageUrl || status.videoUrl

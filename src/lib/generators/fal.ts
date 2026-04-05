@@ -1,4 +1,5 @@
 import { createScopedLogger, logError as _ulogError } from '@/lib/logging/core'
+import { sleep } from '@/lib/workers/utils'
 /**
  * FAL 生成器（统一图像 + 视频）
  * 
@@ -26,6 +27,11 @@ import { getProviderConfig } from '@/lib/api-config'
 import { submitFalTask } from '@/lib/async-submit'
 import { normalizeToBase64ForGeneration } from '@/lib/media/outbound-image'
 import { buildFalQueueUrl } from '@/lib/providers/fal/base-url'
+
+// 重试配置
+const MAX_RETRIES = 3
+const RETRY_DELAY_MS = 2000
+const REQUEST_TIMEOUT_MS = 30000 // 30秒超时
 
 // ============================================================
 // 图像模型端点映射（modelId → FAL 端点前缀）
@@ -156,16 +162,49 @@ export class FalImageGenerator extends BaseImageGenerator {
             },
         })
 
-        // 提交异步任务
-        const submitResponse = await fetch(buildFalQueueUrl(endpoint), {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Key ${apiKey}`
-            },
-            body: JSON.stringify(body),
-            cache: 'no-store'
-        })
+        // 提交异步任务（带重试和超时）
+        let submitResponse: Response | null = null
+        let submitError: Error | null = null
+
+        for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+            try {
+                const controller = new AbortController()
+                const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS)
+
+                submitResponse = await fetch(buildFalQueueUrl(endpoint), {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Key ${apiKey}`
+                    },
+                    body: JSON.stringify(body),
+                    cache: 'no-store',
+                    signal: controller.signal
+                })
+
+                clearTimeout(timeoutId)
+                break
+            } catch (error) {
+                submitError = error as Error
+                logger.warn({
+                    message: `FAL 提交失败，正在重试 (${attempt + 1}/${MAX_RETRIES})`,
+                    details: {
+                        error: submitError.message,
+                        attempt: attempt + 1,
+                        nextDelay: RETRY_DELAY_MS * Math.pow(2, attempt)
+                    }
+                })
+
+                // 如果是最后一次重试，不再等待
+                if (attempt < MAX_RETRIES - 1) {
+                    await sleep(RETRY_DELAY_MS * Math.pow(2, attempt))
+                }
+            }
+        }
+
+        if (!submitResponse) {
+            throw new Error(`FAL 提交失败，已重试${MAX_RETRIES}次: ${submitError?.message || '未知错误'}`)
+        }
 
         if (!submitResponse.ok) {
             const errorText = await submitResponse.text()

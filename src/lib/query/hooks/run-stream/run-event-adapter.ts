@@ -1,5 +1,6 @@
 import type { RunStreamEvent } from '@/lib/novel-promotion/run-stream/types'
 import { apiFetch } from '@/lib/api-fetch'
+import { sleep } from '@/lib/workers/utils'
 
 type JsonRecord = Record<string, unknown>
 
@@ -257,6 +258,10 @@ export function toRunStreamEventFromRunApi(params: {
   return null
 }
 
+// 轮询重试配置
+const FETCH_EVENTS_MAX_RETRIES = 3
+const FETCH_EVENTS_RETRY_DELAY_MS = 1000
+
 export async function fetchRunEventsPage(params: {
   runId: string
   afterSeq: number
@@ -269,27 +274,42 @@ export async function fetchRunEventsPage(params: {
     ? Math.min(Math.max(Math.floor(params.limit || 500), 1), 2000)
     : 500
 
-  const response = await apiFetch(
-    `/api/runs/${params.runId}/events?afterSeq=${safeAfterSeq}&limit=${safeLimit}`,
-    {
-      method: 'GET',
-      cache: 'no-store',
-    },
-  )
-  if (!response.ok) {
-    const errorJson = await response.clone().json().catch(() => null)
-    const errorRoot = toObject(errorJson)
-    const errorMessage =
-      readText(toObject(errorRoot.error).message) ||
-      readText(errorRoot.message) ||
-      (await response.text().catch(() => ''))
+  let lastError: Error | null = null
 
-    if (errorMessage) {
-      throw new Error(`run events fetch failed (HTTP ${response.status}): ${errorMessage}`)
+  for (let attempt = 0; attempt < FETCH_EVENTS_MAX_RETRIES; attempt++) {
+    try {
+      const response = await apiFetch(
+        `/api/runs/${params.runId}/events?afterSeq=${safeAfterSeq}&limit=${safeLimit}`,
+        {
+          method: 'GET',
+          cache: 'no-store',
+        },
+      )
+      if (!response.ok) {
+        const errorJson = await response.clone().json().catch(() => null)
+        const errorRoot = toObject(errorJson)
+        const errorMessage =
+          readText(toObject(errorRoot.error).message) ||
+          readText(errorRoot.message) ||
+          (await response.text().catch(() => ''))
+
+        throw new Error(errorMessage ?
+          `run events fetch failed (HTTP ${response.status}): ${errorMessage}` :
+          `run events fetch failed (HTTP ${response.status})`
+        )
+      }
+
+      const payload = await response.json().catch(() => null)
+      return parseRunApiEventsPayload(payload)
+    } catch (error) {
+      lastError = error as Error
+      console.warn(`[fetchRunEventsPage] 请求失败 (${attempt + 1}/${FETCH_EVENTS_MAX_RETRIES}):`, lastError.message)
+
+      if (attempt < FETCH_EVENTS_MAX_RETRIES - 1) {
+        await sleep(FETCH_EVENTS_RETRY_DELAY_MS * Math.pow(2, attempt))
+      }
     }
-    throw new Error(`run events fetch failed (HTTP ${response.status})`)
   }
 
-  const payload = await response.json().catch(() => null)
-  return parseRunApiEventsPayload(payload)
+  throw lastError || new Error('run events fetch failed after multiple retries')
 }

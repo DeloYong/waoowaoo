@@ -1,4 +1,5 @@
 import { logInfo as _ulogInfo, logError as _ulogError } from '@/lib/logging/core'
+import { sleep } from '@/lib/workers/utils'
 
 /**
  * 统一异步任务轮询模块
@@ -24,6 +25,47 @@ import { composeModelKey } from './model-config-contract'
 
 const OPENAI_COMPAT_PROVIDER_PREFIX = 'openai-compatible:'
 const PROVIDER_UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+
+// 轮询请求配置
+const POLL_REQUEST_TIMEOUT_MS = 10000 // 10秒超时
+const POLL_MAX_RETRIES = 3 // 最多重试3次
+const POLL_RETRY_DELAY_MS = 1000 // 重试间隔1秒
+
+/**
+ * 带超时和重试的fetch请求（用于轮询场景）
+ */
+async function fetchWithRetry(
+    url: string,
+    options: RequestInit,
+    timeoutMs = POLL_REQUEST_TIMEOUT_MS,
+    maxRetries = POLL_MAX_RETRIES
+): Promise<Response> {
+    let lastError: Error | null = null
+
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+        try {
+            const controller = new AbortController()
+            const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
+
+            const response = await fetch(url, {
+                ...options,
+                signal: controller.signal
+            })
+
+            clearTimeout(timeoutId)
+            return response
+        } catch (error) {
+            lastError = error as Error
+            _ulogInfo(`[Fetch Retry] 请求失败 (${attempt + 1}/${maxRetries}): ${url}, 错误: ${lastError.message}`)
+
+            if (attempt < maxRetries - 1) {
+                await sleep(POLL_RETRY_DELAY_MS * Math.pow(2, attempt))
+            }
+        }
+    }
+
+    throw new Error(`请求失败，已重试${maxRetries}次: ${lastError?.message || '未知错误'}`)
+}
 
 export interface PollResult {
     status: 'pending' | 'completed' | 'failed'
@@ -343,7 +385,7 @@ async function pollOCompatTask(
         variables,
         defaultAuthHeader: `Bearer ${config.apiKey}`,
     })
-    const response = await fetch(statusRequest.endpointUrl, {
+    const response = await fetchWithRetry(statusRequest.endpointUrl, {
         method: statusRequest.method,
         headers: statusRequest.headers,
     })
@@ -426,7 +468,7 @@ async function pollOpenAIVideoTask(
     // Use raw fetch instead of SDK to handle varying response formats across gateways
     const baseUrl = config.baseUrl.replace(/\/+$/, '')
     const pollUrl = `${baseUrl}/videos/${encodeURIComponent(videoId)}`
-    const response = await fetch(pollUrl, {
+    const response = await fetchWithRetry(pollUrl, {
         method: 'GET',
         headers: { Authorization: `Bearer ${config.apiKey}` },
     })
@@ -584,7 +626,7 @@ async function queryMinimaxTaskStatus(
     const logPrefix = '[MiniMax Query]'
 
     try {
-        const response = await fetch(`https://api.minimaxi.com/v1/query/video_generation?task_id=${taskId}`, {
+        const response = await fetchWithRetry(`https://api.minimaxi.com/v1/query/video_generation?task_id=${taskId}`, {
             headers: {
                 'Authorization': `Bearer ${apiKey}`
             }
@@ -626,7 +668,7 @@ async function queryMinimaxTaskStatus(
             // 🔥 使用 file_id 调用文件检索API获取真实下载URL
             _ulogInfo(`${logPrefix} task_id=${taskId} 完成，正在获取下载URL...`)
             try {
-                const fileResponse = await fetch(`https://api.minimaxi.com/v1/files/retrieve?file_id=${fileId}`, {
+                const fileResponse = await fetchWithRetry(`https://api.minimaxi.com/v1/files/retrieve?file_id=${fileId}`, {
                     headers: {
                         'Authorization': `Bearer ${apiKey}`
                     }
@@ -772,7 +814,7 @@ async function pollBailianTask(requestId: string, userId: string): Promise<PollR
 
     try {
         const { apiKey } = await getProviderConfig(userId, 'bailian')
-        const response = await fetch(
+        const response = await fetchWithRetry(
             `https://dashscope.aliyuncs.com/api/v1/tasks/${encodeURIComponent(requestId)}`,
             {
                 headers: {
@@ -872,7 +914,7 @@ async function queryViduTaskStatus(
         _ulogInfo(`${logPrefix} 查询任务 task_id=${taskId}`)
 
         // 🔥 正确的查询接口路径：/tasks/{id}/creations
-        const response = await fetch(`https://api.vidu.cn/ent/v2/tasks/${taskId}/creations`, {
+        const response = await fetchWithRetry(`https://api.vidu.cn/ent/v2/tasks/${taskId}/creations`, {
             headers: {
                 'Authorization': `Token ${apiKey}`
             }
