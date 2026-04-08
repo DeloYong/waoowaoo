@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { apiHandler } from '@/lib/api-errors'
+import { requireAdmin } from '@/lib/admin/auth'
 import { grantCredits } from '@/lib/credit-billing/service'
 
-export const POST = async (
+export const POST = apiHandler(async (
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) => {
+  const adminId = await requireAdmin()
   const { id } = await params
-  // const adminId = await requireAdmin()
-  const adminId = 'admin-user-id'
   const body = await request.json()
   const { credits, reason, isPermanent = true } = body as {
     credits: number
@@ -30,4 +31,4 @@ export const POST = async (
   }
 
   return NextResponse.json({ success: true })
-}
+})

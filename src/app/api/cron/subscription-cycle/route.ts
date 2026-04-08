@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { apiHandler } from '@/lib/api-errors'
 import { processExpiredSubscriptions } from '@/lib/subscription'
 
-export const POST = async (request: NextRequest) => {
-  // 简单的认证：检查 Authorization header
+export const POST = apiHandler(async (request: NextRequest) => {
   const authHeader = request.headers.get('authorization')
   const cronSecret = process.env.CRON_SECRET
   if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
@@ -16,4 +16,4 @@ export const POST = async (request: NextRequest) => {
     processed: result.processed,
     errors: result.errors,
   })
-}
+})

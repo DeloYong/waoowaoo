@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { useSession } from 'next-auth/react'
 import { useTranslations } from 'next-intl'
@@ -11,6 +11,10 @@ import { useGithubReleaseUpdate } from '@/hooks/common/useGithubReleaseUpdate'
 import { Link } from '@/i18n/navigation'
 import { buildAuthenticatedHomeTarget } from '@/lib/home/default-route'
 
+interface CreditsInfo {
+  totalCredits: number
+  planName: string | null
+}
 
 export default function Navbar() {
   const { data: session, status } = useSession()
@@ -20,7 +24,33 @@ export default function Navbar() {
   const [checkMsg, setCheckMsg] = useState<string | null>(null)
   const [checkMsgFading, setCheckMsgFading] = useState(false)
   const [manualChecking, setManualChecking] = useState(false)
+  const [creditsInfo, setCreditsInfo] = useState<CreditsInfo | null>(null)
   const downloadLogsHref = '/api/admin/download-logs'
+
+  useEffect(() => {
+    if (status === 'authenticated' && session) {
+      fetchCreditsInfo()
+    }
+  }, [status, session])
+
+  const fetchCreditsInfo = async () => {
+    try {
+      const res = await fetch('/api/user/subscription')
+      if (res.ok) {
+        const data = await res.json()
+        const balance = data.balance
+        const totalCredits = balance
+          ? balance.subscriptionCredits + balance.permanentCredits - balance.frozenCredits
+          : 0
+        setCreditsInfo({
+          totalCredits,
+          planName: data.plan?.name || data.subscription?.planId || null,
+        })
+      }
+    } catch (error) {
+      console.error('获取积分信息失败:', error)
+    }
+  }
 
   const handleCheckUpdate = async () => {
     setCheckMsg(null)
@@ -103,6 +133,23 @@ export default function Navbar() {
                 </div>
               ) : session ? (
                 <>
+                  {/* 积分余额显示 */}
+                  {creditsInfo && (
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2 px-3 py-1.5 bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)]">
+                        <AppIcon name="coins" className="w-4 h-4 text-yellow-600" />
+                        <span className="text-sm font-semibold text-[var(--glass-text-primary)]">
+                          {creditsInfo.totalCredits}
+                        </span>
+                      </div>
+                      {creditsInfo.planName && (
+                        <div className="px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium">
+                          {creditsInfo.planName}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   <Link
                     href={{ pathname: '/workspace' }}
                     className="text-sm text-[var(--glass-text-secondary)] hover:text-[var(--glass-text-primary)] font-medium transition-colors flex items-center gap-1"

@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { apiHandler } from '@/lib/api-errors'
+import { requireAdmin } from '@/lib/admin/auth'
 import { assignPlan } from '@/lib/subscription'
 
-export const POST = async (
+export const POST = apiHandler(async (
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) => {
+  const adminId = await requireAdmin()
   const { id } = await params
-  // const adminId = await requireAdmin()
-  const adminId = 'admin-user-id'
   const body = await request.json()
   const { planId, billingCycle = 'monthly' } = body as {
     planId: string
@@ -21,4 +22,4 @@ export const POST = async (
   await assignPlan(id, planId, { operatorId: adminId, billingCycle })
 
   return NextResponse.json({ success: true })
-}
+})

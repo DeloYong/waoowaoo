@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { apiHandler } from '@/lib/api-errors'
+import { requireAdmin } from '@/lib/admin/auth'
 import { prisma } from '@/lib/prisma'
 
-export const GET = async (request: NextRequest) => {
-  // await requireAdmin()
+export const GET = apiHandler(async (request: NextRequest) => {
+  await requireAdmin()
   const { searchParams } = new URL(request.url)
   const search = searchParams.get('search') || ''
   const skip = parseInt(searchParams.get('skip') || '0', 10)
@@ -29,4 +31,4 @@ export const GET = async (request: NextRequest) => {
   ])
 
   return NextResponse.json({ users, total, skip, take })
-}
+})

@@ -1,13 +1,13 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
+import { apiHandler } from '@/lib/api-errors'
 import { prisma } from '@/lib/prisma'
 import { getUserInvites, getUserInviteStats } from '@/lib/invite'
 
-export const GET = async () => {
-  // const session = await getServerSession(authOptions)
-  // if (!session?.user?.id) {
-  //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  // }
-  const userId = 'test-user-id' // 临时测试 ID
+export const GET = apiHandler(async (request: NextRequest) => {
+  const userId = request.headers.get('x-user-id')
+  if (!userId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
 
   const user = await prisma.user.findUnique({
     where: { id: userId },
@@ -24,4 +24,4 @@ export const GET = async () => {
     invites,
     stats,
   })
-}
+})
