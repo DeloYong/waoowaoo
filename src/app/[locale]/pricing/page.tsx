@@ -198,15 +198,15 @@ export default function PricingPage() {
                         <span>无限视频时长</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm">
-                        <AppIcon name="zap" className="w-4 h-4 text-green-600" />
+                        <AppIcon name="bolt" className="w-4 h-4 text-green-600" />
                         <span>{plan.maxConcurrency} 个并发任务</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm">
-                        <AppIcon name="code" className="w-4 h-4 text-purple-600" />
+                        <AppIcon name="cpu" className="w-4 h-4 text-purple-600" />
                         <span>API 访问权限</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm">
-                        <AppIcon name="headphones" className="w-4 h-4 text-indigo-600" />
+                        <AppIcon name="bookmark" className="w-4 h-4 text-indigo-600" />
                         <span>专属技术支持</span>
                       </div>
                     </>
