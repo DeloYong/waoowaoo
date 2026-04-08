@@ -19,40 +19,30 @@ else
     echo "已在 feature/saas-credits 分支"
 fi
 
-# 步骤 1: 拉取最新代码
+# 步骤 1/3: 拉取最新代码
 echo ""
-echo "步骤 1/4: 拉取最新代码..."
+echo "步骤 1/3: 拉取最新代码..."
 git pull origin feature/saas-credits
 echo "代码拉取完成"
 echo ""
 
-# 步骤 2: 检查 docker-compose.yml 或 Dockerfile 是否有变更
-echo "步骤 2/4: 检查 Docker 配置变更..."
-if git diff HEAD@{1} HEAD -- docker-compose.yml docker-compose.yaml Dockerfile Dockerfile.* .dockerignore 2>/dev/null | grep -q .; then
-    echo "检测到 Docker 配置变更，将重建镜像..."
-    DOCKER_CHANGED=true
-else
-    echo "无 Docker 配置变更"
-    DOCKER_CHANGED=false
-fi
+# 步骤 2/3: 重建 Docker 镜像（Next.js 需要重新构建以包含新路由）
+echo "步骤 2/3: 重建 Docker 镜像..."
+echo "注意：Next.js 生产构建会静态生成所有路由，必须重建镜像"
+docker compose build
+echo "Docker 镜像重建完成"
 echo ""
 
-# 步骤 3: 如果有 Docker 变更，重建镜像
-if [ "$DOCKER_CHANGED" = true ]; then
-    echo "步骤 3/4: 重建 Docker 镜像..."
-    docker compose build --no-cache
-    echo "Docker 镜像重建完成"
-else
-    echo "步骤 3/4: 跳过镜像重建（无变更）"
-fi
-echo ""
-
-# 步骤 4: 重启容器
-echo "步骤 4/4: 重启容器..."
+# 步骤 3/3: 重启容器并等待启动
+echo "步骤 3/3: 重启容器..."
 docker compose down
 docker compose up -d
 echo "容器重启完成"
 echo ""
+
+# 等待应用启动
+echo "等待应用启动..."
+sleep 5
 
 # 检查容器状态
 echo "容器状态:"
