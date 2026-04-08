@@ -34,13 +34,32 @@ echo "【步骤 4/5】开始构建新镜像（这可能需要 5-10 分钟）..."
 echo "构建开始时间: $(date)"
 echo ""
 
-# 使用 docker build 而不是 compose build，更可靠
-docker build -t waoowaoo-app:latest . 2>&1 | tee /tmp/docker-build-force.log
+# 使用传统 docker build（禁用 BuildKit）避免 buildx 版本问题
+# 使用 --no-cache 强制重新构建
+echo "提示：详细构建日志保存到 /tmp/docker-build-force.log"
+echo ""
 
-if [ $? -ne 0 ]; then
+DOCKER_BUILDKIT=0 docker build --no-cache -t waoowaoo-app:latest . > /tmp/docker-build-force.log 2>&1
+
+# 检查 docker build 的退出码
+BUILD_EXIT=$?
+
+if [ $BUILD_EXIT -ne 0 ]; then
     echo ""
-    echo "❌ 构建失败！最后 50 行错误日志："
-    tail -50 /tmp/docker-build-force.log
+    echo "❌ Docker 构建失败（退出码: $BUILD_EXIT）"
+    echo ""
+    echo "=== 最后 80 行错误日志 ==="
+    tail -80 /tmp/docker-build-force.log
+    echo ""
+    echo "请查看完整日志: cat /tmp/docker-build-force.log"
+    exit 1
+fi
+
+# 二次验证镜像是否存在
+if ! docker images waoowaoo-app:latest --format '{{.Repository}}' | grep -q waoowaoo-app; then
+    echo ""
+    echo "❌ 镜像构建完成但未生成 waoowaoo-app:latest"
+    echo "请查看日志: /tmp/docker-build-force.log"
     exit 1
 fi
 
