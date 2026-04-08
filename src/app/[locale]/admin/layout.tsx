@@ -25,10 +25,10 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
   }
 
   const navItems = [
-    { href: '/zh/admin/platform-keys', label: '平台 Key 配置', icon: '🔑' },
-    { href: '/zh/admin/credit-pricing', label: '积分定价配置', icon: '💰' },
-    { href: '/zh/admin/users', label: '用户管理', icon: '👥' },
-    { href: '/zh/admin/invite-leaderboard', label: '邀请榜单', icon: '🏆' },
+    { href: '/admin/platform-keys', label: '平台 Key 配置', icon: '🔑' },
+    { href: '/admin/credit-pricing', label: '积分定价配置', icon: '💰' },
+    { href: '/admin/users', label: '用户管理', icon: '👥' },
+    { href: '/admin/invite-leaderboard', label: '邀请榜单', icon: '🏆' },
   ]
 
   return (
