@@ -12,25 +12,32 @@ if [ -z "$1" ]; then
 fi
 
 EMAIL="$1"
-
 echo "正在将用户 $EMAIL 设置为管理员..."
 
-# 检查是否在 EC2 上有 .env 文件
-if [ -f ".env" ]; then
-    # 从 .env 读取数据库配置
-    source .env
-fi
+# 通过 Docker 容器执行 MySQL
+MYSQL_CONTAINER=$(docker ps --filter "name=mysql" --filter "name=db" --format '{{.Names}}' | head -1)
 
-# 使用 Prisma 设置管理员
-npx prisma db execute --stdin << SQL
-UPDATE User SET isAdmin = 1 WHERE email = '$EMAIL';
-SELECT id, email, isAdmin FROM User WHERE email = '$EMAIL';
-SQL
-
-if [ $? -eq 0 ]; then
-    echo "✅ 用户 $EMAIL 已设置为管理员"
-    echo "访问管理后台: http://localhost:13000/admin/platform-keys"
-else
-    echo "❌ 设置失败，请检查邮箱是否正确"
+if [ -z "$MYSQL_CONTAINER" ]; then
+    echo "错误: 未找到 MySQL 容器"
+    echo "请确保 Docker 容器正在运行: docker compose up -d"
     exit 1
 fi
+
+echo "找到 MySQL 容器: $MYSQL_CONTAINER"
+
+# 尝试不同的数据库配置
+for DB_USER in "root"; do
+    for DB_NAME in "waoowaoo" "nextjs"; do
+        if docker exec "$MYSQL_CONTAINER" mysql -u"$DB_USER" "$DB_NAME" -e "SELECT 1" &>/dev/null; then
+            echo "使用数据库: $DB_NAME, 用户: $DB_USER"
+            docker exec "$MYSQL_CONTAINER" mysql -u"$DB_USER" "$DB_NAME" -e "UPDATE User SET isAdmin = 1 WHERE email = '$EMAIL'; SELECT id, email, isAdmin FROM User WHERE email = '$EMAIL';"
+            echo ""
+            echo "用户 $EMAIL 已设置为管理员"
+            echo "访问管理后台: http://localhost:13000/zh/admin/platform-keys"
+            exit 0
+        fi
+    done
+done
+
+echo "错误: 无法连接到数据库"
+exit 1
