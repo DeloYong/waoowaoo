@@ -105,7 +105,31 @@ export default function PricingPage() {
         {/* 套餐卡片 */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {plans.filter(p => p.isActive).map((plan) => {
-            const price = billingCycle === 'monthly' ? plan.monthlyPrice : (plan.yearlyPrice || plan.monthlyPrice * 12)
+            const isEnterprise = plan.monthlyPrice < 0
+            const hasYearly = plan.yearlyPrice !== null && plan.yearlyPrice! > 0
+            
+            // 计算价格
+            let priceDisplay = ''
+            let priceNote = ''
+            
+            if (isEnterprise) {
+              priceDisplay = '联系商务'
+              priceNote = ''
+            } else if (billingCycle === 'monthly') {
+              priceDisplay = `¥${plan.monthlyPrice}`
+              priceNote = '/月'
+            } else {
+              // 年付
+              if (hasYearly) {
+                priceDisplay = `¥${plan.yearlyPrice}`
+                priceNote = '/年'
+              } else {
+                // 没有年付选项
+                priceDisplay = `¥${plan.monthlyPrice * 12}`
+                priceNote = '/年 (无年付优惠)'
+              }
+            }
+            
             const isPopular = plan.id === 'pro'
 
             return (
@@ -130,37 +154,58 @@ export default function PricingPage() {
                     {plan.name}
                   </h3>
                   <div className="flex items-baseline gap-1">
-                    <span className="text-4xl font-bold text-[var(--glass-text-primary)]">
-                      ¥{price}
+                    <span className="text-3xl font-bold text-[var(--glass-text-primary)]">
+                      {priceDisplay}
                     </span>
-                    {billingCycle === 'yearly' && (
-                      <span className="text-sm text-[var(--glass-text-tertiary)]">/年</span>
-                    )}
-                    {billingCycle === 'monthly' && (
-                      <span className="text-sm text-[var(--glass-text-tertiary)]">/月</span>
+                    {priceNote && (
+                      <span className="text-sm text-[var(--glass-text-tertiary)]">{priceNote}</span>
                     )}
                   </div>
                 </div>
 
                 {/* 套餐权益 */}
                 <div className="space-y-3 mb-6">
-                  <div className="flex items-center gap-2 text-sm">
-                    <AppIcon name="coins" className="w-4 h-4 text-yellow-600" />
-                    <span>{plan.monthlyCredits} 积分/月</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <AppIcon name="video" className="w-4 h-4 text-blue-600" />
-                    <span>{plan.maxVideoSeconds} 秒视频时长</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <AppIcon name="package" className="w-4 h-4 text-green-600" />
-                    <span>{plan.maxConcurrency} 个并发任务</span>
-                  </div>
-                  {plan.trialDays > 0 && (
-                    <div className="flex items-center gap-2 text-sm">
-                      <AppIcon name="sparkles" className="w-4 h-4 text-purple-600" />
-                      <span>{plan.trialDays} 天试用期</span>
-                    </div>
+                  {!isEnterprise && (
+                    <>
+                      <div className="flex items-center gap-2 text-sm">
+                        <AppIcon name="coins" className="w-4 h-4 text-yellow-600" />
+                        <span>{plan.monthlyCredits} 积分/月</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <AppIcon name="video" className="w-4 h-4 text-blue-600" />
+                        <span>{plan.maxVideoSeconds} 秒视频时长</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <AppIcon name="package" className="w-4 h-4 text-green-600" />
+                        <span>{plan.maxConcurrency} 个并发任务</span>
+                      </div>
+                      {plan.trialDays > 0 && (
+                        <div className="flex items-center gap-2 text-sm">
+                          <AppIcon name="sparkles" className="w-4 h-4 text-purple-600" />
+                          <span>{plan.trialDays} 天试用期</span>
+                        </div>
+                      )}
+                    </>
+                  )}
+                  {isEnterprise && (
+                    <>
+                      <div className="flex items-center gap-2 text-sm">
+                        <AppIcon name="infinity" className="w-4 h-4 text-blue-600" />
+                        <span>无限积分</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <AppIcon name="video" className="w-4 h-4 text-blue-600" />
+                        <span>无限视频时长</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <AppIcon name="package" className="w-4 h-4 text-green-600" />
+                        <span>{plan.maxConcurrency} 个并发任务</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <AppIcon name="code" className="w-4 h-4 text-purple-600" />
+                        <span>API 访问权限</span>
+                      </div>
+                    </>
                   )}
                 </div>
 
@@ -169,12 +214,14 @@ export default function PricingPage() {
                   onClick={() => handlePurchase(plan.id)}
                   disabled={!session}
                   className={`w-full py-3 rounded-lg font-semibold transition-colors ${
-                    isPopular
+                    isEnterprise
+                      ? 'bg-purple-500 text-white hover:bg-purple-600'
+                      : isPopular
                       ? 'bg-blue-500 text-white hover:bg-blue-600'
                       : 'bg-[var(--glass-bg-canvas)] text-[var(--glass-text-primary)] border border-[var(--glass-stroke-base)] hover:bg-[var(--glass-bg-surface-strong)]'
                   } disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
-                  {session ? '即将开放' : '登录后购买'}
+                  {isEnterprise ? '联系我们' : session ? '即将开放' : '登录后购买'}
                 </button>
               </div>
             )
