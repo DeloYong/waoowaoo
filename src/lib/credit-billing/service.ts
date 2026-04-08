@@ -9,33 +9,25 @@ import type { CreditBalance, CreditTransactionType } from './types'
  * 获取用户积分余额
  */
 export async function getCreditBalance(userId: string): Promise<CreditBalance> {
-  let balance = await prisma.userBalance.findUnique({
+  // 使用 upsert 避免外键约束错误
+  const balance = await prisma.userBalance.upsert({
     where: { userId },
+    create: {
+      userId,
+      balance: 0,
+      frozenAmount: 0,
+      totalSpent: 0,
+      subscriptionCredits: 0,
+      permanentCredits: 0,
+      frozenCredits: 0,
+    },
+    update: {},
     select: {
       subscriptionCredits: true,
       permanentCredits: true,
       frozenCredits: true,
     },
   })
-
-  if (!balance) {
-    balance = await prisma.userBalance.create({
-      data: {
-        userId,
-        balance: 0,
-        frozenAmount: 0,
-        totalSpent: 0,
-        subscriptionCredits: 0,
-        permanentCredits: 0,
-        frozenCredits: 0,
-      },
-      select: {
-        subscriptionCredits: true,
-        permanentCredits: true,
-        frozenCredits: true,
-      },
-    })
-  }
 
   return {
     subscriptionCredits: balance.subscriptionCredits,

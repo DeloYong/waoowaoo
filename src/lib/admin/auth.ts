@@ -1,19 +1,18 @@
 /**
  * 管理员鉴权
  */
-import { headers } from 'next/headers'
+import { getAuthSession } from '@/lib/api-auth'
 import { prisma } from '@/lib/prisma'
 
 export async function requireAdmin(): Promise<string> {
-  const headersList = await headers()
-  const userId = headersList.get('x-user-id')
+  const session = await getAuthSession()
 
-  if (!userId) {
+  if (!session?.user?.id) {
     throw new Error('UNAUTHORIZED: Missing user ID')
   }
 
   const user = await prisma.user.findUnique({
-    where: { id: userId },
+    where: { id: session.user.id },
     select: { isAdmin: true },
   })
 
@@ -21,5 +20,5 @@ export async function requireAdmin(): Promise<string> {
     throw new Error('FORBIDDEN: Admin access required')
   }
 
-  return userId
+  return session.user.id
 }

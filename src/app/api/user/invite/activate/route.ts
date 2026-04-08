@@ -2,13 +2,16 @@ import { NextRequest, NextResponse } from 'next/server'
 import { apiHandler } from '@/lib/api-errors'
 import { prisma } from '@/lib/prisma'
 import { processInviteOnRegistration } from '@/lib/invite/service'
+import { getAuthSession } from '@/lib/api-auth'
 
 export const POST = apiHandler(async (request: NextRequest) => {
-  const userId = request.headers.get('x-user-id')
+  const session = await getAuthSession()
   
-  if (!userId) {
+  if (!session?.user?.id) {
     return NextResponse.json({ error: '未授权' }, { status: 401 })
   }
+
+  const userId = session.user.id
 
   const body = await request.json()
   const { inviteCode } = body
