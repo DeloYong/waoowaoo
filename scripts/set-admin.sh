@@ -25,19 +25,16 @@ fi
 
 echo "找到 MySQL 容器: $MYSQL_CONTAINER"
 
-# 尝试不同的数据库配置
-for DB_USER in "root"; do
-    for DB_NAME in "waoowaoo" "nextjs"; do
-        if docker exec "$MYSQL_CONTAINER" mysql -u"$DB_USER" "$DB_NAME" -e "SELECT 1" &>/dev/null; then
-            echo "使用数据库: $DB_NAME, 用户: $DB_USER"
-            docker exec "$MYSQL_CONTAINER" mysql -u"$DB_USER" "$DB_NAME" -e "UPDATE User SET isAdmin = 1 WHERE email = '$EMAIL'; SELECT id, email, isAdmin FROM User WHERE email = '$EMAIL';"
-            echo ""
-            echo "用户 $EMAIL 已设置为管理员"
-            echo "访问管理后台: http://localhost:13000/zh/admin/platform-keys"
-            exit 0
-        fi
-    done
-done
+# 数据库配置（来自 docker-compose.yml）
+DB_USER="root"
+DB_PASS="waoowaoo123"
+DB_NAME="waoowaoo"
 
-echo "错误: 无法连接到数据库"
-exit 1
+echo "连接数据库: $DB_NAME"
+
+# 执行 SQL
+docker exec "$MYSQL_CONTAINER" mysql -u"$DB_USER" -p"$DB_PASS" "$DB_NAME" -e "UPDATE User SET isAdmin = 1 WHERE email = '$EMAIL'; SELECT id, email, isAdmin FROM User WHERE email = '$EMAIL';"
+
+echo ""
+echo "用户 $EMAIL 已设置为管理员"
+echo "访问管理后台: http://localhost:13000/zh/admin/platform-keys"
