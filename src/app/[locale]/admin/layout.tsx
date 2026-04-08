@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-import { requireAdmin } from '@/lib/admin/auth'
 import { Link } from '@/i18n/navigation'
 
 interface AdminLayoutProps {
@@ -8,10 +9,14 @@ interface AdminLayoutProps {
 }
 
 export default async function AdminLayout({ children }: AdminLayoutProps) {
-  const adminId = await requireAdmin()
+  const session = await getServerSession(authOptions)
   
+  if (!session?.user?.id) {
+    redirect('/zh/auth/signin')
+  }
+
   const user = await prisma.user.findUnique({
-    where: { id: adminId },
+    where: { id: session.user.id },
     select: { isAdmin: true }
   })
 
