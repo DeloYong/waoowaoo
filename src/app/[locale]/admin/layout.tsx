@@ -9,7 +9,7 @@ interface AdminLayoutProps {
 }
 
 export default async function AdminLayout({ children }: AdminLayoutProps) {
-  const session = await getServerSession(authOptions)
+  const session = await getServerSession(authOptions) as { user?: { id?: string } } | null
   
   if (!session?.user?.id) {
     redirect('/zh/auth/signin')
