@@ -36,9 +36,13 @@ docker rmi waoowaoo-app:local 2>/dev/null || true
 
 # 使用 force-rebuild.sh 的构建逻辑 (legacy builder)
 echo "开始构建新镜像..."
-DOCKER_BUILDKIT=0 docker build --no-cache -t waoowaoo-app:latest . > /tmp/docker-build.log 2>&1
+echo "注意: 构建过程可能需要 5-10 分钟,请耐心等待..."
+echo ""
 
-BUILD_EXIT=$?
+# 使用 script 命令确保输出被正确捕获,并等待完成
+DOCKER_BUILDKIT=0 docker build --no-cache -t waoowaoo-app:latest . 2>&1 | tee /tmp/docker-build.log
+
+BUILD_EXIT=${PIPESTATUS[0]}
 if [ $BUILD_EXIT -ne 0 ]; then
     echo ""
     echo "❌ Docker 构建失败(退出码: $BUILD_EXIT)"
