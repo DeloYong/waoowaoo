@@ -32,8 +32,8 @@ DB_NAME="waoowaoo"
 
 echo "连接数据库: $DB_NAME"
 
-# 执行 SQL
-docker exec "$MYSQL_CONTAINER" mysql -u"$DB_USER" -p"$DB_PASS" "$DB_NAME" -e "UPDATE User SET isAdmin = 1 WHERE email = '$EMAIL'; SELECT id, email, isAdmin FROM User WHERE email = '$EMAIL';"
+# 执行 SQL（表名是小写的 user）
+docker exec "$MYSQL_CONTAINER" mysql -u"$DB_USER" -p"$DB_PASS" "$DB_NAME" -e "UPDATE \`user\` SET isAdmin = 1 WHERE email = '$EMAIL'; SELECT id, email, isAdmin FROM \`user\` WHERE email = '$EMAIL';"
 
 echo ""
 echo "用户 $EMAIL 已设置为管理员"
