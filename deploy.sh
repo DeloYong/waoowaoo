@@ -27,22 +27,64 @@ echo "代码拉取完成"
 echo ""
 
 # 步骤 2/3: 重建 Docker 镜像（Next.js 需要重新构建以包含新路由）
+echo ""
+echo "========================================="
 echo "步骤 2/3: 重建 Docker 镜像..."
+echo "========================================="
 echo "注意：Next.js 生产构建会静态生成所有路由，必须重建镜像"
-docker compose build
-echo "Docker 镜像重建完成"
+echo "开始时间: $(date)"
 echo ""
 
-# 步骤 3/3: 重启容器并等待启动
-echo "步骤 3/3: 重启容器..."
-docker compose down
+# 先停止旧容器（避免缓存问题）
+echo "停止现有容器..."
+docker compose down || true
+
+# 删除旧镜像（强制使用新构建）
+echo "删除旧镜像..."
+docker rmi waoowaoo-app:latest 2>/dev/null || true
+docker rmi waoowaoo-app:local 2>/dev/null || true
+
+# 重新构建镜像
+echo "开始构建新镜像..."
+docker compose build --progress=plain 2>&1 | tee /tmp/docker-build.log
+
+if [ ${PIPESTATUS[0]} -ne 0 ]; then
+    echo ""
+    echo "❌ Docker 构建失败！查看完整日志："
+    tail -50 /tmp/docker-build.log
+    exit 1
+fi
+
+echo ""
+echo "✅ Docker 镜像构建成功"
+echo "构建完成时间: $(date)"
+echo ""
+
+# 验证新镜像
+echo "验证镜像..."
+docker images waoowaoo-app
+echo ""
+
+# 步骤 3/3: 启动容器
+echo ""
+echo "========================================="
+echo "步骤 3/3: 启动容器..."
+echo "========================================="
 docker compose up -d
-echo "容器重启完成"
+echo "容器启动完成"
 echo ""
 
-# 等待应用启动
-echo "等待应用启动..."
-sleep 5
+# 等待应用启动并检查健康状态
+echo "等待应用启动（30秒）..."
+for i in $(seq 1 30); do
+    if docker compose ps | grep -q "healthy\|Up"; then
+        echo "✅ 容器已启动 ($i/30秒)"
+        break
+    fi
+    sleep 1
+done
+
+echo ""
 
 # 检查容器状态
 echo "容器状态:"
