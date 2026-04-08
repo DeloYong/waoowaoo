@@ -7,11 +7,16 @@ import { prisma } from '@/lib/prisma'
 export const PUT = apiHandler(async (request: NextRequest, { params }) => {
   const adminId = await requireAdmin()
   const { id } = await params
+  const planId = Array.isArray(id) ? id[0] : id
+  
+  if (!planId) {
+    throw new ApiError('INVALID_PARAMS', '缺少套餐 ID')
+  }
   
   const body = await request.json()
   
   const plan = await prisma.subscriptionPlan.findUnique({
-    where: { id },
+    where: { id: planId },
   })
   
   if (!plan) {
@@ -19,7 +24,7 @@ export const PUT = apiHandler(async (request: NextRequest, { params }) => {
   }
   
   const updated = await prisma.subscriptionPlan.update({
-    where: { id },
+    where: { id: planId },
     data: {
       ...(body.name !== undefined && { name: body.name }),
       ...(body.monthlyPrice !== undefined && { monthlyPrice: body.monthlyPrice }),
@@ -41,11 +46,16 @@ export const PUT = apiHandler(async (request: NextRequest, { params }) => {
 export const PATCH = apiHandler(async (request: NextRequest, { params }) => {
   const adminId = await requireAdmin()
   const { id } = await params
+  const planId = Array.isArray(id) ? id[0] : id
+  
+  if (!planId) {
+    throw new ApiError('INVALID_PARAMS', '缺少套餐 ID')
+  }
   
   const body = await request.json()
   
   const plan = await prisma.subscriptionPlan.findUnique({
-    where: { id },
+    where: { id: planId },
   })
   
   if (!plan) {
@@ -53,7 +63,7 @@ export const PATCH = apiHandler(async (request: NextRequest, { params }) => {
   }
   
   const updated = await prisma.subscriptionPlan.update({
-    where: { id },
+    where: { id: planId },
     data: {
       ...(body.isActive !== undefined && { isActive: body.isActive }),
     },
