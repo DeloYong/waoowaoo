@@ -3,7 +3,7 @@
 # 强制重建 Docker 镜像脚本
 # 用法：chmod +x scripts/force-rebuild.sh && ./scripts/force-rebuild.sh
 
-set -e
+# 注意：不使用 set -e，因为 docker build 失败时需要继续执行错误处理
 
 echo "========================================="
 echo "强制重建 Docker 镜像"
@@ -19,26 +19,25 @@ echo ""
 
 # 步骤 2: 停止所有容器
 echo "【步骤 2/5】停止所有容器..."
-docker compose down
+docker compose down || echo "容器可能已停止"
 echo ""
 
 # 步骤 3: 删除所有旧镜像
 echo "【步骤 3/5】删除旧镜像..."
 docker rmi waoowaoo-app:latest 2>/dev/null || echo "  - 无 latest 镜像"
 docker rmi waoowaoo-app:local 2>/dev/null || echo "  - 无 local 镜像"
-docker image prune -f
+docker image prune -f || true
 echo ""
 
 # 步骤 4: 重新构建镜像（带详细日志）
 echo "【步骤 4/5】开始构建新镜像（这可能需要 5-10 分钟）..."
 echo "构建开始时间: $(date)"
 echo ""
-
-# 使用传统 docker build（禁用 BuildKit）避免 buildx 版本问题
-# 使用 --no-cache 强制重新构建
 echo "提示：详细构建日志保存到 /tmp/docker-build-force.log"
+echo "您可以另开终端查看进度: tail -f /tmp/docker-build-force.log"
 echo ""
 
+# 使用传统 docker build，输出到日志文件
 DOCKER_BUILDKIT=0 docker build --no-cache -t waoowaoo-app:latest . > /tmp/docker-build-force.log 2>&1
 
 # 检查 docker build 的退出码
