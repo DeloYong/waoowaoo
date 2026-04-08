@@ -41,15 +41,43 @@ echo ""
 # 进入项目目录
 cd ~/waoowaoo || { echo "❌ 错误: 项目目录不存在"; exit 1; }
 
-# 步骤 1: 拉取最新代码
-echo "📥 步骤 1/5: 拉取最新代码..."
-git status
-git pull
+# 步骤 1: 更新远程仓库地址并切换到 feature/saas-credits 分支
+echo "📥 步骤 1/6: 更新远程仓库地址..."
+# 检查当前 remote URL
+CURRENT_URL=$(git remote get-url origin 2>/dev/null || echo "none")
+TARGET_URL="https://github.com/DeloYong/waoowaoo.git"
+
+if [ "$CURRENT_URL" != "$TARGET_URL" ]; then
+    echo "🔄 当前远程: $CURRENT_URL"
+    echo "🔄 更改为: $TARGET_URL"
+    git remote set-url origin "$TARGET_URL" || git remote add origin "$TARGET_URL"
+    echo "✅ 远程仓库地址已更新"
+else
+    echo "✅ 远程仓库地址已是目标地址"
+fi
+
+# 获取所有远程分支
+git fetch origin
+
+# 检查是否已在 feature/saas-credits 分支
+CURRENT_BRANCH=$(git branch --show-current)
+if [ "$CURRENT_BRANCH" != "feature/saas-credits" ]; then
+    echo "🔄 当前分支: $CURRENT_BRANCH"
+    echo "🔄 切换到 feature/saas-credits 分支..."
+    git checkout feature/saas-credits 2>/dev/null || git checkout -b feature/saas-credits origin/feature/saas-credits
+    echo "✅ 已切换到 feature/saas-credits 分支"
+else
+    echo "✅ 已在 feature/saas-credits 分支"
+fi
+
+# 步骤 2: 拉取最新代码
+echo "📥 步骤 2/6: 拉取最新代码..."
+git pull origin feature/saas-credits
 echo "✅ 代码拉取完成"
 echo ""
 
-# 步骤 2: 检查 docker-compose.yml 或 Dockerfile 是否有变更
-echo "🔍 步骤 2/5: 检查 Docker 配置变更..."
+# 步骤 3: 检查 docker-compose.yml 或 Dockerfile 是否有变更
+echo "🔍 步骤 3/6: 检查 Docker 配置变更..."
 if git diff HEAD@{1} HEAD -- docker-compose.yml docker-compose.yaml Dockerfile Dockerfile.* .dockerignore 2>/dev/null | grep -q .; then
     echo "⚠️  检测到 Docker 配置变更，将重建镜像..."
     DOCKER_CHANGED=true
@@ -59,25 +87,25 @@ else
 fi
 echo ""
 
-# 步骤 3: 如果有 Docker 变更，重建镜像
+# 步骤 4: 如果有 Docker 变更，重建镜像
 if [ "$DOCKER_CHANGED" = true ]; then
-    echo "🔨 步骤 3/5: 重建 Docker 镜像..."
+    echo "🔨 步骤 4/6: 重建 Docker 镜像..."
     docker compose build --no-cache
     echo "✅ Docker 镜像重建完成"
 else
-    echo "⏭️  步骤 3/5: 跳过镜像重建（无变更）"
+    echo "⏭️  步骤 4/6: 跳过镜像重建（无变更）"
 fi
 echo ""
 
-# 步骤 4: 重启容器
-echo "🔄 步骤 4/5: 重启容器..."
+# 步骤 5: 重启容器
+echo "🔄 步骤 5/6: 重启容器..."
 docker compose down
 docker compose up -d
 echo "✅ 容器重启完成"
 echo ""
 
-# 步骤 5: 检查容器状态
-echo "📊 步骤 5/5: 检查容器状态..."
+# 步骤 6: 检查容器状态
+echo "📊 步骤 6/6: 检查容器状态..."
 docker compose ps
 echo ""
 
@@ -88,6 +116,12 @@ echo ""
 
 echo "==================================="
 echo "🎉 部署完成！"
+echo "==================================="
+echo ""
+echo "📍 部署信息:"
+echo "   远程仓库: $TARGET_URL"
+echo "   分支: feature/saas-credits"
+echo "   版本: $(cat package.json | grep '\"version\"' | cut -d'\"' -f4)"
 echo "==================================="
 
 REMOTE_SCRIPT
