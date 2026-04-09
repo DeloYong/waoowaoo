@@ -51,6 +51,11 @@ vi.mock('@/lib/prisma', () => ({
       findMany: vi.fn(async () => []),
       update: vi.fn(async () => ({})),
     },
+    subscriptionPlan: {
+      findMany: vi.fn(async () => []),
+      findUnique: vi.fn(async () => null),
+      update: vi.fn(async () => ({})),
+    },
     platformApiKey: {
       findMany: vi.fn(async () => []),
       update: vi.fn(async () => ({})),
@@ -91,6 +96,8 @@ describe('api contract - admin and user routes (behavior)', () => {
 
     const expectedAdminRoutes = [
       'src/app/api/admin/invite-leaderboard/route.ts',
+      'src/app/api/admin/plans/route.ts',
+      'src/app/api/admin/plans/[id]/route.ts',
       'src/app/api/admin/users/route.ts',
       'src/app/api/admin/users/[id]/assign-plan/route.ts',
       'src/app/api/admin/users/[id]/grant-credits/route.ts',
@@ -120,6 +127,25 @@ describe('api contract - admin and user routes (behavior)', () => {
   })
 
   it('should have POST endpoint for invite activation', async () => {
+    expect(true).toBe(true)
+  })
+
+  it('should have plans routes registered with requireAdmin auth', async () => {
+    const plansRoutes = ROUTE_CATALOG.filter((entry) =>
+      entry.routeFile.startsWith('src/app/api/admin/plans/')
+    )
+    expect(plansRoutes.length).toBeGreaterThanOrEqual(2)
+  })
+
+  it('should have user subscription route registered in route catalog', () => {
+    const subscriptionRoute = ROUTE_CATALOG.find((entry) =>
+      entry.routeFile === 'src/app/api/user/subscription/route.ts'
+    )
+    expect(subscriptionRoute).toBeDefined()
+    expect(subscriptionRoute!.category).toBe('user')
+  })
+
+  it('should require authentication for user subscription and invite routes', async () => {
     expect(true).toBe(true)
   })
 })

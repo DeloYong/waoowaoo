@@ -10,7 +10,7 @@ export const PUT = apiHandler(async (request: NextRequest, { params }) => {
   const planId = Array.isArray(id) ? id[0] : id
   
   if (!planId) {
-    throw new ApiError('INVALID_PARAMS', '缺少套餐 ID')
+    throw new ApiError('INVALID_PARAMS', { message: '缺少套餐 ID' })
   }
   
   const body = await request.json()
@@ -20,7 +20,7 @@ export const PUT = apiHandler(async (request: NextRequest, { params }) => {
   })
   
   if (!plan) {
-    throw new ApiError('NOT_FOUND', '套餐不存在')
+    throw new ApiError('NOT_FOUND', { message: '套餐不存在' })
   }
   
   const updated = await prisma.subscriptionPlan.update({
@@ -49,7 +49,7 @@ export const PATCH = apiHandler(async (request: NextRequest, { params }) => {
   const planId = Array.isArray(id) ? id[0] : id
   
   if (!planId) {
-    throw new ApiError('INVALID_PARAMS', '缺少套餐 ID')
+    throw new ApiError('INVALID_PARAMS', { message: '缺少套餐 ID' })
   }
   
   const body = await request.json()
@@ -59,7 +59,7 @@ export const PATCH = apiHandler(async (request: NextRequest, { params }) => {
   })
   
   if (!plan) {
-    throw new ApiError('NOT_FOUND', '套餐不存在')
+    throw new ApiError('NOT_FOUND', { message: '套餐不存在' })
   }
   
   const updated = await prisma.subscriptionPlan.update({

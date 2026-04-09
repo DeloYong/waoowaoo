@@ -30,6 +30,8 @@ const ROUTE_FILES = [
   'src/app/api/admin/credit-pricing/route.ts',
   'src/app/api/admin/download-logs/route.ts',
   'src/app/api/admin/invite-leaderboard/route.ts',
+  'src/app/api/admin/plans/[id]/route.ts',
+  'src/app/api/admin/plans/route.ts',
   'src/app/api/admin/platform-keys/route.ts',
   'src/app/api/admin/users/[id]/assign-plan/route.ts',
   'src/app/api/admin/users/[id]/grant-credits/route.ts',
