@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useSearchParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import Navbar from "@/components/Navbar"
 import PasswordStrengthIndicator from "@/components/auth/PasswordStrengthIndicator"
@@ -11,11 +12,21 @@ export default function SignUp() {
   const [name, setName] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
+  const [inviteCode, setInviteCode] = useState("")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [success, setSuccess] = useState("")
   const router = useRouter()
+  const searchParams = useSearchParams()
   const t = useTranslations('auth')
+
+  // 从 URL query 参数中读取邀请码
+  useEffect(() => {
+    const invite = searchParams?.get('invite')
+    if (invite) {
+      setInviteCode(invite.toUpperCase())
+    }
+  }, [searchParams])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -44,6 +55,7 @@ export default function SignUp() {
         body: JSON.stringify({
           name,
           password,
+          inviteCode: inviteCode || undefined,
         }),
       })
 
@@ -128,6 +140,27 @@ export default function SignUp() {
                   className="glass-input-base w-full px-4 py-3"
                   placeholder={t('confirmPasswordPlaceholder')}
                 />
+              </div>
+
+              <div>
+                <label htmlFor="inviteCode" className="glass-field-label block mb-2">
+                  邀请码（选填）
+                </label>
+                <input
+                  id="inviteCode"
+                  name="inviteCode"
+                  type="text"
+                  value={inviteCode}
+                  onChange={(e) => setInviteCode(e.target.value.toUpperCase())}
+                  className="glass-input-base w-full px-4 py-3"
+                  placeholder="请输入6位邀请码"
+                  maxLength={6}
+                />
+                {inviteCode && (
+                  <p className="mt-1 text-xs text-[var(--glass-text-tertiary)]">
+                    邀请码: {inviteCode}
+                  </p>
+                )}
               </div>
 
               {error && (

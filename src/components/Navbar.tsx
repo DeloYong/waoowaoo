@@ -16,6 +16,11 @@ interface CreditsInfo {
   planName: string | null
 }
 
+interface Plan {
+  id: string
+  name: string
+}
+
 export default function Navbar() {
   const { data: session, status } = useSession()
   const t = useTranslations('nav')
@@ -42,9 +47,22 @@ export default function Navbar() {
         const totalCredits = balance
           ? balance.subscriptionCredits + balance.permanentCredits - balance.frozenCredits
           : 0
+
+        // 从 plans 列表中查找当前订阅的套餐名称
+        let planName: string | null = null
+        if (data.subscription?.planId && data.plans) {
+          const matchedPlan = data.plans.find((p: Plan) => p.id === data.subscription.planId)
+          if (matchedPlan) {
+            planName = matchedPlan.name
+          }
+        }
+        if (!planName && data.subscription?.planId) {
+          planName = data.subscription.planId
+        }
+
         setCreditsInfo({
           totalCredits,
-          planName: data.plan?.name || data.subscription?.planId || null,
+          planName,
         })
       }
     } catch (error) {

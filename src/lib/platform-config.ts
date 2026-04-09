@@ -212,7 +212,41 @@ export async function getInviteConfig(): Promise<{
 }
 
 /**
- * 批量获取所有配置（管理员后台用，只返回掩码后的 Key）
+ * 配置键的默认描述信息（用于 admin 后台展示）
+ */
+const DEFAULT_KEY_DESCRIPTIONS: Record<ConfigKey, string> = {
+  'platform.llm_api_key': '通用 LLM API Key（OpenRouter 等）',
+  'platform.llm_base_url': 'LLM API Base URL',
+  'platform.fal_api_key': 'FAL API Key（图片/视频生成）',
+  'platform.ark_api_key': 'Ark API Key（字节火山引擎）',
+  'platform.google_ai_key': 'Google AI API Key',
+  'platform.qwen_api_key': '通义千问 API Key',
+  'billing.credit_pricing': '积分定价配置（JSON）',
+  'billing.model_tier_map': '模型档次映射（JSON）',
+  'invite.welcome_credits': '新用户邀请欢迎积分',
+  'invite.referral_credits': '邀请人奖励积分',
+  'invite.rebate_rate': '邀请返利比例',
+  'invite.daily_referral_cap': '每日邀请奖励上限',
+}
+
+const ALL_CONFIG_KEYS: ConfigKey[] = [
+  'platform.llm_api_key',
+  'platform.llm_base_url',
+  'platform.fal_api_key',
+  'platform.ark_api_key',
+  'platform.google_ai_key',
+  'platform.qwen_api_key',
+  'billing.credit_pricing',
+  'billing.model_tier_map',
+  'invite.welcome_credits',
+  'invite.referral_credits',
+  'invite.rebate_rate',
+  'invite.daily_referral_cap',
+]
+
+/**
+ * 批量获取所有配置（管理员后台用，返回所有已知配置项）
+ * 对于数据库不存在的配置，返回空值占位条目，以便 admin 页面展示所有可配置项
  */
 export async function getAllConfigsForAdmin(): Promise<
   Array<{ key: string; value: string; description: string | null; updatedAt: Date }>
@@ -221,21 +255,38 @@ export async function getAllConfigsForAdmin(): Promise<
     orderBy: { key: 'asc' },
   })
 
-  return configs.map((c) => {
-    let maskedValue = c.value
-    if (ENCRYPTED_KEYS.includes(c.key as ConfigKey)) {
-      // 只显示后 4 位
-      if (c.value.length > 4) {
-        maskedValue = `****${c.value.slice(-4)}`
-      } else {
-        maskedValue = '****'
+  const configMap = new Map(configs.map((c) => [c.key, c]))
+
+  // 确保所有已知配置键都出现在结果中
+  const results: Array<{ key: string; value: string; description: string | null; updatedAt: Date }> = []
+
+  for (const key of ALL_CONFIG_KEYS) {
+    const existing = configMap.get(key)
+    if (existing) {
+      let maskedValue = existing.value
+      if (ENCRYPTED_KEYS.includes(key)) {
+        if (existing.value.length > 4) {
+          maskedValue = `****${existing.value.slice(-4)}`
+        } else {
+          maskedValue = '****'
+        }
       }
+      results.push({
+        key,
+        value: maskedValue,
+        description: existing.description || DEFAULT_KEY_DESCRIPTIONS[key] || null,
+        updatedAt: existing.updatedAt,
+      })
+    } else {
+      // 数据库中不存在的配置，返回空占位
+      results.push({
+        key,
+        value: '',
+        description: DEFAULT_KEY_DESCRIPTIONS[key] || null,
+        updatedAt: new Date(0),
+      })
     }
-    return {
-      key: c.key,
-      value: maskedValue,
-      description: c.description,
-      updatedAt: c.updatedAt,
-    }
-  })
+  }
+
+  return results
 }

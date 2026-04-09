@@ -107,29 +107,29 @@ export default function PricingPage() {
           {plans.filter(p => p.isActive).map((plan) => {
             const isEnterprise = plan.monthlyPrice < 0
             const hasYearly = plan.yearlyPrice !== null && plan.yearlyPrice! > 0
-            
-            // 计算价格
+
+            // 计算价格 - 格式化小数
             let priceDisplay = ''
             let priceNote = ''
-            
+
             if (isEnterprise) {
               priceDisplay = '联系商务'
               priceNote = ''
             } else if (billingCycle === 'monthly') {
-              priceDisplay = `¥${plan.monthlyPrice}`
+              priceDisplay = `¥${Number(plan.monthlyPrice).toFixed(2)}`
               priceNote = '/月'
             } else {
               // 年付
               if (hasYearly) {
-                priceDisplay = `¥${plan.yearlyPrice}`
+                priceDisplay = `¥${Number(plan.yearlyPrice).toFixed(2)}`
                 priceNote = '/年'
               } else {
                 // 没有年付选项
-                priceDisplay = `¥${plan.monthlyPrice * 12}`
+                priceDisplay = `¥${(Number(plan.monthlyPrice) * 12).toFixed(2)}`
                 priceNote = '/年 (无年付优惠)'
               }
             }
-            
+
             const isPopular = plan.id === 'pro'
 
             return (
@@ -216,16 +216,15 @@ export default function PricingPage() {
                 {/* 购买按钮 */}
                 <button
                   onClick={() => handlePurchase(plan.id)}
-                  disabled={!session}
                   className={`w-full py-3 rounded-lg font-semibold transition-colors ${
                     isEnterprise
                       ? 'bg-purple-500 text-white hover:bg-purple-600'
                       : isPopular
                       ? 'bg-blue-500 text-white hover:bg-blue-600'
                       : 'bg-[var(--glass-bg-canvas)] text-[var(--glass-text-primary)] border border-[var(--glass-stroke-base)] hover:bg-[var(--glass-bg-surface-strong)]'
-                  } disabled:opacity-50 disabled:cursor-not-allowed`}
+                  }`}
                 >
-                  {isEnterprise ? '联系我们' : session ? '即将开放' : '登录后购买'}
+                  {isEnterprise ? '联系我们' : '立即订阅'}
                 </button>
               </div>
             )

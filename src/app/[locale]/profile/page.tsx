@@ -135,8 +135,7 @@ export default function ProfilePage() {
               {/* 退出登录 */}
               <button
                 onClick={() => {
-                  const currentOrigin = typeof window !== 'undefined' ? window.location.origin : ''
-                  signOut({ callbackUrl: currentOrigin || '/' })
+                  signOut({ callbackUrl: '/' })
                 }}
                 className="glass-btn-base glass-btn-tone-danger mt-auto flex items-center gap-2 px-4 py-3 text-sm rounded-xl transition-all cursor-pointer"
               >

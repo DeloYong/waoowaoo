@@ -83,8 +83,8 @@ echo "容器状态:"
 docker compose ps
 echo ""
 
-# 步骤 4: 导入套餐数据
-echo "步骤 4/4: 导入套餐数据到数据库..."
+# 步骤 4: 数据初始化与补全
+echo "步骤 4/5: 初始化套餐数据并补全用户邀请码..."
 echo "========================================="
 
 # 等待 MySQL 完全启动
@@ -101,6 +101,12 @@ docker exec waoowaoo-mysql mysql -uroot -pwaoowaoo123 waoowaoo -e "SELECT id, na
 
 echo ""
 echo "✅ 套餐数据导入完成"
+echo ""
+
+# 步骤 5: 补全已有用户邀请码
+echo "步骤 5/5: 补全已有用户邀请码..."
+echo "========================================="
+docker exec waoowaoo-app npx tsx scripts/migrations/backfill-invite-codes.ts || echo "⚠️  邀请码补全失败（可能无需要补全的用户）"
 echo ""
 
 # 显示部署信息

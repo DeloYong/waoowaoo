@@ -73,6 +73,20 @@ export const authOptions: any = {
         session.user.id = token.id as string
       }
       return session
-    }
+    },
+    // 🔥 自定义重定向逻辑：允许相对路径和当前 host 的重定向
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async redirect({ url, baseUrl }: any) {
+      // 允许相对路径
+      if (url.startsWith('/')) {
+        return `${baseUrl}${url}`
+      }
+      // 允许与 baseUrl 同源的 URL
+      if (url.startsWith(baseUrl)) {
+        return url
+      }
+      // 默认返回 baseUrl
+      return baseUrl
+    },
   }
 }

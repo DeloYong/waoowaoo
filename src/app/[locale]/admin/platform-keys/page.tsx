@@ -7,8 +7,8 @@ import { toast } from 'react-hot-toast'
 interface PlatformKey {
   key: string
   value: string
-  description: string
-  displayValue: string
+  description: string | null
+  updatedAt: string
 }
 
 export default function PlatformKeysPage() {
@@ -139,11 +139,14 @@ export default function PlatformKeysPage() {
             ) : (
               <div className="flex items-center gap-4">
                 <code className="flex-1 px-4 py-2 bg-[var(--glass-bg-canvas)] rounded font-mono text-sm text-[var(--glass-text-secondary)]">
-                  {item.displayValue || '未配置'}
+                  {item.value || '未配置'}
                 </code>
                 {item.value && (
                   <button
-                    onClick={() => handleTest(item.key.split('.')[1])}
+                    onClick={() => {
+                      const provider = item.key.replace('platform.', '').replace('_api_key', '')
+                      handleTest(provider)
+                    }}
                     className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
                   >
                     测试连接
