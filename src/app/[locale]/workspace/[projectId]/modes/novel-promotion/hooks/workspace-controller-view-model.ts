@@ -1,6 +1,5 @@
 'use client'
 
-import type { UserModelsPayload } from './useWorkspaceUserModels'
 import type { WorkspaceStageRuntimeValue } from '../WorkspaceStageRuntimeContext'
 import type { TaskPresentationState } from '@/lib/task/presentation'
 import type { BatchVideoGenerationParams, VideoGenerationOptions } from '../components/video'
@@ -20,16 +19,8 @@ interface ProjectSnapshotInput {
   projectLocations: unknown[]
   globalAssetText: string
   novelText: string
-  analysisModel: string | undefined
-  characterModel: string | undefined
-  locationModel: string | undefined
-  storyboardModel: string | undefined
-  editModel: string | undefined
-  videoModel: string | undefined
-  audioModel: string | undefined
   videoRatio: string | undefined
   capabilityOverrides: CapabilitySelections
-  ttsRate: string | number | undefined
   artStyle: string | undefined
 }
 
@@ -53,11 +44,10 @@ interface BuildWorkspaceControllerViewModelParams {
     setTriggerGlobalAnalyzeOnOpen: (value: boolean) => void
     openAssetLibrary: (characterId?: string | null, refreshAssets?: boolean) => void
     closeAssetLibrary: () => void
-    userModelsForSettings: UserModelsPayload | null
     userVideoModels: Array<{
       value: string
       label: string
-      capabilities?: UserModelsPayload['video'][number]['capabilities']
+      capabilities?: Record<string, unknown>
       videoPricingTiers?: VideoPricingTier[]
     }>
     userModelsLoaded: boolean

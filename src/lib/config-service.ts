@@ -3,10 +3,14 @@
  *
  * 所有 API 通过此服务获取模型配置，确保数据源一致性。
  *
- * 优先级：项目配置 > 用户偏好 > null
+ * 优先级：系统默认 (pipeline.model_assignments) > 项目配置 > 用户偏好 > null
  */
 
 import { prisma } from '@/lib/prisma'
+import {
+  getPipelineModelAssignments,
+  type PipelineModelAssignments,
+} from '@/lib/platform-config'
 import {
   type CapabilitySelections,
   type CapabilityValue,
@@ -142,25 +146,48 @@ export async function getUserWorkflowConcurrencyConfig(
 }
 
 /**
+ * 将 pipeline 模型分配转换为标准 modelKey 格式
+ */
+function composePipelineModelKey(
+  assignments: PipelineModelAssignments | null,
+  pipeline: keyof PipelineModelAssignments,
+): string | null {
+  if (!assignments) return null
+  const assignment = assignments[pipeline]
+  if (!assignment?.provider || !assignment?.model) return null
+  return composeModelKey(assignment.provider, assignment.model)
+}
+
+/**
  * 获取项目级模型配置
  */
 export async function getProjectModelConfig(
   projectId: string,
   userId: string,
 ): Promise<ProjectModelConfig> {
-  const [projectData, userPref] = await Promise.all([
+  const [projectData, userPref, pipelineAssignments] = await Promise.all([
     prisma.novelPromotionProject.findUnique({ where: { projectId } }),
     prisma.userPreference.findUnique({ where: { userId } }),
+    getPipelineModelAssignments(),
   ])
 
+  // 系统默认模型作为最高优先级
+  const systemAnalysisModel = composePipelineModelKey(pipelineAssignments, 'analysis')
+  const systemCharacterModel = composePipelineModelKey(pipelineAssignments, 'character')
+  const systemLocationModel = composePipelineModelKey(pipelineAssignments, 'location')
+  const systemStoryboardModel = composePipelineModelKey(pipelineAssignments, 'storyboard')
+  const systemEditModel = composePipelineModelKey(pipelineAssignments, 'edit')
+  const systemVideoModel = composePipelineModelKey(pipelineAssignments, 'video')
+  const systemAudioModel = composePipelineModelKey(pipelineAssignments, 'audio')
+
   return {
-    analysisModel: extractModelKey(projectData?.analysisModel) || extractModelKey(userPref?.analysisModel) || null,
-    characterModel: extractModelKey(projectData?.characterModel) || extractModelKey(userPref?.characterModel) || null,
-    locationModel: extractModelKey(projectData?.locationModel) || extractModelKey(userPref?.locationModel) || null,
-    storyboardModel: extractModelKey(projectData?.storyboardModel) || extractModelKey(userPref?.storyboardModel) || null,
-    editModel: extractModelKey(projectData?.editModel) || extractModelKey(userPref?.editModel) || null,
-    videoModel: extractModelKey(projectData?.videoModel) || extractModelKey(userPref?.videoModel) || null,
-    audioModel: extractModelKey(projectData?.audioModel) || extractModelKey(userPref?.audioModel) || null,
+    analysisModel: systemAnalysisModel || extractModelKey(projectData?.analysisModel) || extractModelKey(userPref?.analysisModel) || null,
+    characterModel: systemCharacterModel || extractModelKey(projectData?.characterModel) || extractModelKey(userPref?.characterModel) || null,
+    locationModel: systemLocationModel || extractModelKey(projectData?.locationModel) || extractModelKey(userPref?.locationModel) || null,
+    storyboardModel: systemStoryboardModel || extractModelKey(projectData?.storyboardModel) || extractModelKey(userPref?.storyboardModel) || null,
+    editModel: systemEditModel || extractModelKey(projectData?.editModel) || extractModelKey(userPref?.editModel) || null,
+    videoModel: systemVideoModel || extractModelKey(projectData?.videoModel) || extractModelKey(userPref?.videoModel) || null,
+    audioModel: systemAudioModel || extractModelKey(projectData?.audioModel) || extractModelKey(userPref?.audioModel) || null,
     videoRatio: projectData?.videoRatio || '16:9',
     artStyle: projectData?.artStyle || null,
     capabilityDefaults: parseCapabilitySelections(userPref?.capabilityDefaults),
@@ -172,18 +199,28 @@ export async function getProjectModelConfig(
  * 获取用户级模型配置（无项目时使用）
  */
 export async function getUserModelConfig(userId: string): Promise<UserModelConfig> {
-  const userPref = await prisma.userPreference.findUnique({
-    where: { userId },
-  })
+  const [userPref, pipelineAssignments] = await Promise.all([
+    prisma.userPreference.findUnique({ where: { userId } }),
+    getPipelineModelAssignments(),
+  ])
+
+  // 系统默认模型作为最高优先级
+  const systemAnalysisModel = composePipelineModelKey(pipelineAssignments, 'analysis')
+  const systemCharacterModel = composePipelineModelKey(pipelineAssignments, 'character')
+  const systemLocationModel = composePipelineModelKey(pipelineAssignments, 'location')
+  const systemStoryboardModel = composePipelineModelKey(pipelineAssignments, 'storyboard')
+  const systemEditModel = composePipelineModelKey(pipelineAssignments, 'edit')
+  const systemVideoModel = composePipelineModelKey(pipelineAssignments, 'video')
+  const systemAudioModel = composePipelineModelKey(pipelineAssignments, 'audio')
 
   return {
-    analysisModel: extractModelKey(userPref?.analysisModel) || null,
-    characterModel: extractModelKey(userPref?.characterModel) || null,
-    locationModel: extractModelKey(userPref?.locationModel) || null,
-    storyboardModel: extractModelKey(userPref?.storyboardModel) || null,
-    editModel: extractModelKey(userPref?.editModel) || null,
-    videoModel: extractModelKey(userPref?.videoModel) || null,
-    audioModel: extractModelKey(userPref?.audioModel) || null,
+    analysisModel: systemAnalysisModel || extractModelKey(userPref?.analysisModel) || null,
+    characterModel: systemCharacterModel || extractModelKey(userPref?.characterModel) || null,
+    locationModel: systemLocationModel || extractModelKey(userPref?.locationModel) || null,
+    storyboardModel: systemStoryboardModel || extractModelKey(userPref?.storyboardModel) || null,
+    editModel: systemEditModel || extractModelKey(userPref?.editModel) || null,
+    videoModel: systemVideoModel || extractModelKey(userPref?.videoModel) || null,
+    audioModel: systemAudioModel || extractModelKey(userPref?.audioModel) || null,
     capabilityDefaults: parseCapabilitySelections(userPref?.capabilityDefaults),
   }
 }

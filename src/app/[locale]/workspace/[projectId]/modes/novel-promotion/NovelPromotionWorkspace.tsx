@@ -81,19 +81,8 @@ function NovelPromotionWorkspaceContent(props: NovelPromotionWorkspaceProps) {
         isWorldContextModalOpen={vm.ui.isWorldContextModalOpen}
         onCloseSettingsModal={() => vm.ui.setIsSettingsModalOpen(false)}
         onCloseWorldContextModal={() => vm.ui.setIsWorldContextModalOpen(false)}
-        availableModels={vm.ui.userModelsForSettings || undefined}
-        modelsLoaded={vm.ui.userModelsLoaded}
         artStyle={vm.project.artStyle}
-        analysisModel={vm.project.analysisModel}
-        characterModel={vm.project.characterModel}
-        locationModel={vm.project.locationModel}
-        storyboardModel={vm.project.storyboardModel}
-        editModel={vm.project.editModel}
-        videoModel={vm.project.videoModel}
-        audioModel={vm.project.audioModel}
-        capabilityOverrides={vm.project.capabilityOverrides}
         videoRatio={vm.project.videoRatio}
-        ttsRate={vm.project.ttsRate !== undefined && vm.project.ttsRate !== null ? String(vm.project.ttsRate) : undefined}
         onUpdateConfig={vm.actions.handleUpdateConfig}
         globalAssetText={vm.project.globalAssetText}
         projectName={project.name}

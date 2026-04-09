@@ -25,7 +25,7 @@ export default function VideoStageRoute() {
       episodeId={episodeId}
       storyboards={storyboards}
       clips={normalizedClips}
-      defaultVideoModel={runtime.videoModel || ''}
+      defaultVideoModel=""
       capabilityOverrides={runtime.capabilityOverrides}
       videoRatio={runtime.videoRatio ?? undefined}
       userVideoModels={runtime.userVideoModels}

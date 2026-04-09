@@ -104,9 +104,15 @@ echo "✅ 套餐数据导入完成"
 echo ""
 
 # 步骤 5: 补全已有用户邀请码
-echo "步骤 5/5: 补全已有用户邀请码..."
+echo "步骤 5/6: 补全已有用户邀请码..."
 echo "========================================="
 docker exec waoowaoo-app npx tsx scripts/migrations/backfill-invite-codes.ts || echo "⚠️  邀请码补全失败（可能无需要补全的用户）"
+echo ""
+
+# 步骤 6: 清理用户模型配置
+echo "步骤 6/6: 清理用户模型配置，统一使用系统默认..."
+echo "========================================="
+docker exec waoowaoo-app npx tsx scripts/migrations/clear-user-model-configs.ts
 echo ""
 
 # 显示部署信息
@@ -121,6 +127,6 @@ echo "========================================="
 echo ""
 echo "📋 下一步操作:"
 echo "1. 访问 http://54.206.102.49:13000/zh/pricing 查看套餐页面"
-echo "2. 访问 http://54.206.102.49:13000/zh/admin/platform-keys 测试 admin 后台"
-echo "3. 测试退出登录功能,应该跳转到当前域名而不是 localhost"
+echo "2. 访问 http://54.206.102.49:13000/zh/admin/platform-keys 配置系统默认模型"
+echo "3. 测试项目配置弹窗，确认模型参数区域已移除"
 echo ""

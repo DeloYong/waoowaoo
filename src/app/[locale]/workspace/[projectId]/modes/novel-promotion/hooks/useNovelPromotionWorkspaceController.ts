@@ -7,7 +7,6 @@ import { useTranslations } from 'next-intl'
 import { resolveTaskPresentationState } from '@/lib/task/presentation'
 import { useWorkspaceProvider } from '../WorkspaceProvider'
 import { useRebuildConfirm } from './useRebuildConfirm'
-import { useWorkspaceUserModels } from './useWorkspaceUserModels'
 import { useWorkspaceExecution } from './useWorkspaceExecution'
 import { useWorkspaceVideoActions } from './useWorkspaceVideoActions'
 import { useWorkspaceAssetLibraryShell } from './useWorkspaceAssetLibraryShell'
@@ -90,8 +89,6 @@ export function useNovelPromotionWorkspaceController({
     t,
   })
 
-  const userModels = useWorkspaceUserModels()
-
   const execution = useWorkspaceExecution({
     projectId,
     episodeId,
@@ -159,9 +156,7 @@ export function useNovelPromotionWorkspaceController({
     isStartingScriptToStoryboard,
     videoRatio: projectSnapshot.videoRatio,
     artStyle: projectSnapshot.artStyle,
-    videoModel: projectSnapshot.videoModel,
     capabilityOverrides: projectSnapshot.capabilityOverrides,
-    userVideoModels: userModels.userVideoModels || [],
     handleUpdateEpisode: configActions.handleUpdateEpisode,
     handleUpdateConfig: configActions.handleUpdateConfig,
     runWithRebuildConfirm: rebuildState.runWithRebuildConfirm,
@@ -191,9 +186,8 @@ export function useNovelPromotionWorkspaceController({
     setTriggerGlobalAnalyzeOnOpen: assetLibrary.setTriggerGlobalAnalyzeOnOpen,
     openAssetLibrary: assetLibrary.openAssetLibrary,
     closeAssetLibrary: assetLibrary.closeAssetLibrary,
-    userModelsForSettings: userModels.userModelsForSettings,
-    userVideoModels: userModels.userVideoModels || [],
-    userModelsLoaded: userModels.userModelsLoaded,
+    userVideoModels: [],
+    userModelsLoaded: true,
   }
 
   const stageNavState = {

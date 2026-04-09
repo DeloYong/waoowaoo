@@ -15,16 +15,15 @@ interface UseWorkspaceStageRuntimeParams {
   isStartingScriptToStoryboard: boolean
   videoRatio: string | undefined
   artStyle: string | undefined
-  videoModel: string | undefined
   capabilityOverrides: CapabilitySelections
-  userVideoModels: Array<{
+  userVideoModels?: Array<{
     value: string
     label: string
     provider?: string
     providerName?: string
-    capabilities?: ModelCapabilities
+    capabilities?: Record<string, unknown>
     videoPricingTiers?: VideoPricingTier[]
-  }> | undefined
+  }>
   handleUpdateEpisode: (key: string, value: unknown) => Promise<void>
   handleUpdateConfig: (key: string, value: unknown) => Promise<void>
   runWithRebuildConfirm: (action: 'storyToScript' | 'scriptToStoryboard', operation: () => Promise<void>) => Promise<void>
@@ -65,7 +64,6 @@ export function useWorkspaceStageRuntime({
   isStartingScriptToStoryboard,
   videoRatio,
   artStyle,
-  videoModel,
   capabilityOverrides,
   userVideoModels,
   handleUpdateEpisode,
@@ -95,7 +93,6 @@ export function useWorkspaceStageRuntime({
     isStartingScriptToStoryboard,
     videoRatio,
     artStyle,
-    videoModel,
     capabilityOverrides,
     userVideoModels: resolvedUserVideoModels,
     onNovelTextChange: (value) => handleUpdateEpisode('novelText', value),
@@ -138,7 +135,6 @@ export function useWorkspaceStageRuntime({
     runWithRebuildConfirm,
     resolvedUserVideoModels,
     capabilityOverrides,
-    videoModel,
     videoRatio,
   ])
 }

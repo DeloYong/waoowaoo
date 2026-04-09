@@ -130,6 +130,15 @@ export default function ProfilePage() {
                   <AppIcon name="sparkles" className="w-5 h-5" />
                   <span className="font-medium">邀请奖励</span>
                 </button>
+
+                <div
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-[var(--glass-text-tertiary)] cursor-not-allowed opacity-50"
+                  title="模型配置已由管理员统一管理"
+                >
+                  <AppIcon name="settingsHex" className="w-5 h-5" />
+                  <span className="font-medium">API 配置</span>
+                  <span className="ml-auto text-xs">(已禁用)</span>
+                </div>
               </nav>
 
               {/* 退出登录 */}

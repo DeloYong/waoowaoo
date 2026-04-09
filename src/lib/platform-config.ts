@@ -26,6 +26,7 @@ export type ConfigKey =
   | 'invite.referral_credits'
   | 'invite.rebate_rate'
   | 'invite.daily_referral_cap'
+  | 'pipeline.model_assignments'
 
 const ENCRYPTED_KEYS: ConfigKey[] = [
   'platform.llm_api_key',
@@ -38,6 +39,7 @@ const ENCRYPTED_KEYS: ConfigKey[] = [
 const JSON_KEYS: ConfigKey[] = [
   'billing.credit_pricing',
   'billing.model_tier_map',
+  'pipeline.model_assignments',
 ]
 
 export interface CreditPricing {
@@ -51,6 +53,76 @@ export interface CreditPricing {
 
 export interface ModelTierMap {
   [modelKey: string]: 'basic' | 'advanced'
+}
+
+/**
+ * 流程模型配置：每个流程步骤对应的 provider + model
+ */
+export interface PipelineModelAssignment {
+  provider: string  // 如 'ark', 'fal', 'google_ai', 'qwen'
+  model: string     // 如 'doubao-seed-2-0-code-preview'
+}
+
+export interface PipelineModelAssignments {
+  analysis: PipelineModelAssignment      // 文本分析 (LLM)
+  character: PipelineModelAssignment     // 人物生成
+  location: PipelineModelAssignment      // 场景生成
+  storyboard: PipelineModelAssignment    // 分镜图像
+  edit: PipelineModelAssignment          // 修图/编辑
+  video: PipelineModelAssignment         // 视频生成
+  audio: PipelineModelAssignment         // TTS 语音合成
+  lipSync: PipelineModelAssignment       // 唇形同步
+  voiceDesign: PipelineModelAssignment   // 音色设计
+}
+
+/**
+ * 默认流程模型配置（管理员未配置时使用）
+ */
+const DEFAULT_PIPELINE_MODELS: PipelineModelAssignments = {
+  analysis: { provider: '', model: '' },
+  character: { provider: '', model: '' },
+  location: { provider: '', model: '' },
+  storyboard: { provider: '', model: '' },
+  edit: { provider: '', model: '' },
+  video: { provider: '', model: '' },
+  audio: { provider: '', model: '' },
+  lipSync: { provider: '', model: '' },
+  voiceDesign: { provider: '', model: '' },
+}
+
+/**
+ * 获取流程模型配置
+ */
+export async function getPipelineModelAssignments(): Promise<PipelineModelAssignments> {
+  const raw = await getConfigRaw('pipeline.model_assignments')
+  if (!raw) return { ...DEFAULT_PIPELINE_MODELS }
+  try {
+    const parsed = JSON.parse(raw) as Partial<PipelineModelAssignments>
+    return { ...DEFAULT_PIPELINE_MODELS, ...parsed }
+  } catch {
+    return { ...DEFAULT_PIPELINE_MODELS }
+  }
+}
+
+/**
+ * 保存流程模型配置
+ */
+export async function setPipelineModelAssignments(
+  assignments: PipelineModelAssignments,
+  options?: { updatedBy?: string }
+): Promise<void> {
+  await setConfigRaw('pipeline.model_assignments', JSON.stringify(assignments), options)
+}
+
+/**
+ * 根据流程类型获取模型 key（供 worker 调用）
+ * 返回格式: "provider::model" 如 "ark::doubao-seed-2-0-code-preview"
+ */
+export async function getPipelineModelKey(pipeline: keyof PipelineModelAssignments): Promise<string | null> {
+  const assignments = await getPipelineModelAssignments()
+  const assignment = assignments[pipeline]
+  if (!assignment.provider || !assignment.model) return null
+  return `${assignment.provider}::${assignment.model}`
 }
 
 /**
@@ -227,6 +299,7 @@ const DEFAULT_KEY_DESCRIPTIONS: Record<ConfigKey, string> = {
   'invite.referral_credits': '邀请人奖励积分',
   'invite.rebate_rate': '邀请返利比例',
   'invite.daily_referral_cap': '每日邀请奖励上限',
+  'pipeline.model_assignments': '流程模型配置（JSON）',
 }
 
 const ALL_CONFIG_KEYS: ConfigKey[] = [
@@ -242,6 +315,7 @@ const ALL_CONFIG_KEYS: ConfigKey[] = [
   'invite.referral_credits',
   'invite.rebate_rate',
   'invite.daily_referral_cap',
+  'pipeline.model_assignments',
 ]
 
 /**

@@ -5,7 +5,10 @@ import {
   getAllConfigsForAdmin,
   setConfigRaw,
   setPlatformApiKey,
+  getPipelineModelAssignments,
+  setPipelineModelAssignments,
   type ConfigKey,
+  type PipelineModelAssignments,
 } from '@/lib/platform-config'
 
 export const GET = apiHandler(async () => {

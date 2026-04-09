@@ -3,6 +3,10 @@
 import { useState, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'react-hot-toast'
+import PipelineModelSection from './PipelineModelSection'
+import {
+  type PipelineModelAssignments,
+} from '@/lib/platform-config'
 
 interface PlatformKey {
   key: string
@@ -18,9 +22,12 @@ export default function PlatformKeysPage() {
   const [editValue, setEditValue] = useState('')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [pipelineAssignments, setPipelineAssignments] = useState<PipelineModelAssignments | null>(null)
+  const [pipelineLoading, setPipelineLoading] = useState(true)
 
   useEffect(() => {
     fetchKeys()
+    fetchPipelineAssignments()
   }, [])
 
   const fetchKeys = async () => {
@@ -55,6 +62,29 @@ export default function PlatformKeysPage() {
     }
   }
 
+  const fetchPipelineAssignments = async () => {
+    try {
+      const res = await fetch('/api/admin/platform-keys/pipeline-models')
+      if (!res.ok) throw new Error('获取流程模型配置失败')
+      const data = await res.json()
+      setPipelineAssignments(data.assignments || null)
+    } catch (error) {
+      // Silently fail, assignments may not be configured yet
+    } finally {
+      setPipelineLoading(false)
+    }
+  }
+
+  const handleSavePipelineAssignments = async (assignments: PipelineModelAssignments) => {
+    const res = await fetch('/api/admin/platform-keys/pipeline-models', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ assignments }),
+    })
+    if (!res.ok) throw new Error('保存失败')
+    setPipelineAssignments(assignments)
+  }
+
   const handleTest = async (provider: string) => {
     toast.loading('测试连接中...')
     try {
@@ -85,6 +115,17 @@ export default function PlatformKeysPage() {
       </h2>
 
       <div className="space-y-6">
+        {/* Pipeline Model Assignments Section */}
+        {pipelineLoading ? (
+          <div className="text-[var(--glass-text-secondary)]">加载流程模型配置...</div>
+        ) : (
+          <PipelineModelSection
+            assignments={pipelineAssignments}
+            onSave={handleSavePipelineAssignments}
+          />
+        )}
+
+        {/* API Keys Section */}
         {keys.map((item) => (
           <div
             key={item.key}

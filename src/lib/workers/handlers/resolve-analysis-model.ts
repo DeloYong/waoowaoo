@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { composeModelKey, parseModelKeyStrict } from '@/lib/model-config-contract'
+import { getPipelineModelKey } from '@/lib/platform-config'
 
 type ResolveAnalysisModelInput = {
   userId: string
@@ -30,5 +31,9 @@ export async function resolveAnalysisModel(input: ResolveAnalysisModelInput): Pr
   const modelFromUserPreference = normalizeModelKey(userPreference?.analysisModel)
   if (modelFromUserPreference) return modelFromUserPreference
 
-  throw new Error('ANALYSIS_MODEL_NOT_CONFIGURED: 请先在设置页面配置分析模型')
+  // Fallback to system default model configured by admin
+  const systemModel = await getPipelineModelKey('analysis')
+  if (systemModel) return systemModel
+
+  throw new Error('ANALYSIS_MODEL_NOT_CONFIGURED: 请先在管理员后台配置分析模型')
 }
