@@ -294,6 +294,7 @@ const DEFAULT_KEY_DESCRIPTIONS: Record<ConfigKey, string> = {
   'platform.ark_api_key': 'Ark API Key（字节火山引擎）',
   'platform.google_ai_key': 'Google AI API Key',
   'platform.qwen_api_key': '通义千问 API Key',
+  'platform.model_config': '平台模型配置（JSON）',
   'billing.credit_pricing': '积分定价配置（JSON）',
   'billing.model_tier_map': '模型档次映射（JSON）',
   'invite.welcome_credits': '新用户邀请欢迎积分',
