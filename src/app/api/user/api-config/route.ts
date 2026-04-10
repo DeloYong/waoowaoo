@@ -1676,13 +1676,37 @@ export const GET = apiHandler(async () => {
     },
   })
 
-  const providers = parseStoredProviders(pref?.customProviders).map((provider) => ({
+  // 如果用户没有配置,尝试使用平台配置作为默认值
+  const platformConfig = await prisma.platformConfig.findUnique({
+    where: { configKey: 'api_config' },
+  })
+
+  // 合并用户配置和平台配置(用户配置优先)
+  const mergedConfig = {
+    customModels: pref?.customModels || platformConfig?.customModels,
+    customProviders: pref?.customProviders || platformConfig?.customProviders,
+    analysisModel: pref?.analysisModel || platformConfig?.analysisModel,
+    characterModel: pref?.characterModel || platformConfig?.characterModel,
+    locationModel: pref?.locationModel || platformConfig?.locationModel,
+    storyboardModel: pref?.storyboardModel || platformConfig?.storyboardModel,
+    editModel: pref?.editModel || platformConfig?.editModel,
+    videoModel: pref?.videoModel || platformConfig?.videoModel,
+    audioModel: pref?.audioModel || platformConfig?.audioModel,
+    lipSyncModel: pref?.lipSyncModel || platformConfig?.lipSyncModel,
+    voiceDesignModel: pref?.voiceDesignModel || platformConfig?.voiceDesignModel,
+    capabilityDefaults: pref?.capabilityDefaults || platformConfig?.capabilityDefaults,
+    analysisConcurrency: pref?.analysisConcurrency ?? platformConfig?.analysisConcurrency,
+    imageConcurrency: pref?.imageConcurrency ?? platformConfig?.imageConcurrency,
+    videoConcurrency: pref?.videoConcurrency ?? platformConfig?.videoConcurrency,
+  }
+
+  const providers = parseStoredProviders(mergedConfig.customProviders).map((provider) => ({
     ...provider,
     apiKey: provider.apiKey ? decryptApiKey(provider.apiKey) : '',
   }))
 
   const billingMode = await getBillingMode()
-  const parsedModels = parseStoredModels(pref?.customModels)
+  const parsedModels = parseStoredModels(mergedConfig.customModels)
   const models = billingMode === 'OFF' ? parsedModels : sanitizeModelsForBilling(parsedModels)
   const pricingDisplay = buildPricingDisplayMap()
   const pricedModels = models.map((model) => withDisplayPricing(model, pricingDisplay))
@@ -1728,27 +1752,27 @@ export const GET = apiHandler(async () => {
   }
 
   const rawDefaults: DefaultModelsPayload = {
-    analysisModel: pref?.analysisModel || '',
-    characterModel: pref?.characterModel || '',
-    locationModel: pref?.locationModel || '',
-    storyboardModel: pref?.storyboardModel || '',
-    editModel: pref?.editModel || '',
-    videoModel: pref?.videoModel || '',
-    audioModel: pref?.audioModel || '',
-    lipSyncModel: pref?.lipSyncModel || DEFAULT_LIPSYNC_MODEL_KEY,
-    voiceDesignModel: pref?.voiceDesignModel || '',
+    analysisModel: mergedConfig.analysisModel || '',
+    characterModel: mergedConfig.characterModel || '',
+    locationModel: mergedConfig.locationModel || '',
+    storyboardModel: mergedConfig.storyboardModel || '',
+    editModel: mergedConfig.editModel || '',
+    videoModel: mergedConfig.videoModel || '',
+    audioModel: mergedConfig.audioModel || '',
+    lipSyncModel: mergedConfig.lipSyncModel || DEFAULT_LIPSYNC_MODEL_KEY,
+    voiceDesignModel: mergedConfig.voiceDesignModel || '',
   }
   const defaultModels = billingMode === 'OFF'
     ? rawDefaults
     : sanitizeDefaultModelsForBilling(rawDefaults)
   const capabilityDefaults = sanitizeCapabilitySelectionsAgainstModels(
-    parseStoredCapabilitySelections(pref?.capabilityDefaults, 'capabilityDefaults'),
+    parseStoredCapabilitySelections(mergedConfig.capabilityDefaults, 'capabilityDefaults'),
     [...models, ...disabledPresets],
   )
   const workflowConcurrency = normalizeWorkflowConcurrencyConfig({
-    analysis: pref?.analysisConcurrency,
-    image: pref?.imageConcurrency,
-    video: pref?.videoConcurrency,
+    analysis: mergedConfig.analysisConcurrency,
+    image: mergedConfig.imageConcurrency,
+    video: mergedConfig.videoConcurrency,
   })
 
   return NextResponse.json({

@@ -11,6 +11,7 @@ import {
   getProviderDisplayName,
   parseModelKey,
   useProviders,
+  type UseProvidersReturn,
 } from '../api-config'
 import { ApiConfigToolbar } from './ApiConfigToolbar'
 import { ApiConfigProviderList } from './ApiConfigProviderList'
@@ -89,8 +90,11 @@ function toCapabilityFieldLabel(field: string): string {
   return field.replace(/([A-Z])/g, ' $1').replace(/^./, (char) => char.toUpperCase())
 }
 
-export function ApiConfigTabContainer() {
+export function ApiConfigTabContainer(externalConfig?: UseProvidersReturn) {
   const locale = useLocale()
+  const internalConfig = useProviders()
+  
+  // 如果传入了外部配置,使用外部配置;否则使用内部hook
   const {
     providers,
     models,
@@ -114,7 +118,7 @@ export function ApiConfigTabContainer() {
     batchUpdateDefaultModels,
     updateWorkflowConcurrency,
     updateCapabilityDefault,
-  } = useProviders()
+  } = externalConfig || internalConfig
 
   const t = useTranslations('apiConfig')
   const tc = useTranslations('common')

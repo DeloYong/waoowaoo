@@ -15,7 +15,7 @@ import {
     resolvePresetProviderName,
     type PricingDisplayItem,
     type PricingDisplayMap,
-} from './types'
+} from '@/app/[locale]/profile/components/api-config/types'
 import type { CapabilitySelections, CapabilityValue } from '@/lib/model-config-contract'
 import {
     DEFAULT_ANALYSIS_WORKFLOW_CONCURRENCY,
@@ -23,6 +23,9 @@ import {
     DEFAULT_VIDEO_WORKFLOW_CONCURRENCY,
     normalizeWorkflowConcurrencyValue,
 } from '@/lib/workflow-concurrency'
+
+// 复用用户级Hook的辅助函数
+import { mergeProvidersForDisplay } from '@/app/[locale]/profile/components/api-config/hooks'
 
 interface DefaultModels {
     analysisModel?: string
@@ -67,59 +70,6 @@ interface UseProvidersReturn {
     updateWorkflowConcurrency: (field: keyof WorkflowConcurrency, value: number) => void
     updateCapabilityDefault: (modelKey: string, field: string, value: string | number | boolean | null) => void
     getModelsByType: (type: CustomModel['type']) => CustomModel[]
-}
-
-export type { UseProvidersReturn }
-
-export function mergeProvidersForDisplay(
-    savedProviders: Provider[],
-    presetProviders: Provider[],
-): Provider[] {
-    const merged: Provider[] = []
-    const seenProviderIds = new Set<string>()
-    const seenPresetKeys = new Set<string>()
-
-    for (const savedProvider of savedProviders) {
-        if (seenProviderIds.has(savedProvider.id)) continue
-        seenProviderIds.add(savedProvider.id)
-
-        const providerKey = getProviderKey(savedProvider.id)
-        const matchedPreset = presetProviders.find((presetProvider) => presetProvider.id === providerKey)
-        if (matchedPreset) {
-            const apiKey = savedProvider.apiKey || ''
-            const providerBaseUrl = providerKey === 'minimax'
-                ? matchedPreset.baseUrl
-                : (savedProvider.baseUrl || matchedPreset.baseUrl)
-            merged.push({
-                ...matchedPreset,
-                apiKey,
-                hasApiKey: apiKey.length > 0,
-                hidden: savedProvider.hidden === true,
-                baseUrl: providerBaseUrl,
-                apiMode: savedProvider.apiMode,
-                gatewayRoute: savedProvider.gatewayRoute,
-            })
-            seenPresetKeys.add(providerKey)
-            continue
-        }
-
-        merged.push({
-            ...savedProvider,
-            hasApiKey: !!savedProvider.apiKey,
-        })
-    }
-
-    for (const presetProvider of presetProviders) {
-        if (seenPresetKeys.has(presetProvider.id)) continue
-        merged.push({
-            ...presetProvider,
-            apiKey: '',
-            hasApiKey: false,
-            hidden: false,
-        })
-    }
-
-    return merged
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -177,9 +127,6 @@ function parseWorkflowConcurrency(raw: unknown): WorkflowConcurrency {
     }
 }
 
-/**
- * Provider keys that share pricing display with a canonical provider.
- */
 const PRICING_DISPLAY_ALIASES: Readonly<Record<string, string>> = {
     'gemini-compatible': 'google',
 }
@@ -199,7 +146,6 @@ function resolvePricingDisplay(
         if (fallback) return fallback
     }
 
-    // Fallback: check canonical provider alias (e.g. gemini-compatible → google)
     const aliasTarget = PRICING_DISPLAY_ALIASES[providerKey]
     if (aliasTarget) {
         const aliasFallback = map[composePricingDisplayKey(type, aliasTarget, modelId)]
@@ -211,7 +157,6 @@ function resolvePricingDisplay(
 function applyPricingDisplay(model: CustomModel, map: PricingDisplayMap): CustomModel {
     const pricing = resolvePricingDisplay(map, model.type, model.provider, model.modelId)
     if (!pricing) {
-        // Preserve existing server-provided pricing fields (e.g. from customPricing)
         if (model.priceLabel && model.priceLabel !== '--') {
             return model
         }
@@ -237,7 +182,11 @@ function applyPricingDisplay(model: CustomModel, map: PricingDisplayMap): Custom
     }
 }
 
-export function useProviders(): UseProvidersReturn {
+/**
+ * 平台级配置 Hook - 用于管理员配置平台默认 API 设置
+ * 调用 /api/admin/platform-config 接口
+ */
+export function usePlatformProviders(): UseProvidersReturn {
     const locale = useLocale()
     const t = useTranslations('apiConfig')
     const presetProviders = PRESET_PROVIDERS.map((provider) => ({
@@ -267,7 +216,7 @@ export function useProviders(): UseProvidersReturn {
     const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null)
     const initializedRef = useRef(false)
 
-    // 始终持有最新值的 refs，用于避免异步保存时读到旧的闭包值
+    // 始终持有最新值的 refs
     const latestModelsRef = useRef(models)
     const latestProvidersRef = useRef(providers)
     const latestDefaultModelsRef = useRef(defaultModels)
@@ -279,7 +228,7 @@ export function useProviders(): UseProvidersReturn {
     useEffect(() => { latestWorkflowConcurrencyRef.current = workflowConcurrency }, [workflowConcurrency])
     useEffect(() => { latestCapabilityDefaultsRef.current = capabilityDefaults }, [capabilityDefaults])
 
-    // 加载配置
+    // 加载平台配置
     useEffect(() => {
         fetchConfig()
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -289,15 +238,15 @@ export function useProviders(): UseProvidersReturn {
         initializedRef.current = false
         let loadedSuccessfully = false
         try {
-            const res = await apiFetch('/api/user/api-config')
+            const res = await apiFetch('/api/admin/platform-config')
             if (!res.ok) {
-                throw new Error(`api-config load failed: HTTP ${res.status}`)
+                throw new Error(`platform-config load failed: HTTP ${res.status}`)
             }
 
             const data = await res.json()
             const pricingDisplay = parsePricingDisplayMap((data as { pricingDisplay?: unknown }).pricingDisplay)
 
-            // 合并预设和已保存的提供商，保持 savedProviders 的顺序不变（拖拽排序依赖）
+            // 合并预设和已保存的提供商
             const savedProviders: Provider[] = data.providers || []
             setProviders(mergeProvidersForDisplay(savedProviders, presetProviders))
 
@@ -337,7 +286,6 @@ export function useProviders(): UseProvidersReturn {
                 !PRESET_MODELS.find((preset) => encodeModelKey(preset.provider, preset.modelId) === m.modelKey)
             ).map((m: CustomModel) => ({
                 ...applyPricingDisplay(m, pricingDisplay),
-                // 尊重服务端返回的 enabled 字段（后端对 disabled presets 会明确返回 enabled: false）
                 enabled: (m as CustomModel & { enabled?: boolean }).enabled !== false,
             }))
 
@@ -353,12 +301,11 @@ export function useProviders(): UseProvidersReturn {
             }
             loadedSuccessfully = true
         } catch (error) {
-            _ulogError('获取配置失败:', error)
+            _ulogError('获取平台配置失败:', error)
             setSaveStatus('error')
         } finally {
             setLoading(false)
             if (loadedSuccessfully) {
-                // 延迟设置 initialized，确保所有状态更新完成后才开始监听
                 setTimeout(() => {
                     initializedRef.current = true
                 }, 100)
@@ -367,8 +314,7 @@ export function useProviders(): UseProvidersReturn {
     }
 
     /**
-     * 核心保存函数：始终从 ref 读取最新值，支持传入覆盖值（解决异步闭包旧值问题）。
-     * 状态展示遵循真实保存进度：请求发起后显示「保存中」，成功后显示「已保存」。
+     * 核心保存函数：保存到平台配置
      */
     const performSave = useCallback(async (
         overrides?: {
@@ -394,7 +340,7 @@ export function useProviders(): UseProvidersReturn {
             const currentWorkflowConcurrency = overrides?.workflowConcurrency ?? latestWorkflowConcurrencyRef.current
             const currentCapabilityDefaults = overrides?.capabilityDefaults ?? latestCapabilityDefaultsRef.current
             const enabledModels = currentModels.filter(m => m.enabled)
-            const res = await apiFetch('/api/user/api-config', {
+            const res = await apiFetch('/api/admin/platform-config', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -416,21 +362,20 @@ export function useProviders(): UseProvidersReturn {
                 return false
             }
         } catch (error) {
-            _ulogError('保存失败:', error)
+            _ulogError('保存平台配置失败:', error)
             if (!silent) setSaveStatus('error')
             return false
         }
-    }, []) // 无依赖，所有值均从 ref 读取
+    }, [])
 
     const flushConfig = useCallback(async () => {
         const success = await performSave(undefined, false, true)
         if (!success) {
-            throw new Error('API_CONFIG_FLUSH_FAILED')
+            throw new Error('PLATFORM_CONFIG_FLUSH_FAILED')
         }
     }, [performSave])
 
-    // 默认模型操作：选中即立刻显示已保存（与项目设置一致）
-    // capabilityFieldsToDefault：切换模型时自动将第一个 option 写入 capabilityDefaults（只填未配置字段）
+    // 默认模型操作
     const updateDefaultModel = useCallback((
         field: string,
         modelKey: string,
@@ -457,17 +402,16 @@ export function useProviders(): UseProvidersReturn {
                         void performSave({ defaultModels: next, capabilityDefaults: nextCap }, true)
                         return nextCap
                     }
-                    void performSave({ defaultModels: next }, true) // optimistic=true
+                    void performSave({ defaultModels: next }, true)
                     return prevCap
                 })
             } else {
-                void performSave({ defaultModels: next }, true) // optimistic=true
+                void performSave({ defaultModels: next }, true)
             }
             return next
         })
     }, [performSave])
 
-    /** Batch-update multiple default model fields to the same model key, saving only once */
     const batchUpdateDefaultModels = useCallback((
         fields: string[],
         modelKey: string,
@@ -523,7 +467,7 @@ export function useProviders(): UseProvidersReturn {
                 next[modelKey] = current
             }
             latestCapabilityDefaultsRef.current = next
-            void performSave({ capabilityDefaults: next }, true) // optimistic=true
+            void performSave({ capabilityDefaults: next }, true)
             return next
         })
     }, [performSave])
@@ -594,7 +538,6 @@ export function useProviders(): UseProvidersReturn {
 
             const providerKey = getProviderKey(provider.id)
             if (providerKey === 'gemini-compatible') {
-                // 保存后直接 refetch：后端注入带完整 capabilities 的 Google 预设模型（disabled）
                 void performSave(undefined, true).then(() => void fetchConfig())
             } else {
                 void performSave(undefined, true)
@@ -631,7 +574,7 @@ export function useProviders(): UseProvidersReturn {
                     return updates
                 })
                 latestModelsRef.current = nextModels
-                void performSave(undefined, true) // 删除提供商：立刻保存
+                void performSave(undefined, true)
                 return nextModels
             })
         }
@@ -671,7 +614,7 @@ export function useProviders(): UseProvidersReturn {
                     : m
             )
             latestModelsRef.current = next
-            void performSave(undefined, true) // 开关操作：立刻保存
+            void performSave(undefined, true)
             return next
         })
     }, [performSave])
@@ -756,13 +699,12 @@ export function useProviders(): UseProvidersReturn {
                     return nextDefaults
                 })
                 latestModelsRef.current = nextModels
-                void performSave(undefined, true) // 删除模型：立刻保存
+                void performSave(undefined, true)
                 return nextModels
             })
         }
     }, [t, performSave])
 
-    // 过滤器
     const getModelsByType = useCallback((type: CustomModel['type']) => {
         return models.filter(m => m.type === type)
     }, [models])

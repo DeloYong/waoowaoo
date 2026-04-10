@@ -1,8 +1,11 @@
 'use client'
 
 import { ApiConfigTabContainer } from '@/app/[locale]/profile/components/api-config-tab/ApiConfigTabContainer'
+import { usePlatformProviders } from './hooks'
 
 export default function PlatformKeysPage() {
+  const platformConfig = usePlatformProviders()
+
   return (
     <div className="h-full">
       <div className="mb-6">
@@ -15,7 +18,7 @@ export default function PlatformKeysPage() {
       </div>
 
       <div className="h-[calc(100vh-220px)] overflow-hidden rounded-xl border border-[var(--glass-stroke-soft)] bg-[var(--glass-bg-surface)]">
-        <ApiConfigTabContainer />
+        <ApiConfigTabContainer {...platformConfig} />
       </div>
     </div>
   )

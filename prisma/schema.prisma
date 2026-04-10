@@ -411,6 +411,44 @@ model SystemConfig {
   @@map("system_configs")
 }
 
+// 平台级 API 配置（所有用户共享的默认配置）
+model PlatformConfig {
+  id                  String   @id @default(uuid())
+  configKey           String   @unique @default("api_config") // 固定为 api_config
+  analysisModel       String? // 平台默认分析模型
+  characterModel      String? // 平台默认角色图片模型
+  locationModel       String? // 平台默认场景图片模型
+  storyboardModel     String? // 平台默认分镜图片模型
+  editModel           String? // 平台默认修图模型
+  videoModel          String? // 平台默认视频模型
+  audioModel          String? // 平台默认语音模型
+  lipSyncModel        String? // 平台默认口型同步模型
+  voiceDesignModel    String? // 平台默认音色设计模型
+  analysisConcurrency Int? // 平台默认分析流程并发上限
+  imageConcurrency    Int? // 平台默认图像流程并发上限
+  videoConcurrency    Int? // 平台默认视频流程并发上限
+  capabilityDefaults  String?  @db.Text // 平台默认能力配置 (JSON)
+
+  // 平台默认 API Key（加密存储）
+  llmBaseUrl  String? @default("https://openrouter.ai/api/v1")
+  llmApiKey   String? @db.Text
+  falApiKey   String? @db.Text
+  googleAiKey String? @db.Text
+  arkApiKey   String? @db.Text
+  qwenApiKey  String? @db.Text
+
+  // 平台默认模型池 + 价格（JSON）
+  customModels String? @db.Text
+
+  // 平台默认 OpenAI 兼容提供商列表（JSON，包含加密的 API Key）
+  customProviders String? @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@map("platform_config")
+}
+
 // ==================== 订阅套餐 ====================
 model SubscriptionPlan {
   id              String   @id // starter / basic / pro / flagship / enterprise
