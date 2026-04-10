@@ -169,13 +169,25 @@ export const GET = apiHandler(async () => {
   const { session } = authResult
   const userId = session.user.id
 
-  const pref = await prisma.userPreference.findUnique({
-    where: { userId },
-    select: { customModels: true, customProviders: true },
-  })
+  const [pref, platformConfig] = await Promise.all([
+    prisma.userPreference.findUnique({
+      where: { userId },
+      select: { customModels: true, customProviders: true },
+    }),
+    prisma.platformConfig.findUnique({
+      where: { configKey: 'api_config' },
+      select: { customModels: true, customProviders: true },
+    }),
+  ])
 
-  const modelsRaw: StoredModel[] = parseStoredModels(pref?.customModels)
-  const providers: StoredProvider[] = parseStoredProviders(pref?.customProviders)
+  const userModelsRaw: StoredModel[] = parseStoredModels(pref?.customModels)
+  const userProvidersRaw: StoredProvider[] = parseStoredProviders(pref?.customProviders)
+
+  const platformModelsRaw: StoredModel[] = parseStoredModels(platformConfig?.customModels)
+  const platformProvidersRaw: StoredProvider[] = parseStoredProviders(platformConfig?.customProviders)
+
+  const modelsRaw: StoredModel[] = [...platformModelsRaw, ...userModelsRaw]
+  const providers: StoredProvider[] = [...platformProvidersRaw, ...userProvidersRaw]
 
   const providerNameMap = new Map<string, string>()
   const providerIdsWithApiKey = new Set<string>()
