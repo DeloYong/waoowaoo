@@ -90,11 +90,13 @@ function toCapabilityFieldLabel(field: string): string {
   return field.replace(/([A-Z])/g, ' $1').replace(/^./, (char) => char.toUpperCase())
 }
 
-export function ApiConfigTabContainer(externalConfig?: UseProvidersReturn) {
+export function ApiConfigTabContainer(externalConfig?: Partial<UseProvidersReturn>) {
   const locale = useLocale()
   const internalConfig = useProviders()
   
-  // 如果传入了外部配置,使用外部配置;否则使用内部hook
+  // 合并外部配置和内部hook配置,外部配置优先
+  const config = { ...internalConfig, ...externalConfig }
+  
   const {
     providers,
     models,
@@ -118,7 +120,7 @@ export function ApiConfigTabContainer(externalConfig?: UseProvidersReturn) {
     batchUpdateDefaultModels,
     updateWorkflowConcurrency,
     updateCapabilityDefault,
-  } = externalConfig || internalConfig
+  } = config
 
   const t = useTranslations('apiConfig')
   const tc = useTranslations('common')
