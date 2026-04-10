@@ -21,7 +21,7 @@ interface UseWorkspaceStageRuntimeParams {
     label: string
     provider?: string
     providerName?: string
-    capabilities?: Record<string, unknown>
+    capabilities?: ModelCapabilities
     videoPricingTiers?: VideoPricingTier[]
   }>
   handleUpdateEpisode: (key: string, value: unknown) => Promise<void>

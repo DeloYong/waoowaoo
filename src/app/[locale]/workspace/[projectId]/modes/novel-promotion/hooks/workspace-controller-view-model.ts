@@ -3,7 +3,7 @@
 import type { WorkspaceStageRuntimeValue } from '../WorkspaceStageRuntimeContext'
 import type { TaskPresentationState } from '@/lib/task/presentation'
 import type { BatchVideoGenerationParams, VideoGenerationOptions } from '../components/video'
-import type { CapabilitySelections } from '@/lib/model-config-contract'
+import type { CapabilitySelections, ModelCapabilities } from '@/lib/model-config-contract'
 import type { VideoPricingTier } from '@/lib/model-pricing/video-tier'
 import type {
   useScriptToStoryboardRunStream,
@@ -47,7 +47,7 @@ interface BuildWorkspaceControllerViewModelParams {
     userVideoModels: Array<{
       value: string
       label: string
-      capabilities?: Record<string, unknown>
+      capabilities?: ModelCapabilities
       videoPricingTiers?: VideoPricingTier[]
     }>
     userModelsLoaded: boolean

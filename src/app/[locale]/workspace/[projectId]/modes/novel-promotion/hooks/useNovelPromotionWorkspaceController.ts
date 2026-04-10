@@ -16,6 +16,7 @@ import { useWorkspaceModalEscape } from './useWorkspaceModalEscape'
 import { useWorkspaceStageRuntime } from './useWorkspaceStageRuntime'
 import { useWorkspaceConfigActions } from './useWorkspaceConfigActions'
 import { useWorkspaceAutoRun } from './useWorkspaceAutoRun'
+import { useWorkspaceUserModels } from './useWorkspaceUserModels'
 import { buildWorkspaceControllerViewModel } from './workspace-controller-view-model'
 import type { NovelPromotionWorkspaceProps } from '../types'
 import { useRouter } from '@/i18n/navigation'
@@ -56,6 +57,8 @@ export function useNovelPromotionWorkspaceController({
       project?.novelPromotionData?.characters?.length,
     )
   }, [project])
+
+  const userModels = useWorkspaceUserModels()
 
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
   const [isWorldContextModalOpen, setIsWorldContextModalOpen] = useState(false)
@@ -157,6 +160,7 @@ export function useNovelPromotionWorkspaceController({
     videoRatio: projectSnapshot.videoRatio,
     artStyle: projectSnapshot.artStyle,
     capabilityOverrides: projectSnapshot.capabilityOverrides,
+    userVideoModels: userModels.userVideoModels,
     handleUpdateEpisode: configActions.handleUpdateEpisode,
     handleUpdateConfig: configActions.handleUpdateConfig,
     runWithRebuildConfirm: rebuildState.runWithRebuildConfirm,
@@ -186,8 +190,8 @@ export function useNovelPromotionWorkspaceController({
     setTriggerGlobalAnalyzeOnOpen: assetLibrary.setTriggerGlobalAnalyzeOnOpen,
     openAssetLibrary: assetLibrary.openAssetLibrary,
     closeAssetLibrary: assetLibrary.closeAssetLibrary,
-    userVideoModels: [],
-    userModelsLoaded: true,
+    userVideoModels: userModels.userVideoModels,
+    userModelsLoaded: userModels.userModelsLoaded,
   }
 
   const stageNavState = {
