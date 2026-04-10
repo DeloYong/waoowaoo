@@ -4,7 +4,9 @@ import { logAuthAction } from '@/lib/logging/semantic'
 import { apiHandler, ApiError } from '@/lib/api-errors'
 import { prisma } from '@/lib/prisma'
 import { checkRateLimit, getClientIp, AUTH_REGISTER_LIMIT } from '@/lib/rate-limit'
-import { generateUniqueInviteCode, processInviteOnRegistration } from '@/lib/invite'
+import { generateUniqueInviteCode } from '@/lib/invite'
+import { getInviteConfig } from '@/lib/platform-config'
+import { grantCredits } from '@/lib/credit-billing/service'
 
 export const POST = apiHandler(async (request: NextRequest) => {
   // 🛡️ IP 限流
@@ -51,8 +53,8 @@ export const POST = apiHandler(async (request: NextRequest) => {
   // 哈希密码
   const hashedPassword = await bcrypt.hash(password, 12)
 
-  // 创建用户（事务）
-  const user = await prisma.$transaction(async (tx) => {
+  // 创建用户（事务）- 只包含原子操作
+  const result = await prisma.$transaction(async (tx) => {
     // 生成邀请码
     const inviteCode = await generateUniqueInviteCode()
 
@@ -87,13 +89,81 @@ export const POST = apiHandler(async (request: NextRequest) => {
       }
     })
 
-    // 处理邀请奖励
+    // 处理邀请记录（仅创建记录，积分发放在事务外）
+    let inviteData: { inviterId: string | null; welcomeCredits: number; referralCredits: number } | null = null
     if (inviter) {
-      await processInviteOnRegistration(tx, newUser, inviter.id, inviteCodeFromQuery!)
+      const config = await getInviteConfig()
+      const now = new Date()
+      const rebateEndsAt = new Date(now)
+      rebateEndsAt.setFullYear(rebateEndsAt.getFullYear() + 1)
+
+      // 检查当天邀请上限
+      const todayStart = new Date(now)
+      todayStart.setHours(0, 0, 0, 0)
+      const todayCount = await tx.inviteRebateLog.count({
+        where: {
+          inviterId: inviter.id,
+          triggerType: 'activation',
+          createdAt: { gte: todayStart },
+        },
+      })
+
+      const shouldAwardInviter = todayCount < config.dailyReferralCap
+
+      await tx.inviteRecord.create({
+        data: {
+          inviterId: inviter.id,
+          inviteeId: newUser.id,
+          inviteCode: inviteCodeFromQuery!,
+          rebateEndsAt,
+          welcomeCredits: config.welcomeCredits,
+          referralCredits: shouldAwardInviter ? config.referralCredits : 0,
+        },
+      })
+
+      inviteData = {
+        inviterId: inviter.id,
+        welcomeCredits: config.welcomeCredits,
+        referralCredits: shouldAwardInviter ? config.referralCredits : 0,
+      }
     }
 
-    return newUser
+    return { user: newUser, inviteData }
   })
+
+  // 在事务外发放积分，避免事务超时
+  if (result.inviteData) {
+    const { inviterId, welcomeCredits, referralCredits } = result.inviteData
+    const welcomeTxId = `invite_${result.user.id}_welcome`
+    const referralTxId = `invite_${result.user.id}_referral`
+
+    if (welcomeCredits > 0) {
+      await grantCredits(result.user.id, welcomeCredits, 'invite_welcome_gift', {
+        reason: '新用户注册欢迎礼',
+        isPermanent: false,
+        idempotencyKey: welcomeTxId,
+      })
+    }
+
+    if (referralCredits > 0 && inviterId) {
+      await grantCredits(inviterId, referralCredits, 'invite_referral_reward', {
+        reason: '邀请新人奖励',
+        isPermanent: true,
+        idempotencyKey: referralTxId,
+      })
+    }
+
+    // 更新邀请记录的交易 ID
+    await prisma.inviteRecord.updateMany({
+      where: { inviteeId: result.user.id },
+      data: {
+        welcomeTxId: welcomeCredits > 0 ? welcomeTxId : null,
+        referralTxId: referralCredits > 0 ? referralTxId : null,
+      },
+    })
+  }
+
+  const user = result.user
 
   logAuthAction('REGISTER', name, { userId: user.id, success: true })
 

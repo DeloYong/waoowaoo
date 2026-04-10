@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import { useSession, signOut } from 'next-auth/react'
 import { useTranslations } from 'next-intl'
+import { useParams } from 'next/navigation'
 import Navbar from '@/components/Navbar'
 import { AppIcon } from '@/components/ui/icons'
 import { useRouter } from '@/i18n/navigation'
@@ -29,6 +30,8 @@ interface SubscriptionInfo {
 export default function ProfilePage() {
   const { data: session, status } = useSession()
   const router = useRouter()
+  const params = useParams()
+  const locale = params?.locale as string || 'zh'
   const t = useTranslations('profile')
   const tc = useTranslations('common')
 
@@ -144,7 +147,7 @@ export default function ProfilePage() {
               {/* 退出登录 */}
               <button
                 onClick={() => {
-                  signOut({ callbackUrl: '/' })
+                  signOut({ callbackUrl: `/${locale}` })
                 }}
                 className="glass-btn-base glass-btn-tone-danger mt-auto flex items-center gap-2 px-4 py-3 text-sm rounded-xl transition-all cursor-pointer"
               >
