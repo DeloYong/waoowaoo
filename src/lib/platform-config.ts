@@ -366,3 +366,108 @@ export async function getAllConfigsForAdmin(): Promise<
 
   return results
 }
+
+/**
+ * 平台配置回退数据（供 api-config.ts 的 readUserConfig 使用）
+ * 返回已解密的 providers 和 models
+ */
+export interface PlatformConfigFallback {
+  providers: Array<{
+    id: string
+    name: string
+    baseUrl?: string
+    apiKey?: string // 明文，已解密
+    apiMode?: string
+    gatewayRoute?: string
+  }>
+  models: Array<{
+    modelId: string
+    modelKey: string
+    name: string
+    type: string
+    provider: string
+    llmProtocol?: string
+    price: number
+  }>
+  defaultModels: {
+    analysisModel?: string
+    characterModel?: string
+    locationModel?: string
+    storyboardModel?: string
+    editModel?: string
+    videoModel?: string
+    audioModel?: string
+    lipSyncModel?: string
+    voiceDesignModel?: string
+  }
+}
+
+/**
+ * 读取平台配置用于运行时回退
+ * 自动解密 API Key，只返回 enabled=true 的模型
+ */
+export async function getPlatformConfigForFallback(): Promise<PlatformConfigFallback> {
+  const platformConfig = await prisma.platformConfig.findUnique({
+    where: { configKey: 'api_config' },
+  })
+
+  if (!platformConfig) {
+    return { providers: [], models: [], defaultModels: {} }
+  }
+
+  // 解密 providers
+  const rawProviders = platformConfig.customProviders
+    ? (JSON.parse(platformConfig.customProviders) as Array<Record<string, unknown>>)
+    : []
+  const providers = rawProviders
+    .map((p) => {
+      let apiKey = typeof p.apiKey === 'string' ? p.apiKey : undefined
+      if (apiKey) {
+        try {
+          apiKey = decryptApiKey(apiKey)
+        } catch {
+          // 已经是明文，保持不变
+        }
+      }
+      return {
+        id: String(p.id ?? ''),
+        name: String(p.name ?? ''),
+        baseUrl: typeof p.baseUrl === 'string' ? p.baseUrl : undefined,
+        apiKey,
+        apiMode: typeof p.apiMode === 'string' ? p.apiMode : undefined,
+        gatewayRoute: typeof p.gatewayRoute === 'string' ? p.gatewayRoute : undefined,
+      }
+    })
+    .filter((p) => p.id && p.name)
+
+  // 解析 models（只返回 enabled 的）
+  const rawModels = platformConfig.customModels
+    ? (JSON.parse(platformConfig.customModels) as Array<Record<string, unknown>>)
+    : []
+  const models = rawModels
+    .filter((m) => m.enabled !== false)
+    .map((m) => ({
+      modelId: String(m.modelId ?? ''),
+      modelKey: String(m.modelKey ?? ''),
+      name: String(m.name ?? m.modelId ?? ''),
+      type: String(m.type ?? 'llm'),
+      provider: String(m.provider ?? ''),
+      llmProtocol: typeof m.llmProtocol === 'string' ? m.llmProtocol : undefined,
+      price: typeof m.price === 'number' ? m.price : 0,
+    }))
+    .filter((m) => m.modelId && m.provider)
+
+  const defaultModels = {
+    analysisModel: platformConfig.analysisModel || undefined,
+    characterModel: platformConfig.characterModel || undefined,
+    locationModel: platformConfig.locationModel || undefined,
+    storyboardModel: platformConfig.storyboardModel || undefined,
+    editModel: platformConfig.editModel || undefined,
+    videoModel: platformConfig.videoModel || undefined,
+    audioModel: platformConfig.audioModel || undefined,
+    lipSyncModel: platformConfig.lipSyncModel || undefined,
+    voiceDesignModel: platformConfig.voiceDesignModel || undefined,
+  }
+
+  return { providers, models, defaultModels }
+}

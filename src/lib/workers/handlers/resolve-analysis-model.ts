@@ -31,7 +31,15 @@ export async function resolveAnalysisModel(input: ResolveAnalysisModelInput): Pr
   const modelFromUserPreference = normalizeModelKey(userPreference?.analysisModel)
   if (modelFromUserPreference) return modelFromUserPreference
 
-  // Fallback to system default model configured by admin
+  // 4. 【核心修复】新版平台配置 PlatformConfig.analysisModel（管理员后台写这里）
+  const platformConfig = await prisma.platformConfig.findUnique({
+    where: { configKey: 'api_config' },
+    select: { analysisModel: true },
+  })
+  const modelFromPlatformConfig = normalizeModelKey(platformConfig?.analysisModel)
+  if (modelFromPlatformConfig) return modelFromPlatformConfig
+
+  // 5. 兼容旧版：SystemConfig.pipeline.model_assignments
   const systemModel = await getPipelineModelKey('analysis')
   if (systemModel) return systemModel
 

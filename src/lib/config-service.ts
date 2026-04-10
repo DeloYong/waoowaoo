@@ -165,13 +165,25 @@ export async function getProjectModelConfig(
   projectId: string,
   userId: string,
 ): Promise<ProjectModelConfig> {
-  const [projectData, userPref, pipelineAssignments] = await Promise.all([
+  const [projectData, userPref, pipelineAssignments, platformConfig] = await Promise.all([
     prisma.novelPromotionProject.findUnique({ where: { projectId } }),
     prisma.userPreference.findUnique({ where: { userId } }),
     getPipelineModelAssignments(),
+    prisma.platformConfig.findUnique({
+      where: { configKey: 'api_config' },
+      select: {
+        analysisModel: true,
+        characterModel: true,
+        locationModel: true,
+        storyboardModel: true,
+        editModel: true,
+        videoModel: true,
+        audioModel: true,
+      },
+    }),
   ])
 
-  // 系统默认模型作为最高优先级
+  // 旧版 SystemConfig pipeline 分配（最低优先级的系统默认）
   const systemAnalysisModel = composePipelineModelKey(pipelineAssignments, 'analysis')
   const systemCharacterModel = composePipelineModelKey(pipelineAssignments, 'character')
   const systemLocationModel = composePipelineModelKey(pipelineAssignments, 'location')
@@ -180,14 +192,23 @@ export async function getProjectModelConfig(
   const systemVideoModel = composePipelineModelKey(pipelineAssignments, 'video')
   const systemAudioModel = composePipelineModelKey(pipelineAssignments, 'audio')
 
+  // 新版 PlatformConfig 平台默认模型（优先于旧版 pipeline）
+  const platformAnalysisModel = extractModelKey(platformConfig?.analysisModel)
+  const platformCharacterModel = extractModelKey(platformConfig?.characterModel)
+  const platformLocationModel = extractModelKey(platformConfig?.locationModel)
+  const platformStoryboardModel = extractModelKey(platformConfig?.storyboardModel)
+  const platformEditModel = extractModelKey(platformConfig?.editModel)
+  const platformVideoModel = extractModelKey(platformConfig?.videoModel)
+  const platformAudioModel = extractModelKey(platformConfig?.audioModel)
+
   return {
-    analysisModel: systemAnalysisModel || extractModelKey(projectData?.analysisModel) || extractModelKey(userPref?.analysisModel) || null,
-    characterModel: systemCharacterModel || extractModelKey(projectData?.characterModel) || extractModelKey(userPref?.characterModel) || null,
-    locationModel: systemLocationModel || extractModelKey(projectData?.locationModel) || extractModelKey(userPref?.locationModel) || null,
-    storyboardModel: systemStoryboardModel || extractModelKey(projectData?.storyboardModel) || extractModelKey(userPref?.storyboardModel) || null,
-    editModel: systemEditModel || extractModelKey(projectData?.editModel) || extractModelKey(userPref?.editModel) || null,
-    videoModel: systemVideoModel || extractModelKey(projectData?.videoModel) || extractModelKey(userPref?.videoModel) || null,
-    audioModel: systemAudioModel || extractModelKey(projectData?.audioModel) || extractModelKey(userPref?.audioModel) || null,
+    analysisModel: platformAnalysisModel || systemAnalysisModel || extractModelKey(projectData?.analysisModel) || extractModelKey(userPref?.analysisModel) || null,
+    characterModel: platformCharacterModel || systemCharacterModel || extractModelKey(projectData?.characterModel) || extractModelKey(userPref?.characterModel) || null,
+    locationModel: platformLocationModel || systemLocationModel || extractModelKey(projectData?.locationModel) || extractModelKey(userPref?.locationModel) || null,
+    storyboardModel: platformStoryboardModel || systemStoryboardModel || extractModelKey(projectData?.storyboardModel) || extractModelKey(userPref?.storyboardModel) || null,
+    editModel: platformEditModel || systemEditModel || extractModelKey(projectData?.editModel) || extractModelKey(userPref?.editModel) || null,
+    videoModel: platformVideoModel || systemVideoModel || extractModelKey(projectData?.videoModel) || extractModelKey(userPref?.videoModel) || null,
+    audioModel: platformAudioModel || systemAudioModel || extractModelKey(projectData?.audioModel) || extractModelKey(userPref?.audioModel) || null,
     videoRatio: projectData?.videoRatio || '16:9',
     artStyle: projectData?.artStyle || null,
     capabilityDefaults: parseCapabilitySelections(userPref?.capabilityDefaults),
@@ -199,12 +220,24 @@ export async function getProjectModelConfig(
  * 获取用户级模型配置（无项目时使用）
  */
 export async function getUserModelConfig(userId: string): Promise<UserModelConfig> {
-  const [userPref, pipelineAssignments] = await Promise.all([
+  const [userPref, pipelineAssignments, platformConfig] = await Promise.all([
     prisma.userPreference.findUnique({ where: { userId } }),
     getPipelineModelAssignments(),
+    prisma.platformConfig.findUnique({
+      where: { configKey: 'api_config' },
+      select: {
+        analysisModel: true,
+        characterModel: true,
+        locationModel: true,
+        storyboardModel: true,
+        editModel: true,
+        videoModel: true,
+        audioModel: true,
+      },
+    }),
   ])
 
-  // 系统默认模型作为最高优先级
+  // 旧版 SystemConfig pipeline 分配（最低优先级的系统默认）
   const systemAnalysisModel = composePipelineModelKey(pipelineAssignments, 'analysis')
   const systemCharacterModel = composePipelineModelKey(pipelineAssignments, 'character')
   const systemLocationModel = composePipelineModelKey(pipelineAssignments, 'location')
@@ -213,14 +246,23 @@ export async function getUserModelConfig(userId: string): Promise<UserModelConfi
   const systemVideoModel = composePipelineModelKey(pipelineAssignments, 'video')
   const systemAudioModel = composePipelineModelKey(pipelineAssignments, 'audio')
 
+  // 新版 PlatformConfig 平台默认模型（优先于旧版 pipeline）
+  const platformAnalysisModel = extractModelKey(platformConfig?.analysisModel)
+  const platformCharacterModel = extractModelKey(platformConfig?.characterModel)
+  const platformLocationModel = extractModelKey(platformConfig?.locationModel)
+  const platformStoryboardModel = extractModelKey(platformConfig?.storyboardModel)
+  const platformEditModel = extractModelKey(platformConfig?.editModel)
+  const platformVideoModel = extractModelKey(platformConfig?.videoModel)
+  const platformAudioModel = extractModelKey(platformConfig?.audioModel)
+
   return {
-    analysisModel: systemAnalysisModel || extractModelKey(userPref?.analysisModel) || null,
-    characterModel: systemCharacterModel || extractModelKey(userPref?.characterModel) || null,
-    locationModel: systemLocationModel || extractModelKey(userPref?.locationModel) || null,
-    storyboardModel: systemStoryboardModel || extractModelKey(userPref?.storyboardModel) || null,
-    editModel: systemEditModel || extractModelKey(userPref?.editModel) || null,
-    videoModel: systemVideoModel || extractModelKey(userPref?.videoModel) || null,
-    audioModel: systemAudioModel || extractModelKey(userPref?.audioModel) || null,
+    analysisModel: platformAnalysisModel || systemAnalysisModel || extractModelKey(userPref?.analysisModel) || null,
+    characterModel: platformCharacterModel || systemCharacterModel || extractModelKey(userPref?.characterModel) || null,
+    locationModel: platformLocationModel || systemLocationModel || extractModelKey(userPref?.locationModel) || null,
+    storyboardModel: platformStoryboardModel || systemStoryboardModel || extractModelKey(userPref?.storyboardModel) || null,
+    editModel: platformEditModel || systemEditModel || extractModelKey(userPref?.editModel) || null,
+    videoModel: platformVideoModel || systemVideoModel || extractModelKey(userPref?.videoModel) || null,
+    audioModel: platformAudioModel || systemAudioModel || extractModelKey(userPref?.audioModel) || null,
     capabilityDefaults: parseCapabilitySelections(userPref?.capabilityDefaults),
   }
 }

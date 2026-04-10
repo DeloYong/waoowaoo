@@ -297,10 +297,57 @@ async function readUserConfig(userId: string): Promise<{ models: CustomModel[]; 
     },
   })
 
-  return {
-    models: parseCustomModels(pref?.customModels),
-    providers: parseCustomProviders(pref?.customProviders),
+  const userModels = parseCustomModels(pref?.customModels)
+  const userProviders = parseCustomProviders(pref?.customProviders)
+
+  // 如果用户有完整配置（至少一个带 apiKey 的 Provider），直接使用用户配置
+  const hasUserApiKey = userProviders.some((p) => !!p.apiKey)
+  if (hasUserApiKey) {
+    return { models: userModels, providers: userProviders }
   }
+
+  // 回退：从平台配置读取（动态 import 避免循环依赖）
+  const { getPlatformConfigForFallback } = await import('./platform-config')
+  const platformFallback = await getPlatformConfigForFallback()
+
+  if (platformFallback.providers.length === 0) {
+    // 平台也没有配置，返回用户现有配置（可能为空）
+    return { models: userModels, providers: userProviders }
+  }
+
+  // 合并：用户级优先，平台级补充
+  const mergedProviders: CustomProvider[] = [
+    ...userProviders,
+    // 平台 providers 中用户没有的
+    ...platformFallback.providers
+      .filter((p) => !userProviders.some((up) => up.id === p.id))
+      .map((p) => ({
+        id: p.id,
+        name: p.name,
+        baseUrl: p.baseUrl,
+        apiKey: p.apiKey, // 明文（已在 getPlatformConfigForFallback 中解密）
+        apiMode: p.apiMode as CustomProvider['apiMode'] | undefined,
+        gatewayRoute: p.gatewayRoute as CustomProvider['gatewayRoute'] | undefined,
+      })),
+  ]
+
+  const mergedModels: CustomModel[] = [
+    ...userModels,
+    // 平台 models 中用户没有的
+    ...platformFallback.models
+      .filter((pm) => !userModels.some((um) => um.modelKey === pm.modelKey))
+      .map((pm) => ({
+        modelId: pm.modelId,
+        modelKey: pm.modelKey,
+        name: pm.name,
+        type: pm.type as CustomModel['type'],
+        provider: pm.provider,
+        llmProtocol: pm.llmProtocol as CustomModel['llmProtocol'] | undefined,
+        price: pm.price,
+      })),
+  ]
+
+  return { models: mergedModels, providers: mergedProviders }
 }
 
 function findModelByKey(models: CustomModel[], modelKey: string): CustomModel | null {
@@ -423,10 +470,19 @@ export async function getProviderConfig(userId: string, providerId: string): Pro
     throw new Error(`PROVIDER_API_KEY_MISSING: ${provider.id}`)
   }
 
+  // 兼容两种情况：用户配置（加密存储）& 平台回退配置（明文）
+  let decryptedApiKey: string
+  try {
+    decryptedApiKey = decryptApiKey(provider.apiKey)
+  } catch {
+    // 平台回退配置的 apiKey 已是明文，无需解密
+    decryptedApiKey = provider.apiKey
+  }
+
   return {
     id: provider.id,
     name: provider.name,
-    apiKey: decryptApiKey(provider.apiKey),
+    apiKey: decryptedApiKey,
     baseUrl: normalizeProviderBaseUrl(provider.id, provider.baseUrl),
     apiMode: provider.apiMode,
     gatewayRoute: provider.gatewayRoute,
