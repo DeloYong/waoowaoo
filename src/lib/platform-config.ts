@@ -20,6 +20,7 @@ export type ConfigKey =
   | 'platform.ark_api_key'
   | 'platform.google_ai_key'
   | 'platform.qwen_api_key'
+  | 'platform.model_config'
   | 'billing.credit_pricing'
   | 'billing.model_tier_map'
   | 'invite.welcome_credits'

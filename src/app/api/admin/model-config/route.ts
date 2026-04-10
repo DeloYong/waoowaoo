@@ -8,8 +8,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAdmin } from '@/lib/admin/auth'
 import { getConfigRaw, setConfigRaw } from '@/lib/platform-config'
-import { getPlatformApiKey } from '@/lib/platform-config'
-import { testProviderConnection } from '@/lib/user-api/provider-test'
 
 export type AdminModelConfig = {
   providers: Array<{
@@ -36,7 +34,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 获取保存的配置
-    const configRaw = await getConfigRaw(CONFIG_KEY as any)
+    const configRaw = await getConfigRaw(CONFIG_KEY)
     const config: AdminModelConfig = configRaw
       ? JSON.parse(configRaw)
       : { providers: [] }
@@ -65,7 +63,7 @@ export async function POST(request: NextRequest) {
     }
 
     await setConfigRaw(
-      CONFIG_KEY as any,
+      CONFIG_KEY,
       JSON.stringify(config),
       { updatedBy: adminId }
     )

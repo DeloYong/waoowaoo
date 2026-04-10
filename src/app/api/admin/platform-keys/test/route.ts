@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 映射到测试函数支持的apiType
-    const apiTypeMap: Record<string, string> = {
+    const apiTypeMap: Record<string, 'openrouter' | 'fal' | 'ark' | 'google' | 'bailian'> = {
       'llm': 'openrouter',
       'fal': 'fal',
       'ark': 'ark',
@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
 
     // 调用测试函数
     const result = await testProviderConnection({
-      apiType: apiType as any,
+      apiType,
       apiKey,
     })
 
