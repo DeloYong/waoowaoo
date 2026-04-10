@@ -11,29 +11,22 @@ function normalizeModelKey(value: unknown): string | null {
   return composeModelKey(parsed.provider, parsed.modelId)
 }
 
+import { getProjectModelConfig } from '@/lib/config-service'
+
 export async function resolveAnalysisModel(projectId: string, userId: string): Promise<{
   id: string
   analysisModel: string
 }> {
-  const [novelData, userPreference] = await Promise.all([
-    prisma.novelPromotionProject.findUnique({
-      where: { projectId },
-      select: { id: true, analysisModel: true },
-    }),
-    prisma.userPreference.findUnique({
-      where: { userId },
-      select: { analysisModel: true },
-    }),
-  ])
+  const novelData = await prisma.novelPromotionProject.findUnique({
+    where: { projectId },
+    select: { id: true },
+  })
   if (!novelData) throw new Error('Novel promotion project not found')
 
-  // 优先读项目配置，fallback 到用户全局设置
-  const analysisModel =
-    normalizeModelKey(novelData.analysisModel) ??
-    normalizeModelKey(userPreference?.analysisModel)
-  if (!analysisModel) throw new Error('请先在项目设置中配置分析模型')
+  const config = await getProjectModelConfig(projectId, userId)
+  if (!config.analysisModel) throw new Error('请先在项目设置中配置分析模型')
 
-  return { id: novelData.id, analysisModel }
+  return { id: novelData.id, analysisModel: config.analysisModel }
 }
 
 export async function requireProjectLocation(locationId: string, projectInternalId: string) {
