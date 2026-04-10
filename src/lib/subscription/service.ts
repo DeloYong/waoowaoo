@@ -3,7 +3,6 @@
  */
 import { prisma } from '@/lib/prisma'
 import { grantCredits } from '@/lib/credit-billing/service'
-import { Prisma } from '@prisma/client'
 
 /**
  * 为用户分配套餐
