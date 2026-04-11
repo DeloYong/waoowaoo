@@ -7,7 +7,7 @@
 
 import { ImageGenerator, VideoGenerator, AudioGenerator } from './base'
 import { FalBananaGenerator } from './fal'
-import { ArkSeedreamGenerator, ArkSeedanceVideoGenerator } from './ark'
+import { ArkSeedreamGenerator, ArkSeedanceVideoGenerator, ArkTTSGenerator } from './ark'
 import { FalVideoGenerator } from './fal'
 import {
     GoogleGeminiImageGenerator,
@@ -111,6 +111,8 @@ export function createAudioGenerator(provider: string): AudioGenerator {
             return new BailianAudioGenerator()
         case 'siliconflow':
             return new SiliconFlowAudioGenerator()
+        case 'ark':
+            return new ArkTTSGenerator()
         default:
             throw new Error(`Unknown audio generator provider: ${provider}`)
     }

@@ -19,13 +19,17 @@ import { logInfo as _ulogInfo, logError as _ulogError } from '@/lib/logging/core
 import {
     BaseImageGenerator,
     BaseVideoGenerator,
+    BaseAudioGenerator,
     ImageGenerateParams,
     VideoGenerateParams,
+    AudioGenerateParams,
     GenerateResult
 } from './base'
 import { getProviderConfig } from '@/lib/api-config'
-import { arkImageGeneration, arkCreateVideoTask } from '@/lib/ark-api'
+import { arkImageGeneration, arkCreateVideoTask, arkTTSGeneration, arkListVoices, arkCreateVoice, arkDeleteVoice } from '@/lib/ark-api'
+import type { ArkVoice, ArkCreateVoiceRequest } from '@/lib/ark-api'
 import { normalizeToBase64ForGeneration } from '@/lib/media/outbound-image'
+import { createStorageProvider } from '@/lib/storage/factory'
 
 interface ArkImageOptions {
     aspectRatio?: string
@@ -555,6 +559,213 @@ export class ArkVideoGenerator extends BaseVideoGenerator {
         }
     }
 }
+
+// ============================================================
+// ARK 语音生成器（豆包TTS）
+// ============================================================
+
+export class ArkTTSGenerator extends BaseAudioGenerator {
+    protected async doGenerate(params: AudioGenerateParams): Promise<GenerateResult> {
+        const { userId, text, voice = 'zh_female_shuangyueqingxin', rate = 1.0, options = {} } = params
+
+        const { apiKey } = await getProviderConfig(userId, 'ark')
+        const { responseFormat = 'mp3' } = options as { responseFormat?: 'mp3' | 'wav' | 'pcm' }
+
+        const allowedOptionKeys = new Set([
+            'provider',
+            'modelId',
+            'modelKey',
+            'responseFormat',
+        ])
+        for (const [key, value] of Object.entries(options)) {
+            if (value === undefined) continue
+            if (!allowedOptionKeys.has(key)) {
+                throw new Error(`ARK_TTS_OPTION_UNSUPPORTED: ${key}`)
+            }
+        }
+
+        // 校验语速范围
+        if (rate < 0.5 || rate > 2.0) {
+            throw new Error(`ARK_TTS_OPTION_VALUE_UNSUPPORTED: rate必须在0.5-2.0之间，当前为${rate}`)
+        }
+
+        _ulogInfo(`[ARK TTS] 模型: doubao-tts-v1, 音色: ${voice}, 语速: ${rate}, 文本长度: ${text.length}`)
+
+        // 调用ARK TTS API
+        const ttsResponse = await arkTTSGeneration({
+            model: 'doubao-tts-v1',
+            input: text,
+            voice,
+            response_format: responseFormat,
+            speed: rate
+        }, {
+            apiKey,
+            logPrefix: '[ARK TTS]'
+        })
+
+        // 将音频上传到对象存储
+        const arrayBuffer = await ttsResponse.audio.arrayBuffer()
+        const buffer = Buffer.from(arrayBuffer)
+
+        const storage = createStorageProvider()
+        const fileKey = storage.generateUniqueKey({
+            prefix: 'audio/tts',
+            ext: responseFormat
+        })
+
+        await storage.uploadObject({
+            key: fileKey,
+            body: buffer,
+            contentType: ttsResponse.contentType
+        })
+
+        // 获取可访问的URL
+        const audioUrl = storage.toFetchableUrl(fileKey)
+
+        _ulogInfo(`[ARK TTS] 音频上传成功, URL: ${audioUrl}`)
+
+        return {
+            success: true,
+            audioUrl,
+        }
+    }
+}
+
+// ============================================================
+// 长文本分段合成优化
+// ============================================================
+
+/**
+ * 长文本分段工具函数
+ * 按照标点符号将长文本拆分为适合TTS合成的段落，每段最大长度500字符
+ */
+function splitLongText(text: string, maxLength: number = 500): string[] {
+    if (text.length <= maxLength) return [text]
+
+    // 按中文标点、英文标点分割
+    const separators = /([。！？；;.!?\n])/g
+    const parts = text.split(separators)
+    const result: string[] = []
+    let current = ''
+
+    for (let i = 0; i < parts.length; i += 2) {
+        const part = parts[i]
+        const separator = parts[i + 1] || ''
+        const fullPart = part + separator
+
+        if (current.length + fullPart.length <= maxLength) {
+            current += fullPart
+        } else {
+            if (current) result.push(current.trim())
+            current = fullPart
+        }
+    }
+
+    if (current) result.push(current.trim())
+    return result.filter(p => p.length > 0)
+}
+
+/**
+ * 长文本批量合成工具函数
+ * 自动将长文本分段合成，返回合并后的音频URL
+ */
+export async function arkBatchTTSGenerate(params: {
+    userId: string
+    text: string
+    voice?: string
+    rate?: number
+    responseFormat?: 'mp3' | 'wav' | 'pcm'
+    onProgress?: (current: number, total: number) => void
+}): Promise<GenerateResult> {
+    const { userId, text, voice = 'zh_female_shuangyueqingxin', rate = 1.0, responseFormat = 'mp3', onProgress } = params
+
+    const generator = new ArkTTSGenerator()
+    const segments = splitLongText(text)
+    const total = segments.length
+
+    _ulogInfo(`[ARK TTS Batch] 长文本分段合成, 总长度: ${text.length}, 分段数: ${total}`)
+
+    const audioBuffers: Buffer[] = []
+    const storage = createStorageProvider()
+
+    for (let i = 0; i < segments.length; i++) {
+        const segment = segments[i]
+        _ulogInfo(`[ARK TTS Batch] 合成第 ${i + 1}/${total} 段, 长度: ${segment.length}`)
+
+        if (onProgress) {
+            onProgress(i + 1, total)
+        }
+
+        const result = await generator.generate({
+            userId,
+            text: segment,
+            voice,
+            rate,
+            options: { responseFormat }
+        })
+
+        if (!result.success || !result.audioUrl) {
+            return {
+                success: false,
+                error: result.error || `第${i + 1}段合成失败`
+            }
+        }
+
+        // 从存储中读取音频buffer
+        const key = storage.extractStorageKey(result.audioUrl)
+        if (key) {
+            const buffer = await storage.getObjectBuffer(key)
+            audioBuffers.push(buffer)
+            // 删除分段的临时文件
+            await storage.deleteObject(key)
+        }
+    }
+
+    // 合并所有音频buffer
+    const mergedBuffer = Buffer.concat(audioBuffers)
+    const fileKey = storage.generateUniqueKey({
+        prefix: 'audio/tts/batch',
+        ext: responseFormat
+    })
+
+    await storage.uploadObject({
+        key: fileKey,
+        body: mergedBuffer,
+        contentType: `audio/${responseFormat}`
+    })
+
+    const audioUrl = storage.toFetchableUrl(fileKey)
+    _ulogInfo(`[ARK TTS Batch] 长文本合成完成, 总时长约: ${Math.round(text.length / 5)}秒, URL: ${audioUrl}`)
+
+    return {
+        success: true,
+        audioUrl
+    }
+}
+
+// ============================================================
+// 音色管理API导出
+// ============================================================
+
+export const arkVoiceApi = {
+    /**
+     * 查询音色列表
+     */
+    list: arkListVoices,
+
+    /**
+     * 创建自定义音色
+     */
+    create: arkCreateVoice,
+
+    /**
+     * 删除自定义音色
+     */
+    delete: arkDeleteVoice
+}
+
+// 导出类型
+export type { ArkVoice, ArkCreateVoiceRequest }
 
 // ============================================================
 // 向后兼容别名

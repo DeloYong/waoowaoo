@@ -122,6 +122,69 @@ interface ArkVideoTaskResponse {
     }
 }
 
+// ============================================================
+// TTS 相关接口
+// ============================================================
+
+interface ArkTTSRequest {
+    model: 'doubao-tts-v1'        // 豆包TTS模型ID
+    input: string                 // 要合成的文本内容
+    voice: string                 // 音色名称
+    response_format?: 'mp3' | 'wav' | 'pcm' // 音频格式，默认mp3
+    speed?: number                // 语速，范围0.5-2.0，默认1.0
+}
+
+interface ArkTTSResponse {
+    audio: Blob                   // 音频二进制数据
+    contentType: string           // 音频Content-Type
+}
+
+// ============================================================
+// 音色设计相关接口
+// ============================================================
+
+interface ArkVoice {
+    voice_id: string              // 音色ID
+    voice_name: string            // 音色名称
+    voice_type: 'system' | 'custom' // 音色类型：系统或自定义
+    gender: 'male' | 'female' | 'neutral' // 性别
+    language: string              // 语言，如zh、en等
+    description?: string          // 音色描述
+    create_time?: number          // 创建时间戳
+    status: 'available' | 'training' | 'failed' // 状态
+    preview_audio_url?: string    // 预览音频URL
+}
+
+interface ArkListVoicesResponse {
+    voices: ArkVoice[]            // 音色列表
+    total: number                 // 总数
+}
+
+interface ArkCreateVoiceRequest {
+    voice_name: string            // 音色名称
+    audio_files: Array<{          // 训练音频文件列表
+        url: string               // 音频文件URL
+        text?: string             // 音频对应的文本（可选，提高克隆质量）
+    }>
+    gender?: 'male' | 'female' | 'neutral' // 性别（可选）
+    language?: string             // 语言（可选，默认zh）
+    description?: string          // 描述（可选）
+}
+
+interface ArkCreateVoiceResponse {
+    voice_id: string              // 创建的音色ID
+    status: 'training'            // 训练状态
+    estimated_time: number        // 预计训练时间（秒）
+}
+
+interface ArkDeleteVoiceRequest {
+    voice_id: string              // 要删除的音色ID
+}
+
+interface ArkDeleteVoiceResponse {
+    success: boolean              // 是否删除成功
+}
+
 function isRecord(value: unknown): value is Record<string, unknown> {
     return !!value && typeof value === 'object' && !Array.isArray(value)
 }
@@ -592,6 +655,228 @@ export async function fetchWithTimeoutAndRetry(
     return fetchWithRetry(url, fetchOptions, maxRetries, timeoutMs, logPrefix)
 }
 
+/**
+ * 火山引擎TTS生成 API
+ */
+export async function arkTTSGeneration(
+    request: ArkTTSRequest,
+    options: {
+        apiKey: string  // 必须传入 API Key
+        timeoutMs?: number
+        maxRetries?: number
+        logPrefix?: string
+    }
+): Promise<ArkTTSResponse> {
+    if (!options.apiKey) {
+        throw new Error('请配置火山引擎 API Key')
+    }
+
+    const {
+        apiKey,
+        timeoutMs = DEFAULT_TIMEOUT_MS,
+        maxRetries = MAX_RETRIES,
+        logPrefix = '[Ark TTS]'
+    } = options
+
+    const url = `${ARK_BASE_URL}/audio/speech`
+
+    _ulogInfo(`${logPrefix} 开始语音生成请求, 模型: ${request.model}, 音色: ${request.voice}, 语速: ${request.speed || 1.0}`)
+    _ulogInfo(`${logPrefix} 文本长度: ${request.input?.length || 0}`)
+
+    const response = await fetchWithRetry(
+        url,
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${apiKey}`
+            },
+            body: JSON.stringify(request)
+        },
+        maxRetries,
+        timeoutMs,
+        logPrefix
+    )
+
+    if (!response.ok) {
+        const errorText = await response.text()
+        throw new Error(`${logPrefix} 语音生成失败: ${response.status} - ${errorText}`)
+    }
+
+    const audioBlob = await response.blob()
+    const contentType = response.headers.get('content-type') || 'audio/mpeg'
+
+    _ulogInfo(`${logPrefix} 语音生成成功, 音频大小: ${audioBlob.size} bytes`)
+
+    return {
+        audio: audioBlob,
+        contentType
+    }
+}
+
+/**
+ * 查询音色列表 API
+ */
+export async function arkListVoices(
+    options: {
+        apiKey: string  // 必须传入 API Key
+        type?: 'system' | 'custom' | 'all' // 筛选音色类型
+        language?: string // 筛选语言
+        timeoutMs?: number
+        maxRetries?: number
+        logPrefix?: string
+    }
+): Promise<ArkListVoicesResponse> {
+    if (!options.apiKey) {
+        throw new Error('请配置火山引擎 API Key')
+    }
+
+    const {
+        apiKey,
+        type = 'all',
+        language,
+        timeoutMs = DEFAULT_TIMEOUT_MS,
+        maxRetries = MAX_RETRIES,
+        logPrefix = '[Ark Voice]'
+    } = options
+
+    let url = `${ARK_BASE_URL}/audio/voices?type=${type}`
+    if (language) {
+        url += `&language=${language}`
+    }
+
+    _ulogInfo(`${logPrefix} 查询音色列表, type: ${type}, language: ${language || 'all'}`)
+
+    const response = await fetchWithRetry(
+        url,
+        {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${apiKey}`
+            }
+        },
+        maxRetries,
+        timeoutMs,
+        logPrefix
+    )
+
+    if (!response.ok) {
+        const errorText = await response.text()
+        throw new Error(`${logPrefix} 查询音色列表失败: ${response.status} - ${errorText}`)
+    }
+
+    const data = await response.json()
+    _ulogInfo(`${logPrefix} 查询音色列表成功, 总数: ${data.total || data.voices?.length || 0}`)
+
+    return data
+}
+
+/**
+ * 创建自定义音色 API
+ */
+export async function arkCreateVoice(
+    request: ArkCreateVoiceRequest,
+    options: {
+        apiKey: string  // 必须传入 API Key
+        timeoutMs?: number
+        maxRetries?: number
+        logPrefix?: string
+    }
+): Promise<ArkCreateVoiceResponse> {
+    if (!options.apiKey) {
+        throw new Error('请配置火山引擎 API Key')
+    }
+
+    const {
+        apiKey,
+        timeoutMs = DEFAULT_TIMEOUT_MS,
+        maxRetries = MAX_RETRIES,
+        logPrefix = '[Ark Voice]'
+    } = options
+
+    const url = `${ARK_BASE_URL}/audio/voices`
+
+    _ulogInfo(`${logPrefix} 创建自定义音色, 名称: ${request.voice_name}, 音频数量: ${request.audio_files.length}`)
+
+    const response = await fetchWithRetry(
+        url,
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${apiKey}`
+            },
+            body: JSON.stringify(request)
+        },
+        maxRetries,
+        timeoutMs,
+        logPrefix
+    )
+
+    if (!response.ok) {
+        const errorText = await response.text()
+        throw new Error(`${logPrefix} 创建音色失败: ${response.status} - ${errorText}`)
+    }
+
+    const data = await response.json()
+    _ulogInfo(`${logPrefix} 创建音色成功, voiceId: ${data.voice_id}, 预计训练时间: ${data.estimated_time}秒`)
+
+    return data
+}
+
+/**
+ * 删除自定义音色 API
+ */
+export async function arkDeleteVoice(
+    request: ArkDeleteVoiceRequest,
+    options: {
+        apiKey: string  // 必须传入 API Key
+        timeoutMs?: number
+        maxRetries?: number
+        logPrefix?: string
+    }
+): Promise<ArkDeleteVoiceResponse> {
+    if (!options.apiKey) {
+        throw new Error('请配置火山引擎 API Key')
+    }
+
+    const {
+        apiKey,
+        timeoutMs = DEFAULT_TIMEOUT_MS,
+        maxRetries = MAX_RETRIES,
+        logPrefix = '[Ark Voice]'
+    } = options
+
+    const url = `${ARK_BASE_URL}/audio/voices/${request.voice_id}`
+
+    _ulogInfo(`${logPrefix} 删除自定义音色, voiceId: ${request.voice_id}`)
+
+    const response = await fetchWithRetry(
+        url,
+        {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${apiKey}`
+            }
+        },
+        maxRetries,
+        timeoutMs,
+        logPrefix
+    )
+
+    if (!response.ok) {
+        const errorText = await response.text()
+        throw new Error(`${logPrefix} 删除音色失败: ${response.status} - ${errorText}`)
+    }
+
+    _ulogInfo(`${logPrefix} 删除音色成功, voiceId: ${request.voice_id}`)
+
+    return { success: true }
+}
+
 // 导出常量，供其他模块参考
 export const ARK_API_TIMEOUT_MS = DEFAULT_TIMEOUT_MS
 export const ARK_API_MAX_RETRIES = MAX_RETRIES
+
+// 导出音色相关类型，供其他模块使用
+export type { ArkVoice, ArkListVoicesResponse, ArkCreateVoiceRequest, ArkCreateVoiceResponse }
