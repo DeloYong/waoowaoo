@@ -6,6 +6,7 @@ import { normalizeToBase64ForGeneration } from '@/lib/media/outbound-image'
 import { extractStorageKey, getSignedUrl, toFetchableUrl, uploadObject } from '@/lib/storage'
 import { resolveStorageKeyFromMediaValue } from '@/lib/media/service'
 import { synthesizeWithBailianTTS } from '@/lib/providers/bailian'
+import { ArkTTSGenerator } from '@/lib/generators/ark'
 import {
   parseSpeakerVoiceMap,
   resolveVoiceBindingForProvider,
@@ -260,6 +261,33 @@ export async function generateVoiceLine(params: {
     generated = {
       audioData,
       audioDuration: result.audioDuration ?? getWavDurationFromBuffer(audioData),
+    }
+  } else if (providerKey === 'ark') {
+    if (!voiceBinding || voiceBinding.provider !== 'ark') {
+      const hasUploadedReference =
+        !!character?.customVoiceUrl ||
+        (speakerVoice?.provider === 'ark' && !speakerVoice.voiceId)
+      if (hasUploadedReference) {
+        throw new Error('无音色ID，Doubao TTS 必须使用 AI 设计音色')
+      }
+      throw new Error('请先为该发言人绑定火山引擎音色')
+    }
+    const ttsGenerator = new ArkTTSGenerator()
+    const result = await ttsGenerator.generate({
+      userId: params.userId,
+      text,
+      voice: voiceBinding.voiceId,
+      rate: 1.0,
+    })
+    if (!result.success || !result.audioUrl) {
+      throw new Error(`DOUBAO_TTS_FAILED: ${result.error || '生成失败'}`)
+    }
+
+    // 下载音频数据
+    const audioData = await downloadAudioData(result.audioUrl)
+    generated = {
+      audioData,
+      audioDuration: getWavDurationFromBuffer(audioData),
     }
   } else {
     throw new Error(`AUDIO_PROVIDER_UNSUPPORTED: ${audioSelection.provider}`)

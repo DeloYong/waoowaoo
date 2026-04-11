@@ -1,6 +1,6 @@
 type VoiceSource = 'character' | 'speaker'
 
-export type SupportedAudioProviderKey = 'fal' | 'bailian'
+export type SupportedAudioProviderKey = 'fal' | 'bailian' | 'ark'
 
 export interface CharacterVoiceFields {
   customVoiceUrl?: string | null
@@ -28,7 +28,14 @@ export type BailianSpeakerVoiceEntry = {
   previewAudioUrl?: string
 }
 
-export type SpeakerVoiceEntry = FalSpeakerVoiceEntry | BailianSpeakerVoiceEntry
+export type ArkSpeakerVoiceEntry = {
+  provider: 'ark'
+  voiceType: string
+  voiceId: string
+  previewAudioUrl?: string
+}
+
+export type SpeakerVoiceEntry = FalSpeakerVoiceEntry | BailianSpeakerVoiceEntry | ArkSpeakerVoiceEntry
 export type SpeakerVoiceMap = Record<string, SpeakerVoiceEntry>
 
 export type FalVoiceGenerationBinding = {
@@ -43,7 +50,13 @@ export type BailianVoiceGenerationBinding = {
   voiceId: string
 }
 
-export type VoiceGenerationBinding = FalVoiceGenerationBinding | BailianVoiceGenerationBinding
+export type ArkVoiceGenerationBinding = {
+  provider: 'ark'
+  source: VoiceSource
+  voiceId: string
+}
+
+export type VoiceGenerationBinding = FalVoiceGenerationBinding | BailianVoiceGenerationBinding | ArkVoiceGenerationBinding
 
 export type SpeakerVoicePatch =
   | {
@@ -53,6 +66,12 @@ export type SpeakerVoicePatch =
   }
   | {
     provider: 'bailian'
+    voiceType?: string
+    voiceId: string
+    previewAudioUrl?: string
+  }
+  | {
+    provider: 'ark'
     voiceType?: string
     voiceId: string
     previewAudioUrl?: string
@@ -94,6 +113,19 @@ function normalizeRawSpeakerVoiceEntry(raw: unknown, speaker: string): SpeakerVo
     const preview = previewAudioUrl || audioUrl
     return {
       provider: 'bailian',
+      voiceType,
+      voiceId,
+      ...(preview ? { previewAudioUrl: preview } : {}),
+    }
+  }
+
+  if (provider === 'ark') {
+    if (!voiceId) {
+      throw new Error(`SPEAKER_VOICE_ENTRY_INVALID_ARK_VOICE_ID: ${speaker}`)
+    }
+    const preview = previewAudioUrl || audioUrl
+    return {
+      provider: 'ark',
       voiceType,
       voiceId,
       ...(preview ? { previewAudioUrl: preview } : {}),
@@ -151,7 +183,7 @@ export function parseSpeakerVoiceMap(raw: string | null | undefined): SpeakerVoi
 }
 
 function normalizeProviderKey(providerKey: string): SupportedAudioProviderKey | null {
-  if (providerKey === 'fal' || providerKey === 'bailian') {
+  if (providerKey === 'fal' || providerKey === 'bailian' || providerKey === 'ark') {
     return providerKey
   }
   return null
@@ -175,6 +207,15 @@ function toBailianBinding(source: VoiceSource, voiceId: string | null): BailianV
   }
 }
 
+function toArkBinding(source: VoiceSource, voiceId: string | null): ArkVoiceGenerationBinding | null {
+  if (!voiceId) return null
+  return {
+    provider: 'ark',
+    source,
+    voiceId,
+  }
+}
+
 export function resolveVoiceBindingForProvider(params: {
   providerKey: string
   character?: CharacterVoiceFields | null
@@ -193,10 +234,18 @@ export function resolveVoiceBindingForProvider(params: {
     return toFalBinding('speaker', readTrimmedString(params.speakerVoice.audioUrl))
   }
 
-  const fromCharacter = toBailianBinding('character', characterVoiceId)
+  if (providerKey === 'bailian') {
+    const fromCharacter = toBailianBinding('character', characterVoiceId)
+    if (fromCharacter) return fromCharacter
+    if (params.speakerVoice?.provider !== 'bailian') return null
+    return toBailianBinding('speaker', readTrimmedString(params.speakerVoice.voiceId))
+  }
+
+  // providerKey === 'ark'
+  const fromCharacter = toArkBinding('character', characterVoiceId)
   if (fromCharacter) return fromCharacter
-  if (params.speakerVoice?.provider !== 'bailian') return null
-  return toBailianBinding('speaker', readTrimmedString(params.speakerVoice.voiceId))
+  if (params.speakerVoice?.provider !== 'ark') return null
+  return toArkBinding('speaker', readTrimmedString(params.speakerVoice.voiceId))
 }
 
 export function hasVoiceBindingForProvider(params: {
@@ -219,6 +268,7 @@ export function hasAnyVoiceBinding(params: {
   if (params.speakerVoice.provider === 'fal') {
     return !!readTrimmedString(params.speakerVoice.audioUrl)
   }
+  // bailian 和 ark 都用voiceId
   return !!readTrimmedString(params.speakerVoice.voiceId)
 }
 
@@ -227,5 +277,6 @@ export function getSpeakerVoicePreviewUrl(speakerVoice?: SpeakerVoiceEntry | nul
   if (speakerVoice.provider === 'fal') {
     return readTrimmedString(speakerVoice.audioUrl)
   }
+  // bailian 和 ark 都用previewAudioUrl
   return readTrimmedString(speakerVoice.previewAudioUrl)
 }

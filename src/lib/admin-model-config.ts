@@ -65,6 +65,9 @@ export const ADMIN_PRESET_MODELS: PresetModel[] = [
   { modelId: 'doubao-seedance-2-0-260128', name: 'Seedance 2.0', type: 'video', provider: 'ark' },
   { modelId: 'doubao-seedance-2-0-fast-260128', name: 'Seedance 2.0 Fast', type: 'video', provider: 'ark' },
   { modelId: 'doubao-seedance-1-5-pro-251215', name: 'Seedance 1.5 Pro', type: 'video', provider: 'ark' },
+  // Ark - Audio
+  { modelId: 'doubao-tts-v1', name: 'Doubao TTS', type: 'audio', provider: 'ark' },
+  { modelId: 'doubao-voice-design-v1', name: 'Doubao Voice Design', type: 'voicedesign', provider: 'ark' },
   // FAL - Image
   { modelId: 'banana', name: 'Banana Pro', type: 'image', provider: 'fal' },
   { modelId: 'banana-2', name: 'Banana 2', type: 'image', provider: 'fal' },
