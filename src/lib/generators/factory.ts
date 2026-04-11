@@ -7,7 +7,10 @@
 
 import { ImageGenerator, VideoGenerator, AudioGenerator } from './base'
 import { FalBananaGenerator } from './fal'
-import { ArkSeedreamGenerator, ArkSeedanceVideoGenerator, ArkTTSGenerator } from './ark'
+import { ArkSeedreamGenerator, ArkSeedanceVideoGenerator } from './ark'
+import { ArkTTSGenerator } from './ark-speech-tts'
+import { ArkVoiceDesignGenerator } from './ark-speech-voice-design'
+import { ArkLipSyncGenerator } from './ark-speech-lipsync'
 import { FalVideoGenerator } from './fal'
 import {
     GoogleGeminiImageGenerator,
@@ -116,4 +119,30 @@ export function createAudioGenerator(provider: string): AudioGenerator {
         default:
             throw new Error(`Unknown audio generator provider: ${provider}`)
     }
+}
+
+export function createVoiceDesignGenerator(provider: string) {
+  const providerKey = getProviderKey(provider).toLowerCase()
+  switch (providerKey) {
+    case 'ark':
+      return new ArkVoiceDesignGenerator()
+    case 'bailian':
+      // 原有阿里云实现
+      return new (require('./bailian-voice-design').BailianVoiceDesignGenerator)()
+    default:
+      throw new Error(`Unsupported voice design provider: ${provider}`)
+  }
+}
+
+export function createLipSyncGenerator(provider: string) {
+  const providerKey = getProviderKey(provider).toLowerCase()
+  switch (providerKey) {
+    case 'ark':
+      return new ArkLipSyncGenerator()
+    case 'bailian':
+      // 原有阿里云实现
+      return new (require('./bailian-lipsync').BailianLipSyncGenerator)()
+    default:
+      throw new Error(`Unsupported lipsync provider: ${provider}`)
+  }
 }

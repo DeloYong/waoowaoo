@@ -8,6 +8,45 @@ import {
 } from '@/lib/platform-config'
 import type { MediaType, ModelTier, CreditQuote } from './types'
 
+/**
+ * 模型档次映射
+ */
+export const modelTierMap: Record<string, string> = {
+  // 火山语音
+  'doubao-tts-v1': 'audio-basic',
+  'doubao-tts-premium-v1': 'audio-premium',
+  'doubao-tts-long-v1': 'audio-basic',
+  'doubao-voice-clone-v1': 'voice-design',
+  'doubao-lipsync-v1': 'lipsync',
+}
+
+/**
+ * 积分定价配置
+ */
+type PricingTier =
+  | { perThousandChars: number; unit: 'chars' }
+  | { perCall: number; unit: 'call' }
+  | { perMinute: number; unit: 'minute' }
+
+export const creditPricing: Record<string, PricingTier> = {
+  'audio-basic': {
+    perThousandChars: 1, // 每千字1积分
+    unit: 'chars'
+  },
+  'audio-premium': {
+    perThousandChars: 3, // 每千字3积分
+    unit: 'chars'
+  },
+  'voice-design': {
+    perCall: 100, // 每次100积分
+    unit: 'call'
+  },
+  'lipsync': {
+    perMinute: 50, // 每分钟50积分
+    unit: 'minute'
+  },
+}
+
 let cachedPricing: CreditPricingType | null = null
 let pricingCacheTime = 0
 const PRICING_CACHE_TTL = 60 * 1000 // 60 秒
