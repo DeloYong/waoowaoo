@@ -85,7 +85,8 @@ export function getVisibleModelTypesForProvider(
   groupedModels: Partial<Record<ProviderCardModelType, CustomModel[]>>,
 ): ProviderCardModelType[] {
   const shouldShowAllTabs = shouldShowDefaultTabs(providerId)
-  if (shouldShowAllTabs) {
+  const providerKey = getProviderKey(providerId)
+  if (shouldShowAllTabs || providerKey === 'ark') {
     return getAddableModelTypesForProvider(providerId)
   }
 
