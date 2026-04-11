@@ -223,7 +223,7 @@ describe('billing/service', () => {
         model: 'index-tts2',
         quantity: 5,
         unit: 'second',
-        maxFrozenCost: calcVoice(5),
+        totalCredits: calcVoice(5),
         action: 'voice_line_generate',
         metadata: { foo: 'bar' },
         ...overrides,
@@ -241,7 +241,7 @@ describe('billing/service', () => {
         model: 'doubao-seedance-2-0-260128',
         quantity: 1,
         unit: 'video',
-        maxFrozenCost: calcVideo('doubao-seedance-2-0-260128', '720p', 1, {
+        totalCredits: calcVideo('doubao-seedance-2-0-260128', '720p', 1, {
           resolution: '720p',
           duration: 5,
           aspectRatio: '16:9',
@@ -298,7 +298,7 @@ describe('billing/service', () => {
         model: 'gpt-5.2',
         quantity: 2400,
         unit: 'token',
-        maxFrozenCost: 0,
+        totalCredits: 0,
         action: 'story_to_script_run',
       })
 
@@ -311,7 +311,7 @@ describe('billing/service', () => {
 
       const shadowInfo = shadow as Extract<TaskBillingInfo, { billable: true }>
       expect(shadowInfo.status).toBe('skipped')
-      expect(shadowInfo.maxFrozenCost).toBe(0)
+      expect(shadowInfo.totalCredits).toBe(0)
     })
 
     it('prepareTaskBilling throws InsufficientBalanceError when ENFORCE freeze fails', async () => {
@@ -338,7 +338,7 @@ describe('billing/service', () => {
       })
       const shadowInfo = shadowSettled as Extract<TaskBillingInfo, { billable: true }>
       expect(shadowInfo.status).toBe('settled')
-      expect(shadowInfo.chargedCost).toBe(0)
+      expect(shadowInfo.chargedCredits).toBe(0)
       expect(ledgerMock.recordShadowUsage).toHaveBeenCalled()
 
       const offSettled = await settleTaskBilling({
@@ -349,7 +349,7 @@ describe('billing/service', () => {
       })
       const offInfo = offSettled as Extract<TaskBillingInfo, { billable: true }>
       expect(offInfo.status).toBe('settled')
-      expect(offInfo.chargedCost).toBe(0)
+      expect(offInfo.chargedCredits).toBe(0)
     })
 
     it('settleTaskBilling does not fail OFF snapshot when text usage model pricing is unknown', async () => {
@@ -363,7 +363,7 @@ describe('billing/service', () => {
           model: 'gpt-5.2',
           quantity: 2400,
           unit: 'token',
-          maxFrozenCost: 0,
+          totalCredits: 0,
           action: 'story_to_script_run',
           modeSnapshot: 'OFF',
           status: 'quoted',
@@ -374,7 +374,7 @@ describe('billing/service', () => {
 
       const settledInfo = settled as Extract<TaskBillingInfo, { billable: true }>
       expect(settledInfo.status).toBe('settled')
-      expect(settledInfo.chargedCost).toBe(0)
+      expect(settledInfo.chargedCredits).toBe(0)
       expect(ledgerMock.recordShadowUsage).not.toHaveBeenCalled()
     })
 
@@ -389,7 +389,7 @@ describe('billing/service', () => {
           model: 'gpt-5.2',
           quantity: 2400,
           unit: 'token',
-          maxFrozenCost: 0,
+          totalCredits: 0,
           action: 'story_to_script_run',
           modeSnapshot: 'SHADOW',
           status: 'quoted',
@@ -400,7 +400,7 @@ describe('billing/service', () => {
 
       const settledInfo = settled as Extract<TaskBillingInfo, { billable: true }>
       expect(settledInfo.status).toBe('settled')
-      expect(settledInfo.chargedCost).toBe(0)
+      expect(settledInfo.chargedCredits).toBe(0)
       expect(ledgerMock.recordShadowUsage).not.toHaveBeenCalled()
     })
 
@@ -493,7 +493,7 @@ describe('billing/service', () => {
       })
       expect(ledgerMock.increasePendingFreezeAmount).toHaveBeenCalledTimes(1)
       expect(ledgerMock.confirmChargeWithRecord).toHaveBeenCalled()
-      expect((settled as Extract<TaskBillingInfo, { billable: true }>).chargedCost).toBeCloseTo(calcVoice(50), 8)
+      expect((settled as Extract<TaskBillingInfo, { billable: true }>).chargedCredits).toBeCloseTo(calcVoice(50), 8)
     })
 
     it('settleTaskBilling charges Seedance 2.0 videos from exact usage tokens', async () => {
@@ -512,7 +512,7 @@ describe('billing/service', () => {
       })
 
       expect(ledgerMock.increasePendingFreezeAmount).toHaveBeenCalledTimes(1)
-      expect((settled as Extract<TaskBillingInfo, { billable: true }>).chargedCost).toBeCloseTo(5.52, 8)
+      expect((settled as Extract<TaskBillingInfo, { billable: true }>).chargedCredits).toBeCloseTo(5.52, 8)
     })
 
     it('settleTaskBilling keeps quoted charge when text usage has no token counts', async () => {
@@ -525,7 +525,7 @@ describe('billing/service', () => {
         model: 'anthropic/claude-sonnet-4',
         quantity: 1000,
         unit: 'token',
-        maxFrozenCost: quoted,
+        totalCredits: quoted,
         action: 'analyze_novel',
         modeSnapshot: 'ENFORCE',
         status: 'frozen',
@@ -542,7 +542,7 @@ describe('billing/service', () => {
         textUsage: [{ model: 'openai/gpt-5', inputTokens: 0, outputTokens: 0 }],
       })
 
-      expect((settled as Extract<TaskBillingInfo, { billable: true }>).chargedCost).toBeCloseTo(quoted, 8)
+      expect((settled as Extract<TaskBillingInfo, { billable: true }>).chargedCredits).toBeCloseTo(quoted, 8)
       const recordParams = ledgerMock.confirmChargeWithRecord.mock.calls.at(-1)?.[1] as { model: string }
       expect(recordParams.model).toBe('openai/gpt-5')
     })

@@ -98,7 +98,7 @@ export type TaskBillingInfo =
     model: string
     quantity: number
     unit: 'token' | 'image' | 'video' | 'second' | 'call'
-    maxFrozenCost: number
+    totalCredits: number
     pricingVersion?: string
     action: string
     metadata?: Record<string, unknown>
@@ -106,7 +106,7 @@ export type TaskBillingInfo =
     freezeId?: string | null
     modeSnapshot?: BillingMode | null
     status?: 'skipped' | 'quoted' | 'frozen' | 'settled' | 'rolled_back' | 'failed'
-    chargedCost?: number
+    chargedCredits?: number
   }
 
 export type TaskJobData = {

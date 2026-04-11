@@ -24,7 +24,7 @@ describe('billing/task-policy', () => {
       if (!isBillableTaskType(taskType)) continue
       const info = expectBillableInfo(buildDefaultTaskBillingInfo(taskType, billingPayload))
       expect(info.taskType).toBe(taskType)
-      expect(info.maxFrozenCost).toBeGreaterThanOrEqual(0)
+      expect(info.totalCredits).toBeGreaterThanOrEqual(0)
     }
   })
 

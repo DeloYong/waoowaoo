@@ -66,7 +66,7 @@ describe('billing/service integration', () => {
     }))
 
     expect(settled.status).toBe('settled')
-    expect(settled.chargedCost).toBe(0)
+    expect(settled.chargedCredits).toBe(0)
 
     const balance = await prisma.userBalance.findUnique({ where: { userId: user.id } })
     expect(balance?.balance).toBeCloseTo(10, 8)
@@ -102,7 +102,7 @@ describe('billing/service integration', () => {
     }))
 
     expect(settled.status).toBe('settled')
-    expect(settled.chargedCost).toBeCloseTo(calcVoice(2), 8)
+    expect(settled.chargedCredits).toBeCloseTo(calcVoice(2), 8)
 
     const balance = await prisma.userBalance.findUnique({ where: { userId: user.id } })
     expect(balance?.totalSpent).toBeCloseTo(calcVoice(2), 8)

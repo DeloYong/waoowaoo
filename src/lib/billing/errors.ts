@@ -3,7 +3,7 @@ export class InsufficientBalanceError extends Error {
   public required: number
 
   constructor(required: number, available: number) {
-    super(`余额不足，需要 ¥${required.toFixed(4)}，当前可用 ¥${available.toFixed(4)}`)
+    super(`积分不足，需要 ${required}，当前可用 ${available}`)
     this.name = 'InsufficientBalanceError'
     this.required = required
     this.available = available

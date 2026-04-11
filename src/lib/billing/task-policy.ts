@@ -91,9 +91,9 @@ function buildTextTaskInfo(taskType: TaskType, payload: AnyPayload): TaskBilling
   if (!model) return null
 
   // calcText may throw if model has no built-in pricing (user custom pricing resolved later)
-  let maxFrozenCost = 0
+  let totalCredits = 0
   try {
-    maxFrozenCost = calcText(model, inputTokens, outputTokens)
+    totalCredits = calcText(model, inputTokens, outputTokens)
   } catch {
     // Custom-priced or uncatalogued model: actual cost resolved in prepareTaskBilling with user context
   }
@@ -106,7 +106,7 @@ function buildTextTaskInfo(taskType: TaskType, payload: AnyPayload): TaskBilling
     model,
     quantity: inputTokens + outputTokens,
     unit: 'token',
-    maxFrozenCost,
+    totalCredits,
     pricingVersion: BUILTIN_PRICING_VERSION,
     action: String(taskType),
     metadata: { inputTokens, outputTokens },
@@ -121,9 +121,9 @@ function buildImageTaskInfo(taskType: TaskType, payload: AnyPayload): TaskBillin
   const generationOptions = toRecord(payload?.generationOptions)
   const resolution = readString(generationOptions.resolution) || readString(payload?.resolution)
   const metadata = resolution ? { resolution } : undefined
-  let maxFrozenCost = 0
+  let totalCredits = 0
   try {
-    maxFrozenCost = calcImage(model, quantity, metadata)
+    totalCredits = calcImage(model, quantity, metadata)
   } catch (error) {
     if (error instanceof BillingOperationError && error.code === 'BILLING_UNKNOWN_MODEL') {
       // Uncatalogued model: allow task to proceed without billing estimate
@@ -139,7 +139,7 @@ function buildImageTaskInfo(taskType: TaskType, payload: AnyPayload): TaskBillin
     model,
     quantity,
     unit: 'image',
-    maxFrozenCost,
+    totalCredits,
     pricingVersion: BUILTIN_PRICING_VERSION,
     action: String(taskType),
     ...(metadata ? { metadata } : {}),
@@ -173,9 +173,9 @@ function buildVideoTaskInfo(taskType: TaskType, payload: AnyPayload): TaskBillin
     ...(typeof generateAudio === 'boolean' ? { generateAudio } : {}),
     containsVideoInput: false,
   }
-  let maxFrozenCost = 0
+  let totalCredits = 0
   try {
-    maxFrozenCost = calcVideo(model, resolution || '720p', quantity, metadata)
+    totalCredits = calcVideo(model, resolution || '720p', quantity, metadata)
   } catch (error) {
     if (error instanceof BillingOperationError && error.code === 'BILLING_UNKNOWN_MODEL') {
       // Uncatalogued model: allow task to proceed without billing estimate
@@ -191,7 +191,7 @@ function buildVideoTaskInfo(taskType: TaskType, payload: AnyPayload): TaskBillin
     model,
     quantity,
     unit: 'video',
-    maxFrozenCost,
+    totalCredits,
     pricingVersion: BUILTIN_PRICING_VERSION,
     action: String(taskType),
     metadata,
@@ -209,7 +209,7 @@ function buildVoiceTaskInfo(taskType: TaskType, payload: AnyPayload): TaskBillin
     model: 'index-tts2',
     quantity: maxSeconds,
     unit: 'second',
-    maxFrozenCost: calcVoice(maxSeconds),
+    totalCredits: calcVoice(maxSeconds),
     pricingVersion: BUILTIN_PRICING_VERSION,
     action: String(taskType),
     metadata: { maxSeconds },
@@ -226,7 +226,7 @@ function buildVoiceDesignTaskInfo(taskType: TaskType): TaskBillingInfo {
     model: 'bailian-voice-design',
     quantity: 1,
     unit: 'call',
-    maxFrozenCost: calcVoiceDesign(),
+    totalCredits: calcVoiceDesign(),
     pricingVersion: BUILTIN_PRICING_VERSION,
     action: String(taskType),
     status: 'quoted',
@@ -261,7 +261,7 @@ export function buildDefaultTaskBillingInfo(taskType: TaskType, payload: AnyPayl
         model: lipSyncModel,
         quantity: 1,
         unit: 'call',
-        maxFrozenCost: calcLipSync(lipSyncModel),
+        totalCredits: calcLipSync(lipSyncModel),
         pricingVersion: BUILTIN_PRICING_VERSION,
         action: String(taskType),
         status: 'quoted',

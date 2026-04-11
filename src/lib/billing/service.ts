@@ -14,15 +14,17 @@ import {
   calcVoiceDesign,
   type ModelCustomPricing,
 } from './cost'
-import {
-  confirmChargeWithRecord,
-  freezeBalance,
-  getBalance,
-  getFreezeByIdempotencyKey,
-  increasePendingFreezeAmount,
-  recordShadowUsage,
-  rollbackFreeze,
-} from './ledger'
+import { getFreezeByIdempotencyKey, recordShadowUsage } from './ledger'
+import { quoteCredits } from '../credit-billing/catalog'
+import { freezeCredits, confirmCreditDeduct, unfreezeCredits } from '../credit-billing/service'
+import type { MediaType } from '../credit-billing/types'
+
+function mapApiTypeToMediaType(apiType: ApiType): MediaType {
+  if (apiType === 'voice') return 'audio'
+  if (apiType === 'voice-design') return 'voiceDesign'
+  if (apiType === 'lip-sync') return 'lipSync'
+  return apiType
+}
 import type { ApiType, UsageUnit } from './cost'
 import { getBillingMode } from './mode'
 import { BillingOperationError, InsufficientBalanceError } from './errors'
@@ -215,31 +217,7 @@ function clampChargedCost(actualCost: number, freezeCost: number) {
   return normalizedActual
 }
 
-async function ensureFreezeCoverage(params: {
-  freezeId: string
-  userId: string
-  actualCost: number
-  quotedCost: number
-}): Promise<number> {
-  const normalizedQuoted = normalizeMoney(params.quotedCost)
-  const chargedCost = clampChargedCost(params.actualCost, normalizedQuoted)
-  if (chargedCost <= normalizedQuoted + MONEY_EPSILON) {
-    return chargedCost
-  }
 
-  const overage = normalizeMoney(chargedCost - normalizedQuoted)
-  if (overage <= MONEY_EPSILON) {
-    return chargedCost
-  }
-  const expanded = await increasePendingFreezeAmount(params.freezeId, overage)
-  if (expanded) {
-    return chargedCost
-  }
-
-  await rollbackFreeze(params.freezeId)
-  const balance = await getBalance(params.userId)
-  throw new InsufficientBalanceError(chargedCost, balance.balance)
-}
 
 function resolveActualForSync<T>(
   params: SyncBillingParams<T>,
@@ -348,7 +326,7 @@ function resolveTaskActual(
       quantity: info.quantity,
       unit: info.unit,
       metadata: info.metadata,
-      quotedCost: info.maxFrozenCost,
+      quotedCost: info.totalCredits,
     }),
     actualQuantity: info.quantity,
   }
@@ -389,44 +367,28 @@ async function withSyncBillingCore<T>(
     return await execute()
   }
 
-  const quotedCost = resolveCost({
-    apiType: params.apiType,
-    model: params.model,
-    quantity: params.quantity,
-    unit: params.unit,
-    metadata: params.metadata,
-    quotedCost: params.quotedCost,
-    maxCost: params.maxCost,
-    customPricing: params.customPricing,
-  })
+  let quote: { totalCredits: number }
+  try {
+    quote = await quoteCredits(
+      mapApiTypeToMediaType(params.apiType),
+      params.model,
+      params.quantity,
+      {
+        resolution: typeof params.metadata?.resolution === 'string' ? params.metadata.resolution : undefined,
+        duration: typeof params.metadata?.duration === 'number' ? params.metadata.duration : undefined,
+      }
+    )
+  } catch (error) {
+    throw error
+  }
+  const quotedCost = quote.totalCredits
 
   if (quotedCost <= 0) {
     return await execute()
   }
 
   if (mode === 'SHADOW') {
-    const { result, textUsage } = await executeWithUsage(params.apiType, execute)
-    const actual = resolveActualForSync(params, result, textUsage, quotedCost)
-    await recordShadowUsage(params.userId, {
-      projectId: params.projectId,
-      taskType: params.action || null,
-      action: params.action,
-      apiType: params.apiType,
-      model: params.model,
-      quantity: actual.actualQuantity,
-      unit: params.unit,
-      cost: actual.actualCost,
-      metadata: {
-        ...(recordParams.metadata || {}),
-        ...(params.metadata || {}),
-        ...(actual.metadata || {}),
-        mode: 'SHADOW',
-        quotedCost,
-        pricingVersion,
-        pricingSelections,
-      },
-    })
-    return result
+    return await execute()
   }
 
   const billingKey = buildSyncBillingKey(params, recordParams)
@@ -456,7 +418,7 @@ async function withSyncBillingCore<T>(
     }
   }
 
-  const freezeId = await freezeBalance(params.userId, quotedCost, {
+  const freezeId = await freezeCredits(params.userId, quotedCost, {
     source: 'sync',
     requestId,
     idempotencyKey: billingKey,
@@ -476,49 +438,17 @@ async function withSyncBillingCore<T>(
     },
   })
   if (!freezeId) {
-    const balance = await getBalance(params.userId)
-    throw new InsufficientBalanceError(quotedCost, balance.balance)
+    const { getCreditBalance } = await import('../credit-billing/service')
+    const balance = await getCreditBalance(params.userId)
+    throw new InsufficientBalanceError(quotedCost, balance.availableCredits)
   }
 
   try {
-    const { result, textUsage } = await executeWithUsage(params.apiType, execute)
-    const actual = resolveActualForSync(params, result, textUsage, quotedCost)
-    const recordModel = resolveRecordModel(params.model, actual.metadata)
-    const chargedCost = await ensureFreezeCoverage({
-      freezeId,
-      userId: params.userId,
-      actualCost: actual.actualCost,
-      quotedCost,
-    })
-    await confirmChargeWithRecord(
-      freezeId,
-      {
-        projectId: params.projectId,
-        action: params.action,
-        apiType: params.apiType,
-        model: recordModel.model,
-        quantity: actual.actualQuantity,
-        unit: params.unit,
-        metadata: {
-          ...(recordParams.metadata || {}),
-          ...(params.metadata || {}),
-          ...(actual.metadata || {}),
-          mode: 'ENFORCE',
-          quotedCost,
-          actualCost: actual.actualCost,
-          chargedCost,
-          pricingVersion,
-          pricingSelections,
-          billingKey,
-          requestId,
-          ...(recordModel.actualModels.length > 0 ? { actualModels: recordModel.actualModels } : {}),
-        },
-      },
-      { chargedAmount: chargedCost },
-    )
+    const { result } = await executeWithUsage(params.apiType, execute)
+    await confirmCreditDeduct(freezeId, quotedCost)
     return result
   } catch (error) {
-    await rollbackFreeze(freezeId)
+    await unfreezeCredits(freezeId)
     if (error instanceof BillingOperationError) {
       throw new BillingOperationError(error.code, error.message, {
         ...(error.details || {}),
@@ -815,25 +745,26 @@ export async function prepareTaskBilling(task: {
   }
 
   const customPricing = await loadUserCustomPricing(task.userId, info.model)
-  let quotedCost: number
+  let quote: { totalCredits: number }
   try {
-    quotedCost = resolveCost({
-      apiType: info.apiType,
-      model: info.model,
-      quantity: info.quantity,
-      unit: info.unit,
-      metadata: info.metadata,
-      quotedCost: info.maxFrozenCost,
-      customPricing,
-    })
+    quote = await quoteCredits(
+      mapApiTypeToMediaType(info.apiType),
+      info.model,
+      info.quantity,
+      {
+        resolution: typeof info.metadata?.resolution === 'string' ? info.metadata.resolution : undefined,
+        duration: typeof info.metadata?.duration === 'number' ? info.metadata.duration : undefined,
+      }
+    )
   } catch (error) {
     if (mode !== 'ENFORCE' && error instanceof BillingOperationError && error.code === 'BILLING_UNKNOWN_MODEL') {
       next.status = mode === 'SHADOW' ? 'quoted' : 'skipped'
-      next.maxFrozenCost = 0
+      next.totalCredits = 0
       return next
     }
     throw error
   }
+  const quotedCost = quote.totalCredits
 
   if (quotedCost <= 0) {
     next.status = 'skipped'
@@ -842,11 +773,11 @@ export async function prepareTaskBilling(task: {
 
   if (mode === 'SHADOW') {
     next.status = 'quoted'
-    next.maxFrozenCost = quotedCost
+    next.totalCredits = quotedCost
     return next
   }
 
-  const freezeId = await freezeBalance(task.userId, quotedCost, {
+  const freezeId = await freezeCredits(task.userId, quotedCost, {
     source: 'task',
     taskId: task.id,
     idempotencyKey: info.billingKey || task.id,
@@ -864,13 +795,14 @@ export async function prepareTaskBilling(task: {
     },
   })
   if (!freezeId) {
-    const balance = await getBalance(task.userId)
-    throw new InsufficientBalanceError(quotedCost, balance.balance)
+    const { getCreditBalance } = await import('../credit-billing/service')
+    const balance = await getCreditBalance(task.userId)
+    throw new InsufficientBalanceError(quotedCost, balance.availableCredits)
   }
 
   next.status = 'frozen'
   next.freezeId = freezeId
-  next.maxFrozenCost = quotedCost
+  next.totalCredits = quotedCost
   return next
 }
 
@@ -894,85 +826,59 @@ export async function settleTaskBilling(task: {
       ...info,
       modeSnapshot: mode,
       status: noChargeStatus,
-      chargedCost: 0,
+      chargedCredits: 0,
     } satisfies TaskBillingInfo
   }
 
-  const customPricing = await loadUserCustomPricing(task.userId, info.model)
-  let quotedCost: number
+  let quote: { totalCredits: number }
   try {
-    quotedCost = resolveCost({
-      apiType: info.apiType,
-      model: info.model,
-      quantity: info.quantity,
-      unit: info.unit,
-      metadata: info.metadata,
-      quotedCost: info.maxFrozenCost,
-      customPricing,
-    })
+    quote = await quoteCredits(
+      mapApiTypeToMediaType(info.apiType),
+      info.model,
+      info.quantity,
+      {
+        resolution: typeof info.metadata?.resolution === 'string' ? info.metadata.resolution : undefined,
+        duration: typeof info.metadata?.duration === 'number' ? info.metadata.duration : undefined,
+      }
+    )
   } catch (error) {
     if (mode === 'SHADOW' && error instanceof BillingOperationError && error.code === 'BILLING_UNKNOWN_MODEL') {
       return {
         ...info,
         modeSnapshot: mode,
         status: noChargeStatus,
-        chargedCost: 0,
+        chargedCredits: 0,
       } satisfies TaskBillingInfo
     }
     throw error
   }
+
+  const quotedCost = quote.totalCredits
 
   if (mode === 'SHADOW' && quotedCost <= 0) {
     return {
       ...info,
       modeSnapshot: mode,
       status: noChargeStatus,
-      chargedCost: 0,
+      chargedCredits: 0,
     } satisfies TaskBillingInfo
   }
 
-  let actual: ResolvedActual
-  try {
-    actual = resolveTaskActual(info, quotedCost, options)
-  } catch (error) {
-    if (mode === 'SHADOW' && error instanceof BillingOperationError && error.code === 'BILLING_UNKNOWN_MODEL') {
-      return {
-        ...info,
-        modeSnapshot: mode,
-        status: noChargeStatus,
-        chargedCost: 0,
-      } satisfies TaskBillingInfo
+  let actualQuantity = info.quantity
+  if (options?.result && typeof options.result === 'object') {
+    const payload = options.result as Record<string, unknown>
+    const aq = Number(payload.actualQuantity ?? payload.actualSeconds ?? payload.actualDurationSeconds ?? payload.actualCharacters ?? payload.actualVideoTokens)
+    if (Number.isFinite(aq) && aq >= 0) {
+      actualQuantity = aq
     }
-    throw error
   }
 
   if (mode === 'SHADOW') {
-    await recordShadowUsage(task.userId, {
-      projectId: task.projectId,
-      episodeId: typeof task.episodeId === 'string' ? task.episodeId : null,
-      taskType: info.taskType || null,
-      action: info.action,
-      apiType: info.apiType,
-      model: info.model,
-      quantity: actual.actualQuantity,
-      unit: info.unit,
-      cost: actual.actualCost,
-      metadata: {
-        ...(info.metadata || {}),
-        ...(actual.metadata || {}),
-        mode: 'SHADOW',
-        taskId: task.id,
-        taskType: info.taskType,
-        quotedCost,
-        pricingVersion: info.pricingVersion || BUILTIN_PRICING_VERSION,
-        pricingSelections: info.metadata || {},
-      },
-    })
     return {
       ...info,
       modeSnapshot: mode,
       status: info.status === 'skipped' ? 'skipped' : 'settled',
-      chargedCost: 0,
+      chargedCredits: 0,
     } satisfies TaskBillingInfo
   }
 
@@ -981,7 +887,7 @@ export async function settleTaskBilling(task: {
       ...info,
       modeSnapshot: mode,
       status: info.status === 'skipped' ? 'skipped' : 'settled',
-      chargedCost: 0,
+      chargedCredits: 0,
     } satisfies TaskBillingInfo
   }
 
@@ -992,41 +898,24 @@ export async function settleTaskBilling(task: {
     } satisfies TaskBillingInfo
   }
 
-  const chargedCost = await ensureFreezeCoverage({
-    freezeId: info.freezeId,
-    userId: task.userId,
-    actualCost: actual.actualCost,
-    quotedCost,
-  })
-  const recordModel = resolveRecordModel(info.model, actual.metadata)
+  let chargedCredits = quotedCost
+  if (actualQuantity !== info.quantity) {
+    try {
+      const actualQuote = await quoteCredits(
+        mapApiTypeToMediaType(info.apiType),
+        info.model,
+        actualQuantity,
+        {
+          resolution: typeof info.metadata?.resolution === 'string' ? info.metadata.resolution : undefined,
+          duration: typeof info.metadata?.duration === 'number' ? info.metadata.duration : undefined,
+        }
+      )
+      chargedCredits = actualQuote.totalCredits
+    } catch {}
+  }
+
   try {
-    await confirmChargeWithRecord(
-      info.freezeId,
-      {
-        projectId: task.projectId,
-        action: info.action,
-        apiType: info.apiType,
-        model: recordModel.model,
-        quantity: actual.actualQuantity,
-        unit: info.unit,
-        metadata: {
-          ...(info.metadata || {}),
-          ...(actual.metadata || {}),
-          billingKey: info.billingKey || task.id,
-          source: 'task',
-          taskType: info.taskType,
-          taskId: task.id,
-          mode: 'ENFORCE',
-          quotedCost,
-          actualCost: actual.actualCost,
-          chargedCost,
-          pricingVersion: info.pricingVersion || BUILTIN_PRICING_VERSION,
-          pricingSelections: info.metadata || {},
-          ...(recordModel.actualModels.length > 0 ? { actualModels: recordModel.actualModels } : {}),
-        },
-      },
-      { chargedAmount: chargedCost },
-    )
+    await confirmCreditDeduct(info.freezeId, chargedCredits)
   } catch (error) {
     const rolledBack = (await rollbackTaskBilling({
       id: task.id,
@@ -1051,7 +940,7 @@ export async function settleTaskBilling(task: {
   return {
     ...info,
     status: 'settled',
-    chargedCost,
+    chargedCredits,
   } satisfies TaskBillingInfo
 }
 
@@ -1065,7 +954,7 @@ export async function rollbackTaskBilling(task: {
   if (info.modeSnapshot !== 'ENFORCE') return info
 
   try {
-    await rollbackFreeze(info.freezeId)
+    await unfreezeCredits(info.freezeId)
     return {
       ...info,
       status: 'rolled_back',
