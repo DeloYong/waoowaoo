@@ -66,7 +66,6 @@ export const ADMIN_PRESET_MODELS: PresetModel[] = [
   { modelId: 'doubao-seedance-2-0-fast-260128', name: 'Seedance 2.0 Fast', type: 'video', provider: 'ark' },
   { modelId: 'doubao-seedance-1-5-pro-251215', name: 'Seedance 1.5 Pro', type: 'video', provider: 'ark' },
   // Ark - Audio
-  { modelId: 'doubao-tts-v1', name: 'Doubao TTS', type: 'audio', provider: 'ark' },
   { modelId: 'doubao-voice-design-v1', name: 'Doubao Voice Design', type: 'voicedesign', provider: 'ark' },
   // FAL - Image
   { modelId: 'banana', name: 'Banana Pro', type: 'image', provider: 'fal' },
@@ -96,6 +95,14 @@ export const ADMIN_PRESET_MODELS: PresetModel[] = [
   // Qwen - Video (Wan)
   { modelId: 'wan2.6-i2v-flash', name: 'Wan2.6 I2V Flash', type: 'video', provider: 'qwen' },
   { modelId: 'wan2.6-i2v', name: 'Wan2.6 I2V', type: 'video', provider: 'qwen' },
+  // 火山引擎-语音合成
+  { modelId: 'doubao-tts-v1', name: '豆包TTS标准版', type: 'audio', provider: 'ark' },
+  { modelId: 'doubao-tts-premium-v1', name: '豆包TTS精品版', type: 'audio', provider: 'ark' },
+  { modelId: 'doubao-tts-long-v1', name: '豆包长文本TTS', type: 'audio', provider: 'ark' },
+  // 火山引擎-音色设计
+  { modelId: 'doubao-voice-clone-v1', name: '豆包音色克隆', type: 'voicedesign', provider: 'ark' },
+  // 火山引擎-口型同步
+  { modelId: 'doubao-lipsync-v1', name: '豆包口型同步', type: 'lipsync', provider: 'ark' },
 ]
 
 // Provider到测试类型的映射
