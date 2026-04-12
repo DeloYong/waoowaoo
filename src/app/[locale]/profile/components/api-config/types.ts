@@ -162,11 +162,16 @@ export const PRESET_MODELS: PresetModel[] = [
     // 音频模型
     { modelId: 'fal-ai/index-tts-2/text-to-speech', name: 'IndexTTS 2', type: 'audio', provider: 'fal' },
     { modelId: 'qwen3-tts-vd-2026-01-26', name: 'Qwen3 TTS', type: 'audio', provider: 'bailian' },
-    { modelId: 'qwen-voice-design', name: 'Qwen Voice Design', type: 'audio', provider: 'bailian' },
+    { modelId: 'doubao-tts-v1', name: 'Doubao TTS', type: 'audio', provider: 'ark' },
+
+    // 音色设计模型
+    { modelId: 'qwen-voice-design', name: 'Qwen Voice Design', type: 'voicedesign', provider: 'bailian' },
+    { modelId: 'doubao-voice-design-v1', name: 'Doubao Voice Design', type: 'voicedesign', provider: 'ark' },
     // 口型同步模型
     { modelId: 'fal-ai/kling-video/lipsync/audio-to-video', name: 'Kling Lip Sync', type: 'lipsync', provider: 'fal' },
     { modelId: 'vidu-lipsync', name: 'Vidu Lip Sync', type: 'lipsync', provider: 'vidu' },
     { modelId: 'videoretalk', name: 'VideoRetalk Lip Sync', type: 'lipsync', provider: 'bailian' },
+    { modelId: 'doubao-lipsync-v1', name: 'Doubao Lip Sync', type: 'lipsync', provider: 'ark' },
 
     // MiniMax 视频模型
     { modelId: 'minimax-hailuo-2.3', name: 'Hailuo 2.3', type: 'video', provider: 'minimax' },

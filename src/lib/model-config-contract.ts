@@ -1,4 +1,4 @@
-export type UnifiedModelType = 'llm' | 'image' | 'video' | 'audio' | 'lipsync'
+export type UnifiedModelType = 'llm' | 'image' | 'video' | 'audio' | 'lipsync' | 'voicedesign'
 export type CapabilityValue = string | number | boolean
 export type CapabilityOptionValue = CapabilityValue
 export type CapabilitySelections = Record<string, Record<string, CapabilityValue>>
@@ -56,12 +56,18 @@ export interface LipSyncCapabilities {
   fieldI18n?: CapabilityFieldI18nMap
 }
 
+export interface VoiceDesignCapabilities {
+  modeOptions?: string[]
+  fieldI18n?: CapabilityFieldI18nMap
+}
+
 export interface ModelCapabilities {
   llm?: LLMCapabilities
   image?: ImageCapabilities
   video?: VideoCapabilities
   audio?: AudioCapabilities
   lipsync?: LipSyncCapabilities
+  voicedesign?: VoiceDesignCapabilities
 }
 
 export interface ParsedModelKey {
@@ -76,6 +82,7 @@ const CAPABILITY_NAMESPACES = new Set<keyof ModelCapabilities>([
   'video',
   'audio',
   'lipsync',
+  'voicedesign',
 ])
 
 const LLM_ALLOWED_FIELDS = new Set<keyof LLMCapabilities>([
@@ -106,6 +113,11 @@ const AUDIO_ALLOWED_FIELDS = new Set<keyof AudioCapabilities>([
 ])
 
 const LIPSYNC_ALLOWED_FIELDS = new Set<keyof LipSyncCapabilities>([
+  'modeOptions',
+  'fieldI18n',
+])
+
+const VOICEDESIGN_ALLOWED_FIELDS = new Set<keyof VoiceDesignCapabilities>([
   'modeOptions',
   'fieldI18n',
 ])
@@ -409,6 +421,22 @@ function validateLipSyncCapabilities(issues: CapabilityValidationIssue[], raw: u
   })
 }
 
+function validateVoiceDesignCapabilities(issues: CapabilityValidationIssue[], raw: unknown) {
+  if (!isRecord(raw)) return
+  const modeOptions = raw.modeOptions
+  if (modeOptions !== undefined && !isStringArray(modeOptions)) {
+    issues.push({
+      code: 'CAPABILITY_FIELD_INVALID',
+      field: 'capabilities.voicedesign.modeOptions',
+      message: 'modeOptions must be a non-empty string array',
+    })
+  }
+
+  validateFieldI18nMap(issues, 'voicedesign', raw.fieldI18n, {
+    mode: isStringArray(modeOptions) ? modeOptions : undefined,
+  })
+}
+
 function validateOptionFieldValue(
   fieldPath: string,
   value: unknown,
@@ -498,18 +526,21 @@ export function validateModelCapabilities(
   validateNamespaceShape(issues, 'video', capabilities.video)
   validateNamespaceShape(issues, 'audio', capabilities.audio)
   validateNamespaceShape(issues, 'lipsync', capabilities.lipsync)
+  validateNamespaceShape(issues, 'voicedesign', capabilities.voicedesign)
 
   validateNamespaceAllowedFields(issues, 'llm', capabilities.llm, LLM_ALLOWED_FIELDS)
   validateNamespaceAllowedFields(issues, 'image', capabilities.image, IMAGE_ALLOWED_FIELDS)
   validateNamespaceAllowedFields(issues, 'video', capabilities.video, VIDEO_ALLOWED_FIELDS)
   validateNamespaceAllowedFields(issues, 'audio', capabilities.audio, AUDIO_ALLOWED_FIELDS)
   validateNamespaceAllowedFields(issues, 'lipsync', capabilities.lipsync, LIPSYNC_ALLOWED_FIELDS)
+  validateNamespaceAllowedFields(issues, 'voicedesign', capabilities.voicedesign, VOICEDESIGN_ALLOWED_FIELDS)
 
   validateLLMCapabilities(issues, capabilities.llm)
   validateImageCapabilities(issues, capabilities.image)
   validateVideoCapabilities(issues, capabilities.video)
   validateAudioCapabilities(issues, capabilities.audio)
   validateLipSyncCapabilities(issues, capabilities.lipsync)
+  validateVoiceDesignCapabilities(issues, capabilities.voicedesign)
 
   return issues
 }
