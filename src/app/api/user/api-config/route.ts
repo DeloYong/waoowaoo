@@ -448,6 +448,7 @@ function isUnifiedModelType(value: unknown): value is UnifiedModelType {
     || value === 'video'
     || value === 'audio'
     || value === 'lipsync'
+    || value === 'voicedesign'
   )
 }
 
