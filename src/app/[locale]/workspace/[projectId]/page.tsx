@@ -328,7 +328,6 @@ export default function ProjectDetailPage() {
                 onImportComplete={handleSmartImportComplete}
                 importStatus={importStatus}
               />
-            )
           ) : selectedEpisodeId && currentEpisode ? (
             // 剧集工作区（确保所有数据都准备好）
             <NovelPromotionWorkspace
