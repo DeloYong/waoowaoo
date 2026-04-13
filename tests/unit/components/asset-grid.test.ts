@@ -125,6 +125,7 @@ describe('AssetGrid', () => {
               canUploadRender: false,
               canBindVoice: false,
               canCopyFromGlobal: false,
+              canSaveToGlobal: false,
             },
             taskRefs: [],
             taskState: { isRunning: false, lastError: null },

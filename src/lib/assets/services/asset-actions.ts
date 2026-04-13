@@ -1220,7 +1220,6 @@ async function saveCharacterToGlobal(
         characterId: globalCharacter.id,
         appearanceIndex: appearance.appearanceIndex,
         changeReason: appearance.changeReason,
-        artStyle: appearance.artStyle,
         description: appearance.description,
         descriptions: appearance.descriptions,
         imageUrl: appearance.imageUrl,

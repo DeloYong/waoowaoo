@@ -20,6 +20,7 @@ describe('useProjectAssets adapters', () => {
         canUploadRender: true,
         canBindVoice: true,
         canCopyFromGlobal: true,
+        canSaveToGlobal: true,
       },
       taskRefs: [],
       taskState: {
