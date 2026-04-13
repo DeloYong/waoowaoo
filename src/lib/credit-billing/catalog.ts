@@ -49,6 +49,8 @@ export const creditPricing: Record<string, PricingTier> = {
 
 let cachedPricing: CreditPricingType | null = null
 let pricingCacheTime = 0
+let cachedTierMap: Record<string, string> | null = null
+let tierMapCacheTime = 0
 const PRICING_CACHE_TTL = 60 * 1000 // 60 秒
 
 async function getCachedPricing(): Promise<CreditPricingType> {
@@ -61,6 +63,56 @@ async function getCachedPricing(): Promise<CreditPricingType> {
   return cachedPricing
 }
 
+async function getCachedTierMap(): Promise<Record<string, string>> {
+  const now = Date.now()
+  if (cachedTierMap && now - tierMapCacheTime < PRICING_CACHE_TTL) {
+    return cachedTierMap
+  }
+  const dbTierMap = await getModelTierMap()
+  // 合并硬编码映射和数据库映射（数据库优先）
+  cachedTierMap = { ...modelTierMap, ...dbTierMap }
+  tierMapCacheTime = now
+  return cachedTierMap
+}
+
+/**
+ * 根据 modelKey 解析模型对应的计费档次
+ * 优先使用数据库配置的 model_tier_map，然后回退到硬编码映射
+ */
+async function resolveModelTier(
+  mediaType: MediaType,
+  modelKey: string,
+  fallbackTier?: ModelTier,
+): Promise<ModelTier> {
+  const tierMap = await getCachedTierMap()
+
+  // 提取 modelId（去除 provider 前缀）
+  const modelId = modelKey.includes('::') ? modelKey.split('::').pop()! : modelKey
+
+  // 先用完整 modelKey 查找，再用 modelId 查找
+  const mappedTier = tierMap[modelKey] || tierMap[modelId]
+  if (mappedTier) {
+    // 映射值可能是 'basic'/'advanced'，也可能是自定义 tier 名
+    if (mappedTier === 'basic' || mappedTier === 'advanced') {
+      return mappedTier
+    }
+    // 对于 audio/voiceDesign/lipSync 类型的自定义 tier，不映射为 ModelTier
+    // 这些类型有独立的定价，不受 tier 影响
+  }
+
+  // 对于 image 和 video 类型，根据模型名称推断档次
+  if (mediaType === 'image' || mediaType === 'video') {
+    // 高级模型关键词
+    const advancedKeywords = ['pro', 'ultra', 'premium', 'advanced', 'max', 'hd', 'high']
+    const lowerModelId = modelId.toLowerCase()
+    if (advancedKeywords.some(kw => lowerModelId.includes(kw))) {
+      return 'advanced'
+    }
+  }
+
+  return fallbackTier || 'basic'
+}
+
 /**
  * 计算积分消耗报价
  */
@@ -71,7 +123,13 @@ export async function quoteCredits(
   options?: { tier?: ModelTier; resolution?: string; duration?: number }
 ): Promise<CreditQuote> {
   const pricing = await getCachedPricing()
-  const tier = options?.tier || 'basic'
+
+  // 如果调用方显式指定了 tier，优先使用
+  let tier = options?.tier
+  if (!tier) {
+    // 根据 modelKey 自动解析 tier
+    tier = await resolveModelTier(mediaType, modelKey)
+  }
 
   let unitPrice = 0
   switch (mediaType) {
@@ -115,4 +173,6 @@ export async function quoteCredits(
 export function clearPricingCache(): void {
   cachedPricing = null
   pricingCacheTime = 0
+  cachedTierMap = null
+  tierMapCacheTime = 0
 }

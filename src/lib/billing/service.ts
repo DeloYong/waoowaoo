@@ -767,6 +767,14 @@ export async function prepareTaskBilling(task: {
   const quotedCost = quote.totalCredits
 
   if (quotedCost <= 0) {
+    _ulogError('[Billing] prepareTaskBilling skipped: quotedCost <= 0', {
+      taskId: task.id,
+      apiType: info.apiType,
+      model: info.model,
+      quantity: info.quantity,
+      mediaType: mapApiTypeToMediaType(info.apiType),
+      quotedCost,
+    })
     next.status = 'skipped'
     return next
   }
@@ -887,6 +895,16 @@ export async function settleTaskBilling(task: {
       ...info,
       modeSnapshot: mode,
       status: info.status === 'skipped' ? 'skipped' : 'settled',
+      chargedCredits: 0,
+    } satisfies TaskBillingInfo
+  }
+
+  // 如果计费在准备阶段被跳过（如 quotedCost <= 0），直接返回 skipped 而非 failed
+  if (info.status === 'skipped') {
+    return {
+      ...info,
+      modeSnapshot: mode,
+      status: 'skipped',
       chargedCredits: 0,
     } satisfies TaskBillingInfo
   }
