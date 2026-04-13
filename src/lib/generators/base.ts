@@ -57,6 +57,7 @@ export interface ImageGenerator {
 export interface VideoGenerateParams {
     userId: string
     imageUrl: string           // 起始图片
+    audioUrl?: string          // 音频 URL（用于口型同步）
     prompt?: string            // 提示词（可选）
     options?: GenerateOptions
 }

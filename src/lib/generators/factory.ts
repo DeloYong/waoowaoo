@@ -126,9 +126,6 @@ export function createVoiceDesignGenerator(provider: string) {
   switch (providerKey) {
     case 'ark':
       return new ArkVoiceDesignGenerator()
-    case 'bailian':
-      // 原有阿里云实现
-      return new (require('./bailian-voice-design').BailianVoiceDesignGenerator)()
     default:
       throw new Error(`Unsupported voice design provider: ${provider}`)
   }
@@ -139,9 +136,6 @@ export function createLipSyncGenerator(provider: string) {
   switch (providerKey) {
     case 'ark':
       return new ArkLipSyncGenerator()
-    case 'bailian':
-      // 原有阿里云实现
-      return new (require('./bailian-lipsync').BailianLipSyncGenerator)()
     default:
       throw new Error(`Unsupported lipsync provider: ${provider}`)
   }

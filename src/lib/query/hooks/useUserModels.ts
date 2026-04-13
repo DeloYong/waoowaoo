@@ -21,6 +21,7 @@ export interface UserModelsPayload {
     video: UserModelOption[]
     audio: UserModelOption[]
     lipsync: UserModelOption[]
+    voicedesign: UserModelOption[]
 }
 
 export function useUserModels() {
@@ -38,6 +39,7 @@ export function useUserModels() {
                 video: Array.isArray(data?.video) ? data.video : [],
                 audio: Array.isArray(data?.audio) ? data.audio : [],
                 lipsync: Array.isArray(data?.lipsync) ? data.lipsync : [],
+                voicedesign: Array.isArray(data?.voicedesign) ? data.voicedesign : [],
             } as UserModelsPayload
         },
     })

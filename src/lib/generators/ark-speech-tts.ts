@@ -17,20 +17,22 @@ export class ArkTTSGenerator extends BaseAudioGenerator {
     logInfo('ArkTTSGenerator: 开始生成TTS', { userId, textLength: text.length, voice, rate })
     try {
       const { apiKey } = await getProviderConfig(userId, 'ark')
-      const { responseFormat = 'mp3', pitch = 1.0, volume = 1.0 } = options as Record<string, any>
+      const { responseFormat = 'mp3', pitch = 1.0, volume = 1.0, modelId } = options as {
+        responseFormat?: string
+        pitch?: number
+        volume?: number
+        modelId?: string
+      }
       // 校验参数
       if (rate < 0.5 || rate > 2.0) throw new Error('语速范围0.5-2.0')
       if (pitch < 0.5 || pitch > 2.0) throw new Error('音调范围0.5-2.0')
       if (volume < 0 || volume > 2.0) throw new Error('音量范围0-2.0')
       // 调用火山API
       const result = await arkTTSGeneration({
-        model: options.modelId || 'doubao-tts-v1',
+        model: (modelId || 'doubao-tts-v1') as 'doubao-tts-v1',
         input: text,
         voice,
-        format: responseFormat,
-        speed: rate,
-        pitch,
-        volume
+        speed: rate
       }, { apiKey })
       if (!result.audio) throw new Error('TTS生成失败，无返回音频')
       // 上传到对象存储
@@ -46,13 +48,7 @@ export class ArkTTSGenerator extends BaseAudioGenerator {
       logInfo('ArkTTSGenerator: TTS生成成功', { userId, fileKey })
       return {
         success: true,
-        audioUrl,
-        metadata: {
-          voice,
-          rate,
-          responseFormat,
-          provider: 'ark'
-        }
+        audioUrl
       }
     } catch (error) {
       // 记录错误日志
@@ -76,7 +72,7 @@ export class ArkTTSGenerator extends BaseAudioGenerator {
       throw new Error(`获取音色列表失败 (${response.status}): ${errorText}`)
     }
     const data = await response.json()
-    return data.voices.map((v: any) => ({
+    return data.voices.map((v: { id: string; name: string; gender: string; language: string }) => ({
       id: v.id,
       name: v.name,
       gender: v.gender,

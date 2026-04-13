@@ -157,6 +157,7 @@ const CAPABILITY_MODEL_TYPES: readonly UnifiedModelType[] = [
   'llm',
   'audio',
   'lipsync',
+  'voicedesign',
 ]
 const BILLABLE_MODEL_TYPE_TO_PRICING_API_TYPE: Readonly<Record<UnifiedModelType, PricingApiType | null>> = {
   llm: 'text',
@@ -164,6 +165,7 @@ const BILLABLE_MODEL_TYPE_TO_PRICING_API_TYPE: Readonly<Record<UnifiedModelType,
   video: 'video',
   audio: 'voice',
   lipsync: 'lip-sync',
+  voicedesign: 'voice-design',
 }
 const DEFAULT_FIELD_TO_PRICING_API_TYPE: Readonly<Record<DefaultModelField, 'text' | 'image' | 'video' | 'voice' | 'lip-sync'>> = {
   analysisModel: 'text',

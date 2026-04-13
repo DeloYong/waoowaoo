@@ -51,6 +51,7 @@ interface UserModelsPayload {
   video: UserModelOption[]
   audio: UserModelOption[]
   lipsync: UserModelOption[]
+  voicedesign: UserModelOption[]
 }
 
 const AUDIO_MODEL_EXCLUDED_IDS = new Set([
@@ -207,6 +208,7 @@ export const GET = apiHandler(async () => {
     video: [],
     audio: [],
     lipsync: [],
+    voicedesign: [],
   }
 
   for (const model of modelsRaw) {
@@ -250,5 +252,6 @@ export const GET = apiHandler(async () => {
     video: dedupeByModelKey(grouped.video),
     audio: dedupeByModelKey(grouped.audio),
     lipsync: dedupeByModelKey(grouped.lipsync),
+    voicedesign: dedupeByModelKey(grouped.voicedesign),
   } satisfies UserModelsPayload)
 })

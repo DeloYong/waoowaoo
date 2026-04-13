@@ -1,7 +1,7 @@
 import { BaseVideoGenerator, type VideoGenerateParams, type GenerateResult } from './base'
 import { getProviderConfig } from '@/lib/api-config'
 import { createStorageProvider } from '@/lib/storage/factory'
-import { pollAsyncTask } from '@/lib/async-poll'
+import { pollAsyncTask, formatExternalId } from '@/lib/async-poll'
 import { logInfo, logError } from '@/lib/logging/core'
 
 export class ArkLipSyncGenerator extends BaseVideoGenerator {
@@ -11,7 +11,10 @@ export class ArkLipSyncGenerator extends BaseVideoGenerator {
 
     try {
       const { apiKey } = await getProviderConfig(userId, 'ark')
-      const { resolution = '720p', fps = 24 } = options as Record<string, any>
+      const { resolution = '720p', fps = 24 } = options as {
+        resolution?: string
+        fps?: number
+      }
 
       // 验证必填参数
       if (!imageUrl) throw new Error('缺少图片URL')
@@ -38,7 +41,7 @@ export class ArkLipSyncGenerator extends BaseVideoGenerator {
 
       formData.append('resolution', resolution)
       formData.append('fps', String(fps))
-      formData.append('model', options.modelId || 'doubao-lipsync-v1')
+      formData.append('model', (typeof options.modelId === 'string' ? options.modelId : null) || 'doubao-lipsync-v1')
 
       // 创建口型同步任务
       const createResponse = await fetch('https://ark.cn-beijing.volces.com/api/v3/audio/lipsync', {
@@ -57,25 +60,17 @@ export class ArkLipSyncGenerator extends BaseVideoGenerator {
       logInfo('ArkLipSyncGenerator: 口型同步任务已创建', { userId, taskId })
 
       // 轮询任务状态
-      const result = await pollAsyncTask({
-        taskId,
-        provider: 'ark',
-        pollUrl: `https://ark.cn-beijing.volces.com/api/v3/audio/lipsync/${taskId}`,
-        headers: { Authorization: `Bearer ${apiKey}` },
-        checkInterval: 3000,
-        timeout: 300000, // 5分钟超时
-        onProgress: (progress) => {
-          logInfo('ArkLipSyncGenerator: 任务进度更新', { userId, taskId, progress })
-          this.emit('progress', progress)
-        }
-      })
+      const externalId = formatExternalId('ARK', 'VIDEO', taskId)
+      const pollResult = await pollAsyncTask(externalId, userId)
 
-      if (!result.success || !result.videoUrl) {
-        throw new Error(result.error || '口型同步生成失败')
+      if (pollResult.status !== 'completed' || !pollResult.videoUrl) {
+        throw new Error(pollResult.error || '口型同步生成失败')
       }
 
-      // 上传到对象存储
-      const videoResponse = await fetch(result.videoUrl)
+      // 下载生成的视频
+      const videoResponse = await fetch(pollResult.videoUrl, {
+        headers: pollResult.downloadHeaders || {}
+      })
       if (!videoResponse.ok) {
         const errorText = await videoResponse.text()
         throw new Error(`视频下载失败 (${videoResponse.status}): ${errorText}`)
@@ -95,12 +90,7 @@ export class ArkLipSyncGenerator extends BaseVideoGenerator {
       return {
         success: true,
         videoUrl,
-        async: false,
-        metadata: {
-          resolution,
-          fps,
-          provider: 'ark'
-        }
+        async: false
       }
     } catch (error) {
       logError('ArkLipSyncGenerator: 口型同步生成失败', { userId, error: (error as Error).message })

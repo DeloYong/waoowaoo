@@ -58,13 +58,7 @@ export class ArkVoiceDesignGenerator {
       logInfo('ArkVoiceDesignGenerator: 音色克隆成功', { userId, voiceId: data.id, name })
 
       return {
-        success: true,
-        metadata: {
-          voiceId: data.id,
-          name,
-          status: data.status,
-          provider: 'ark'
-        }
+        success: true
       }
     } catch (error) {
       logError('ArkVoiceDesignGenerator: 音色克隆失败', { userId, error: (error as Error).message })
@@ -103,7 +97,7 @@ export class ArkVoiceDesignGenerator {
   /**
    * 获取用户自定义音色列表
    */
-  async getUserVoices(userId: string): Promise<Array<any>> {
+  async getUserVoices(userId: string): Promise<Array<Record<string, unknown>>> {
     logInfo('ArkVoiceDesignGenerator: 获取用户音色列表', { userId })
 
     try {
