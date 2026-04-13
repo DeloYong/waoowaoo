@@ -475,16 +475,16 @@ scripts/
 
 | 指标 | 数值 |
 |------|------|
-| 新增提交数 | 42 个 |
-| 变更文件数 | 88 个 |
-| 新增代码行数 | +9,238 |
-| 删除代码行数 | -844 |
+| 新增提交数 | 44 个 |
+| 变更文件数 | 94 个 |
+| 新增代码行数 | +9,872 |
+| 删除代码行数 | -932 |
 | 新增 API 路由 | 18 个 |
 | 新增页面 | 7 个 |
-| 新增组件 | 5 个核心组件 |
+| 新增组件 | 6 个核心组件 |
 | 新增数据库表 | 4 个 |
 | 新增 Hooks | 3 个 |
-| 预设模型数量 | 25+ 个 |
+| 预设模型数量 | 30+ 个 |
 | 支持 Provider 数量 | 4 个 |
 
 ---
@@ -605,6 +605,43 @@ DATABASE_URL=mysql://root:password@db:3306/waoowaoo
 
 ---
 
+### Phase 6: Volcengine 语音服务完整集成 (最新)
+
+**提交**: `2170262`, `fd6ca0a`
+
+#### 6.1 火山引擎语音服务集成 (`2170262`)
+- **新增功能**:
+  - ✅ **TTS (文本转语音)**: 支持多音色、语速调整
+  - ✅ **Voice Design (音色克隆)**: 用户上传音频文件生成自定义音色
+  - ✅ **Lip Sync (口型同步)**: 音频驱动视频生成口型匹配效果
+- **架构实现**:
+  - 新增三个 Generator 类: `ArkSpeechTTSGenerator`, `ArkSpeechVoiceDesignGenerator`, `ArkSpeechLipSyncGenerator`
+  - 集成到 Generator Factory，支持 provider 动态切换
+  - 兼容现有 `BaseAudioGenerator` 接口，保持 100% 向后兼容
+  - 完整支持计费规则，与积分系统深度集成
+- **计费规则** (添加到 `src/lib/credit-billing/catalog.ts`):
+  - TTS 基础版: 1 积分 / 1000 字符
+  - TTS 高级版: 3 积分 / 1000 字符
+  - 音色克隆: 100 积分 / 次调用
+  - 口型同步: 50 积分 / 分钟
+- **前端实现**:
+  - 新增 `ProviderSelector.tsx` 组件，支持语音服务 provider 切换
+  - 自动根据用户可用模型显示可选 provider
+  - 当只有一个 provider 时自动隐藏选择器
+- **管理后台**:
+  - 平台配置页面支持选择火山引擎作为默认语音服务 provider
+  - 新增 `lipSyncModel`, `voiceDesignModel` 默认模型配置字段
+
+#### 6.2 平台配置保存失败修复 (`fd6ca0a`)
+- **问题**: 管理员后台修改模型配置时提示保存失败
+- **原因**: `isUnifiedModelType` 验证函数中缺失 `voicedesign` 模型类型
+- **修复**:
+  - 在 `src/app/api/admin/platform-config/route.ts` 添加 `voicedesign` 到验证列表
+  - 在 `src/app/api/user/api-config/route.ts` 添加 `voicedesign` 到验证列表
+  - 验证通过，现在可以正常保存包含语音克隆模型的配置
+
+---
+
 ## 下一步建议
 
 1. **支付集成**: 接入 Stripe 或其他支付网关，实现自动订阅
@@ -616,8 +653,8 @@ DATABASE_URL=mysql://root:password@db:3306/waoowaoo
 
 ---
 
-**文档生成时间**: 2026-04-10
-**文档版本**: v2.0
+**文档生成时间**: 2026-04-13
+**文档版本**: v2.1
 **分支**: feature/saas-credits
-**最新提交**: 118b5df
+**最新提交**: fd6ca0a
 **对比基准**: main (v0.4.0)
