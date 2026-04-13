@@ -808,6 +808,16 @@ export async function prepareTaskBilling(task: {
     throw new InsufficientBalanceError(quotedCost, balance.availableCredits)
   }
 
+  _ulogError('[Billing] prepareTaskBilling frozen', {
+    taskId: task.id,
+    apiType: info.apiType,
+    model: info.model,
+    quantity: info.quantity,
+    quotedCost,
+    freezeId,
+    userId: task.userId,
+  })
+
   next.status = 'frozen'
   next.freezeId = freezeId
   next.totalCredits = quotedCost
@@ -931,6 +941,17 @@ export async function settleTaskBilling(task: {
       chargedCredits = actualQuote.totalCredits
     } catch {}
   }
+
+  _ulogError('[Billing] settleTaskBilling', {
+    taskId: task.id,
+    apiType: info.apiType,
+    model: info.model,
+    quantity: info.quantity,
+    actualQuantity,
+    chargedCredits,
+    freezeId: info.freezeId,
+    status: info.status,
+  })
 
   try {
     await confirmCreditDeduct(info.freezeId, chargedCredits)

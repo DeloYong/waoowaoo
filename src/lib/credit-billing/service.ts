@@ -151,6 +151,14 @@ export async function freezeCredits(
         },
       })
 
+      console.log('[Billing] freezeCredits success', {
+        freezeId,
+        userId,
+        credits,
+        subscriptionToFreeze,
+        permanentToFreeze,
+      })
+
       return freezeId
     })
 
@@ -194,6 +202,15 @@ export async function confirmCreditDeduct(
       const frozenCredits = freeze.amount.toNumber()
       const chargedCredits = actualCredits ?? frozenCredits
       const refundCredits = Math.max(0, frozenCredits - chargedCredits)
+
+      console.log('[Billing] confirmCreditDeduct', {
+        freezeId,
+        userId: freeze.userId,
+        frozenCredits,
+        chargedCredits,
+        refundCredits,
+        freezeStatus: freeze.status,
+      })
 
       // 更新冻结状态
       await tx.balanceFreeze.update({
