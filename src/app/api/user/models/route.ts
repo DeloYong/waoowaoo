@@ -65,6 +65,7 @@ function isUnifiedModelType(type: unknown): type is UnifiedModelType {
     || type === 'video'
     || type === 'audio'
     || type === 'lipsync'
+    || type === 'voicedesign'
   )
 }
 

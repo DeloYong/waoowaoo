@@ -37,6 +37,20 @@ interface ProviderModel {
   id: string
   name?: string
   provider: string
+  type?: string
+}
+
+// 每个流程步骤对应的模型类型
+const PIPELINE_MODEL_TYPES: Record<keyof PipelineModelAssignments, string[]> = {
+  analysis: ['llm'],
+  character: ['image'],
+  location: ['image'],
+  storyboard: ['image'],
+  edit: ['image'],
+  video: ['video'],
+  audio: ['audio'],
+  lipSync: ['lipsync'],
+  voiceDesign: ['voicedesign', 'audio'],
 }
 
 export default function PipelineModelSection({
@@ -151,14 +165,21 @@ export default function PipelineModelSection({
     updateAssignment(pipeline, 'model', model)
   }
 
-  // 按Provider分组模型
-  const modelsByProvider = providerModels.reduce<Record<string, ProviderModel[]>>((acc, model) => {
-    if (!acc[model.provider]) {
-      acc[model.provider] = []
-    }
-    acc[model.provider].push(model)
-    return acc
-  }, {})
+  // 按Provider分组模型，并按pipeline类型过滤
+  const getFilteredModelsByProvider = (pipeline: keyof PipelineModelAssignments) => {
+    const allowedTypes = PIPELINE_MODEL_TYPES[pipeline] || []
+    const filtered = providerModels.filter(model => {
+      if (!model.type) return true // 无类型信息的模型不过滤
+      return allowedTypes.includes(model.type)
+    })
+    return filtered.reduce<Record<string, ProviderModel[]>>((acc, model) => {
+      if (!acc[model.provider]) {
+        acc[model.provider] = []
+      }
+      acc[model.provider].push(model)
+      return acc
+    }, {})
+  }
 
   return (
     <div className="bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)] p-6">
@@ -252,7 +273,7 @@ export default function PipelineModelSection({
                       className="w-full px-3 py-2 border border-[var(--glass-stroke-base)] rounded bg-[var(--glass-bg-canvas)] text-[var(--glass-text-primary)] text-sm"
                     >
                       <option value="">选择模型</option>
-                      {Object.entries(modelsByProvider).map(([provider, models]) => (
+                      {Object.entries(getFilteredModelsByProvider(pipeline)).map(([provider, models]) => (
                         <optgroup
                           key={provider}
                           label={PROVIDER_LABELS[provider] || provider}

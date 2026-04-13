@@ -10,6 +10,7 @@ export interface ProviderModel {
   id: string
   name?: string
   provider: string
+  type?: string
 }
 
 export interface ProviderModelsResult {
@@ -32,10 +33,26 @@ async function getArkModels(apiKey: string): Promise<ProviderModelsResult> {
   try {
     // Ark没有公开的模型列表API，使用已知模型列表
     const knownModels = [
-      'doubao-seed-2-0-lite-260215',
-      'doubao-seed-2-0-code-preview',
-      'doubao-seed-1-6-large-250715',
-      'doubao-seed-1-6-flash-250715',
+      { id: 'doubao-seed-2-0-lite-260215', name: 'Doubao Seed 2.0 Lite', type: 'llm' },
+      { id: 'doubao-seed-2-0-code-preview', name: 'Doubao Seed 2.0 Code', type: 'llm' },
+      { id: 'doubao-seed-1-6-large-250715', name: 'Doubao Seed 1.6 Large', type: 'llm' },
+      { id: 'doubao-seed-1-6-flash-250715', name: 'Doubao Seed 1.6 Flash', type: 'llm' },
+      // 图片模型
+      { id: 'doubao-seedream-4-5-251128', name: 'Seedream 4.5', type: 'image' },
+      { id: 'doubao-seedream-5-0-260128', name: 'Seedream 5.0 Lite', type: 'image' },
+      // 视频模型
+      { id: 'doubao-seedance-2-0-260128', name: 'Seedance 2.0', type: 'video' },
+      { id: 'doubao-seedance-2-0-fast-260128', name: 'Seedance 2.0 Fast', type: 'video' },
+      { id: 'doubao-seedance-1-5-pro-251215', name: 'Seedance 1.5 Pro', type: 'video' },
+      // 音频模型
+      { id: 'doubao-tts-v1', name: '豆包TTS标准版', type: 'audio' },
+      { id: 'doubao-tts-premium-v1', name: '豆包TTS精品版', type: 'audio' },
+      { id: 'doubao-tts-long-v1', name: '豆包长文本TTS', type: 'audio' },
+      // 音色设计模型
+      { id: 'doubao-voice-design-v1', name: 'Doubao Voice Design', type: 'voicedesign' },
+      { id: 'doubao-voice-clone-v1', name: '豆包音色克隆', type: 'voicedesign' },
+      // 口型同步模型
+      { id: 'doubao-lipsync-v1', name: '豆包口型同步', type: 'lipsync' },
     ]
 
     // 测试连接
@@ -46,7 +63,7 @@ async function getArkModels(apiKey: string): Promise<ProviderModelsResult> {
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: knownModels[0],
+        model: knownModels[0].id,
         input: [{ role: 'user', content: [{ type: 'input_text', text: 'hi' }] }],
         max_tokens: 10,
       }),
@@ -64,7 +81,7 @@ async function getArkModels(apiKey: string): Promise<ProviderModelsResult> {
 
     return {
       provider: 'ark',
-      models: knownModels.map(id => ({ id, provider: 'ark' })),
+      models: knownModels.map(m => ({ id: m.id, name: m.name, provider: 'ark', type: m.type })),
       success: true,
     }
   } catch (error) {
@@ -191,16 +208,27 @@ async function getQwenModels(apiKey: string): Promise<ProviderModelsResult> {
     }
 
     const data = await response.json() as { data?: Array<{ id?: string }> }
-    const models: ProviderModel[] = (data.data || [])
+    const apiModels: ProviderModel[] = (data.data || [])
       .filter(m => m.id)
       .map(m => ({
         id: m.id!,
         provider: 'qwen',
       }))
 
+    // 添加DashScope API不返回但实际可用的预设模型（音频、音色设计、视频等）
+    const presetExtras: ProviderModel[] = [
+      { id: 'qwen3-tts-vd-2026-01-26', name: 'Qwen3 TTS', provider: 'qwen', type: 'audio' },
+      { id: 'qwen-voice-design', name: 'Qwen Voice Design', provider: 'qwen', type: 'voicedesign' },
+      { id: 'wan2.6-i2v-flash', name: 'Wan2.6 I2V Flash', provider: 'qwen', type: 'video' },
+      { id: 'wan2.6-i2v', name: 'Wan2.6 I2V', provider: 'qwen', type: 'video' },
+    ]
+
+    const existingIds = new Set(apiModels.map(m => m.id))
+    const extras = presetExtras.filter(m => !existingIds.has(m.id))
+
     return {
       provider: 'qwen',
-      models,
+      models: [...apiModels, ...extras],
       success: true,
     }
   } catch (error) {

@@ -34,6 +34,7 @@ interface LocationCardProps {
   onSelectImage?: (locationId: string, imageIndex: number | null) => void
   onImageEdit?: (locationId: string, imageIndex: number) => void  // 新增：图片编辑
   onCopyFromGlobal?: () => void
+  onSaveToGlobal?: () => void
   activeTaskKeys?: Set<string>
   onClearTaskKey?: (key: string) => void
   projectId: string
@@ -52,6 +53,7 @@ export default function LocationCard({
   onSelectImage,
   onImageEdit,
   onCopyFromGlobal,
+  onSaveToGlobal,
   activeTaskKeys = new Set(),
   projectId,
   onConfirmSelection
@@ -341,6 +343,15 @@ export default function LocationCard({
           title={t('character.copyFromGlobal')}
         >
           <AppIcon name="copy" className="w-3.5 h-3.5 text-[var(--glass-tone-info-fg)]" />
+        </button>
+      )}
+      {onSaveToGlobal && (
+          <button
+            onClick={onSaveToGlobal}
+          className="flex-shrink-0 w-5 h-5 rounded hover:bg-[var(--glass-tone-success-bg)] flex items-center justify-center transition-colors"
+          title={t('character.saveToGlobal')}
+        >
+          <AppIcon name="upload" className="w-3.5 h-3.5 text-[var(--glass-tone-success-fg)]" />
         </button>
       )}
         <button

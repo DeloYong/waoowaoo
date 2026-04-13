@@ -3,7 +3,7 @@
 import { useCallback, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { isAbortError } from '@/lib/error-utils'
-import { useCopyProjectAssetFromGlobal } from '@/lib/query/hooks'
+import { useCopyProjectAssetFromGlobal, useSaveAssetToGlobal } from '@/lib/query/hooks'
 
 type ToastType = 'success' | 'warning' | 'error'
 
@@ -25,6 +25,7 @@ const getErrorMessage = (error: unknown) => error instanceof Error ? error.messa
 export function useAssetsCopyFromHub({ projectId, onRefresh, showToast }: UseAssetsCopyFromHubParams) {
   const t = useTranslations('assets')
   const copyFromGlobalAsset = useCopyProjectAssetFromGlobal(projectId)
+  const saveToGlobalAsset = useSaveAssetToGlobal(projectId)
   const [copyFromGlobalTarget, setCopyFromGlobalTarget] = useState<GlobalCopyTarget | null>(null)
   const [isGlobalCopyInFlight, setIsGlobalCopyInFlight] = useState(false)
 
@@ -78,6 +79,28 @@ export function useAssetsCopyFromHub({ projectId, onRefresh, showToast }: UseAss
     }
   }, [copyFromGlobalAsset, copyFromGlobalTarget, onRefresh, showToast, t])
 
+  const handleSaveToGlobal = useCallback(async (
+    kind: 'character' | 'location' | 'prop' | 'voice',
+    assetId: string,
+  ) => {
+    try {
+      await saveToGlobalAsset.mutateAsync({ kind, assetId })
+
+      const successMsg = kind === 'character'
+        ? t('assetLibrary.saveSuccessCharacter')
+        : kind === 'location'
+          ? t('assetLibrary.saveSuccessLocation')
+          : kind === 'prop'
+            ? t('assetLibrary.saveSuccessProp')
+            : t('assetLibrary.saveSuccessVoice')
+      showToast(successMsg, 'success')
+    } catch (error: unknown) {
+      if (!isAbortError(error)) {
+        showToast(t('assetLibrary.saveFailed', { error: getErrorMessage(error) }), 'error')
+      }
+    }
+  }, [saveToGlobalAsset, showToast, t])
+
   return {
     copyFromGlobalTarget,
     isGlobalCopyInFlight,
@@ -87,5 +110,6 @@ export function useAssetsCopyFromHub({ projectId, onRefresh, showToast }: UseAss
     handleVoiceSelectFromHub,
     handleConfirmCopyFromGlobal,
     handleCloseCopyPicker,
+    handleSaveToGlobal,
   }
 }

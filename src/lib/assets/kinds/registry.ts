@@ -26,6 +26,7 @@ const assetKindRegistryMap: Record<AssetKind, AssetKindRegistration> = {
       canUploadRender: true,
       canBindVoice: true,
       canCopyFromGlobal: true,
+      canSaveToGlobal: true,
     },
   },
   location: {
@@ -43,6 +44,7 @@ const assetKindRegistryMap: Record<AssetKind, AssetKindRegistration> = {
       canUploadRender: true,
       canBindVoice: false,
       canCopyFromGlobal: true,
+      canSaveToGlobal: true,
     },
   },
   prop: {
@@ -60,6 +62,7 @@ const assetKindRegistryMap: Record<AssetKind, AssetKindRegistration> = {
       canUploadRender: true,
       canBindVoice: false,
       canCopyFromGlobal: true,
+      canSaveToGlobal: true,
     },
   },
   voice: {
@@ -77,6 +80,7 @@ const assetKindRegistryMap: Record<AssetKind, AssetKindRegistration> = {
       canUploadRender: false,
       canBindVoice: false,
       canCopyFromGlobal: true,
+      canSaveToGlobal: true,
     },
   },
 }

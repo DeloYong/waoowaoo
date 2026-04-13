@@ -58,7 +58,8 @@
         "characterCount": "{count} Characters",
         "updateFailed": "Update description failed",
         "addFailed": "Add character failed",
-        "copyFromGlobal": "Copy from Asset Hub"
+        "copyFromGlobal": "Copy from Asset Hub",
+        "saveToGlobal": "Save to Asset Hub"
     },
     "location": {
         "add": "Add Location",
@@ -270,6 +271,11 @@
         "copySuccessProp": "Prop image copied successfully",
         "copySuccessVoice": "Voice copied successfully",
         "copyFailed": "Copy failed: {error}",
+        "saveSuccessCharacter": "Character saved to Asset Hub",
+        "saveSuccessLocation": "Location saved to Asset Hub",
+        "saveSuccessProp": "Prop saved to Asset Hub",
+        "saveSuccessVoice": "Voice saved to Asset Hub",
+        "saveFailed": "Save to Asset Hub failed: {error}",
         "downloadEmpty": "No image assets to download",
         "downloadFailed": "Download failed"
     },

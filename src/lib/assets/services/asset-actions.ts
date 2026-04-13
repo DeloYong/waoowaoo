@@ -1147,3 +1147,184 @@ function requireProjectId(access: AssetWriteAccess): string {
   }
   return access.projectId
 }
+
+type SaveToGlobalInput = {
+  kind: AssetKind
+  assetId: string
+  access: {
+    userId: string
+    projectId: string
+  }
+  folderId?: string | null
+}
+
+/**
+ * 将项目资产保存到全局资产库（资产中心）
+ * 支持角色、场景、道具、音色四种类型
+ */
+export async function saveAssetToGlobal(input: SaveToGlobalInput) {
+  const { kind, assetId, access, folderId } = input
+
+  if (kind === 'character') {
+    return saveCharacterToGlobal(assetId, access, folderId)
+  }
+  if (kind === 'location' || kind === 'prop') {
+    return saveLocationToGlobal(kind, assetId, access, folderId)
+  }
+  if (kind === 'voice') {
+    return saveVoiceToGlobal(assetId, access, folderId)
+  }
+  throw new ApiError('INVALID_PARAMS')
+}
+
+async function saveCharacterToGlobal(
+  assetId: string,
+  access: { userId: string; projectId: string },
+  folderId?: string | null,
+) {
+  const projectCharacter = await prisma.novelPromotionCharacter.findUnique({
+    where: { id: assetId },
+    include: { appearances: { orderBy: { appearanceIndex: 'asc' } } },
+  })
+  if (!projectCharacter) throw new ApiError('NOT_FOUND')
+
+  // 验证项目属于该用户
+  const project = await prisma.novelPromotionProject.findUnique({
+    where: { id: projectCharacter.novelPromotionProjectId },
+    select: { projectId: true },
+  })
+  if (!project || project.projectId !== access.projectId) {
+    throw new ApiError('NOT_FOUND')
+  }
+
+  // 创建全局角色
+  const globalCharacter = await prisma.globalCharacter.create({
+    data: {
+      userId: access.userId,
+      folderId: folderId || null,
+      name: projectCharacter.name,
+      aliases: projectCharacter.aliases,
+      profileData: projectCharacter.profileData,
+      profileConfirmed: projectCharacter.profileConfirmed,
+      voiceId: projectCharacter.voiceId,
+      voiceType: projectCharacter.voiceType,
+      customVoiceUrl: projectCharacter.customVoiceUrl,
+      customVoiceMediaId: projectCharacter.customVoiceMediaId,
+    },
+  })
+
+  // 复制所有形象
+  for (const appearance of projectCharacter.appearances) {
+    await prisma.globalCharacterAppearance.create({
+      data: {
+        characterId: globalCharacter.id,
+        appearanceIndex: appearance.appearanceIndex,
+        changeReason: appearance.changeReason,
+        artStyle: appearance.artStyle,
+        description: appearance.description,
+        descriptions: appearance.descriptions,
+        imageUrl: appearance.imageUrl,
+        imageMediaId: appearance.imageMediaId,
+        imageUrls: appearance.imageUrls,
+        previousImageUrls: encodeImageUrls([]),
+        selectedIndex: appearance.selectedIndex,
+      },
+    })
+  }
+
+  return { success: true, globalAssetId: globalCharacter.id }
+}
+
+async function saveLocationToGlobal(
+  kind: 'location' | 'prop',
+  assetId: string,
+  access: { userId: string; projectId: string },
+  folderId?: string | null,
+) {
+  const projectLocation = await prisma.novelPromotionLocation.findUnique({
+    where: { id: assetId },
+    include: { images: { orderBy: { imageIndex: 'asc' } } },
+  })
+  if (!projectLocation) throw new ApiError('NOT_FOUND')
+
+  // 验证项目属于该用户
+  const project = await prisma.novelPromotionProject.findUnique({
+    where: { id: projectLocation.novelPromotionProjectId },
+    select: { projectId: true },
+  })
+  if (!project || project.projectId !== access.projectId) {
+    throw new ApiError('NOT_FOUND')
+  }
+
+  const effectiveKind = kind === 'prop' ? 'prop' : (projectLocation.assetKind || 'location')
+
+  // 创建全局场景/道具
+  const globalLocation = await prisma.globalLocation.create({
+    data: {
+      userId: access.userId,
+      folderId: folderId || null,
+      name: projectLocation.name,
+      summary: projectLocation.summary,
+      assetKind: effectiveKind,
+    },
+  })
+
+  // 复制所有图片
+  for (const image of projectLocation.images) {
+    await prisma.globalLocationImage.create({
+      data: {
+        locationId: globalLocation.id,
+        imageIndex: image.imageIndex,
+        description: image.description,
+        availableSlots: image.availableSlots,
+        imageUrl: image.imageUrl,
+        imageMediaId: image.imageMediaId,
+        isSelected: image.isSelected,
+      },
+    })
+  }
+
+  return { success: true, globalAssetId: globalLocation.id }
+}
+
+async function saveVoiceToGlobal(
+  assetId: string,
+  access: { userId: string; projectId: string },
+  folderId?: string | null,
+) {
+  // 从项目角色中提取音色信息保存为全局音色
+  const projectCharacter = await prisma.novelPromotionCharacter.findUnique({
+    where: { id: assetId },
+  })
+  if (!projectCharacter) throw new ApiError('NOT_FOUND')
+
+  // 验证项目属于该用户
+  const project = await prisma.novelPromotionProject.findUnique({
+    where: { id: projectCharacter.novelPromotionProjectId },
+    select: { projectId: true },
+  })
+  if (!project || project.projectId !== access.projectId) {
+    throw new ApiError('NOT_FOUND')
+  }
+
+  if (!projectCharacter.voiceId && !projectCharacter.customVoiceUrl) {
+    throw new ApiError('INVALID_PARAMS', {
+      code: 'NO_VOICE_DATA',
+      message: '该角色没有绑定音色',
+    })
+  }
+
+  const globalVoice = await prisma.globalVoice.create({
+    data: {
+      userId: access.userId,
+      folderId: folderId || null,
+      name: `${projectCharacter.name}的音色`,
+      voiceId: projectCharacter.voiceId,
+      voiceType: projectCharacter.voiceType || 'qwen-designed',
+      customVoiceUrl: projectCharacter.customVoiceUrl,
+      customVoiceMediaId: projectCharacter.customVoiceMediaId,
+    },
+  })
+
+  return { success: true, globalAssetId: globalVoice.id }
+}

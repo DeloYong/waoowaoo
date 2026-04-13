@@ -24,6 +24,7 @@ export type AssetCapabilityMap = {
   canUploadRender: boolean
   canBindVoice: boolean
   canCopyFromGlobal: boolean
+  canSaveToGlobal: boolean
 }
 
 export type AssetTaskRef = {

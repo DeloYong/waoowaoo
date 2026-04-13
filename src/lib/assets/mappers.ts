@@ -204,7 +204,11 @@ export function mapProjectCharacterToAsset(character: ProjectCharacterRecord): C
     family: 'visual',
     name: character.name,
     folderId: null,
-    capabilities: registration.capabilities,
+    capabilities: {
+      ...registration.capabilities,
+      canSaveToGlobal: true,
+      canCopyFromGlobal: true,
+    },
     taskRefs: [
       {
         targetType: 'CharacterAppearance',
@@ -281,7 +285,11 @@ export function mapGlobalCharacterToAsset(character: GlobalCharacterRecord): Cha
     family: 'visual',
     name: character.name,
     folderId: character.folderId,
-    capabilities: registration.capabilities,
+    capabilities: {
+      ...registration.capabilities,
+      canSaveToGlobal: false,
+      canCopyFromGlobal: false,
+    },
     taskRefs: [
       {
         targetType: 'GlobalCharacter',
@@ -362,7 +370,11 @@ function mapLocationLikeProjectAsset(
     family: 'visual' as const,
     name: asset.name,
     folderId: null,
-    capabilities: registration.capabilities,
+    capabilities: {
+      ...registration.capabilities,
+      canSaveToGlobal: true,
+      canCopyFromGlobal: true,
+    },
     taskRefs: [
       {
         targetType: 'LocationImage',
@@ -392,7 +404,11 @@ function mapLocationLikeGlobalAsset(
     family: 'visual',
     name: asset.name,
     folderId: asset.folderId,
-    capabilities: registration.capabilities,
+    capabilities: {
+      ...registration.capabilities,
+      canSaveToGlobal: false,
+      canCopyFromGlobal: false,
+    },
     taskRefs: [
       {
         targetType: 'GlobalLocation',
@@ -432,7 +448,11 @@ export function mapGlobalVoiceToAsset(voice: GlobalVoiceRecord): VoiceAssetSumma
     family: 'audio',
     name: voice.name,
     folderId: voice.folderId,
-    capabilities: registration.capabilities,
+    capabilities: {
+      ...registration.capabilities,
+      canSaveToGlobal: false,
+      canCopyFromGlobal: false,
+    },
     taskRefs: [],
     taskState: createIdleTaskState(),
     voiceMeta: {
