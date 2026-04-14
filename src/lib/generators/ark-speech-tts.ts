@@ -28,8 +28,9 @@ export class ArkTTSGenerator extends BaseAudioGenerator {
       if (pitch < 0.5 || pitch > 2.0) throw new Error('音调范围0.5-2.0')
       if (volume < 0 || volume > 2.0) throw new Error('音量范围0-2.0')
       // 调用火山API
+      const resolvedModel = (modelId || 'doubao-tts-v1') as 'doubao-tts-v1' | 'doubao-tts-premium-v1'
       const result = await arkTTSGeneration({
-        model: (modelId || 'doubao-tts-v1') as 'doubao-tts-v1',
+        model: resolvedModel,
         input: text,
         voice,
         speed: rate

@@ -278,6 +278,7 @@ export async function generateVoiceLine(params: {
       text,
       voice: voiceBinding.voiceId,
       rate: 1.0,
+      options: { modelId: audioSelection.modelId },
     })
     if (!result.success || !result.audioUrl) {
       throw new Error(`DOUBAO_TTS_FAILED: ${result.error || '生成失败'}`)

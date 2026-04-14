@@ -126,8 +126,10 @@ interface ArkVideoTaskResponse {
 // TTS 相关接口
 // ============================================================
 
+type ArkTTSModelId = 'doubao-tts-v1' | 'doubao-tts-premium-v1'
+
 interface ArkTTSRequest {
-    model: 'doubao-tts-v1'        // 豆包TTS模型ID
+    model: ArkTTSModelId          // 豆包TTS模型ID（标准版/精品版）
     input: string                 // 要合成的文本内容
     voice: string                 // 音色名称
     response_format?: 'mp3' | 'wav' | 'pcm' // 音频格式，默认mp3
