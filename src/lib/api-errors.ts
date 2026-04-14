@@ -11,6 +11,7 @@ import {
   type InternalLLMStreamStepMeta,
 } from '@/lib/llm-observe/internal-stream-context'
 import { getTaskFlowMeta } from '@/lib/llm-observe/stage-pipeline'
+import { trackEvent } from '@/lib/observability'
 
 type RouteParamValue = string | string[] | undefined
 type RouteParams = Record<string, RouteParamValue>
@@ -505,6 +506,21 @@ export function apiHandler<TParams extends RouteParams>(handler: ApiHandler<TPar
           await streamCallbacks?.flush?.()
           const apiError = normalizeError(error)
           const errorType = error instanceof Error ? error.constructor.name : typeof error
+
+          trackEvent({
+            event: 'api.error',
+            method: req.method,
+            path: req.nextUrl.pathname,
+            errorCode: apiError.code,
+            status: apiError.status,
+            retryable: apiError.retryable,
+            category: apiError.category,
+            durationMs: Date.now() - startedAt,
+            requestId,
+            userId: routeContext.projectId ? undefined : undefined,
+            projectId: routeContext.projectId,
+          })
+
           logger.error({
             action: 'api.request.error',
             message: apiError.message,

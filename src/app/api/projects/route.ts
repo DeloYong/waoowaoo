@@ -11,6 +11,7 @@ import {
   validateProjectDraft,
   type ProjectDraftInput,
 } from '@/lib/projects/validation'
+import { trackEvent } from '@/lib/observability'
 
 function readProjectDraftBody(body: unknown): ProjectDraftInput {
   if (!body || typeof body !== 'object' || Array.isArray(body)) {
@@ -238,6 +239,13 @@ export const POST = apiHandler(async (request: NextRequest) => {
         ttsRate: userPreference.ttsRate
       })
     }
+  })
+
+  trackEvent({
+    event: 'project.create',
+    userId: session.user.id,
+    projectId: project.id,
+    projectName: name.trim(),
   })
 
   return NextResponse.json({ project }, { status: 201 })

@@ -3,6 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import bcrypt from "bcryptjs"
 import { logAuthAction } from './logging/semantic'
 import { prisma } from './prisma'
+import { trackEvent } from './observability'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const authOptions: any = {
@@ -45,6 +46,13 @@ export const authOptions: any = {
         }
 
         logAuthAction('LOGIN', user.name, { userId: user.id, success: true })
+
+        trackEvent({
+          event: 'user.login',
+          userId: user.id,
+          username: user.name,
+          success: true,
+        })
 
         return {
           id: user.id,

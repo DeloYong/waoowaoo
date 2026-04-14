@@ -7,6 +7,7 @@ import {
   type CreditPricing as CreditPricingType,
 } from '@/lib/platform-config'
 import type { MediaType, ModelTier, CreditQuote } from './types'
+import { trackEvent } from '@/lib/observability'
 
 /**
  * 模型档次映射（硬编码默认值，可被数据库配置覆盖）
@@ -168,6 +169,16 @@ export async function quoteCredits(
     tier,
     unitPrice,
     duration: options?.duration,
+    totalCredits,
+  })
+
+  trackEvent({
+    event: 'billing.quote',
+    mediaType,
+    model: modelKey,
+    tier: (tier === 'basic' || tier === 'advanced') ? tier : 'basic',
+    quantity,
+    unitPrice,
     totalCredits,
   })
 

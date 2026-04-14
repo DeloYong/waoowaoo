@@ -4,6 +4,7 @@ import { logError as _ulogError } from '@/lib/logging/core'
 import { getLogContext } from '@/lib/logging/context'
 import { prisma } from '@/lib/prisma'
 import { parseModelKeyStrict } from '@/lib/model-config-contract'
+import { trackEvent } from '@/lib/observability'
 import {
   calcImage,
   calcLipSync,
@@ -757,6 +758,17 @@ export async function prepareTaskBilling(task: {
   if (mode === 'OFF') {
     console.log('[Billing] prepareTaskBilling SKIP: mode is OFF')
     next.status = 'skipped'
+    trackEvent({
+      event: 'billing.prepare',
+      taskId: task.id,
+      userId: task.userId,
+      mode,
+      apiType: info.apiType,
+      model: info.model,
+      quantity: info.quantity,
+      quotedCost: 0,
+      skipReason: 'mode_OFF',
+    })
     return next
   }
 
@@ -792,12 +804,34 @@ export async function prepareTaskBilling(task: {
       quotedCost,
     })
     next.status = 'skipped'
+    trackEvent({
+      event: 'billing.prepare',
+      taskId: task.id,
+      userId: task.userId,
+      mode,
+      apiType: info.apiType,
+      model: info.model,
+      quantity: info.quantity,
+      quotedCost: 0,
+      skipReason: 'quotedCost_zero',
+    })
     return next
   }
 
   if (mode === 'SHADOW') {
     next.status = 'quoted'
     next.totalCredits = quotedCost
+    trackEvent({
+      event: 'billing.prepare',
+      taskId: task.id,
+      userId: task.userId,
+      mode,
+      apiType: info.apiType,
+      model: info.model,
+      quantity: info.quantity,
+      quotedCost,
+      skipReason: 'mode_SHADOW',
+    })
     return next
   }
 
@@ -837,6 +871,19 @@ export async function prepareTaskBilling(task: {
   next.status = 'frozen'
   next.freezeId = freezeId
   next.totalCredits = quotedCost
+
+  trackEvent({
+    event: 'billing.prepare',
+    taskId: task.id,
+    userId: task.userId,
+    mode,
+    apiType: info.apiType,
+    model: info.model,
+    quantity: info.quantity,
+    quotedCost,
+    freezeId,
+  })
+
   return next
 }
 
@@ -1002,6 +1049,15 @@ export async function settleTaskBilling(task: {
     }
     throw error
   }
+
+  trackEvent({
+    event: 'billing.settle',
+    taskId: task.id,
+    userId: task.userId,
+    mode: info.modeSnapshot || 'ENFORCE',
+    chargedCredits,
+    freezeId: info.freezeId,
+  })
 
   return {
     ...info,

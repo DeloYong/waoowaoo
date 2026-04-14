@@ -24,6 +24,7 @@ import { getTaskFlowMeta } from '@/lib/llm-observe/stage-pipeline'
 import type { Locale } from '@/i18n/routing'
 import { attachTaskToRun, createRun, findReusableActiveRun } from '@/lib/run-runtime/service'
 import { isAiTaskType, workflowTypeFromTaskType } from '@/lib/run-runtime/workflow'
+import { trackEvent } from '@/lib/observability'
 
 const RUN_CENTRIC_TASK_TYPES = new Set<TaskType>([
   TASK_TYPE.STORY_TO_SCRIPT_RUN,
@@ -307,6 +308,18 @@ export async function submitTask(params: {
     },
   })
 
+  trackEvent({
+    event: 'task.submit',
+    taskId: task.id,
+    userId: params.userId,
+    projectId: params.projectId,
+    taskType: params.type,
+    targetType: params.targetType,
+    targetId: params.targetId,
+    billingCredits: preparedBillingInfo?.billable === true ? (preparedBillingInfo as Extract<TaskBillingInfo, { billable: true }>).totalCredits : undefined,
+    deduped: !!deduped,
+  })
+
   if (!deduped) {
     try {
       await addTaskJob({
@@ -391,6 +404,15 @@ export async function submitTask(params: {
               : {
                 message: String(error),
               },
+      })
+
+      trackEvent({
+        event: 'task.enqueue_failed',
+        taskId: task.id,
+        userId: params.userId,
+        taskType: params.type,
+        errorCode: compensationFailed ? 'BILLING_COMPENSATION_FAILED' : 'ENQUEUE_FAILED',
+        compensationFailed,
       })
       throw new ApiError(compensationFailed ? 'INTERNAL_ERROR' : 'EXTERNAL_ERROR', {
         message: failedMessage,

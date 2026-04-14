@@ -7,6 +7,7 @@ import { checkRateLimit, getClientIp, AUTH_REGISTER_LIMIT } from '@/lib/rate-lim
 import { generateUniqueInviteCode } from '@/lib/invite'
 import { getInviteConfig } from '@/lib/platform-config'
 import { grantCredits } from '@/lib/credit-billing/service'
+import { trackEvent } from '@/lib/observability'
 
 export const POST = apiHandler(async (request: NextRequest) => {
   // 🛡️ IP 限流
@@ -166,6 +167,14 @@ export const POST = apiHandler(async (request: NextRequest) => {
   const user = result.user
 
   logAuthAction('REGISTER', name, { userId: user.id, success: true })
+
+  trackEvent({
+    event: 'user.register',
+    userId: user.id,
+    name,
+    inviteCode: inviteCodeFromQuery,
+    success: true,
+  })
 
   return NextResponse.json(
     {

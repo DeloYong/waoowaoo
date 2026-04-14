@@ -10,6 +10,7 @@ import {
   collectProjectBailianManagedVoiceIds,
   cleanupUnreferencedBailianVoices,
 } from '@/lib/providers/bailian'
+import { trackEvent } from '@/lib/observability'
 
 // GET - 获取项目详情
 export const GET = apiHandler(async (
@@ -90,6 +91,14 @@ export const PATCH = apiHandler(async (
     updatedProject.name,
     { changes: body }
   )
+
+  trackEvent({
+    event: 'project.update',
+    userId: session.user.id,
+    projectId,
+    projectName: updatedProject.name,
+    changes: body,
+  })
 
   return NextResponse.json({ project: updatedProject })
 })
@@ -247,6 +256,15 @@ export const DELETE = apiHandler(async (
       bailianVoicesSkippedReferenced: voiceCleanupResult.skippedReferencedVoiceIds.length,
     }
   )
+
+  trackEvent({
+    event: 'project.delete',
+    userId: session.user.id,
+    projectId,
+    projectName: project.name,
+    cosFilesDeleted: cosResult.success,
+    cosFilesFailed: cosResult.failed,
+  })
 
   _ulogInfo(`[DELETE] 项目删除完成: ${project.name}`)
   _ulogInfo(`[DELETE] COS 文件: 成功 ${cosResult.success}, 失败 ${cosResult.failed}`)

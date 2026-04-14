@@ -23,6 +23,7 @@ import type { NormalizedError } from '@/lib/errors/types'
 import { mapTaskSSEEventToRunEvents } from '@/lib/run-runtime/task-bridge'
 import { publishRunEvent } from '@/lib/run-runtime/publisher'
 import { RUN_EVENT_TYPE } from '@/lib/run-runtime/types'
+import { trackEvent } from '@/lib/observability'
 
 function toObject(value: unknown): Record<string, unknown> {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return {}
@@ -342,6 +343,15 @@ export async function withTaskLifecycle(job: Job<TaskJobData>, handler: (job: Jo
         episodeId: data.episodeId || null,
       },
     })
+
+    trackEvent({
+      event: 'task.start',
+      taskId,
+      userId: data.userId,
+      projectId: data.projectId,
+      taskType: data.type,
+      queue: job.queueName,
+    })
     const markedProcessing = await tryMarkTaskProcessing(taskId)
     if (!markedProcessing) {
       const rollbackResult = await rollbackTaskBillingForTask({
@@ -438,6 +448,16 @@ export async function withTaskLifecycle(job: Job<TaskJobData>, handler: (job: Jo
       message: 'worker completed',
       durationMs: Date.now() - startedAt,
       details: result || null,
+    })
+
+    trackEvent({
+      event: 'task.complete',
+      taskId,
+      userId: data.userId,
+      projectId: data.projectId,
+      taskType: data.type,
+      durationMs: Date.now() - startedAt,
+      chargedCredits: billingInfo?.billable === true ? (billingInfo as Extract<TaskBillingInfo, { billable: true }>).chargedCredits : undefined,
     })
     const completedPayload = withFlowFields(data, {
       ...(result || {}),
@@ -598,6 +618,21 @@ export async function withTaskLifecycle(job: Job<TaskJobData>, handler: (job: Jo
       })) as TaskBillingInfo
       await updateTaskBillingInfo(taskId, billingInfo)
     }
+
+    trackEvent({
+      event: 'task.fail',
+      taskId,
+      userId: data.userId,
+      projectId: data.projectId,
+      taskType: data.type,
+      errorCode: normalizedError.code,
+      retryable: normalizedError.retryable,
+      provider: normalizedError.provider || undefined,
+      durationMs: Date.now() - startedAt,
+      failedAttempt: retryDecision.failedAttempt,
+      maxAttempts: retryDecision.maxAttempts,
+    })
+
     const markedFailed = await tryMarkTaskFailed(taskId, normalizedError.code, normalizedError.message)
     if (!markedFailed) {
       logger.info({

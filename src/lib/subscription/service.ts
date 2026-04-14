@@ -3,6 +3,7 @@
  */
 import { prisma } from '@/lib/prisma'
 import { grantCredits } from '@/lib/credit-billing/service'
+import { trackEvent } from '@/lib/observability'
 
 /**
  * 为用户分配套餐
@@ -64,6 +65,18 @@ export async function assignPlan(
       })
     }
   })
+
+  // Need to fetch plan info for tracking (plan was inside tx scope)
+  const plan = await prisma.subscriptionPlan.findUniqueOrThrow({ where: { id: planId } })
+
+  trackEvent({
+    event: 'subscription.assign',
+    userId,
+    planId,
+    billingCycle,
+    operatorId: options?.operatorId,
+    monthlyCredits: plan.monthlyCredits,
+  })
 }
 
 /**
@@ -85,6 +98,7 @@ export async function processExpiredSubscriptions(): Promise<{
   })
 
   for (const subscription of expiredSubscriptions) {
+    let creditsCleared = 0
     try {
       await prisma.$transaction(async (tx) => {
         // 标记为过期
@@ -98,6 +112,7 @@ export async function processExpiredSubscriptions(): Promise<{
           where: { userId: subscription.userId },
         })
         if (balance && balance.subscriptionCredits > 0) {
+          creditsCleared = balance.subscriptionCredits
           await tx.userBalance.update({
             where: { userId: subscription.userId },
             data: { subscriptionCredits: 0 },
@@ -116,6 +131,13 @@ export async function processExpiredSubscriptions(): Promise<{
         }
       })
       processed++
+
+      trackEvent({
+        event: 'subscription.expired',
+        userId: subscription.userId,
+        planId: subscription.planId,
+        subscriptionCreditsCleared: creditsCleared,
+      })
     } catch {
       errors++
     }

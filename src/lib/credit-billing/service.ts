@@ -4,6 +4,7 @@
 import { prisma } from '@/lib/prisma'
 import { Prisma } from '@prisma/client'
 import type { CreditBalance, CreditTransactionType } from './types'
+import { trackEvent } from '@/lib/observability'
 
 /**
  * 获取用户积分余额
@@ -162,6 +163,28 @@ export async function freezeCredits(
         permanentToFreeze,
       })
 
+      trackEvent({
+        event: 'billing.freeze',
+        userId,
+        credits,
+        subscriptionToFreeze,
+        permanentToFreeze,
+        balanceBefore: {
+          subscription: currentSub - subscriptionToFreeze,
+          permanent: (balance?.permanentCredits ?? 0) - permanentToFreeze,
+          frozen: (balance?.frozenCredits ?? 0),
+          available: currentSub + (balance?.permanentCredits ?? 0) - (balance?.frozenCredits ?? 0),
+        },
+        balanceAfter: {
+          subscription: currentSub - subscriptionToFreeze,
+          permanent: (balance?.permanentCredits ?? 0) - permanentToFreeze,
+          frozen: (balance?.frozenCredits ?? 0) + credits,
+          available: currentSub + (balance?.permanentCredits ?? 0) - (balance?.frozenCredits ?? 0) - credits,
+        },
+        freezeId,
+        taskId: options?.taskId,
+      })
+
       return freezeId
     })
 
@@ -235,6 +258,17 @@ export async function confirmCreditDeduct(
         subscriptionRefund,
         permanentRefund,
         freezeStatus: freeze.status,
+      })
+
+      trackEvent({
+        event: 'billing.confirm',
+        userId: freeze.userId,
+        freezeId,
+        frozenCredits,
+        chargedCredits,
+        refundCredits,
+        subscriptionRefund,
+        permanentRefund,
       })
 
       // 更新冻结状态
@@ -356,6 +390,15 @@ export async function unfreezeCredits(freezeId: string): Promise<boolean> {
           freezeId,
         },
       })
+
+      trackEvent({
+        event: 'billing.unfreeze',
+        userId: freeze.userId,
+        freezeId,
+        credits,
+        subscriptionRefund,
+        permanentRefund,
+      })
     })
     return true
   } catch {
@@ -423,6 +466,15 @@ export async function grantCredits(
           idempotencyKey: options?.idempotencyKey || null,
           billingMeta: JSON.stringify({ credits, isPermanent }),
         },
+      })
+
+      trackEvent({
+        event: 'billing.grant',
+        userId,
+        credits,
+        source: type,
+        isPermanent,
+        reason: options?.reason,
       })
     })
     return true
