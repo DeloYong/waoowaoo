@@ -729,7 +729,14 @@ export async function prepareTaskBilling(task: {
   billingInfo: TaskBillingInfo | { billable: false } | null
 }) {
   const info = task.billingInfo
-  if (!info || !info.billable) return info
+  if (!info || !info.billable) {
+    console.log('[Billing] prepareTaskBilling SKIP: not billable', {
+      taskId: task.id,
+      hasInfo: !!info,
+      billable: info?.billable,
+    })
+    return info
+  }
 
   const mode = await getBillingMode()
   const next: TaskBillingInfo = {
@@ -739,7 +746,16 @@ export async function prepareTaskBilling(task: {
     pricingVersion: info.pricingVersion || BUILTIN_PRICING_VERSION,
   }
 
+  console.log('[Billing] prepareTaskBilling ENTER', {
+    taskId: task.id,
+    apiType: info.apiType,
+    model: info.model,
+    quantity: info.quantity,
+    mode,
+  })
+
   if (mode === 'OFF') {
+    console.log('[Billing] prepareTaskBilling SKIP: mode is OFF')
     next.status = 'skipped'
     return next
   }
@@ -838,6 +854,17 @@ export async function settleTaskBilling(task: {
   if (!info || !info.billable) return info
 
   const mode = info.modeSnapshot || await getBillingMode()
+
+  console.log('[Billing] settleTaskBilling ENTER', {
+    taskId: task.id,
+    apiType: info.apiType,
+    model: info.model,
+    quantity: info.quantity,
+    mode,
+    billingStatus: info.status,
+    freezeId: info.freezeId || 'NONE',
+  })
+
   const noChargeStatus = info.status === 'skipped' ? 'skipped' : 'settled'
   if (mode === 'OFF') {
     return {

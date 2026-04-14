@@ -129,7 +129,10 @@ export async function freezeCredits(
           taskId: options?.taskId || null,
           requestId: options?.requestId || null,
           idempotencyKey: options?.idempotencyKey || null,
-          metadata: options?.metadata ? JSON.stringify(options.metadata) : null,
+          metadata: JSON.stringify({
+            ...(options?.metadata || {}),
+            breakdown: { subscriptionToFreeze, permanentToFreeze },
+          }),
         },
       })
 
@@ -203,12 +206,34 @@ export async function confirmCreditDeduct(
       const chargedCredits = actualCredits ?? frozenCredits
       const refundCredits = Math.max(0, frozenCredits - chargedCredits)
 
+      // 从 freeze.metadata 读取 breakdown（冻结时从 subscription/permanent 各扣了多少）
+      let subscriptionRefund = 0
+      let permanentRefund = refundCredits
+      try {
+        const meta = freeze.metadata ? JSON.parse(freeze.metadata) : {}
+        const breakdown = meta.breakdown || {}
+        const subFrozen = typeof breakdown.subscriptionToFreeze === 'number' ? breakdown.subscriptionToFreeze : 0
+        const permFrozen = typeof breakdown.permanentToFreeze === 'number' ? breakdown.permanentToFreeze : 0
+        // 先退 subscription（因为冻结时先从 subscription 扣的），再退 permanent
+        subscriptionRefund = Math.min(refundCredits, subFrozen)
+        permanentRefund = refundCredits - subscriptionRefund
+        // 确保 permanentRefund 不超过 permanentFrozen
+        if (permanentRefund > permFrozen) {
+          permanentRefund = permFrozen
+          subscriptionRefund = refundCredits - permanentRefund
+        }
+      } catch {
+        // 解析失败时退到 permanent（兼容旧记录）
+      }
+
       console.log('[Billing] confirmCreditDeduct', {
         freezeId,
         userId: freeze.userId,
         frozenCredits,
         chargedCredits,
         refundCredits,
+        subscriptionRefund,
+        permanentRefund,
         freezeStatus: freeze.status,
       })
 
@@ -223,9 +248,14 @@ export async function confirmCreditDeduct(
         frozenCredits: { decrement: frozenCredits },
       }
 
-      // 退还多余积分（先退 permanent，再退 subscription）
+      // 按原路退还多余积分
       if (refundCredits > 0) {
-        updateData.permanentCredits = { increment: refundCredits }
+        if (subscriptionRefund > 0) {
+          updateData.subscriptionCredits = { increment: subscriptionRefund }
+        }
+        if (permanentRefund > 0) {
+          updateData.permanentCredits = { increment: permanentRefund }
+        }
       }
 
       await tx.userBalance.update({
@@ -275,18 +305,44 @@ export async function unfreezeCredits(freezeId: string): Promise<boolean> {
 
       const credits = freeze.amount.toNumber()
 
+      // 从 freeze.metadata 读取 breakdown
+      let subscriptionRefund = 0
+      let permanentRefund = credits
+      try {
+        const meta = freeze.metadata ? JSON.parse(freeze.metadata) : {}
+        const breakdown = meta.breakdown || {}
+        const subFrozen = typeof breakdown.subscriptionToFreeze === 'number' ? breakdown.subscriptionToFreeze : 0
+        const permFrozen = typeof breakdown.permanentToFreeze === 'number' ? breakdown.permanentToFreeze : 0
+        // 全额退还，按冻结时的比例
+        subscriptionRefund = Math.min(credits, subFrozen)
+        permanentRefund = credits - subscriptionRefund
+        if (permanentRefund > permFrozen) {
+          permanentRefund = permFrozen
+          subscriptionRefund = credits - permanentRefund
+        }
+      } catch {
+        // 解析失败时退到 permanent（兼容旧记录）
+      }
+
       await tx.balanceFreeze.update({
         where: { id: freezeId },
         data: { status: 'rolled_back' },
       })
 
-      // 解冻（全部退还 permanent，简化处理）
+      // 按原路解冻
+      const updateData: Prisma.UserBalanceUpdateInput = {
+        frozenCredits: { decrement: credits },
+      }
+      if (subscriptionRefund > 0) {
+        updateData.subscriptionCredits = { increment: subscriptionRefund }
+      }
+      if (permanentRefund > 0) {
+        updateData.permanentCredits = { increment: permanentRefund }
+      }
+
       await tx.userBalance.update({
         where: { userId: freeze.userId },
-        data: {
-          frozenCredits: { decrement: credits },
-          permanentCredits: { increment: credits },
-        },
+        data: updateData,
       })
 
       // 记录流水
