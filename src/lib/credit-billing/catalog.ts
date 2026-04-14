@@ -18,6 +18,8 @@ export const modelTierMap: Record<string, string> = {
   'doubao-tts-premium-v1': 'audio-premium',
   'doubao-tts-long-v1': 'audio-basic',
   'doubao-voice-clone-v1': 'voice-design',
+  'doubao-voice-design-v1': 'voice-design',
+  'ark::doubao-voice-design-v1': 'voice-design',
   'doubao-lipsync-v1': 'lipsync',
 }
 

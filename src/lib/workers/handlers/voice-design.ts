@@ -1,10 +1,10 @@
 import type { Job } from 'bullmq'
 import {
   createVoiceDesign,
-  validatePreviewText,
-  validateVoicePrompt,
   type VoiceDesignInput,
 } from '@/lib/providers/bailian/voice-design'
+import { createArkVoiceDesign, type ArkVoiceDesignInput } from '@/lib/providers/ark'
+import { validateVoicePrompt, validatePreviewText } from '@/lib/providers/shared/voice-design-validation'
 import { getProviderConfig } from '@/lib/api-config'
 import { reportTaskProgress } from '@/lib/workers/shared'
 import { assertTaskActive } from '@/lib/workers/utils'
@@ -30,6 +30,10 @@ export async function handleVoiceDesignTask(job: Job<TaskJobData>) {
     : 'custom_voice'
   const language = readLanguage(payload.language)
 
+  // 读取 modelKey，判断 provider
+  const modelKey = typeof payload.modelKey === 'string' ? payload.modelKey.trim() : ''
+  const provider = modelKey.startsWith('ark') ? 'ark' : 'bailian'
+
   const promptValidation = validateVoicePrompt(voicePrompt)
   if (!promptValidation.valid) {
     throw new Error(promptValidation.error || 'invalid voicePrompt')
@@ -46,14 +50,18 @@ export async function handleVoiceDesignTask(job: Job<TaskJobData>) {
   })
   await assertTaskActive(job, 'voice_design_submit')
 
-  const { apiKey } = await getProviderConfig(job.data.userId, 'bailian')
-  const input: VoiceDesignInput = {
-    voicePrompt,
-    previewText,
-    preferredName,
-    language,
+  let designed: { success: boolean; voiceId?: string; targetModel?: string; audioBase64?: string; sampleRate?: number; responseFormat?: string; usageCount?: number; requestId?: string; error?: string }
+
+  if (provider === 'ark') {
+    const { apiKey } = await getProviderConfig(job.data.userId, 'ark')
+    const input: ArkVoiceDesignInput = { voicePrompt, previewText, preferredName, language }
+    designed = await createArkVoiceDesign(input, apiKey)
+  } else {
+    const { apiKey } = await getProviderConfig(job.data.userId, 'bailian')
+    const input: VoiceDesignInput = { voicePrompt, previewText, preferredName, language }
+    designed = await createVoiceDesign(input, apiKey)
   }
-  const designed = await createVoiceDesign(input, apiKey)
+
   if (!designed.success) {
     throw new Error(designed.error || '声音设计失败')
   }

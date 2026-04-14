@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useRef, useState, useMemo } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslations } from 'next-intl'
 import { resolveTaskPresentationState } from '@/lib/task/presentation'
@@ -16,13 +16,21 @@ import {
 
 export type { VoiceDesignMutationPayload, VoiceDesignMutationResult } from './voice-design-shared'
 
+export interface VoiceDesignModelOption {
+  modelKey: string
+  name: string
+  provider: string
+}
+
 interface VoiceDesignDialogBaseProps {
   isOpen: boolean
   speaker: string
   hasExistingVoice?: boolean
   onClose: () => void
   onSave: (voiceId: string, audioBase64: string) => void
-  onDesignVoice: (payload: VoiceDesignMutationPayload) => Promise<VoiceDesignMutationResult>
+  onDesignVoice: (payload: VoiceDesignMutationPayload & { modelKey?: string }) => Promise<VoiceDesignMutationResult>
+  /** 可用的音色设计模型列表，从父组件传入 */
+  voiceDesignModels?: VoiceDesignModelOption[]
 }
 
 export default function VoiceDesignDialogBase({
@@ -32,6 +40,7 @@ export default function VoiceDesignDialogBase({
   onClose,
   onSave,
   onDesignVoice,
+  voiceDesignModels = [],
 }: VoiceDesignDialogBaseProps) {
   const t = useTranslations('common')
   const tv = useTranslations('voice.voiceDesign')
@@ -46,6 +55,19 @@ export default function VoiceDesignDialogBase({
   const [showConfirmDialog, setShowConfirmDialog] = useState(false)
   const [playingIndex, setPlayingIndex] = useState<number | null>(null)
   const audioRef = useRef<HTMLAudioElement | null>(null)
+
+  // 模型选择：默认第一个模型
+  const defaultModelKey = voiceDesignModels[0]?.modelKey ?? ''
+  const [selectedModelKey, setSelectedModelKey] = useState(defaultModelKey)
+
+  // 当模型列表变化时同步选中项
+  const currentModelKey = useMemo(() => {
+    if (voiceDesignModels.length === 0) return ''
+    if (voiceDesignModels.some(m => m.modelKey === selectedModelKey)) return selectedModelKey
+    return voiceDesignModels[0].modelKey
+  }, [voiceDesignModels, selectedModelKey])
+
+  const showModelSelector = voiceDesignModels.length > 1
   const designSubmittingState = isDesignSubmitting
     ? resolveTaskPresentationState({
         phase: 'processing',
@@ -72,7 +94,7 @@ export default function VoiceDesignDialogBase({
         voicePrompt,
         previewText,
         defaultPreviewText: tv('defaultPreviewText'),
-        onDesignVoice,
+        onDesignVoice: (payload) => onDesignVoice({ ...payload, modelKey: currentModelKey }),
       })
       setGeneratedVoices(voices)
     } catch (err: unknown) {
@@ -137,6 +159,7 @@ export default function VoiceDesignDialogBase({
     setSelectedIndex(null)
     setShowConfirmDialog(false)
     setPlayingIndex(null)
+    setSelectedModelKey(defaultModelKey)
     if (audioRef.current) {
       audioRef.current.pause()
     }
@@ -167,6 +190,27 @@ export default function VoiceDesignDialogBase({
         </div>
 
         <div className="p-5 space-y-4">
+          {showModelSelector && (
+            <div>
+              <div className="text-sm text-[var(--glass-text-secondary)] mb-1.5">{tv('selectModel')}</div>
+              <div className="relative">
+                <select
+                  value={currentModelKey}
+                  onChange={(e) => setSelectedModelKey(e.target.value)}
+                  className="glass-select-base w-full cursor-pointer appearance-none px-3 py-2.5 pr-8 text-sm"
+                >
+                  {voiceDesignModels.map((model) => (
+                    <option key={model.modelKey} value={model.modelKey}>
+                      {model.name}
+                    </option>
+                  ))}
+                </select>
+                <div className="pointer-events-none absolute right-3 top-3 text-[var(--glass-text-tertiary)]">
+                  <AppIcon name="chevronDown" className="w-3 h-3" />
+                </div>
+              </div>
+            </div>
+          )}
           <VoiceDesignGeneratorSection
             voicePrompt={voicePrompt}
             onVoicePromptChange={setVoicePrompt}

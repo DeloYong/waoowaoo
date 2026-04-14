@@ -233,6 +233,7 @@
         "designVoiceFor": "Design AI Voice for \"{speaker}\"",
         "hasExistingVoice": "Has voice",
         "selectStyle": "Select voice style:",
+        "selectModel": "Select model:",
         "orCustomDescription": "Or custom description:",
         "describePlaceholder": "Describe voice characteristics: age, gender, tone, pitch...",
         "generateSchemesPrefix": "Generate",

@@ -1,6 +1,9 @@
 import { type GenerateResult } from './base'
 import { getProviderConfig } from '@/lib/api-config'
 import { logInfo, logError } from '@/lib/logging/core'
+import { createArkVoiceDesign, type ArkVoiceDesignResult } from '@/lib/providers/ark/voice-design'
+import { createArkVoiceClone, type ArkVoiceCloneResult } from '@/lib/providers/ark/voice-clone'
+import { listArkVoices, deleteArkVoice, type ArkListVoicesResult, type ArkDeleteVoiceResult } from '@/lib/providers/ark/voice-manage'
 
 interface VoiceCloneParams {
   userId: string
@@ -19,6 +22,38 @@ interface VoiceManageParams {
 
 export class ArkVoiceDesignGenerator {
   /**
+   * 通过文本提示创建音色（文本→音色）
+   */
+  async createVoiceFromPrompt(params: {
+    userId: string
+    voicePrompt: string
+    previewText: string
+    preferredName?: string
+    language?: string
+  }): Promise<GenerateResult> {
+    try {
+      const { apiKey } = await getProviderConfig(params.userId, 'ark')
+      const result: ArkVoiceDesignResult = await createArkVoiceDesign({
+        voicePrompt: params.voicePrompt,
+        previewText: params.previewText,
+        preferredName: params.preferredName,
+        language: params.language as 'zh' | 'en' | undefined,
+      }, apiKey)
+      if (!result.success) {
+        throw new Error(result.error || '音色设计失败')
+      }
+      logInfo('ArkVoiceDesignGenerator: 音色设计成功', { userId: params.userId, voiceId: result.voiceId })
+      return {
+        success: true,
+        audioUrl: result.audioBase64 ? `data:audio/wav;base64,${result.audioBase64}` : undefined,
+      }
+    } catch (error) {
+      logError('ArkVoiceDesignGenerator: 音色设计失败', { userId: params.userId, error: (error as Error).message })
+      throw error
+    }
+  }
+
+  /**
    * 克隆自定义音色
    */
   async cloneVoice(params: VoiceCloneParams): Promise<GenerateResult> {
@@ -27,39 +62,20 @@ export class ArkVoiceDesignGenerator {
 
     try {
       const { apiKey } = await getProviderConfig(userId, 'ark')
+      const result: ArkVoiceCloneResult = await createArkVoiceClone({
+        name,
+        audioUrl,
+        audioText,
+        language,
+        gender,
+      }, apiKey)
 
-      // 下载音频
-      const audioResponse = await fetch(audioUrl)
-      if (!audioResponse.ok) {
-        const errorText = await audioResponse.text()
-        throw new Error(`音频下载失败 (${audioResponse.status}): ${errorText}`)
+      if (!result.success) {
+        throw new Error(result.error || '音色克隆失败')
       }
 
-      const formData = new FormData()
-      formData.append('name', name)
-      formData.append('audio', new Blob([await audioResponse.arrayBuffer()]), 'audio.mp3')
-      if (audioText) formData.append('text', audioText)
-      formData.append('language', language)
-      formData.append('gender', gender)
-
-      // 调用克隆接口
-      const response = await fetch('https://ark.cn-beijing.volces.com/api/v3/audio/voices/clone', {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${apiKey}` },
-        body: formData
-      })
-
-      if (!response.ok) {
-        const error = await response.json()
-        throw new Error(`音色克隆失败: ${error.message || response.statusText}`)
-      }
-
-      const data = await response.json()
-      logInfo('ArkVoiceDesignGenerator: 音色克隆成功', { userId, voiceId: data.id, name })
-
-      return {
-        success: true
-      }
+      logInfo('ArkVoiceDesignGenerator: 音色克隆成功', { userId, voiceId: result.voiceId, name })
+      return { success: true }
     } catch (error) {
       logError('ArkVoiceDesignGenerator: 音色克隆失败', { userId, error: (error as Error).message })
       throw error
@@ -75,15 +91,10 @@ export class ArkVoiceDesignGenerator {
 
     try {
       const { apiKey } = await getProviderConfig(userId, 'ark')
+      const result: ArkDeleteVoiceResult = await deleteArkVoice(voiceId, apiKey)
 
-      const response = await fetch(`https://ark.cn-beijing.volces.com/api/v3/audio/voices/${voiceId}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${apiKey}` }
-      })
-
-      if (!response.ok) {
-        const errorText = await response.text()
-        throw new Error(`删除音色失败 (${response.status}): ${errorText}`)
+      if (!result.success) {
+        throw new Error(result.error || '删除音色失败')
       }
 
       logInfo('ArkVoiceDesignGenerator: 音色删除成功', { userId, voiceId })
@@ -102,19 +113,14 @@ export class ArkVoiceDesignGenerator {
 
     try {
       const { apiKey } = await getProviderConfig(userId, 'ark')
+      const result: ArkListVoicesResult = await listArkVoices(apiKey, { type: 'custom' })
 
-      const response = await fetch('https://ark.cn-beijing.volces.com/api/v3/audio/voices?type=custom', {
-        headers: { Authorization: `Bearer ${apiKey}` }
-      })
-
-      if (!response.ok) {
-        const errorText = await response.text()
-        throw new Error(`获取音色列表失败 (${response.status}): ${errorText}`)
+      if (!result.success) {
+        throw new Error(result.error || '获取音色列表失败')
       }
 
-      const data = await response.json()
-      logInfo('ArkVoiceDesignGenerator: 获取音色列表成功', { userId, count: data.voices?.length || 0 })
-      return data.voices || []
+      logInfo('ArkVoiceDesignGenerator: 获取音色列表成功', { userId, count: result.voices?.length || 0 })
+      return (result.voices || []) as unknown as Array<Record<string, unknown>>
     } catch (error) {
       logError('ArkVoiceDesignGenerator: 获取音色列表失败', { userId, error: (error as Error).message })
       throw error

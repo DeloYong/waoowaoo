@@ -6,7 +6,7 @@ import { submitTask } from '@/lib/task/submitter'
 import { resolveRequiredTaskLocale } from '@/lib/task/resolve-locale'
 import { TASK_TYPE } from '@/lib/task/types'
 import { buildDefaultTaskBillingInfo } from '@/lib/billing'
-import { validatePreviewText, validateVoicePrompt } from '@/lib/providers/bailian/voice-design'
+import { validatePreviewText, validateVoicePrompt } from '@/lib/providers/shared/voice-design-validation'
 
 /**
  * 声音设计 API
@@ -30,6 +30,7 @@ export const POST = apiHandler(async (
     ? body.preferredName.trim()
     : 'custom_voice'
   const language = body.language === 'en' ? 'en' : 'zh'
+  const modelKey = typeof body.modelKey === 'string' ? body.modelKey.trim() : ''
 
   const promptValidation = validateVoicePrompt(voicePrompt)
   if (!promptValidation.valid) {
@@ -41,7 +42,7 @@ export const POST = apiHandler(async (
   }
 
   const digest = createHash('sha1')
-    .update(`${session.user.id}:${projectId}:${voicePrompt}:${previewText}:${preferredName}:${language}`)
+    .update(`${session.user.id}:${projectId}:${voicePrompt}:${previewText}:${preferredName}:${language}:${modelKey}`)
     .digest('hex')
     .slice(0, 16)
 
@@ -50,6 +51,7 @@ export const POST = apiHandler(async (
     previewText,
     preferredName,
     language,
+    modelKey,
     displayMode: 'detail' as const}
 
   const result = await submitTask({

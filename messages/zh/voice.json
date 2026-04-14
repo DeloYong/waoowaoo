@@ -233,6 +233,7 @@
         "designVoiceFor": "为「{speaker}」设计AI声音",
         "hasExistingVoice": "已有声音",
         "selectStyle": "选择声音风格：",
+        "selectModel": "选择模型：",
         "orCustomDescription": "或自定义描述：",
         "describePlaceholder": "描述声音特征：年龄、性别、音色、语调...",
         "generateSchemesPrefix": "生成",

@@ -22,7 +22,8 @@ describe('voice-design-shared', () => {
         voicePrompt: string
         previewText: string
         preferredName: string
-        language: 'zh'
+        language: 'zh' | 'en'
+        modelKey?: string
       }) => Promise<{ voiceId: string; audioBase64: string }>>()
       .mockResolvedValueOnce({ voiceId: 'voice-1', audioBase64: 'audio-1' })
       .mockResolvedValueOnce({ voiceId: 'voice-2', audioBase64: 'audio-2' })

@@ -217,13 +217,15 @@ function buildVoiceTaskInfo(taskType: TaskType, payload: AnyPayload): TaskBillin
   }
 }
 
-function buildVoiceDesignTaskInfo(taskType: TaskType): TaskBillingInfo {
+function buildVoiceDesignTaskInfo(taskType: TaskType, payload: AnyPayload): TaskBillingInfo {
+  const modelKey = readString(payload?.modelKey)
+  const model = modelKey || 'bailian-voice-design'
   return {
     billable: true,
     source: 'task',
     taskType,
     apiType: 'voice-design',
-    model: 'bailian-voice-design',
+    model,
     quantity: 1,
     unit: 'call',
     totalCredits: calcVoiceDesign(),
@@ -271,7 +273,7 @@ export function buildDefaultTaskBillingInfo(taskType: TaskType, payload: AnyPayl
       return buildVoiceTaskInfo(taskType, payload)
     case TASK_TYPE.VOICE_DESIGN:
     case TASK_TYPE.ASSET_HUB_VOICE_DESIGN:
-      return buildVoiceDesignTaskInfo(taskType)
+      return buildVoiceDesignTaskInfo(taskType, payload)
     case TASK_TYPE.REGENERATE_STORYBOARD_TEXT:
     case TASK_TYPE.INSERT_PANEL:
     case TASK_TYPE.ANALYZE_NOVEL:

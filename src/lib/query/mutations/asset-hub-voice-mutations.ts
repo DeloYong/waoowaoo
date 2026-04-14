@@ -29,7 +29,8 @@ export function useDesignAssetHubVoice() {
       voicePrompt: string
       previewText: string
       preferredName: string
-      language: 'zh'
+      language: 'zh' | 'en'
+      modelKey?: string
     }) => {
       const response = await requestTaskResponseWithError(
         '/api/asset-hub/voice-design',

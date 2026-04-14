@@ -6,7 +6,8 @@ export type VoiceDesignMutationPayload = {
   voicePrompt: string
   previewText: string
   preferredName: string
-  language: 'zh'
+  language: 'zh' | 'en'
+  modelKey?: string
 }
 
 export type VoiceDesignMutationResult = {
@@ -36,7 +37,8 @@ interface GenerateVoiceDesignOptionsParams {
   voicePrompt: string
   previewText: string
   defaultPreviewText: string
-  language?: 'zh'
+  language?: 'zh' | 'en'
+  modelKey?: string
   onDesignVoice: (payload: VoiceDesignMutationPayload) => Promise<VoiceDesignMutationResult>
   createPreferredName?: (index: number) => string
 }
@@ -47,6 +49,7 @@ export async function generateVoiceDesignOptions({
   previewText,
   defaultPreviewText,
   language = 'zh',
+  modelKey,
   onDesignVoice,
   createPreferredName = (index) => createVoiceDesignPreferredName(index),
 }: GenerateVoiceDesignOptionsParams): Promise<GeneratedVoice[]> {
@@ -63,6 +66,7 @@ export async function generateVoiceDesignOptions({
       previewText: resolvedPreviewText,
       preferredName: createPreferredName(index),
       language,
+      modelKey,
     })
 
     if (!result.audioBase64) continue
