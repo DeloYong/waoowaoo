@@ -115,7 +115,10 @@ services:
       LOG_SERVICE: "waoowaoo"
       LOG_REDACT_KEYS: "password,token,apiKey,apikey,authorization,cookie,secret,access_token,refresh_token"
       # 计费
-      BILLING_MODE: "OFF"
+      BILLING_MODE: ${BILLING_MODE:-ENFORCE}
+      # 可观测性
+      AXIOM_API_TOKEN: ${AXIOM_API_TOKEN:-}
+      AXIOM_DATASET: ${AXIOM_DATASET:-waoowaoo}
       # 流式
       LLM_STREAM_EPHEMERAL_ENABLED: "true"
     ports:

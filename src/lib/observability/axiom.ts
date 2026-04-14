@@ -16,7 +16,7 @@ import type { ObservabilityEvent } from './types'
 // ============================================================
 
 const AXIOM_API_TOKEN = process.env.AXIOM_API_TOKEN || ''
-const AXIOM_DATASET = process.env.AXIOM_DATASET || 'waoowaoo-events'
+const AXIOM_DATASET = process.env.AXIOM_DATASET || 'waoowaoo'
 const AXIOM_API_URL = process.env.AXIOM_API_URL || 'https://api.axiom.co/v1/datasets'
 const FLUSH_INTERVAL_MS = 5000  // 5 秒批量发送一次
 const MAX_BUFFER_SIZE = 100     // 缓冲区最大事件数
