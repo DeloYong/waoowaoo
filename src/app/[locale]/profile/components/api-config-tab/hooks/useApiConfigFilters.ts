@@ -17,7 +17,7 @@ const DYNAMIC_PROVIDER_PREFIXES = ['gemini-compatible', 'openai-compatible']
 const ALWAYS_SHOW_PROVIDERS: string[] = []
 /** 完全不在 UI 中展示的 provider（既不在主列表，也不在折叠区） */
 const HIDDEN_PROVIDER_KEYS = new Set(['siliconflow'])
-const PROVIDER_MODEL_TYPES: Array<'llm' | 'image' | 'video' | 'audio' | 'lipsync'> = ['llm', 'image', 'video', 'audio', 'lipsync']
+const PROVIDER_MODEL_TYPES: Array<'llm' | 'image' | 'video' | 'audio' | 'lipsync' | 'voicedesign'> = ['llm', 'image', 'video', 'audio', 'lipsync', 'voicedesign']
 const DEFAULT_AUDIO_EXCLUDED_MODEL_IDS = new Set([
   'qwen-voice-design',
 ])
@@ -33,12 +33,12 @@ const MODEL_PROVIDER_KEYS = [
   'openai-compatible',
 ]
 
-function isProviderModelType(type: CustomModel['type']): type is 'llm' | 'image' | 'video' | 'audio' | 'lipsync' {
-  return PROVIDER_MODEL_TYPES.includes(type as 'llm' | 'image' | 'video' | 'audio' | 'lipsync')
+function isProviderModelType(type: CustomModel['type']): type is 'llm' | 'image' | 'video' | 'audio' | 'lipsync' | 'voicedesign' {
+  return PROVIDER_MODEL_TYPES.includes(type as 'llm' | 'image' | 'video' | 'audio' | 'lipsync' | 'voicedesign')
 }
 
-function isDefaultModelType(type: CustomModel['type']): type is 'llm' | 'image' | 'video' | 'audio' | 'lipsync' {
-  return type === 'llm' || type === 'image' || type === 'video' || type === 'audio' || type === 'lipsync'
+function isDefaultModelType(type: CustomModel['type']): type is 'llm' | 'image' | 'video' | 'audio' | 'lipsync' | 'voicedesign' {
+  return type === 'llm' || type === 'image' || type === 'video' || type === 'audio' || type === 'lipsync' || type === 'voicedesign'
 }
 
 function isAudioDefaultCandidate(model: CustomModel): boolean {
@@ -112,8 +112,8 @@ export function useApiConfigFilters({
         providerName: provider?.name || model.provider,
       }
 
-      // Voice design models (audio type but excluded from TTS)
-      if (model.type === 'audio' && DEFAULT_AUDIO_EXCLUDED_MODEL_IDS.has(model.modelId)) {
+      // Voice design models: explicitly typed as voicedesign, or audio type with excluded modelId
+      if (model.type === 'voicedesign' || (model.type === 'audio' && DEFAULT_AUDIO_EXCLUDED_MODEL_IDS.has(model.modelId))) {
         grouped.voicedesign.push(option)
         continue
       }

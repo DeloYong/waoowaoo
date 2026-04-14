@@ -167,6 +167,7 @@ export const PRESET_MODELS: PresetModel[] = [
     // 音色设计模型
     { modelId: 'qwen-voice-design', name: 'Qwen Voice Design', type: 'voicedesign', provider: 'bailian' },
     { modelId: 'doubao-voice-design-v1', name: 'Doubao Voice Design', type: 'voicedesign', provider: 'ark' },
+    { modelId: 'doubao-voice-clone-v1', name: 'Doubao Voice Clone', type: 'voicedesign', provider: 'ark' },
     // 口型同步模型
     { modelId: 'fal-ai/kling-video/lipsync/audio-to-video', name: 'Kling Lip Sync', type: 'lipsync', provider: 'fal' },
     { modelId: 'vidu-lipsync', name: 'Vidu Lip Sync', type: 'lipsync', provider: 'vidu' },
