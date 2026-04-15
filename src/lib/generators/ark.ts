@@ -569,7 +569,7 @@ export class ArkTTSGenerator extends BaseAudioGenerator {
         const { userId, text, voice = 'zh_female_shuangyueqingxin', rate = 1.0, options = {} } = params
 
         const { apiKey } = await getProviderConfig(userId, 'ark')
-        const { responseFormat = 'mp3' } = options as { responseFormat?: 'mp3' | 'wav' | 'pcm' }
+        const { modelId = 'doubao-tts-v1', responseFormat = 'mp3' } = options as { modelId?: string; responseFormat?: 'mp3' | 'wav' | 'pcm' }
 
         const allowedOptionKeys = new Set([
             'provider',
@@ -589,11 +589,11 @@ export class ArkTTSGenerator extends BaseAudioGenerator {
             throw new Error(`ARK_TTS_OPTION_VALUE_UNSUPPORTED: rate必须在0.5-2.0之间，当前为${rate}`)
         }
 
-        _ulogInfo(`[ARK TTS] 模型: doubao-tts-v1, 音色: ${voice}, 语速: ${rate}, 文本长度: ${text.length}`)
+        _ulogInfo(`[ARK TTS] 模型: ${modelId}, 音色: ${voice}, 语速: ${rate}, 文本长度: ${text.length}`)
 
-        // 调用ARK TTS API
+        // 调用ARK TTS API（使用 OpenSpeech 同步接口）
         const ttsResponse = await arkTTSGeneration({
-            model: 'doubao-tts-v1',
+            model: modelId as 'doubao-tts-v1' | 'doubao-tts-premium-v1',
             input: text,
             voice,
             response_format: responseFormat,
