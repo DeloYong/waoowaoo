@@ -566,10 +566,25 @@ export class ArkVideoGenerator extends BaseVideoGenerator {
 
 export class ArkTTSGenerator extends BaseAudioGenerator {
     protected async doGenerate(params: AudioGenerateParams): Promise<GenerateResult> {
-        const { userId, text, voice = 'zh_female_mars_bigtts', rate = 1.0, options = {} } = params
+        const { userId, text, voice, rate = 1.0, options = {} } = params
 
         const { apiKey } = await getProviderConfig(userId, 'ark')
         const { modelId = 'doubao-tts-v1', responseFormat = 'mp3' } = options as { modelId?: string; responseFormat?: 'mp3' | 'wav' | 'pcm' }
+
+        // 动态获取默认音色：未指定 voice 时从 Ark API 获取第一个可用系统音色
+        let resolvedVoice = voice
+        if (!resolvedVoice) {
+            try {
+                const voiceList = await arkListVoices({ apiKey, type: 'system', language: 'zh' })
+                const femaleVoice = voiceList.voices?.find(v => v.gender === 'female' && v.status === 'available')
+                const anyVoice = voiceList.voices?.find(v => v.status === 'available')
+                resolvedVoice = femaleVoice?.voice_id || anyVoice?.voice_id || 'zh_female_cancan_mars_bigtts'
+                _ulogInfo(`[ARK TTS] 动态获取默认音色: ${resolvedVoice}`)
+            } catch {
+                _ulogInfo('[ARK TTS] 获取音色列表失败，使用兜底默认音色')
+                resolvedVoice = 'zh_female_cancan_mars_bigtts'
+            }
+        }
 
         const allowedOptionKeys = new Set([
             'provider',
@@ -589,13 +604,13 @@ export class ArkTTSGenerator extends BaseAudioGenerator {
             throw new Error(`ARK_TTS_OPTION_VALUE_UNSUPPORTED: rate必须在0.5-2.0之间，当前为${rate}`)
         }
 
-        _ulogInfo(`[ARK TTS] 模型: ${modelId}, 音色: ${voice}, 语速: ${rate}, 文本长度: ${text.length}`)
+        _ulogInfo(`[ARK TTS] 模型: ${modelId}, 音色: ${resolvedVoice}, 语速: ${rate}, 文本长度: ${text.length}`)
 
         // 调用ARK TTS API（使用 OpenSpeech 同步接口）
         const ttsResponse = await arkTTSGeneration({
             model: modelId as 'doubao-tts-v1' | 'doubao-tts-premium-v1',
             input: text,
-            voice,
+            voice: resolvedVoice,
             response_format: responseFormat,
             speed: rate
         }, {
@@ -677,7 +692,7 @@ export async function arkBatchTTSGenerate(params: {
     responseFormat?: 'mp3' | 'wav' | 'pcm'
     onProgress?: (current: number, total: number) => void
 }): Promise<GenerateResult> {
-    const { userId, text, voice = 'zh_female_mars_bigtts', rate = 1.0, responseFormat = 'mp3', onProgress } = params
+    const { userId, text, voice, rate = 1.0, responseFormat = 'mp3', onProgress } = params
 
     const generator = new ArkTTSGenerator()
     const segments = splitLongText(text)

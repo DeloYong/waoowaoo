@@ -1,11 +1,11 @@
 import { BaseAudioGenerator, type AudioGenerateParams, type GenerateResult } from './base'
 import { getProviderConfig } from '@/lib/api-config'
-import { arkTTSGeneration } from '@/lib/ark-api'
+import { arkTTSGeneration, arkListVoices } from '@/lib/ark-api'
 import { createStorageProvider } from '@/lib/storage/factory'
 import { logInfo, logError } from '@/lib/logging/core'
 export class ArkTTSGenerator extends BaseAudioGenerator {
   protected async doGenerate(params: AudioGenerateParams): Promise<GenerateResult> {
-    const { userId, text, voice = 'zh_female_mars_bigtts', rate = 1.0, options = {} } = params
+    const { userId, text, voice, rate = 1.0, options = {} } = params
     // 校验选项
     const allowedOptionKeys = ['modelId', 'responseFormat', 'pitch', 'volume']
     Object.keys(options).forEach(key => {
@@ -13,10 +13,27 @@ export class ArkTTSGenerator extends BaseAudioGenerator {
         throw new Error(`不支持的选项: ${key}`)
       }
     })
+
+    const { apiKey } = await getProviderConfig(userId, 'ark')
+
+    // 动态获取默认音色：未指定 voice 时从 Ark API 获取第一个可用系统音色
+    let resolvedVoice = voice
+    if (!resolvedVoice) {
+      try {
+        const voiceList = await arkListVoices({ apiKey, type: 'system', language: 'zh' })
+        const femaleVoice = voiceList.voices?.find(v => v.gender === 'female' && v.status === 'available')
+        const anyVoice = voiceList.voices?.find(v => v.status === 'available')
+        resolvedVoice = femaleVoice?.voice_id || anyVoice?.voice_id || 'zh_female_cancan_mars_bigtts'
+        logInfo('ArkTTSGenerator: 动态获取默认音色', { resolvedVoice })
+      } catch {
+        logInfo('ArkTTSGenerator: 获取音色列表失败，使用兜底默认音色')
+        resolvedVoice = 'zh_female_cancan_mars_bigtts'
+      }
+    }
+
     // 记录日志
-    logInfo('ArkTTSGenerator: 开始生成TTS', { userId, textLength: text.length, voice, rate })
+    logInfo('ArkTTSGenerator: 开始生成TTS', { userId, textLength: text.length, voice: resolvedVoice, rate })
     try {
-      const { apiKey } = await getProviderConfig(userId, 'ark')
       const { responseFormat = 'mp3', pitch = 1.0, volume = 1.0, modelId } = options as {
         responseFormat?: string
         pitch?: number
@@ -32,7 +49,7 @@ export class ArkTTSGenerator extends BaseAudioGenerator {
       const result = await arkTTSGeneration({
         model: resolvedModel,
         input: text,
-        voice,
+        voice: resolvedVoice,
         speed: rate
       }, { apiKey })
       if (!result.audio) throw new Error('TTS生成失败，无返回音频')

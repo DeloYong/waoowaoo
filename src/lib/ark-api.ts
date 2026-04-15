@@ -688,16 +688,13 @@ export async function arkTTSGeneration(
     }
 
     // resource-id 映射：必须根据 speaker 格式决定，而非 model
-    // S_ 开头 → seed-icl-2.0（克隆声音），_uranus_/saturn_ 开头 → seed-tts-2.0，其他 → seed-tts-1.0
     const speaker = request.voice
-    const isCloned = speaker.startsWith('S_')
-    const is2dot0 = speaker.includes('_uranus_') || speaker.startsWith('saturn_')
-    const resourceId = isCloned ? 'seed-icl-2.0' : is2dot0 ? 'seed-tts-2.0' : 'seed-tts-1.0'
+    const resourceId = resolveResourceId(speaker)
 
-    _ulogInfo(`${logPrefix} 开始语音生成请求(V3), 模型: ${request.model}, 音色: ${speaker}, resource: ${resourceId}, isCloned: ${isCloned}, is2dot0: ${is2dot0}`)
+    _ulogInfo(`${logPrefix} 开始语音生成请求(V3), 模型: ${request.model}, 音色: ${speaker}, resource: ${resourceId}`)
 
     // 克隆声音(S_开头)必须传 additions.model_type=4
-    const additions = isCloned ? JSON.stringify({ model_type: 4 }) : undefined
+    const additions = isClonedVoice(speaker) ? JSON.stringify({ model_type: 4 }) : undefined
 
     const requestBody = {
         user: { uid: 'waoowaoo_user' },
@@ -947,3 +944,23 @@ export const ARK_API_MAX_RETRIES = MAX_RETRIES
 
 // 导出音色相关类型，供其他模块使用
 export type { ArkVoice, ArkListVoicesResponse, ArkCreateVoiceRequest, ArkCreateVoiceResponse }
+
+/**
+ * 根据 speaker ID 格式自动推断 OpenSpeech V3 的 resource-id
+ * - S_ 开头（克隆声音）→ seed-icl-2.0
+ * - _uranus_ 或 saturn_ 开头（2.0 音色）→ seed-tts-2.0
+ * - 其他（1.0 音色）→ seed-tts-1.0
+ */
+export function resolveResourceId(speaker: string): string {
+    if (speaker.startsWith('S_')) return 'seed-icl-2.0'
+    if (speaker.includes('_uranus_') || speaker.startsWith('saturn_')) return 'seed-tts-2.0'
+    return 'seed-tts-1.0'
+}
+
+/**
+ * 判断 speaker 是否为克隆声音（S_ 开头）
+ * 克隆声音在 V3 接口中需要额外传 additions: {model_type: 4}
+ */
+export function isClonedVoice(speaker: string): boolean {
+    return speaker.startsWith('S_')
+}
