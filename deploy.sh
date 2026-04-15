@@ -105,3 +105,29 @@ echo "==================================="
 echo " 分支: feature/saas-credits"
 echo " 版本: $VERSION"
 echo "==================================="
+
+# 步骤 4: 执行数据库迁移脚本
+echo ""
+echo "========================================="
+echo "步骤 4/4: 执行数据库迁移..."
+echo "========================================="
+
+# 等待应用完全就绪（prisma db push 需要完成）
+echo "等待应用就绪（15秒）..."
+sleep 15
+
+# 设置平台默认音频模型
+echo "设置平台默认音频模型..."
+docker exec waoowaoo-app npx tsx scripts/migrations/set-platform-default-audio-model.ts 2>&1
+
+if [ $? -eq 0 ]; then
+    echo "✅ 平台默认音频模型设置成功"
+else
+    echo "⚠️  平台默认音频模型设置失败（可手动执行）"
+    echo "   docker exec -it waoowaoo-app npx tsx scripts/migrations/set-platform-default-audio-model.ts"
+fi
+
+echo ""
+echo "==================================="
+echo "全部完成！"
+echo "==================================="
