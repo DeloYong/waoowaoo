@@ -287,7 +287,8 @@ export default function AssetsStage({
     handleVoiceDesignSave,
     handleCloseVoiceDesign
   } = useTTSGeneration({
-    projectId
+    projectId,
+    onAfterSaveToProject: (characterId) => handleSaveToGlobal('voice', characterId),
   })
 
   // 弹窗状态

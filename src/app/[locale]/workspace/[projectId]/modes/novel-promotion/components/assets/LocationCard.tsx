@@ -339,19 +339,21 @@ export default function LocationCard({
       {onCopyFromGlobal && (
           <button
             onClick={onCopyFromGlobal}
-          className="flex-shrink-0 w-5 h-5 rounded hover:bg-[var(--glass-tone-info-bg)] flex items-center justify-center transition-colors"
+          className="text-xs text-[var(--glass-tone-info-fg)] hover:text-[var(--glass-tone-info-fg)] flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-[var(--glass-tone-info-bg)] transition-colors flex-shrink-0"
           title={t('character.copyFromGlobal')}
         >
-          <AppIcon name="copy" className="w-3.5 h-3.5 text-[var(--glass-tone-info-fg)]" />
+          <AppIcon name="copy" className="w-4 h-4" />
+          <span>{t('character.copyFromGlobal')}</span>
         </button>
       )}
       {onSaveToGlobal && (
           <button
             onClick={onSaveToGlobal}
-          className="flex-shrink-0 w-5 h-5 rounded hover:bg-[var(--glass-tone-success-bg)] flex items-center justify-center transition-colors"
+          className="text-xs text-[var(--glass-tone-success-fg)] hover:text-[var(--glass-tone-success-fg)] flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-[var(--glass-tone-success-bg)] transition-colors flex-shrink-0"
           title={t('character.saveToGlobal')}
         >
-          <AppIcon name="upload" className="w-3.5 h-3.5 text-[var(--glass-tone-success-fg)]" />
+          <AppIcon name="upload" className="w-4 h-4" />
+          <span>{t('character.saveToGlobal')}</span>
         </button>
       )}
         <button

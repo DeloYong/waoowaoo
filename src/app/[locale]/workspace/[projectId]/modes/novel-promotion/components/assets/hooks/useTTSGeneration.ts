@@ -25,6 +25,8 @@ interface VoiceDesignCharacter {
 
 interface UseTTSGenerationProps {
     projectId: string
+    /** 音色设计保存到项目成功后的回调（用于触发同步到全局资产库等副作用） */
+    onAfterSaveToProject?: (characterId: string) => void | Promise<void>
 }
 
 function getErrorMessage(error: unknown, fallback: string): string {
@@ -37,7 +39,8 @@ function getErrorMessage(error: unknown, fallback: string): string {
 }
 
 export function useTTSGeneration({
-    projectId
+    projectId,
+    onAfterSaveToProject,
 }: UseTTSGenerationProps) {
     const t = useTranslations('assets')
     // 🔥 直接订阅缓存 - 消除 props drilling
@@ -89,6 +92,16 @@ export function useTTSGeneration({
                 audioBase64,
             })
             refreshAssets()
+
+            // 🔥 自动同步到资产库（仅在用户确认选中某条音色后触发）
+            if (onAfterSaveToProject) {
+                try {
+                    await onAfterSaveToProject(voiceDesignCharacter.id)
+                } catch (syncError: unknown) {
+                    _ulogError('[TTS] 音色同步到资产库失败:', getErrorMessage(syncError, 'Unknown error'))
+                }
+            }
+
             alert(t('tts.voiceDesignSaved', { name: voiceDesignCharacter.name }))
         } catch (error: unknown) {
             alert(t('tts.saveVoiceDesignFailed', { error: getErrorMessage(error, t('common.unknownError')) }))
