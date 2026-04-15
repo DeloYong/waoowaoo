@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { useProjectAssets } from '@/lib/query/hooks/useProjectAssets'
-import { useEpisodeData } from '@/lib/query/hooks/useProjectData'
+import { useProjectData, useEpisodeData } from '@/lib/query/hooks/useProjectData'
 import {
   useAnalyzeProjectVoice,
   useCreateProjectVoiceLine,
@@ -58,6 +58,8 @@ export function useVoiceStageRuntime({
   }
   const { data: assets } = useProjectAssets(projectId)
   const { data: episodeData } = useEpisodeData(projectId, episodeId)
+  const { data: projectData } = useProjectData(projectId)
+  const audioModel = projectData?.novelPromotionData?.audioModel || undefined
   const analyzeVoiceMutation = useAnalyzeProjectVoice(projectId)
   const generateVoiceMutation = useGenerateProjectVoice(projectId)
   const createVoiceLineMutation = useCreateProjectVoiceLine(projectId)
@@ -166,6 +168,7 @@ export function useVoiceStageRuntime({
   } = useVoiceGenerationActions({
     projectId,
     episodeId,
+    audioModel,
     t: (key) => t(key as never),
     voiceLines,
     linesWithAudio,

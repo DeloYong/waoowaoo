@@ -1,6 +1,7 @@
 import { logError as _ulogError } from '@/lib/logging/core'
 import { queryKeys } from '@/lib/query/keys'
 import { useGenerateProjectVoice } from '@/lib/query/hooks'
+import { useProjectData } from '@/lib/query/hooks/useProjectData'
 import type { MatchedVoiceLinesData } from '@/lib/query/hooks/useVoiceLines'
 import { isAsyncTaskResponse } from '@/lib/task/client'
 import { useQueryClient } from '@tanstack/react-query'
@@ -24,6 +25,8 @@ export function usePanelVoiceManager({
   audioFailedMessage,
 }: UsePanelVoiceManagerParams) {
   const generateProjectVoiceMutation = useGenerateProjectVoice(projectId)
+  const { data: projectData } = useProjectData(projectId)
+  const audioModel = projectData?.novelPromotionData?.audioModel || undefined
   const queryClient = useQueryClient()
   const [submittingAudioIds, setSubmittingAudioIds] = useState<Set<string>>(new Set())
   const [submittingVoiceAudioIds, setSubmittingVoiceAudioIds] = useState<Set<string>>(new Set())
@@ -104,6 +107,7 @@ export function usePanelVoiceManager({
       const data = await generateProjectVoiceMutation.mutateAsync({
         episodeId,
         lineId: voiceLine.id,
+        ...(audioModel ? { audioModel } : {}),
       })
 
       if (isAsyncTaskResponse(data)) {

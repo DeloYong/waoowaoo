@@ -21,13 +21,14 @@ interface MutationLike<TInput = unknown, TOutput = unknown> {
 interface UseVoiceGenerationActionsParams {
   projectId: string
   episodeId: string
+  audioModel?: string
   t: (key: string) => string
   voiceLines: VoiceLine[]
   linesWithAudio: number
   speakerCharacterMap: Record<string, Character>
   speakerVoices: Record<string, SpeakerVoiceEntry>
   analyzeVoiceMutation: MutationLike<{ episodeId: string }>
-  generateVoiceMutation: MutationLike<{ episodeId: string; lineId?: string; all?: boolean }, {
+  generateVoiceMutation: MutationLike<{ episodeId: string; lineId?: string; all?: boolean; audioModel?: string }, {
     success?: boolean
     error?: string
     async?: boolean
@@ -44,6 +45,7 @@ interface UseVoiceGenerationActionsParams {
 export function useVoiceGenerationActions({
   projectId,
   episodeId,
+  audioModel,
   t,
   voiceLines,
   linesWithAudio,
@@ -117,7 +119,7 @@ export function useVoiceGenerationActions({
     let handoffToTaskState = false
 
     try {
-      const data = await generateVoiceMutation.mutateAsync({ episodeId, lineId })
+      const data = await generateVoiceMutation.mutateAsync({ episodeId, lineId, ...(audioModel ? { audioModel } : {}) })
       if (!data?.success) {
         throw new Error(data?.error || t('errors.generateFailed'))
       }
@@ -194,7 +196,7 @@ export function useVoiceGenerationActions({
     let handoffToTaskState = false
 
     try {
-      const data = await generateVoiceMutation.mutateAsync({ episodeId, all: true })
+      const data = await generateVoiceMutation.mutateAsync({ episodeId, all: true, ...(audioModel ? { audioModel } : {}) })
       if (!Array.isArray(data.taskIds) || data.taskIds.length === 0) {
         setPendingVoiceGenerationByLineId((prev) => {
           const next = { ...prev }

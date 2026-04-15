@@ -11,6 +11,7 @@ import { hasVoiceLineAudioOutput } from '@/lib/task/has-output'
 import { withTaskUiPayload } from '@/lib/task/ui-payload'
 import { parseModelKeyStrict } from '@/lib/model-config-contract'
 import { getProviderKey, resolveModelSelectionOrSingle } from '@/lib/api-config'
+import { getProjectModelConfig } from '@/lib/config-service'
 import {
   hasVoiceBindingForProvider,
   parseSpeakerVoiceMap,
@@ -120,21 +121,19 @@ export const POST = apiHandler(async (
       field: 'audioModel'})
   }
 
-  const pref = await prisma.userPreference.findUnique({
-    where: { userId: session.user.id },
-    select: { audioModel: true },
-  })
-  const preferredAudioModel = typeof pref?.audioModel === 'string' ? pref.audioModel.trim() : ''
-  if (preferredAudioModel && !parseModelKeyStrict(preferredAudioModel)) {
-    throw new ApiError('INVALID_PARAMS', {
-      code: 'MODEL_KEY_INVALID',
-      field: 'audioModel'})
-  }
+  const modelConfig = await getProjectModelConfig(projectId, session.user.id)
+  const resolvedAudioModel = requestedAudioModel || modelConfig.audioModel || ''
+  const selectedResolvedAudioModel = await resolveModelSelectionOrSingle(
+    session.user.id,
+    resolvedAudioModel || null,
+    'audio',
+  )
+  const selectedProviderKey = getProviderKey(selectedResolvedAudioModel.provider).toLowerCase()
+
   const projectData = await prisma.novelPromotionProject.findUnique({
     where: { projectId },
     select: {
       id: true,
-      audioModel: true,
       characters: {
         select: {
           name: true,
@@ -147,19 +146,6 @@ export const POST = apiHandler(async (
   if (!projectData) {
     throw new ApiError('NOT_FOUND')
   }
-  const projectAudioModel = typeof projectData.audioModel === 'string' ? projectData.audioModel.trim() : ''
-  if (projectAudioModel && !parseModelKeyStrict(projectAudioModel)) {
-    throw new ApiError('INVALID_PARAMS', {
-      code: 'MODEL_KEY_INVALID',
-      field: 'audioModel'})
-  }
-  const resolvedAudioModel = requestedAudioModel || projectAudioModel || preferredAudioModel
-  const selectedResolvedAudioModel = await resolveModelSelectionOrSingle(
-    session.user.id,
-    resolvedAudioModel || null,
-    'audio',
-  )
-  const selectedProviderKey = getProviderKey(selectedResolvedAudioModel.provider).toLowerCase()
 
   const episode = await prisma.novelPromotionEpisode.findFirst({
     where: {
