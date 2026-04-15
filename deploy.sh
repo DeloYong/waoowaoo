@@ -44,11 +44,18 @@ echo "删除旧镜像..."
 docker rmi waoowaoo-app:latest 2>/dev/null || true
 docker rmi waoowaoo-app:local 2>/dev/null || true
 
-# 重新构建镜像
+# 重新构建镜像（优先 docker build，兼容无 buildx 的环境）
 echo "开始构建新镜像..."
-docker compose build 2>&1 | tee /tmp/docker-build.log
+if docker buildx version &>/dev/null; then
+    docker compose build 2>&1 | tee /tmp/docker-build.log
+    BUILD_EXIT=${PIPESTATUS[0]}
+else
+    echo "buildx 不可用，使用 docker build 直接构建..."
+    docker build -t waoowaoo-app:latest . 2>&1 | tee /tmp/docker-build.log
+    BUILD_EXIT=${PIPESTATUS[0]}
+fi
 
-if [ ${PIPESTATUS[0]} -ne 0 ]; then
+if [ $BUILD_EXIT -ne 0 ]; then
     echo ""
     echo "❌ Docker 构建失败！查看完整日志："
     tail -50 /tmp/docker-build.log
