@@ -46,7 +46,7 @@ docker rmi waoowaoo-app:local 2>/dev/null || true
 
 # 重新构建镜像
 echo "开始构建新镜像..."
-docker compose build --progress=plain 2>&1 | tee /tmp/docker-build.log
+docker compose build 2>&1 | tee /tmp/docker-build.log
 
 if [ ${PIPESTATUS[0]} -ne 0 ]; then
     echo ""
