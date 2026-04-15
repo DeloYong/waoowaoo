@@ -54,8 +54,22 @@ export default function SpeakerVoiceBindingDialog({
         voiceType: string
     }) => {
         if (voice.voiceId) {
+            // 根据 voiceId 格式推断 provider：
+            // - qwen-tts-vd- 开头 → bailian
+            // - S_ 开头（克隆音色）或 _mars_/_moon_/_uranus_/_bigtts_ 格式 → ark
+            // - 其他 → bailian（兜底）
+            const inferProvider = (vid: string): 'bailian' | 'ark' => {
+                if (vid.startsWith('qwen-tts-vd-')) return 'bailian'
+                if (vid.startsWith('S_')) return 'ark'
+                if (vid.includes('_mars_') || vid.includes('_moon_') || vid.includes('_uranus_') || vid.includes('_bigtts')) return 'ark'
+                // Ark 音色设计 API 返回的 voiceId 通常不是 qwen 格式
+                // 如果 voiceType 包含 ark 或 doubao 关键字
+                if (voice.voiceType?.includes('ark') || voice.voiceType?.includes('doubao')) return 'ark'
+                return 'bailian'
+            }
+            const provider = inferProvider(voice.voiceId)
             onBound(speaker, {
-                provider: 'bailian',
+                provider,
                 voiceType: voice.voiceType,
                 voiceId: voice.voiceId,
                 ...(voice.customVoiceUrl ? { previewAudioUrl: voice.customVoiceUrl } : {}),

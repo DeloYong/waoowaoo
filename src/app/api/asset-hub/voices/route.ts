@@ -67,6 +67,15 @@ export const POST = apiHandler(async (request: NextRequest) => {
         }
     }
 
+    // 根据 voiceId 格式推断 voiceType（服务端校验，不依赖前端传入）
+    const inferVoiceType = (vid: string | null | undefined, fallback: string): string => {
+        if (!vid) return fallback
+        if (vid.startsWith('S_') || vid.includes('_mars_') || vid.includes('_moon_') || vid.includes('_uranus_') || vid.includes('_bigtts')) return 'ark-designed'
+        if (vid.startsWith('qwen-tts-vd-')) return 'qwen-designed'
+        return fallback
+    }
+    const resolvedVoiceType = voiceId ? inferVoiceType(voiceId, voiceType || 'qwen-designed') : (voiceType || 'qwen-designed')
+
     const customVoiceMedia = await resolveMediaRefFromLegacyValue(customVoiceUrl || null)
     const voice = await prisma.globalVoice.create({
         data: {
@@ -75,7 +84,7 @@ export const POST = apiHandler(async (request: NextRequest) => {
             name: name.trim(),
             description: description?.trim() || null,
             voiceId: voiceId || null,
-            voiceType: voiceType || 'qwen-designed',
+            voiceType: resolvedVoiceType,
             customVoiceUrl: customVoiceUrl || null,
             customVoiceMediaId: customVoiceMedia?.id || null,
             voicePrompt: voicePrompt?.trim() || null,

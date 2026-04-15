@@ -80,10 +80,19 @@ export const POST = apiHandler(async (
     const cosUrl = await uploadObject(audioBuffer, key)
 
     // 更新角色音色设置
+    // 根据 voiceId 格式推断 voiceType：Ark 格式用 'ark-designed'，百炼格式用 'qwen-designed'
+    const inferVoiceType = (vid: string): 'qwen-designed' | 'ark-designed' => {
+      if (vid.startsWith('S_') || vid.includes('_mars_') || vid.includes('_moon_') || vid.includes('_uranus_') || vid.includes('_bigtts')) return 'ark-designed'
+      if (vid.startsWith('qwen-tts-vd-')) return 'qwen-designed'
+      // 默认按百炼处理（兼容旧数据）
+      return 'qwen-designed'
+    }
+    const resolvedVoiceType = inferVoiceType(voiceId)
+
     const character = await prisma.novelPromotionCharacter.update({
       where: { id: characterId },
       data: {
-        voiceType: 'qwen-designed',
+        voiceType: resolvedVoiceType,
         voiceId: voiceId,  // 保存 AI 生成的 voice ID
         customVoiceUrl: cosUrl
       }

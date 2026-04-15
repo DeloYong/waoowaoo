@@ -63,10 +63,18 @@ export const POST = apiHandler(async (request: NextRequest) => {
         const key = generateUniqueKey(`global-voice/${session.user.id}/${characterId}`, 'wav')
         const cosUrl = await uploadObject(audioBuffer, key)
 
+        // 根据 voiceId 格式推断 voiceType：Ark 格式用 'ark-designed'，百炼格式用 'qwen-designed'
+        const inferVoiceType = (vid: string): 'qwen-designed' | 'ark-designed' => {
+            if (vid.startsWith('S_') || vid.includes('_mars_') || vid.includes('_moon_') || vid.includes('_uranus_') || vid.includes('_bigtts')) return 'ark-designed'
+            if (vid.startsWith('qwen-tts-vd-')) return 'qwen-designed'
+            return 'qwen-designed'
+        }
+        const resolvedVoiceType = inferVoiceType(voiceId)
+
         await db.globalCharacter.update({
             where: { id: characterId },
             data: {
-                voiceType: 'qwen-designed',
+                voiceType: resolvedVoiceType,
                 voiceId: voiceId,
                 customVoiceUrl: cosUrl
             }

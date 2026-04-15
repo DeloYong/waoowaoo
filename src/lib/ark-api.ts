@@ -763,7 +763,8 @@ export async function arkTTSGeneration(
     }
 
     if (hasError) {
-        throw new Error(`${logPrefix} 语音生成失败: ${errorMsg}`)
+        _ulogError(`${logPrefix} 语音生成失败: speaker=${speaker}, resourceId=${resourceId}, appId=${appid}, ${errorMsg}`)
+        throw new Error(`${logPrefix} 语音生成失败: ${errorMsg} (speaker=${speaker}, resourceId=${resourceId})`)
     }
     if (chunks.length === 0) {
         throw new Error(`${logPrefix} 语音生成失败: 未返回音频数据`)

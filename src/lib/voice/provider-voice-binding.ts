@@ -83,6 +83,29 @@ function readTrimmedString(input: unknown): string | null {
   return value.length > 0 ? value : null
 }
 
+/**
+ * 判断 voiceId 是否是 Ark/OpenSpeech 格式
+ * - S_ 开头（克隆音色）
+ * - 包含 _mars_, _moon_, _uranus_, _bigtts（大模型音色）
+ * - 包含 _conversation_wvae_（对话音色）
+ */
+function looksLikeArkVoiceId(voiceId: string | null): boolean {
+  if (!voiceId) return false
+  if (voiceId.startsWith('S_')) return true
+  if (voiceId.includes('_mars_') || voiceId.includes('_moon_') || voiceId.includes('_uranus_') || voiceId.includes('_bigtts')) return true
+  if (voiceId.includes('_conversation_wvae_')) return true
+  return false
+}
+
+/**
+ * 判断 voiceId 是否是百炼格式
+ */
+function looksLikeBailianVoiceId(voiceId: string | null): boolean {
+  if (!voiceId) return false
+  if (voiceId.startsWith('qwen-tts-vd-')) return true
+  return false
+}
+
 function normalizeRawSpeakerVoiceEntry(raw: unknown, speaker: string): SpeakerVoiceEntry {
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
     throw new Error(`SPEAKER_VOICE_ENTRY_INVALID: ${speaker}`)
@@ -235,14 +258,15 @@ export function resolveVoiceBindingForProvider(params: {
   }
 
   if (providerKey === 'bailian') {
-    const fromCharacter = toBailianBinding('character', characterVoiceId)
+    const fromCharacter = looksLikeBailianVoiceId(characterVoiceId) ? toBailianBinding('character', characterVoiceId) : null
     if (fromCharacter) return fromCharacter
     if (params.speakerVoice?.provider !== 'bailian') return null
     return toBailianBinding('speaker', readTrimmedString(params.speakerVoice.voiceId))
   }
 
   // providerKey === 'ark'
-  const fromCharacter = toArkBinding('character', characterVoiceId)
+  // character 的 voiceId 只有在格式匹配 ark 时才使用
+  const fromCharacter = looksLikeArkVoiceId(characterVoiceId) ? toArkBinding('character', characterVoiceId) : null
   if (fromCharacter) return fromCharacter
   if (params.speakerVoice?.provider !== 'ark') return null
   return toArkBinding('speaker', readTrimmedString(params.speakerVoice.voiceId))

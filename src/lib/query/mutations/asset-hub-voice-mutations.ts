@@ -73,6 +73,12 @@ export function useSaveDesignedAssetHubVoice() {
           extension: 'wav',
         }),
       }, '上传音频失败')
+      // 根据 voiceId 格式推断 voiceType
+      const inferVoiceType = (vid: string): 'qwen-designed' | 'ark-designed' => {
+        if (vid.startsWith('S_') || vid.includes('_mars_') || vid.includes('_moon_') || vid.includes('_uranus_') || vid.includes('_bigtts')) return 'ark-designed'
+        if (vid.startsWith('qwen-tts-vd-')) return 'qwen-designed'
+        return 'qwen-designed'
+      }
       const res = await requestJsonWithError('/api/asset-hub/voices', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -81,7 +87,7 @@ export function useSaveDesignedAssetHubVoice() {
           description: null,
           folderId: payload.folderId,
           voiceId: payload.voiceId,
-          voiceType: 'qwen-designed',
+          voiceType: inferVoiceType(payload.voiceId),
           customVoiceUrl: uploadData.key,
           voicePrompt: payload.voicePrompt,
           gender: null,
