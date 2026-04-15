@@ -28,3 +28,15 @@ export type {
   ArkListVoicesResult,
   ArkDeleteVoiceResult,
 } from './voice-manage'
+
+// 长文本TTS（openspeech异步API）
+export {
+  createArkLongTTS,
+  submitLongTTS,
+  queryLongTTS,
+  synthesizeLongTTS,
+} from './long-tts'
+export type {
+  ArkLongTTSInput,
+  ArkLongTTSResult,
+} from './long-tts'

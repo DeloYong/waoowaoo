@@ -119,6 +119,9 @@ services:
       # 可观测性
       AXIOM_API_TOKEN: ${AXIOM_API_TOKEN:-}
       AXIOM_DATASET: ${AXIOM_DATASET:-waoowaoo}
+      # 火山引擎 OpenSpeech 长文本 TTS
+      ARK_OPENSPEECH_APP_ID: ${ARK_OPENSPEECH_APP_ID:-}
+      ARK_OPENSPEECH_ACCESS_KEY: ${ARK_OPENSPEECH_ACCESS_KEY:-}
       # 流式
       LLM_STREAM_EPHEMERAL_ENABLED: "true"
     ports:

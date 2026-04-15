@@ -272,23 +272,43 @@ export async function generateVoiceLine(params: {
       }
       throw new Error('请先为该发言人绑定火山引擎音色')
     }
-    const ttsGenerator = new ArkTTSGenerator()
-    const result = await ttsGenerator.generate({
-      userId: params.userId,
-      text,
-      voice: voiceBinding.voiceId,
-      rate: 1.0,
-      options: { modelId: audioSelection.modelId },
-    })
-    if (!result.success || !result.audioUrl) {
-      throw new Error(`DOUBAO_TTS_FAILED: ${result.error || '生成失败'}`)
-    }
 
-    // 下载音频数据
-    const audioData = await downloadAudioData(result.audioUrl)
-    generated = {
-      audioData,
-      audioDuration: getWavDurationFromBuffer(audioData),
+    if (audioSelection.modelId === 'doubao-tts-long-v1') {
+      // 长文本 TTS：异步 openspeech API
+      const { synthesizeLongTTS } = await import('@/lib/providers/ark/long-tts')
+      const longResult = await synthesizeLongTTS({
+        text,
+        voiceType: voiceBinding.voiceId,
+        format: 'mp3',
+      })
+      if (!longResult.success || !longResult.audioUrl) {
+        throw new Error(`DOUBAO_LONG_TTS_FAILED: ${longResult.error || '长文本TTS生成失败'}`)
+      }
+      // 下载音频数据
+      const audioData = await downloadAudioData(longResult.audioUrl)
+      generated = {
+        audioData,
+        audioDuration: (longResult.duration ?? 0) * 1000 || getWavDurationFromBuffer(audioData),
+      }
+    } else {
+      // 标准/精品 TTS：同步 Ark API
+      const ttsGenerator = new ArkTTSGenerator()
+      const result = await ttsGenerator.generate({
+        userId: params.userId,
+        text,
+        voice: voiceBinding.voiceId,
+        rate: 1.0,
+        options: { modelId: audioSelection.modelId },
+      })
+      if (!result.success || !result.audioUrl) {
+        throw new Error(`DOUBAO_TTS_FAILED: ${result.error || '生成失败'}`)
+      }
+      // 下载音频数据
+      const audioData = await downloadAudioData(result.audioUrl)
+      generated = {
+        audioData,
+        audioDuration: getWavDurationFromBuffer(audioData),
+      }
     }
   } else {
     throw new Error(`AUDIO_PROVIDER_UNSUPPORTED: ${audioSelection.provider}`)
