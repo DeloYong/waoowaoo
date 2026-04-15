@@ -1,6 +1,5 @@
 import { getInternalBaseUrl } from '@/lib/env'
 import { logInfo as _ulogInfo, logError as _ulogError } from '@/lib/logging/core'
-import * as crypto from 'crypto'
 /**
  * 火山引擎 API 统一调用工具
  * 
@@ -667,7 +666,7 @@ export async function fetchWithTimeoutAndRetry(
 export async function arkTTSGeneration(
     request: ArkTTSRequest,
     options: {
-        apiKey: string  // 必须传入 API Key（此处未使用，保留接口兼容）
+        apiKey: string  // 保留接口兼容，实际使用环境变量
         timeoutMs?: number
         maxRetries?: number
         logPrefix?: string
@@ -679,50 +678,43 @@ export async function arkTTSGeneration(
         logPrefix = '[Ark TTS]'
     } = options
 
-    // OpenSpeech 同步 TTS API
-    const url = 'https://openspeech.bytedance.com/api/v1/tts'
+    // OpenSpeech V3 TTS API（V1 已不推荐，且多数 AppID 未授权）
+    const url = 'https://openspeech.bytedance.com/api/v3/tts/unidirectional'
 
-    // 从环境变量获取 appid 和 accessKey
     const appid = process.env.ARK_OPENSPEECH_APP_ID || ''
     const accessKey = process.env.ARK_OPENSPEECH_ACCESS_KEY || ''
     if (!appid || !accessKey) {
         throw new Error('ARK_OPENSPEECH_APP_ID 和 ARK_OPENSPEECH_ACCESS_KEY 环境变量未配置')
     }
 
-    // cluster 映射：标准版用 volc_std，精品版用 volc_mega_tts
-    const cluster = request.model === 'doubao-tts-premium-v1' ? 'volc_mega_tts' : 'volc_std'
+    // resource-id 映射：标准版 seed-tts-1.0，精品版 seed-tts-2.0
+    const resourceId = request.model === 'doubao-tts-premium-v1' ? 'seed-tts-2.0' : 'seed-tts-1.0'
 
-    _ulogInfo(`${logPrefix} 开始语音生成请求, 模型: ${request.model}, 音色: ${request.voice}, 语速: ${request.speed || 1.0}`)
-    _ulogInfo(`${logPrefix} 文本长度: ${request.input?.length || 0}, cluster: ${cluster}`)
+    _ulogInfo(`${logPrefix} 开始语音生成请求(V3), 模型: ${request.model}, 音色: ${request.voice}, resource: ${resourceId}`)
 
     const requestBody = {
-        appid,
-        token: 'access_token',  // 使用签名认证，token 字段为占位
-        cluster,
-        text: request.input,
-        format: request.response_format || 'mp3',
-        voice_type: request.voice,
-        speed: request.speed || 1.0,
+        user: { uid: 'waoowaoo_user' },
+        req_params: {
+            text: request.input,
+            speaker: request.voice,
+            audio_params: {
+                format: request.response_format || 'mp3',
+                sample_rate: 24000,
+                speed_ratio: request.speed || 1.0,
+            },
+        },
     }
 
-    // 生成签名
-    const timestamp = Math.floor(Date.now() / 1000).toString()
-    const resourcePath = '/api/v1/tts'
-    const stringToSign = `POST\n${resourcePath}\n${timestamp}`
-    const signature = crypto.createHmac('sha256', accessKey).update(stringToSign).digest('base64')
-
+    // V3 接口使用 X-Api-App-Id + X-Api-Access-Key 认证
     const response = await fetchWithRetry(
         url,
         {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `HMAC-SHA256 Credential=${appid}, Signature=${signature}`,
                 'X-Api-App-Id': appid,
                 'X-Api-Access-Key': accessKey,
-                'X-Api-Timestamp': timestamp,
-                'X-Api-Resource-Path': resourcePath,
-                'X-Api-Signature': signature,
+                'X-Api-Resource-Id': resourceId,
             },
             body: JSON.stringify(requestBody)
         },
@@ -736,35 +728,48 @@ export async function arkTTSGeneration(
         throw new Error(`${logPrefix} 语音生成失败: ${response.status} - ${errorText}`)
     }
 
-    // OpenSpeech 返回 JSON 包含 audio 字段（base64 编码）
-    const contentType = response.headers.get('content-type') || ''
-    if (contentType.includes('application/json')) {
-        const data = await response.json() as {
-            code?: number
-            message?: string
-            data?: string  // base64 编码的音频数据
-        }
-        if (data.code !== 0 && data.code !== undefined) {
-            throw new Error(`${logPrefix} 语音生成失败: code=${data.code}, message=${data.message || 'unknown'}`)
-        }
-        if (!data.data) {
-            throw new Error(`${logPrefix} 语音生成失败: 未返回音频数据`)
-        }
-        const audioBuffer = Buffer.from(data.data, 'base64')
-        const audioBlob = new Blob([audioBuffer], { type: `audio/${request.response_format || 'mp3'}` })
-        _ulogInfo(`${logPrefix} 语音生成成功, 音频大小: ${audioBlob.size} bytes`)
-        return {
-            audio: audioBlob,
-            contentType: `audio/${request.response_format || 'mp3'}`
+    // V3 接口返回 NDJSON 流，每行 {"code":0,"message":"","data":"base64_chunk"}
+    const text = await response.text()
+    const chunks: Buffer[] = []
+    let hasError = false
+    let errorMsg = ''
+
+    for (const line of text.split('\n')) {
+        const trimmed = line.trim()
+        if (!trimmed) continue
+        try {
+            const item = JSON.parse(trimmed) as {
+                code?: number
+                message?: string
+                data?: string
+            }
+            // 检查错误码
+            if (item.code && item.code !== 0) {
+                hasError = true
+                errorMsg = `code=${item.code}, message=${item.message || 'unknown'}`
+                break
+            }
+            if (item.data) {
+                chunks.push(Buffer.from(item.data, 'base64'))
+            }
+        } catch {
+            // 跳过无法解析的行
         }
     }
 
-    // 如果直接返回音频流
-    const audioBlob = await response.blob()
-    _ulogInfo(`${logPrefix} 语音生成成功, 音频大小: ${audioBlob.size} bytes`)
+    if (hasError) {
+        throw new Error(`${logPrefix} 语音生成失败: ${errorMsg}`)
+    }
+    if (chunks.length === 0) {
+        throw new Error(`${logPrefix} 语音生成失败: 未返回音频数据`)
+    }
+
+    const audioBuffer = Buffer.concat(chunks)
+    const audioBlob = new Blob([audioBuffer], { type: `audio/${request.response_format || 'mp3'}` })
+    _ulogInfo(`${logPrefix} 语音生成成功, 音频大小: ${audioBlob.size} bytes, 分片数: ${chunks.length}`)
     return {
         audio: audioBlob,
-        contentType: contentType || 'audio/mpeg'
+        contentType: `audio/${request.response_format || 'mp3'}`
     }
 }
 
