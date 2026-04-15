@@ -687,16 +687,24 @@ export async function arkTTSGeneration(
         throw new Error('ARK_OPENSPEECH_APP_ID 和 ARK_OPENSPEECH_ACCESS_KEY 环境变量未配置')
     }
 
-    // resource-id 映射：标准版 seed-tts-1.0，精品版 seed-tts-2.0
-    const resourceId = request.model === 'doubao-tts-premium-v1' ? 'seed-tts-2.0' : 'seed-tts-1.0'
+    // resource-id 映射：必须根据 speaker 格式决定，而非 model
+    // S_ 开头 → seed-icl-2.0（克隆声音），_uranus_/saturn_ 开头 → seed-tts-2.0，其他 → seed-tts-1.0
+    const speaker = request.voice
+    const isCloned = speaker.startsWith('S_')
+    const is2dot0 = speaker.includes('_uranus_') || speaker.startsWith('saturn_')
+    const resourceId = isCloned ? 'seed-icl-2.0' : is2dot0 ? 'seed-tts-2.0' : 'seed-tts-1.0'
 
-    _ulogInfo(`${logPrefix} 开始语音生成请求(V3), 模型: ${request.model}, 音色: ${request.voice}, resource: ${resourceId}`)
+    _ulogInfo(`${logPrefix} 开始语音生成请求(V3), 模型: ${request.model}, 音色: ${speaker}, resource: ${resourceId}, isCloned: ${isCloned}, is2dot0: ${is2dot0}`)
+
+    // 克隆声音(S_开头)必须传 additions.model_type=4
+    const additions = isCloned ? JSON.stringify({ model_type: 4 }) : undefined
 
     const requestBody = {
         user: { uid: 'waoowaoo_user' },
         req_params: {
             text: request.input,
-            speaker: request.voice,
+            speaker,
+            ...(additions ? { additions } : {}),
             audio_params: {
                 format: request.response_format || 'mp3',
                 sample_rate: 24000,

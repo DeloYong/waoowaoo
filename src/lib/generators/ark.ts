@@ -566,7 +566,7 @@ export class ArkVideoGenerator extends BaseVideoGenerator {
 
 export class ArkTTSGenerator extends BaseAudioGenerator {
     protected async doGenerate(params: AudioGenerateParams): Promise<GenerateResult> {
-        const { userId, text, voice = 'zh_female_shuangyueqingxin', rate = 1.0, options = {} } = params
+        const { userId, text, voice = 'zh_female_mars_bigtts', rate = 1.0, options = {} } = params
 
         const { apiKey } = await getProviderConfig(userId, 'ark')
         const { modelId = 'doubao-tts-v1', responseFormat = 'mp3' } = options as { modelId?: string; responseFormat?: 'mp3' | 'wav' | 'pcm' }
@@ -677,7 +677,7 @@ export async function arkBatchTTSGenerate(params: {
     responseFormat?: 'mp3' | 'wav' | 'pcm'
     onProgress?: (current: number, total: number) => void
 }): Promise<GenerateResult> {
-    const { userId, text, voice = 'zh_female_shuangyueqingxin', rate = 1.0, responseFormat = 'mp3', onProgress } = params
+    const { userId, text, voice = 'zh_female_mars_bigtts', rate = 1.0, responseFormat = 'mp3', onProgress } = params
 
     const generator = new ArkTTSGenerator()
     const segments = splitLongText(text)

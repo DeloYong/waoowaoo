@@ -5,7 +5,7 @@ import { createStorageProvider } from '@/lib/storage/factory'
 import { logInfo, logError } from '@/lib/logging/core'
 export class ArkTTSGenerator extends BaseAudioGenerator {
   protected async doGenerate(params: AudioGenerateParams): Promise<GenerateResult> {
-    const { userId, text, voice = 'zh_female_shuangyueqingxin', rate = 1.0, options = {} } = params
+    const { userId, text, voice = 'zh_female_mars_bigtts', rate = 1.0, options = {} } = params
     // 校验选项
     const allowedOptionKeys = ['modelId', 'responseFormat', 'pitch', 'volume']
     Object.keys(options).forEach(key => {
