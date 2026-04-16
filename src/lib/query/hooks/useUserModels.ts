@@ -22,6 +22,17 @@ export interface UserModelsPayload {
     audio: UserModelOption[]
     lipsync: UserModelOption[]
     voicedesign: UserModelOption[]
+    defaultModels?: {
+        analysisModel?: string | null
+        characterModel?: string | null
+        locationModel?: string | null
+        storyboardModel?: string | null
+        editModel?: string | null
+        videoModel?: string | null
+        audioModel?: string | null
+        lipSyncModel?: string | null
+        voiceDesignModel?: string | null
+    }
 }
 
 export function useUserModels() {
@@ -40,6 +51,7 @@ export function useUserModels() {
                 audio: Array.isArray(data?.audio) ? data.audio : [],
                 lipsync: Array.isArray(data?.lipsync) ? data.lipsync : [],
                 voicedesign: Array.isArray(data?.voicedesign) ? data.voicedesign : [],
+                defaultModels: data?.defaultModels || undefined,
             } as UserModelsPayload
         },
     })

@@ -72,6 +72,7 @@ export function useVideoStageRuntime({
   capabilityOverrides,
   videoRatio = '16:9',
   userVideoModels,
+  defaultLipSyncModel,
   onGenerateVideo,
   onGenerateAllVideos,
   onBack,
@@ -311,6 +312,7 @@ export function useVideoStageRuntime({
         panelIndex,
         voiceLineId,
         panelId,
+        ...(defaultLipSyncModel ? { lipSyncModel: defaultLipSyncModel } : {}),
       })
     } catch (error: unknown) {
       _ulogError('Lip sync error:', error)

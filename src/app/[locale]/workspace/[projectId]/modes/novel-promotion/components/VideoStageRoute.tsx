@@ -5,11 +5,14 @@ import { useWorkspaceStageRuntime } from '../WorkspaceStageRuntimeContext'
 import { useWorkspaceEpisodeStageData } from '../hooks/useWorkspaceEpisodeStageData'
 import type { Clip as VideoClip } from './video'
 import { useWorkspaceProvider } from '../WorkspaceProvider'
+import { useUserModels } from '@/lib/query/hooks'
 
 export default function VideoStageRoute() {
   const runtime = useWorkspaceStageRuntime()
   const { projectId, episodeId } = useWorkspaceProvider()
   const { clips, storyboards } = useWorkspaceEpisodeStageData()
+  const userModelsQuery = useUserModels()
+  const defaultLipSyncModel = userModelsQuery.data?.defaultModels?.lipSyncModel || undefined
   const normalizedClips: VideoClip[] = clips.map((clip) => ({
     id: clip.id,
     start: clip.start ?? 0,
@@ -26,6 +29,7 @@ export default function VideoStageRoute() {
       storyboards={storyboards}
       clips={normalizedClips}
       defaultVideoModel=""
+      defaultLipSyncModel={defaultLipSyncModel}
       capabilityOverrides={runtime.capabilityOverrides}
       videoRatio={runtime.videoRatio ?? undefined}
       userVideoModels={runtime.userVideoModels}

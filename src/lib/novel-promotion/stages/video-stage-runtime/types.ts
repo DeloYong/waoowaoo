@@ -43,6 +43,7 @@ export interface VideoStageShellProps {
   capabilityOverrides: CapabilitySelections
   videoRatio?: string
   userVideoModels?: VideoModelOption[]
+  defaultLipSyncModel?: string
   onGenerateVideo: (
     storyboardId: string,
     panelIndex: number,

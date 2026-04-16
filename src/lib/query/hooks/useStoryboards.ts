@@ -334,6 +334,7 @@ export function useLipSync(projectId: string | null, episodeId: string | null) {
             panelIndex: number
             voiceLineId: string
             panelId?: string
+            lipSyncModel?: string
         }) => {
             const res = await apiFetch(`/api/novel-promotion/${projectId}/lip-sync`, {
                 method: 'POST',
@@ -341,7 +342,8 @@ export function useLipSync(projectId: string | null, episodeId: string | null) {
                 body: JSON.stringify({
                     storyboardId: params.storyboardId,
                     panelIndex: params.panelIndex,
-                    voiceLineId: params.voiceLineId
+                    voiceLineId: params.voiceLineId,
+                    ...(params.lipSyncModel ? { lipSyncModel: params.lipSyncModel } : {}),
                 })
             })
 

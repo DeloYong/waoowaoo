@@ -52,6 +52,17 @@ interface UserModelsPayload {
   audio: UserModelOption[]
   lipsync: UserModelOption[]
   voicedesign: UserModelOption[]
+  defaultModels?: {
+    analysisModel?: string | null
+    characterModel?: string | null
+    locationModel?: string | null
+    storyboardModel?: string | null
+    editModel?: string | null
+    videoModel?: string | null
+    audioModel?: string | null
+    lipSyncModel?: string | null
+    voiceDesignModel?: string | null
+  }
 }
 
 const AUDIO_MODEL_EXCLUDED_IDS = new Set([
@@ -174,7 +185,7 @@ export const GET = apiHandler(async () => {
   const [pref, platformConfig] = await Promise.all([
     prisma.userPreference.findUnique({
       where: { userId },
-      select: { customModels: true, customProviders: true },
+      select: { customModels: true, customProviders: true, analysisModel: true, characterModel: true, locationModel: true, storyboardModel: true, editModel: true, videoModel: true, audioModel: true, lipSyncModel: true, voiceDesignModel: true },
     }),
     prisma.platformConfig.findUnique({
       where: { configKey: 'api_config' },
@@ -254,5 +265,16 @@ export const GET = apiHandler(async () => {
     audio: dedupeByModelKey(grouped.audio),
     lipsync: dedupeByModelKey(grouped.lipsync),
     voicedesign: dedupeByModelKey(grouped.voicedesign),
+    defaultModels: {
+      analysisModel: pref?.analysisModel || null,
+      characterModel: pref?.characterModel || null,
+      locationModel: pref?.locationModel || null,
+      storyboardModel: pref?.storyboardModel || null,
+      editModel: pref?.editModel || null,
+      videoModel: pref?.videoModel || null,
+      audioModel: pref?.audioModel || null,
+      lipSyncModel: pref?.lipSyncModel || null,
+      voiceDesignModel: pref?.voiceDesignModel || null,
+    },
   } satisfies UserModelsPayload)
 })
