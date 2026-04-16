@@ -8,7 +8,8 @@ import { TASK_TYPE } from '@/lib/task/types'
 import { buildDefaultTaskBillingInfo } from '@/lib/billing'
 import { hasPanelLipSyncOutput } from '@/lib/task/has-output'
 import { withTaskUiPayload } from '@/lib/task/ui-payload'
-import { parseModelKeyStrict } from '@/lib/model-config-contract'
+import { parseModelKeyStrict, composeModelKey } from '@/lib/model-config-contract'
+import { getModelsByType } from '@/lib/api-config'
 
 export const POST = apiHandler(async (
   request: NextRequest,
@@ -42,7 +43,23 @@ export const POST = apiHandler(async (
     select: { lipSyncModel: true },
   })
   const preferredLipSyncModel = typeof pref?.lipSyncModel === 'string' ? pref.lipSyncModel.trim() : ''
-  const resolvedLipSyncModel = requestedLipSyncModel || preferredLipSyncModel || ''
+  let resolvedLipSyncModel = requestedLipSyncModel || preferredLipSyncModel || ''
+
+  // When no model specified, auto-select the first available lipsync model
+  // that has a configured API key (skip models whose provider lacks credentials)
+  if (!resolvedLipSyncModel) {
+    const availableModels = await getModelsByType(session.user.id, 'lipsync')
+    if (availableModels.length === 0) {
+      throw new ApiError('INVALID_PARAMS', {
+        code: 'MODEL_NOT_CONFIGURED',
+        message: '未配置可用口型同步模型，请先前往设置页面配置后再试',
+      })
+    }
+    // Use the first model (providers without apiKey will be caught later
+    // by getProviderConfig with a clearer error message)
+    resolvedLipSyncModel = composeModelKey(availableModels[0].provider, availableModels[0].modelId)
+  }
+
   if (resolvedLipSyncModel && !parseModelKeyStrict(resolvedLipSyncModel)) {
     throw new ApiError('INVALID_PARAMS', {
       code: 'MODEL_KEY_INVALID',
