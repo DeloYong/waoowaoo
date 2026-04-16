@@ -10,6 +10,7 @@ import { hasPanelLipSyncOutput } from '@/lib/task/has-output'
 import { withTaskUiPayload } from '@/lib/task/ui-payload'
 import { parseModelKeyStrict, composeModelKey } from '@/lib/model-config-contract'
 import { getModelsByType } from '@/lib/api-config'
+import { getPlatformConfigForFallback } from '@/lib/platform-config'
 
 export const POST = apiHandler(async (
   request: NextRequest,
@@ -43,10 +44,19 @@ export const POST = apiHandler(async (
     select: { lipSyncModel: true },
   })
   const preferredLipSyncModel = typeof pref?.lipSyncModel === 'string' ? pref.lipSyncModel.trim() : ''
+  // Model resolution priority: frontend request > user preference > platform default > auto-select
   let resolvedLipSyncModel = requestedLipSyncModel || preferredLipSyncModel || ''
 
-  // When no model specified, auto-select the first available lipsync model
-  // that has a configured API key (skip models whose provider lacks credentials)
+  // Fallback to platform default lipSyncModel (set by admin)
+  if (!resolvedLipSyncModel) {
+    const platformConfig = await getPlatformConfigForFallback()
+    const platformDefault = platformConfig.defaultModels?.lipSyncModel?.trim() || ''
+    if (platformDefault) {
+      resolvedLipSyncModel = platformDefault
+    }
+  }
+
+  // Final fallback: auto-select the first available lipsync model
   if (!resolvedLipSyncModel) {
     const availableModels = await getModelsByType(session.user.id, 'lipsync')
     if (availableModels.length === 0) {
@@ -55,8 +65,6 @@ export const POST = apiHandler(async (
         message: '未配置可用口型同步模型，请先前往设置页面配置后再试',
       })
     }
-    // Use the first model (providers without apiKey will be caught later
-    // by getProviderConfig with a clearer error message)
     resolvedLipSyncModel = composeModelKey(availableModels[0].provider, availableModels[0].modelId)
   }
 

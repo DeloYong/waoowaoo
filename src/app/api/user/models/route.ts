@@ -189,7 +189,7 @@ export const GET = apiHandler(async () => {
     }),
     prisma.platformConfig.findUnique({
       where: { configKey: 'api_config' },
-      select: { customModels: true, customProviders: true },
+      select: { customModels: true, customProviders: true, analysisModel: true, characterModel: true, locationModel: true, storyboardModel: true, editModel: true, videoModel: true, audioModel: true, lipSyncModel: true, voiceDesignModel: true },
     }),
   ])
 
@@ -266,15 +266,15 @@ export const GET = apiHandler(async () => {
     lipsync: dedupeByModelKey(grouped.lipsync),
     voicedesign: dedupeByModelKey(grouped.voicedesign),
     defaultModels: {
-      analysisModel: pref?.analysisModel || null,
-      characterModel: pref?.characterModel || null,
-      locationModel: pref?.locationModel || null,
-      storyboardModel: pref?.storyboardModel || null,
-      editModel: pref?.editModel || null,
-      videoModel: pref?.videoModel || null,
-      audioModel: pref?.audioModel || null,
-      lipSyncModel: pref?.lipSyncModel || null,
-      voiceDesignModel: pref?.voiceDesignModel || null,
+      analysisModel: pref?.analysisModel || platformConfig?.analysisModel || null,
+      characterModel: pref?.characterModel || platformConfig?.characterModel || null,
+      locationModel: pref?.locationModel || platformConfig?.locationModel || null,
+      storyboardModel: pref?.storyboardModel || platformConfig?.storyboardModel || null,
+      editModel: pref?.editModel || platformConfig?.editModel || null,
+      videoModel: pref?.videoModel || platformConfig?.videoModel || null,
+      audioModel: pref?.audioModel || platformConfig?.audioModel || null,
+      lipSyncModel: pref?.lipSyncModel || platformConfig?.lipSyncModel || null,
+      voiceDesignModel: pref?.voiceDesignModel || platformConfig?.voiceDesignModel || null,
     },
   } satisfies UserModelsPayload)
 })
