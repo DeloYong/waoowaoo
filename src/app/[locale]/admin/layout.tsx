@@ -30,6 +30,7 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
     { href: '/admin/credit-pricing', label: '积分定价配置', icon: '💰' },
     { href: '/admin/users', label: '用户管理', icon: '👥' },
     { href: '/admin/invite-leaderboard', label: '邀请榜单', icon: '🏆' },
+    { href: '/admin/reports', label: '数据报表', icon: '📊' },
   ]
 
   return (

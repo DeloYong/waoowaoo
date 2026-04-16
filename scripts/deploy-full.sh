@@ -110,13 +110,34 @@ docker exec waoowaoo-app npx tsx scripts/migrations/backfill-invite-codes.ts || 
 echo ""
 
 # 步骤 6: 清理用户模型配置
-echo "步骤 6/6: 清理用户模型配置，统一使用系统默认..."
+echo "步骤 6/7: 清理用户模型配置，统一使用系统默认..."
 echo "========================================="
 docker exec waoowaoo-app npx tsx scripts/migrations/clear-user-model-configs.ts
 echo ""
 
+# 步骤 7: 执行数据库迁移
+echo "步骤 7/7: 执行数据库迁移..."
+echo "========================================="
+docker exec waoowaoo-app npx prisma migrate deploy
+echo "✅ 数据库迁移完成"
+echo ""
+
 # 显示部署信息
 VERSION=$(grep -o '"version"[[:space:]]*:[[:space:]]*"[^"]*"' package.json | sed 's/.*"version"[[:space:]]*:[[:space:]]*"//;s/"//')
+
+# 配置Cron任务提示
+echo "========================================="
+echo "  ⏰ Cron任务配置提醒"
+echo "========================================="
+echo "已集成每日统计报表功能，需要配置定时任务："
+echo ""
+echo "自动配置Cron任务（每日凌晨1点生成统计数据）："
+echo "sudo bash scripts/setup-cron.sh"
+echo ""
+echo "手动配置："
+echo "crontab -e"
+echo "添加行：0 1 * * * curl -X POST http://127.0.0.1:13000/api/cron/generate-daily-stats -H \"Authorization: Bearer $(grep CRON_SECRET .env | cut -d '=' -f2)\""
+echo ""
 
 echo "========================================="
 echo "  🎉 部署完成!"

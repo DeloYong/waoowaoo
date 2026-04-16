@@ -449,6 +449,27 @@ model PlatformConfig {
   @@map("platform_config")
 }
 
+// ==================== 每日统计 ====================
+model DailyStats {
+  id                    String   @id @default(uuid())
+  date                  DateTime @unique // 统计日期（零点时间），唯一键保证幂等
+  newUserCount          Int      @default(0) // 当日新增用户数
+  activeUserCount       Int      @default(0) // 当日活跃用户数（有任意操作的用户）
+  totalTasks            Int      @default(0) // 当日总任务数
+  successfulTasks       Int      @default(0) // 当日成功任务数
+  totalCreditsConsumed  Int      @default(0) // 当日积分总消耗
+  subscriptionRevenue   Decimal  @default(0) @db.Decimal(18, 2) // 当日订阅收入
+  rechargeRevenue       Decimal  @default(0) @db.Decimal(18, 2) // 当日充值收入
+  taskTypeStats         Json     @default("{}") // 各类型任务统计：{ [taskType]: { count: number, success: number } }
+  modelUsageStats       Json     @default("{}") // 各模型使用统计：{ [modelKey]: { count: number, credits: number } }
+  planSubscriptionStats Json     @default("{}") // 各套餐订阅统计：{ [planId]: { newCount: number, activeCount: number, revenue: number } }
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@index([date])
+  @@map("daily_stats")
+}
+
 // ==================== 订阅套餐 ====================
 model SubscriptionPlan {
   id              String   @id // starter / basic / pro / flagship / enterprise

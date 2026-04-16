@@ -62,6 +62,7 @@ export default function PricingPage() {
   const tc = useTranslations('common')
   const [plans, setPlans] = useState<Plan[]>([])
   const [loading, setLoading] = useState(true)
+  const [purchasingPlanId, setPurchasingPlanId] = useState<string | null>(null)
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly')
   const [openFAQ, setOpenFAQ] = useState<number | null>(null)
 
@@ -83,8 +84,26 @@ export default function PricingPage() {
     }
   }
 
-  const handlePurchase = (planId: string) => {
-    toast('购买功能即将开放', { icon: '🚧' })
+  const handlePurchase = async (planId: string) => {
+    setPurchasingPlanId(planId)
+    try {
+      const res = await fetch('/api/user/subscription', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ planId, billingCycle }),
+      })
+      if (!res.ok) {
+        const error = await res.json()
+        throw new Error(error.message || '订阅失败')
+      }
+      toast.success('订阅成功！')
+      // 重新获取套餐信息
+      await fetchPlans()
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : '订阅失败，请稍后重试')
+    } finally {
+      setPurchasingPlanId(null)
+    }
   }
 
   const toggleFAQ = (index: number) => {
@@ -285,7 +304,10 @@ export default function PricingPage() {
                   {/* 购买按钮 */}
                   <button
                     onClick={() => handlePurchase(plan.id)}
+                    disabled={purchasingPlanId === plan.id}
                     className={`w-full py-3.5 rounded-xl font-semibold transition-all duration-200 ${
+                      purchasingPlanId === plan.id ? 'opacity-70 cursor-not-allowed' : ''
+                    } ${
                       isEnterprise
                         ? 'bg-gradient-to-r from-purple-500 to-purple-600 text-white hover:from-purple-600 hover:to-purple-700 shadow-md hover:shadow-lg'
                         : isPopular
@@ -293,7 +315,7 @@ export default function PricingPage() {
                         : 'bg-[var(--glass-bg-canvas)] text-[var(--glass-text-primary)] border-2 border-[var(--glass-stroke-base)] hover:bg-[var(--glass-bg-surface-strong)] hover:border-[var(--glass-stroke-strong)]'
                     }`}
                   >
-                    {isEnterprise ? '联系我们' : '立即订阅'}
+                    {purchasingPlanId === plan.id ? '订阅中...' : isEnterprise ? '联系我们' : '立即订阅'}
                   </button>
                 </div>
               </div>

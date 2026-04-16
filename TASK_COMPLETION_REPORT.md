@@ -653,8 +653,73 @@ DATABASE_URL=mysql://root:password@db:3306/waoowaoo
 
 ---
 
-**文档生成时间**: 2026-04-13
-**文档版本**: v2.1
+### Phase 7: 可观测性系统 + 口型同步 Bug 修复 (2026-04-16)
+
+**提交**: `3717e96`, `ca8f978`, `2f924d6`, `98bf1b4`, `faf7fae`, `3b7973e`, `3921eca`
+
+#### 7.1 可观测性系统 (`3717e96`)
+- **核心模块**: `src/lib/observability/` (axiom.ts, types.ts, index.ts)
+- **trackEvent() 双写**: Axiom 缓冲 HTTP + 本地结构化日志
+- **缓冲配置**: 5s 刷新间隔，100 事件最大缓冲
+- **6 个事件域**: 20+ 事件类型覆盖核心业务流程
+- **Axiom 配置**:
+  - Dataset: `waoowaoo`
+  - Org ID: `waoowaoo-arxv`
+  - Edge deployment: US East 1 (AWS)
+  - 查询需 header: `X-AXIOM-ORG-ID: waoowaoo-arxv`
+
+#### 7.2 修复：BILLING_MODE 硬编码为 OFF (`ca8f978`)
+- **根因**: `docker-compose.yml` 硬编码 `BILLING_MODE: "OFF"`，覆盖 `.env` 的 ENFORCE
+- **修复**: 改为 `${BILLING_MODE:-ENFORCE}`，同时添加 AXIOM_API_TOKEN/AXIOM_DATASET 环境变量
+
+#### 7.3 修复：音色设计无模型选项 (`2f924d6`)
+- **根因**: `useApiConfigFilters.ts` 的 `isDefaultModelType()` 缺少 `'voicedesign'`
+- **修复**: PROVIDER_MODEL_TYPES、isProviderModelType()、isDefaultModelType() 均添加 'voicedesign'
+- **types.ts**: PRESET_MODELS 添加 `doubao-voice-clone-v1`
+
+#### 7.4 修复：口型同步选择 bailian 仍报 PROVIDER_API_KEY_MISSING: fal (`98bf1b4`)
+- **根因**: 前端 `useLipSync` 调用 lip-sync API 时从不传递 `lipSyncModel` 参数。后端只能依赖数据库中可能过时的 `userPreference.lipSyncModel`，当该值为空时 `resolveModelSelectionOrSingle` 自动选择第一个 lipsync 模型（通常是旧的 fal 条目），导致 `PROVIDER_API_KEY_MISSING: fal`。
+- **修复链**（6 个文件）:
+
+| 文件 | 改动 |
+|------|------|
+| `src/app/api/user/models/route.ts` | API 返回新增 `defaultModels` 对象（含 `lipSyncModel`） |
+| `src/lib/query/hooks/useUserModels.ts` | 类型 + queryFn 透传 `defaultModels` |
+| `src/.../VideoStageRoute.tsx` | 调用 `useUserModels()` 取 `defaultLipSyncModel` → 传给 VideoStage |
+| `src/.../video-stage-runtime/types.ts` | `VideoStageShellProps` 新增 `defaultLipSyncModel?` |
+| `src/.../video-stage-runtime-core.tsx` | `handleLipSync` 从 props 闭包获取 `defaultLipSyncModel` |
+| `src/lib/query/hooks/useStoryboards.ts` | `mutationFn` 接受并传递 `lipSyncModel` 到 POST body |
+
+- **数据流**:
+  ```
+  用户选 bailian::videoretalk → userPreference.lipSyncModel
+    → useUserModels().defaultModels.lipSyncModel
+    → handleLipSync() → mutationFn({ lipSyncModel })
+    → POST /api/lip-sync { lipSyncModel: 'bailian::videoretalk' }
+    → Worker 正确路由到 bailian provider ✅
+  ```
+
+#### 7.5 修复：UserModelsPayload 类型导致 ProviderSelector 编译错误 (`faf7fae`)
+- **根因**: `UserModelsPayload` 新增 `defaultModels`（对象类型），`ProviderSelector.tsx` 用 `keyof typeof userModels` 做索引访问时包含了该对象字段，导致 `models` 类型变成 `UserModelOption[] | { defaultModels... }` 联合类型，`.map()` 不存在于对象类型上。
+- **修复**: 改用 `keyof Omit<typeof userModels, 'defaultModels'>` 排除对象字段
+
+#### 7.6 修复：多 lipsync 模型时报 MODEL_SELECTION_REQUIRED (`3b7973e`)
+- **根因**: 用户有多个 lipsync 模型（如 bailian::videoretalk + 旧 fal 模型），但从未设置默认 lipSyncModel 偏好。前端传空值 → 后端 `resolveSingleModelSelection` 发现多个模型 → 抛出 `MODEL_SELECTION_REQUIRED`。
+- **修复**: 在 lip-sync route 中增加 auto-select 逻辑，当 `resolvedLipSyncModel` 为空时，用 `getModelsByType()` 自动选择第一个可用模型。
+
+#### 7.7 修复：平台配置 lipSyncModel 回退 (`3921eca`)
+- **根因**: 普通用户不能设置 `lipSyncModel`（由管理员在 `/admin/platform-keys` 统一配置），但代码中模型解析只查了 `userPreference.lipSyncModel`，没有回退到 `platformConfig.lipSyncModel`。
+- **修复**（2 个文件）:
+
+| 文件 | 改动 |
+|------|------|
+| `src/app/api/novel-promotion/[projectId]/lip-sync/route.ts` | 模型解析优先级：前端传值 > 用户偏好 > **平台默认** > 自动选择第一个 |
+| `src/app/api/user/models/route.ts` | `defaultModels` 回退：用户偏好 > **平台配置** > null |
+
+---
+
+**文档生成时间**: 2026-04-16
+**文档版本**: v2.2
 **分支**: feature/saas-credits
-**最新提交**: fd6ca0a
+**最新提交**: 3921eca
 **对比基准**: main (v0.4.0)
