@@ -41,6 +41,7 @@ export async function GET(request: Request) {
   const sevenDaysAgo = subDays(new Date(), 7)
 
   try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result: Record<string, any> = {
       dateRange: {
         start: startDate.toISOString(),
