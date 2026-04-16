@@ -8,9 +8,7 @@ import { TASK_TYPE } from '@/lib/task/types'
 import { buildDefaultTaskBillingInfo } from '@/lib/billing'
 import { hasPanelLipSyncOutput } from '@/lib/task/has-output'
 import { withTaskUiPayload } from '@/lib/task/ui-payload'
-import { composeModelKey, parseModelKeyStrict } from '@/lib/model-config-contract'
-
-const DEFAULT_LIPSYNC_MODEL_KEY = composeModelKey('fal', 'fal-ai/kling-video/lipsync/audio-to-video')
+import { parseModelKeyStrict } from '@/lib/model-config-contract'
 
 export const POST = apiHandler(async (
   request: NextRequest,
@@ -44,8 +42,8 @@ export const POST = apiHandler(async (
     select: { lipSyncModel: true },
   })
   const preferredLipSyncModel = typeof pref?.lipSyncModel === 'string' ? pref.lipSyncModel.trim() : ''
-  const resolvedLipSyncModel = requestedLipSyncModel || preferredLipSyncModel || DEFAULT_LIPSYNC_MODEL_KEY
-  if (!parseModelKeyStrict(resolvedLipSyncModel)) {
+  const resolvedLipSyncModel = requestedLipSyncModel || preferredLipSyncModel || ''
+  if (resolvedLipSyncModel && !parseModelKeyStrict(resolvedLipSyncModel)) {
     throw new ApiError('INVALID_PARAMS', {
       code: 'MODEL_KEY_INVALID',
       field: 'lipSyncModel',
