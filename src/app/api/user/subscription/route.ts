@@ -37,7 +37,7 @@ export const GET = apiHandler(async (request: NextRequest) => {
 export const POST = apiHandler(async (request: NextRequest) => {
   const authResult = await requireUserAuth()
   if (authResult instanceof NextResponse) {
-    throw new ApiError('UNAUTHORIZED', '请先登录')
+    throw new ApiError('UNAUTHORIZED', { message: '请先登录' })
   }
 
   const { session } = authResult
@@ -49,7 +49,7 @@ export const POST = apiHandler(async (request: NextRequest) => {
   }
 
   if (!planId) {
-    throw new ApiError('VALIDATION_ERROR', '请选择套餐')
+    throw new ApiError('INVALID_PARAMS', { message: '请选择套餐' })
   }
 
   try {
@@ -57,8 +57,8 @@ export const POST = apiHandler(async (request: NextRequest) => {
     return NextResponse.json({ success: true, message: '订阅成功' })
   } catch (error) {
     if (error instanceof Error && error.message.includes('NotFound')) {
-      throw new ApiError('VALIDATION_ERROR', '套餐不存在')
+      throw new ApiError('NOT_FOUND', { message: '套餐不存在' })
     }
-    throw new ApiError('INTERNAL_ERROR', '订阅失败，请稍后重试')
+    throw new ApiError('INTERNAL_ERROR', { message: '订阅失败，请稍后重试' })
   }
 })

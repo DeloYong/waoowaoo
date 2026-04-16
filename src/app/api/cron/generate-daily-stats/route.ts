@@ -1,11 +1,12 @@
 import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
 import { startOfYesterday, endOfYesterday, startOfDay, formatISO } from 'date-fns'
+import { apiHandler } from '@/lib/api-errors'
 
 // Cron API 密钥（复用现有CRON_SECRET环境变量）
 const CRON_API_SECRET = process.env.CRON_SECRET
 
-export async function POST(request: Request) {
+export const POST = apiHandler(async (request: Request) => {
   try {
     // 验证请求权限
     const authHeader = request.headers.get('authorization')
@@ -82,32 +83,26 @@ export async function POST(request: Request) {
     })
 
     // 4. 各类型任务统计
-    const taskTypeRaw = await prisma.task.aggregateRaw({
-      pipeline: [
-        {
-          $match: {
-            createdAt: {
-              $gte: startOfStatsDate,
-              $lt: endOfStatsDate
-            }
-          }
-        },
-        {
-          $group: {
-            _id: '$type',
-            count: { $sum: 1 },
-            success: {
-              $sum: { $cond: [{ $eq: ['$status', 'completed'] }, 1, 0] }
-            }
-          }
+    const tasks = await prisma.task.findMany({
+      where: {
+        createdAt: {
+          gte: startOfStatsDate,
+          lt: endOfStatsDate
         }
-      ]
+      },
+      select: { type: true, status: true }
     })
 
-    const taskTypeStats = (taskTypeRaw as unknown as Array<{ _id: string; count: number; success: number }>).reduce((acc, item) => {
-      acc[item._id] = { count: item.count, success: item.success }
-      return acc
-    }, {} as Record<string, { count: number; success: number }>)
+    const taskTypeStats: Record<string, { count: number; success: number }> = {}
+    tasks.forEach(task => {
+      if (!taskTypeStats[task.type]) {
+        taskTypeStats[task.type] = { count: 0, success: 0 }
+      }
+      taskTypeStats[task.type].count += 1
+      if (task.status === 'completed') {
+        taskTypeStats[task.type].success += 1
+      }
+    })
 
     // 5. 积分总消耗 + 模型使用统计
     const usageCosts = await prisma.usageCost.findMany({
@@ -125,7 +120,7 @@ export async function POST(request: Request) {
       acc[model].count += 1
       acc[model].credits += cost.cost.toNumber()
       return acc
-    }, {})
+    }, {} as Record<string, { count: number; credits: number }>)
 
     // 6. 订阅收入 + 套餐订阅统计
     const subscriptionTransactions = await prisma.balanceTransaction.findMany({
@@ -232,4 +227,4 @@ export async function POST(request: Request) {
       { status: 500 }
     )
   }
-}
+})

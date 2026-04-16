@@ -285,7 +285,6 @@ export default function ProfilePage() {
                             ]}
                             value={trendDateRange}
                             onChange={(val) => setTrendDateRange(val as '7d' | '30d')}
-                            size="sm"
                           />
                         </div>
                         <div className="h-[300px] flex items-center justify-center bg-[var(--glass-bg-muted)] rounded-xl">

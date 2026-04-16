@@ -2,8 +2,9 @@ import { NextResponse } from 'next/server'
 import { requireAdmin } from '@/lib/admin/auth'
 import { prisma } from '@/lib/prisma'
 import { startOfDay, subDays, parseISO } from 'date-fns'
+import { apiHandler } from '@/lib/api-errors'
 
-export async function GET(request: Request) {
+export const GET = apiHandler(async (request: Request) => {
   try {
     await requireAdmin()
   } catch (error: unknown) {
@@ -165,11 +166,13 @@ export async function GET(request: Request) {
           },
         })
 
+        const successfulTasks = taskStats._sum.successfulTasks || 0
+        const totalTasks = taskStats._sum.totalTasks || 0
         result.tasks = {
-          totalTasks: taskStats._sum.totalTasks || 0,
-          successfulTasks: taskStats._sum.successfulTasks || 0,
-          successRate: taskStats._sum.totalTasks
-            ? Math.round((taskStats._sum.successfulTasks / taskStats._sum.totalTasks) * 10000) / 100
+          totalTasks,
+          successfulTasks,
+          successRate: totalTasks
+            ? Math.round((successfulTasks / totalTasks) * 10000) / 100
             : 0,
         }
 
@@ -441,14 +444,19 @@ export async function GET(request: Request) {
         const currentSubscriptions = await prisma.userSubscription.groupBy({
           by: ['status', 'planId'],
           _count: { id: true },
-          include: { plan: true },
         })
+
+        // 查询所有套餐信息
+        const allPlans = await prisma.subscriptionPlan.findMany({
+          select: { id: true, name: true },
+        })
+        const planMap = new Map(allPlans.map(p => [p.id, p.name]))
 
         result.subscriptions = {
           totalRevenue: subscriptionStats._sum.subscriptionRevenue?.toNumber() || 0,
           currentSubscriptions: currentSubscriptions.map(item => ({
             planId: item.planId,
-            planName: item.plan?.name,
+            planName: planMap.get(item.planId) || item.planId,
             status: item.status,
             count: item._count.id,
           })),
@@ -518,15 +526,20 @@ export async function GET(request: Request) {
         const currentSubscriptions = await prisma.userSubscription.groupBy({
           by: ['status', 'planId'],
           _count: { id: true },
-          include: { plan: true },
         })
+
+        // 查询所有套餐信息
+        const allPlans = await prisma.subscriptionPlan.findMany({
+          select: { id: true, name: true },
+        })
+        const planMap2 = new Map(allPlans.map(p => [p.id, p.name]))
 
         result.subscriptions = {
           totalRevenue: subscriptionRevenue._sum.amount?.toNumber() || 0,
           newSubscriptions,
           currentSubscriptions: currentSubscriptions.map(item => ({
             planId: item.planId,
-            planName: item.plan?.name,
+            planName: planMap2.get(item.planId) || item.planId,
             status: item.status,
             count: item._count.id,
           })),
@@ -537,8 +550,13 @@ export async function GET(request: Request) {
           by: ['planId', 'status'],
           where: { createdAt: { gte: startDate, lte: endDate } },
           _count: { id: true },
-          include: { plan: true },
         })
+
+        // 查询所有套餐信息
+        const allPlans3 = await prisma.subscriptionPlan.findMany({
+          select: { id: true, name: true },
+        })
+        const planMap3 = new Map(allPlans3.map(p => [p.id, p.name]))
 
         const planMap = new Map<string, { newCount: number; activeCount: number; revenue: number }>()
         planStats.forEach(item => {
@@ -554,7 +572,7 @@ export async function GET(request: Request) {
 
         result.subscriptions.byPlan = Array.from(planMap.entries()).map(([planId, stats]) => ({
           planId,
-          planName: currentSubscriptions.find(s => s.planId === planId)?.plan?.name || planId,
+          planName: planMap3.get(planId) || planId,
           newCount: stats.newCount,
           activeCount: stats.activeCount,
           revenue: 0, // 实时查询暂时不统计按套餐的收入
@@ -597,4 +615,4 @@ export async function GET(request: Request) {
       { status: 500 }
     )
   }
-}
+})
