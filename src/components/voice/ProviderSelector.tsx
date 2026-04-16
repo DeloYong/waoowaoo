@@ -21,7 +21,7 @@ export function ProviderSelector({ type, value, onChange, className = '' }: Prov
     if (!userModels) return []
 
     const modelType = type === 'tts' ? 'audio' : type === 'voice-design' ? 'voicedesign' : 'lipsync'
-    const models = userModels[modelType as keyof typeof userModels] || []
+    const models = (userModels[modelType as keyof Omit<typeof userModels, 'defaultModels'>] || []) as import('@/lib/query/hooks/useUserModels').UserModelOption[]
 
     // 获取唯一的提供商列表
     const providers = [...new Set(models.map((m) => m.provider).filter(Boolean) as string[])]
