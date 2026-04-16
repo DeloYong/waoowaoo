@@ -92,7 +92,7 @@ export default function ReportsPage() {
     if (!reportData) return
 
     let csvContent = ''
-    let data: any[] = []
+    let data: (string | number)[][] = []
     let headers: string[] = []
 
     switch (type) {

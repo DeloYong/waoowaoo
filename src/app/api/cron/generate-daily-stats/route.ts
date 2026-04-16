@@ -104,10 +104,10 @@ export async function POST(request: Request) {
       ]
     })
 
-    const taskTypeStats = (taskTypeRaw as any[]).reduce((acc, item) => {
+    const taskTypeStats = (taskTypeRaw as unknown as Array<{ _id: string; count: number; success: number }>).reduce((acc, item) => {
       acc[item._id] = { count: item.count, success: item.success }
       return acc
-    }, {})
+    }, {} as Record<string, { count: number; success: number }>)
 
     // 5. 积分总消耗 + 模型使用统计
     const usageCosts = await prisma.usageCost.findMany({
@@ -154,7 +154,7 @@ export async function POST(request: Request) {
     })
 
     // 套餐统计
-    const planStats: Record<string, any> = {}
+    const planStats: Record<string, { newCount: number; activeCount: number; revenue: number }> = {}
 
     // 新增订阅统计
     newSubscriptions.forEach(sub => {

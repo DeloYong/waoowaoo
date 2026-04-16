@@ -6,10 +6,11 @@ import { startOfDay, subDays, parseISO } from 'date-fns'
 export async function GET(request: Request) {
   try {
     await requireAdmin()
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unauthorized'
     return NextResponse.json(
-      { success: false, error: error.message },
-      { status: error.message.includes('Admin') ? 403 : 401 }
+      { success: false, error: message },
+      { status: message.includes('Admin') ? 403 : 401 }
     )
   }
 
@@ -40,7 +41,7 @@ export async function GET(request: Request) {
   const sevenDaysAgo = subDays(new Date(), 7)
 
   try {
-    const result: any = {
+    const result: Record<string, any> = {
       dateRange: {
         start: startDate.toISOString(),
         end: endDate.toISOString(),
@@ -48,7 +49,7 @@ export async function GET(request: Request) {
     }
 
     // 混合查询逻辑：7天内实时查询，7天以上从统计表查询
-    let useStatsTable = startDate < sevenDaysAgo
+    const useStatsTable = startDate < sevenDaysAgo
 
     // 1. 用户统计
     if (include.includes('users')) {
