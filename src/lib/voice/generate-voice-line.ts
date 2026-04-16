@@ -274,12 +274,12 @@ export async function generateVoiceLine(params: {
     }
 
     if (audioSelection.modelId === 'doubao-tts-long-v1') {
-      // 长文本 TTS：异步 openspeech API
+      // 长文本 TTS：异步 openspeech API（输出 wav 以兼容口型同步）
       const { synthesizeLongTTS } = await import('@/lib/providers/ark/long-tts')
       const longResult = await synthesizeLongTTS({
         text,
         voiceType: voiceBinding.voiceId,
-        format: 'mp3',
+        format: 'wav',
       })
       if (!longResult.success || !longResult.audioUrl) {
         throw new Error(`DOUBAO_LONG_TTS_FAILED: ${longResult.error || '长文本TTS生成失败'}`)
@@ -291,14 +291,14 @@ export async function generateVoiceLine(params: {
         audioDuration: (longResult.duration ?? 0) * 1000 || getWavDurationFromBuffer(audioData),
       }
     } else {
-      // 标准/精品 TTS：同步 Ark API
+      // 标准/精品 TTS：同步 Ark API（输出 wav 以兼容口型同步）
       const ttsGenerator = new ArkTTSGenerator()
       const result = await ttsGenerator.generate({
         userId: params.userId,
         text,
         voice: voiceBinding.voiceId,
         rate: 1.0,
-        options: { modelId: audioSelection.modelId },
+        options: { modelId: audioSelection.modelId, responseFormat: 'wav' },
       })
       if (!result.success || !result.audioUrl) {
         throw new Error(`DOUBAO_TTS_FAILED: ${result.error || '生成失败'}`)
@@ -315,7 +315,7 @@ export async function generateVoiceLine(params: {
   }
 
   const audioKey = `voice/${params.projectId}/${episodeId}/${line.id}.wav`
-  const cosKey = await uploadObject(generated.audioData, audioKey)
+  const cosKey = await uploadObject(generated.audioData, audioKey, 1, 'audio/wav')
 
   await checkCancelled?.()
 

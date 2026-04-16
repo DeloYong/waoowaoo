@@ -348,8 +348,19 @@ export async function preprocessLipSyncParams(
   }
 
   const audioBinary = await loadBinaryFromInput(params.audioUrl)
-  if (!audioBinary.mimeType.includes('wav') && parseWavInfo(audioBinary.buffer) === null) {
-    throw new Error('LIPSYNC_AUDIO_PREPROCESS_WAV_REQUIRED')
+  const isWav = audioBinary.mimeType.includes('wav') || parseWavInfo(audioBinary.buffer) !== null
+
+  if (!isWav) {
+    // 非 WAV 音频无法 pad/trim，跳过预处理直接传给 provider
+    _ulogInfo(`[LipSync Preprocess] 音频非 WAV 格式(mime=${audioBinary.mimeType})，跳过 pad/trim 预处理`)
+    return {
+      params: {
+        ...params,
+        videoDurationMs: videoDurationMs ?? params.videoDurationMs,
+      },
+      paddedAudio: false,
+      trimmedAudio: false,
+    }
   }
 
   const parsedAudioDuration = getWavDurationMs(audioBinary.buffer)
