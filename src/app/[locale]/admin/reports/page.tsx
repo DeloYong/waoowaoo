@@ -39,6 +39,31 @@ interface ReportData {
   }
 }
 
+// 后端返回数据类型
+interface UserTrendItem {
+  date: string
+  newUsers: number
+  activeUsers: number
+}
+
+interface TaskTrendItem {
+  date: string
+  totalTasks: number
+  successfulTasks: number
+  successRate: number
+}
+
+interface ConsumptionTrendItem {
+  date: string
+  creditsConsumed: number
+  rechargeRevenue?: number
+}
+
+interface SubscriptionTrendItem {
+  date: string
+  revenue: number
+}
+
 type TimeRange = 'day' | 'week' | 'month' | 'custom'
 
 export default function ReportsPage() {
@@ -62,10 +87,69 @@ export default function ReportsPage() {
         endDate,
       })
 
-      const res = await fetch(`/api/admin/reports?${params}`)
+      const res = await fetch(`/api/admin/reports?days=${timeRange === 'day' ? 7 : timeRange === 'week' ? 30 : 90}&startDate=${startDate}&endDate=${endDate}`)
       if (!res.ok) throw new Error('获取报表数据失败')
-      const data = await res.json()
-      setReportData(data)
+      const result = await res.json()
+      const data = result.data
+
+      // 适配后端返回结构
+      setReportData({
+        userStats: {
+          totalUsers: data.users.totalUsers,
+          newUsers: data.users.newUsers,
+          activeUsers: data.users.activeUsers,
+          retentionRate: 0, // 暂未实现
+          trend: data.users.trend.map((item: UserTrendItem) => ({ date: item.date, value: item.newUsers })),
+          table: data.users.trend.map((item: UserTrendItem) => ({
+            date: item.date,
+            newUsers: item.newUsers,
+            activeUsers: item.activeUsers,
+            retentionRate: 0
+          }))
+        },
+        taskStats: {
+          totalTasks: data.tasks.totalTasks,
+          completedTasks: data.tasks.successfulTasks,
+          failedTasks: data.tasks.totalTasks - data.tasks.successfulTasks,
+          avgDuration: 0, // 暂未实现
+          trend: data.tasks.trend.map((item: TaskTrendItem) => ({ date: item.date, value: item.totalTasks })),
+          table: data.tasks.trend.map((item: TaskTrendItem) => ({
+            date: item.date,
+            totalTasks: item.totalTasks,
+            completedTasks: item.successfulTasks,
+            failedTasks: item.totalTasks - item.successfulTasks,
+            successRate: item.successRate
+          }))
+        },
+        financeStats: {
+          totalRevenue: (data.consumption.totalRechargeRevenue || 0) + (data.subscriptions.totalRevenue || 0),
+          creditConsumed: data.consumption.totalCreditsConsumed,
+          avgOrderValue: 0, // 暂未实现
+          refundAmount: 0, // 暂未实现
+          trend: data.consumption.trend.map((item: ConsumptionTrendItem) => ({ date: item.date, value: item.creditsConsumed })),
+          table: data.consumption.trend.map((item: ConsumptionTrendItem) => ({
+            date: item.date,
+            revenue: item.rechargeRevenue || 0,
+            creditConsumed: item.creditsConsumed,
+            orderCount: 0, // 暂未实现
+            refundAmount: 0 // 暂未实现
+          }))
+        },
+        subscriptionStats: {
+          totalSubscriptions: data.subscriptions.currentSubscriptions.reduce((sum: number, item: { count: number }) => sum + item.count, 0),
+          newSubscriptions: data.subscriptions.newSubscriptions || 0,
+          churnRate: 0, // 暂未实现
+          mrr: data.subscriptions.totalRevenue,
+          trend: data.subscriptions.trend.map((item: SubscriptionTrendItem) => ({ date: item.date, value: item.revenue })),
+          table: data.subscriptions.trend.map((item: SubscriptionTrendItem) => ({
+            date: item.date,
+            newSubscriptions: 0, // 暂未实现按日统计
+            churned: 0, // 暂未实现
+            mrr: item.revenue,
+            churnRate: 0 // 暂未实现
+          }))
+        }
+      })
     } catch (error) {
       toast.error('获取报表数据失败')
     } finally {
