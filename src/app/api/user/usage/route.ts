@@ -2,8 +2,9 @@ import { NextResponse } from 'next/server'
 import { requireUserAuth, isErrorResponse, badRequest } from '@/lib/api-auth'
 import { prisma } from '@/lib/prisma'
 import { startOfDay, subDays, parseISO } from 'date-fns'
+import { apiHandler } from '@/lib/api-errors'
 
-export async function GET(request: Request) {
+export const GET = apiHandler(async (request: Request) => {
   const authResult = await requireUserAuth()
   if (isErrorResponse(authResult)) {
     return authResult
@@ -234,4 +235,4 @@ export async function GET(request: Request) {
       { status: 500 }
     )
   }
-}
+})

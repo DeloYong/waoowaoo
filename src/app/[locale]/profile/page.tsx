@@ -31,6 +31,8 @@ interface SubscriptionInfo {
 interface UsageTrendItem {
   date: string
   credits: number
+  totalCredits?: number
+  taskCount?: number
 }
 
 interface UsageTypeItem {
@@ -42,9 +44,13 @@ interface UsageTypeItem {
 interface ConsumptionRecord {
   id: string
   date: string
+  createdAt: string
   type: string
   description: string
   credits: number
+  cost: number
+  model?: string
+  action?: string
   status: 'success' | 'failed' | 'processing'
 }
 
@@ -121,8 +127,35 @@ export default function ProfilePage() {
     try {
       const res = await fetch('/api/user/usage')
       if (res.ok) {
-        const data = await res.json()
-        setUsageData(data)
+        const result = await res.json()
+        const data = result.data
+
+        // 适配后端返回的数据结构
+        setUsageData({
+          overview: {
+            totalCredits: data.overview.availableCredits,
+            usedThisMonth: data.overview.periodUsage,
+            remainingCredits: data.overview.availableCredits,
+            usedVideoSeconds: 0, // 后端暂时未返回
+            planRemainingDays: data.overview.subscription
+              ? Math.ceil((new Date(data.overview.subscription.currentPeriodEnd).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
+              : 0,
+          },
+          trends: {
+            '7d': data.trend.map((item: UsageTrendItem) => ({ date: item.date, credits: item.totalCredits })),
+            '30d': data.trend.map((item: UsageTrendItem) => ({ date: item.date, credits: item.totalCredits })),
+          },
+          typeDistribution: [], // 后端暂时未返回
+          consumptionRecords: data.details.list.map((item: ConsumptionRecord) => ({
+            id: item.id,
+            date: item.createdAt,
+            type: item.model || item.action || 'unknown',
+            description: item.description || `${item.model} 调用`,
+            credits: item.cost,
+            status: 'success' as const,
+          })),
+          taskRecords: [], // 后端暂时未返回任务记录
+        })
       }
     } catch (error) {
       console.error('获取使用数据失败:', error)
