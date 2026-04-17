@@ -100,6 +100,7 @@ services:
       QUEUE_CONCURRENCY_VIDEO: "50"
       QUEUE_CONCURRENCY_VOICE: "20"
       QUEUE_CONCURRENCY_TEXT: "50"
+      QUEUE_CONCURRENCY_VIDEO_EDITING: "5"
       # Bull Board
       BULL_BOARD_HOST: "0.0.0.0"
       BULL_BOARD_PORT: "3010"
@@ -130,6 +131,7 @@ services:
     volumes:
       - ./data:/app/data
       - ./docker-logs:/app/logs
+      - ./tmp/video-editing:/tmp/video-editing # Video editing temp files, avoid tmpfs out of space
     depends_on:
       mysql:
         condition: service_healthy

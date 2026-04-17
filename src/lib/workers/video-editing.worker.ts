@@ -200,24 +200,38 @@ async function handleVideoEditingTask(job: Job<TaskJobData>): Promise<{ resultUr
 
     await assertTaskActive(job, 'concatenate_shards')
 
-    // Step 3: Add intro and outro
-    await reportTaskProgress(job, 70, { stage: 'add_intro_outro' })
+    let currentVideoPath = concatenatedPath
 
+    // Step 3: Add intro and outro (if files exist)
+    await reportTaskProgress(job, 70, { stage: 'add_intro_outro' })
     const introPath = payload.introVideoPath || DEFAULT_INTRO_VIDEO_PATH
     const outroPath = payload.outroVideoPath || DEFAULT_OUTRO_VIDEO_PATH
 
-    const withIntroOutroPath = path.join(tempDir, 'with-intro-outro.mp4')
-    await addIntroOutro(concatenatedPath, introPath, outroPath, withIntroOutroPath)
+    const introExists = await fs.access(introPath).then(() => true).catch(() => false)
+    const outroExists = await fs.access(outroPath).then(() => true).catch(() => false)
 
+    if (introExists && outroExists) {
+      const withIntroOutroPath = path.join(tempDir, 'with-intro-outro.mp4')
+      await addIntroOutro(currentVideoPath, introPath, outroPath, withIntroOutroPath)
+      currentVideoPath = withIntroOutroPath
+    } else {
+      _ulogInfo('[VideoEditing] Intro or outro file not found, skipping', { introPath, outroPath, introExists, outroExists })
+    }
     await assertTaskActive(job, 'add_intro_outro')
 
-    // Step 4: Add watermark
+    // Step 4: Add watermark (if file exists)
     await reportTaskProgress(job, 90, { stage: 'add_watermark' })
-
     const watermarkPath = payload.watermarkPath || DEFAULT_WATERMARK_PATH
     const finalVideoPath = path.join(tempDir, 'final.mp4')
-    await addWatermark(withIntroOutroPath, watermarkPath, finalVideoPath)
 
+    const watermarkExists = await fs.access(watermarkPath).then(() => true).catch(() => false)
+    if (watermarkExists) {
+      await addWatermark(currentVideoPath, watermarkPath, finalVideoPath)
+    } else {
+      _ulogInfo('[VideoEditing] Watermark file not found, skipping', { watermarkPath })
+      // Rename current file to final path
+      await fs.rename(currentVideoPath, finalVideoPath)
+    }
     await assertTaskActive(job, 'add_watermark')
 
     // Step 5: Upload final video to storage
