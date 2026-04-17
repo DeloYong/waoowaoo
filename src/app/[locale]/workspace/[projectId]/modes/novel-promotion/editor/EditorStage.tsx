@@ -223,7 +223,7 @@ export default function EditorStage({
                   disabled={clips.length === 0}
                   className="glass-btn-base glass-btn-primary flex items-center justify-center gap-2 px-6 py-8 text-lg font-medium w-full disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <AppIcon name="wand" className="w-5 h-5" />
+                  <AppIcon name="wandOff" className="w-5 h-5" />
                   {t('buttons.generateFullVideo')}
                 </button>
               )}
