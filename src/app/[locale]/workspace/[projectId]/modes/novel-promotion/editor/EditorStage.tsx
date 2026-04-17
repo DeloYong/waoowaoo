@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback } from 'react'
 import { useTranslations } from 'next-intl'
 import { AppIcon } from '@/components/ui/icons'
 import TaskStatusInline from '@/components/task/TaskStatusInline'
-import { resolveTaskPresentationState } from '@/lib/task/presentation'
 
 interface VideoClip {
   id: string
@@ -297,7 +296,7 @@ export default function EditorStage({
 
             {clips.length === 0 && (
               <div className="mt-auto pt-4 text-center text-sm text-(--glass-text-tertiary)">
-                <AppIcon name="Info" className="w-4 h-4" className="inline mr-1 mb-1" />
+                <AppIcon name="Info" className="w-4 h-4 inline mr-1 mb-1" />
                 {t('actions.noClipsAvailable')}
               </div>
             )}
