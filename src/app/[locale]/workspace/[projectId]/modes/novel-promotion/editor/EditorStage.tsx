@@ -231,7 +231,7 @@ export default function EditorStage({
               {generationStatus === 'generating' && (
                 <div className="w-full space-y-4">
                   <div className="text-center mb-2">
-                    <AppIcon name="spin" className="w-8 h-8 text-[var(--glass-tone-info-fg)] animate-spin mx-auto" />
+                    <AppIcon name="refresh" className="w-8 h-8 text-[var(--glass-tone-info-fg)] animate-spin mx-auto" />
                     <p className="mt-3 text-(--glass-text-primary) font-medium">{statusMessage}</p>
                   </div>
                   <div className="w-full h-2 bg-(--glass-bg-secondary) rounded-full overflow-hidden">
@@ -247,7 +247,7 @@ export default function EditorStage({
               {generationStatus === 'completed' && (
                 <div className="w-full space-y-4">
                   <div className="text-center p-4 rounded-lg bg-green-500/10 border border-green-500/20">
-                    <AppIcon name="checkCircle" className="w-8 h-8 text-green-500 mx-auto mb-2" />
+                    <AppIcon name="info" className="w-8 h-8 text-green-500 mx-auto mb-2" />
                     <p className="text-green-500 font-medium">{t('generating.completed')}</p>
                   </div>
 
@@ -279,7 +279,7 @@ export default function EditorStage({
               {generationStatus === 'failed' && (
                 <div className="w-full space-y-4">
                   <div className="text-center p-4 rounded-lg bg-red-500/10 border border-red-500/20">
-                    <AppIcon name="alertCircle" className="w-8 h-8 text-red-500 mx-auto mb-2" />
+                    <AppIcon name="alert" className="w-8 h-8 text-red-500 mx-auto mb-2" />
                     <p className="text-red-500 font-medium">{statusMessage}</p>
                   </div>
 
@@ -287,7 +287,7 @@ export default function EditorStage({
                     onClick={handleGenerate}
                     className="glass-btn-base glass-btn-primary flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium w-full"
                   >
-                    <AppIcon name="refreshCw" className="w-4 h-4" />
+                    <AppIcon name="refresh" className="w-4 h-4" />
                     {t('buttons.retry')}
                   </button>
                 </div>
@@ -296,7 +296,7 @@ export default function EditorStage({
 
             {clips.length === 0 && (
               <div className="mt-auto pt-4 text-center text-sm text-(--glass-text-tertiary)">
-                <AppIcon name="Info" className="w-4 h-4 inline mr-1 mb-1" />
+                <AppIcon name="info" className="w-4 h-4 inline mr-1 mb-1" />
                 {t('actions.noClipsAvailable')}
               </div>
             )}

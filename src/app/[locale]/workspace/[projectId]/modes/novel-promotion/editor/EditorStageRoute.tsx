@@ -11,12 +11,12 @@ export default function EditorStageRoute() {
   const { clips } = useWorkspaceEpisodeStageData()
 
   const videoClips = clips
-    .filter(clip => clip.generatedVideoUrl)
+    .filter(clip => (clip as any).lipSyncVideoUrl || (clip as any).videoUrl)
     .map(clip => ({
       id: clip.id,
       name: clip.summary || `Clip ${clip.id.slice(0, 8)}`,
-      thumbnailUrl: clip.generatedVideoThumbnailUrl || '',
-      videoUrl: clip.generatedVideoUrl || '',
+      thumbnailUrl: (clip as any).frameUrl || '',
+      videoUrl: (clip as any).lipSyncVideoUrl || (clip as any).videoUrl || '',
       duration: clip.end - clip.start,
     }))
 
