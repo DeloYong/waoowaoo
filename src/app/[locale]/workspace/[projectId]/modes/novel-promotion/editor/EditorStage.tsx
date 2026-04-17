@@ -231,7 +231,7 @@ export default function EditorStage({
               {generationStatus === 'generating' && (
                 <div className="w-full space-y-4">
                   <div className="text-center mb-2">
-                    <TaskStatusInline status="running" size="lg" />
+                    <AppIcon name="spin" className="w-8 h-8 text-[var(--glass-tone-info-fg)] animate-spin mx-auto" />
                     <p className="mt-3 text-(--glass-text-primary) font-medium">{statusMessage}</p>
                   </div>
                   <div className="w-full h-2 bg-(--glass-bg-secondary) rounded-full overflow-hidden">
