@@ -800,6 +800,24 @@ model TaskEvent {
   @@map("task_events")
 }
 
+model VideoEditingTask {
+  id            String    @id @default(uuid())
+  projectId     String
+  episodeId     String
+  userId        String
+  status        String    @default("pending") // pending/processing/completed/failed
+  progress      Int       @default(0) // 0-100
+  resultUrl     String?   @db.Text
+  errorMessage  String?   @db.Text
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @default(now()) @updatedAt
+
+  @@index([projectId])
+  @@index([userId])
+  @@index([episodeId])
+  @@map("video_editing_tasks")
+}
+
 model GraphRun {
   id                String             @id @default(uuid())
   userId            String

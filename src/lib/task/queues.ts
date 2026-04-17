@@ -7,6 +7,7 @@ export const QUEUE_NAME = {
   VIDEO: 'waoowaoo-video',
   VOICE: 'waoowaoo-voice',
   TEXT: 'waoowaoo-text',
+  VIDEO_EDITING: 'waoowaoo-video-editing',
 } as const
 
 const defaultJobOptions: JobsOptions = {
@@ -39,7 +40,16 @@ export const textQueue = new Queue<TaskJobData>(QUEUE_NAME.TEXT, {
   defaultJobOptions,
 })
 
-const ALL_QUEUES = [imageQueue, videoQueue, voiceQueue, textQueue]
+export const videoEditingQueue = new Queue<TaskJobData>(QUEUE_NAME.VIDEO_EDITING, {
+  connection: queueRedis,
+  defaultJobOptions: {
+    ...defaultJobOptions,
+    attempts: 3,
+    timeout: 30 * 60 * 1000, // 30分钟超时
+  },
+})
+
+const ALL_QUEUES = [imageQueue, videoQueue, voiceQueue, textQueue, videoEditingQueue]
 
 const IMAGE_TYPES = new Set<TaskType>([
   TASK_TYPE.IMAGE_PANEL,
@@ -68,6 +78,7 @@ export function getQueueTypeByTaskType(type: TaskType): QueueType {
   if (IMAGE_TYPES.has(type)) return 'image'
   if (VIDEO_TYPES.has(type)) return 'video'
   if (VOICE_TYPES.has(type)) return 'voice'
+  if (type === TASK_TYPE.VIDEO_EDITING) return 'video-editing'
   return 'text'
 }
 
@@ -80,6 +91,9 @@ export function getQueueByType(type: QueueType) {
     case 'voice':
       return voiceQueue
     case 'text':
+      return textQueue
+    case 'video-editing':
+      return videoEditingQueue
     default:
       return textQueue
   }

@@ -4,8 +4,9 @@ import { createImageWorker } from './image.worker'
 import { createVideoWorker } from './video.worker'
 import { createVoiceWorker } from './voice.worker'
 import { createTextWorker } from './text.worker'
+import { createVideoEditingWorker } from './video-editing.worker'
 
-const workers = [createImageWorker(), createVideoWorker(), createVoiceWorker(), createTextWorker()]
+const workers = [createImageWorker(), createVideoWorker(), createVoiceWorker(), createTextWorker(), createVideoEditingWorker()]
 
 _ulogInfo('[Workers] started:', workers.length)
 

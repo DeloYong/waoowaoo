@@ -1,0 +1,71 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
+import { requireUserAuth, isErrorResponse } from '@/lib/api-auth'
+import { apiHandler, ApiError } from '@/lib/api-errors'
+
+// GET - 查询视频剪辑任务状态
+export const GET = apiHandler(async (
+  request: NextRequest,
+  context: { params: Promise<{ projectId: string }> }
+) => {
+  const { projectId } = await context.params
+  // 🔐 统一权限验证
+  const authResult = await requireUserAuth()
+  if (isErrorResponse(authResult)) return authResult
+  const { session } = authResult
+
+  // 验证用户是项目所有者
+  const project = await prisma.project.findUnique({
+    where: { id: projectId },
+  })
+
+  if (!project) {
+    throw new ApiError('NOT_FOUND')
+  }
+
+  if (project.userId !== session.user.id) {
+    throw new ApiError('FORBIDDEN')
+  }
+
+  const { searchParams } = new URL(request.url)
+  const taskId = searchParams.get('taskId')
+  const episodeId = searchParams.get('episodeId')
+
+  if (!taskId && !episodeId) {
+    throw new ApiError('BAD_REQUEST', 'taskId or episodeId is required')
+  }
+
+  let task
+  if (taskId) {
+    task = await prisma.videoEditingTask.findUnique({
+      where: { id: taskId },
+    })
+  } else if (episodeId) {
+    // 获取最新的剪辑任务
+    task = await prisma.videoEditingTask.findFirst({
+      where: {
+        projectId,
+        episodeId,
+        userId: session.user.id,
+      },
+      orderBy: { createdAt: 'desc' },
+    })
+  }
+
+  if (!task) {
+    throw new ApiError('NOT_FOUND', 'Video editing task not found')
+  }
+
+  return NextResponse.json({
+    success: true,
+    task: {
+      id: task.id,
+      status: task.status,
+      progress: task.progress,
+      resultUrl: task.resultUrl,
+      errorMessage: task.errorMessage,
+      createdAt: task.createdAt,
+      updatedAt: task.updatedAt,
+    },
+  })
+})
