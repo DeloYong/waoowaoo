@@ -12,6 +12,7 @@ import { reportTaskProgress, withTaskLifecycle } from './shared'
 import { withUserConcurrencyGate } from './user-concurrency-gate'
 import { assertTaskActive, toSignedUrlIfCos, uploadVideoSourceToCos } from './utils'
 import { createScopedLogger } from '@/lib/logging/core'
+import { updateVideoEditingTaskStatus } from '@/lib/task/video-editing'
 
 const exec = promisify(execCallback)
 
@@ -172,9 +173,13 @@ async function handleVideoEditingTask(job: Job<TaskJobData>): Promise<{ resultUr
   const taskId = job.data.taskId
   const tempDir = await ensureTempDir(taskId)
 
+  // 任务开始，更新状态为processing
+  await updateVideoEditingTaskStatus(taskId, 'processing', 0)
+
   try {
     // Step 1: Download all shard videos
     await reportTaskProgress(job, 10, { stage: 'download_shards' })
+    await updateVideoEditingTaskStatus(taskId, 'processing', 10)
 
     const downloadedShards: string[] = []
     for (let i = 0; i < shardVideos.length; i++) {
@@ -190,6 +195,7 @@ async function handleVideoEditingTask(job: Job<TaskJobData>): Promise<{ resultUr
 
     // Step 2: Concatenate shards with transitions
     await reportTaskProgress(job, 40, { stage: 'concatenate_shards' })
+    await updateVideoEditingTaskStatus(taskId, 'processing', 40)
 
     const concatenatedPath = path.join(tempDir, 'concatenated.mp4')
     await concatenateVideosWithTransitions(
@@ -204,6 +210,7 @@ async function handleVideoEditingTask(job: Job<TaskJobData>): Promise<{ resultUr
 
     // Step 3: Add intro and outro (if files exist)
     await reportTaskProgress(job, 70, { stage: 'add_intro_outro' })
+    await updateVideoEditingTaskStatus(taskId, 'processing', 70)
     const introPath = payload.introVideoPath || DEFAULT_INTRO_VIDEO_PATH
     const outroPath = payload.outroVideoPath || DEFAULT_OUTRO_VIDEO_PATH
 
@@ -221,6 +228,7 @@ async function handleVideoEditingTask(job: Job<TaskJobData>): Promise<{ resultUr
 
     // Step 4: Add watermark (if file exists)
     await reportTaskProgress(job, 90, { stage: 'add_watermark' })
+    await updateVideoEditingTaskStatus(taskId, 'processing', 90)
     const watermarkPath = payload.watermarkPath || DEFAULT_WATERMARK_PATH
     const finalVideoPath = path.join(tempDir, 'final.mp4')
 
@@ -236,6 +244,7 @@ async function handleVideoEditingTask(job: Job<TaskJobData>): Promise<{ resultUr
 
     // Step 5: Upload final video to storage
     await reportTaskProgress(job, 95, { stage: 'upload_final' })
+    await updateVideoEditingTaskStatus(taskId, 'processing', 95)
 
     const resultUrl = await uploadVideoSourceToCos(
       finalVideoPath,
@@ -244,6 +253,9 @@ async function handleVideoEditingTask(job: Job<TaskJobData>): Promise<{ resultUr
     )
 
     await assertTaskActive(job, 'upload_final')
+
+    // 任务完成，更新状态为completed
+    await updateVideoEditingTaskStatus(taskId, 'completed', 100, resultUrl)
 
     return {
       resultUrl,
@@ -257,12 +269,20 @@ async function handleVideoEditingTask(job: Job<TaskJobData>): Promise<{ resultUr
 
 async function processVideoEditingTask(job: Job<TaskJobData>) {
   await reportTaskProgress(job, 5, { stage: 'received' })
+  const taskId = job.data.taskId
 
-  switch (job.data.type) {
-    case TASK_TYPE.VIDEO_EDITING:
-      return await handleVideoEditingTask(job)
-    default:
-      throw new Error(`Unsupported video editing task type: ${job.data.type}`)
+  try {
+    switch (job.data.type) {
+      case TASK_TYPE.VIDEO_EDITING:
+        return await handleVideoEditingTask(job)
+      default:
+        throw new Error(`Unsupported video editing task type: ${job.data.type}`)
+    }
+  } catch (err) {
+    // 任务失败，更新状态为failed
+    const errorMessage = err instanceof Error ? err.message : String(err)
+    await updateVideoEditingTaskStatus(taskId, 'failed', undefined, undefined, errorMessage)
+    throw err // 重新抛出异常，让BullMQ处理失败逻辑
   }
 }
 

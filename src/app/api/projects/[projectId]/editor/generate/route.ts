@@ -31,10 +31,33 @@ export const POST = apiHandler(async (
   }
 
   const body = await request.json()
-  const { episodeId, config } = body
+  const { episodeId, clipIds } = body
 
   if (!episodeId) {
     throw new ApiError('BAD_REQUEST', 'episodeId is required')
+  }
+
+  if (!clipIds || !Array.isArray(clipIds) || clipIds.length === 0) {
+    throw new ApiError('BAD_REQUEST', 'clipIds is required and must be a non-empty array')
+  }
+
+  // 查询所有片段的视频URL
+  const clips = await prisma.novelPromotionSceneShot.findMany({
+    where: {
+      id: { in: clipIds },
+      episode: {
+        projectId,
+        userId: session.user.id,
+      },
+    },
+    select: {
+      videoUrl: true,
+    },
+  })
+
+  const shardVideos = clips.map(clip => clip.videoUrl).filter(Boolean) as string[]
+  if (shardVideos.length === 0) {
+    throw new ApiError('BAD_REQUEST', 'No valid video clips found')
   }
 
   // 创建VideoEditingTask记录
@@ -60,7 +83,7 @@ export const POST = apiHandler(async (
     targetType: 'video_editing',
     targetId: episodeId,
     payload: {
-      config,
+      shardVideos,
     },
     userId: session.user.id,
   })
