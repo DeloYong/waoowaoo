@@ -45,7 +45,6 @@ export const videoEditingQueue = new Queue<TaskJobData>(QUEUE_NAME.VIDEO_EDITING
   defaultJobOptions: {
     ...defaultJobOptions,
     attempts: 3,
-    timeout: 30 * 60 * 1000, // 30分钟超时
   },
 })
 
