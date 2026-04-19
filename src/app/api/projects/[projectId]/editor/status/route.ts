@@ -32,7 +32,7 @@ export const GET = apiHandler(async (
   const episodeId = searchParams.get('episodeId')
 
   if (!taskId && !episodeId) {
-    throw new ApiError('BAD_REQUEST', 'taskId or episodeId is required')
+    throw new ApiError('INVALID_PARAMS', { message: 'taskId or episodeId is required' })
   }
 
   let task
@@ -53,7 +53,7 @@ export const GET = apiHandler(async (
   }
 
   if (!task) {
-    throw new ApiError('NOT_FOUND', 'Video editing task not found')
+    throw new ApiError('NOT_FOUND', { message: 'Video editing task not found' })
   }
 
   return NextResponse.json({

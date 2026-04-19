@@ -34,30 +34,28 @@ export const POST = apiHandler(async (
   const { episodeId, clipIds } = body
 
   if (!episodeId) {
-    throw new ApiError('BAD_REQUEST', 'episodeId is required')
+    throw new ApiError('INVALID_PARAMS', { message: 'episodeId is required' })
   }
 
   if (!clipIds || !Array.isArray(clipIds) || clipIds.length === 0) {
-    throw new ApiError('BAD_REQUEST', 'clipIds is required and must be a non-empty array')
+    throw new ApiError('INVALID_PARAMS', { message: 'clipIds is required and must be a non-empty array' })
   }
 
   // 查询所有片段的视频URL
-  const clips = await prisma.novelPromotionSceneShot.findMany({
+  const clips = await prisma.novelPromotionShot.findMany({
     where: {
       id: { in: clipIds },
-      episode: {
-        projectId,
-        userId: session.user.id,
-      },
-    },
-    select: {
-      videoUrl: true,
     },
   })
 
-  const shardVideos = clips.map(clip => clip.videoUrl).filter(Boolean) as string[]
+  const shardVideos = clips.map(clip =>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (clip as any).videoUrl ||
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (clip as any).lipSyncVideoUrl
+  ).filter(Boolean) as string[]
   if (shardVideos.length === 0) {
-    throw new ApiError('BAD_REQUEST', 'No valid video clips found')
+    throw new ApiError('INVALID_PARAMS', { message: 'No valid video clips found' })
   }
 
   // 创建VideoEditingTask记录
@@ -77,7 +75,7 @@ export const POST = apiHandler(async (
   await addTaskJob({
     taskId,
     type: TASK_TYPE.VIDEO_EDITING,
-    locale: 'zh-CN', // TODO: 从用户信息获取
+    locale: 'zh', // TODO: 从用户信息获取
     projectId,
     episodeId,
     targetType: 'video_editing',

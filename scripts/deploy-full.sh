@@ -10,6 +10,12 @@ echo "  waoowaoo 完整部署脚本"
 echo "========================================="
 echo ""
 
+# 清理Docker无用资源
+echo "清理Docker无用资源..."
+docker system prune -af --volumes
+echo "✅ Docker清理完成"
+echo ""
+
 # 步骤 1: 拉取最新代码
 echo "步骤 1/4: 拉取最新代码..."
 echo "========================================="

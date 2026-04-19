@@ -10,6 +10,16 @@ const nextConfig: NextConfig = {
     'http://192.168.31.218:3000',
     'http://192.168.31.*:3000',
   ],
+  webpack: (config) => {
+    // 忽略bullmq的动态导入警告
+    config.ignoreWarnings = [
+      {
+        module: /bullmq\/dist\/esm\/classes\/child-processor\.js/,
+        message: /Critical dependency: the request of a dependency is an expression/
+      }
+    ];
+    return config;
+  }
 };
 
 export default withNextIntl(nextConfig);

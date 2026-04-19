@@ -11,13 +11,18 @@ export default function EditorStageRoute() {
   const { clips } = useWorkspaceEpisodeStageData()
 
   const videoClips = clips
-    .filter(clip => (clip as any).lipSyncVideoUrl || (clip as any).videoUrl)
+    .filter(clip =>
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (clip as any).lipSyncVideoUrl || (clip as any).videoUrl
+    )
     .map(clip => ({
       id: clip.id,
       name: clip.summary || `Clip ${clip.id.slice(0, 8)}`,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       thumbnailUrl: (clip as any).frameUrl || '',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       videoUrl: (clip as any).lipSyncVideoUrl || (clip as any).videoUrl || '',
-      duration: clip.end - clip.start,
+      duration: (clip.end || 0) - (clip.start || 0),
     }))
 
   if (!episodeId) return null
