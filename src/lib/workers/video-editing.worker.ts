@@ -292,9 +292,9 @@ export function createVideoEditingWorker() {
     async (job) => await withTaskLifecycle(job, async (taskJob) => {
       const workflowConcurrency = await getUserWorkflowConcurrencyConfig(taskJob.data.userId)
       return await withUserConcurrencyGate({
-        scope: 'video-editing',
+        scope: 'video',
         userId: taskJob.data.userId,
-        limit: workflowConcurrency.videoEditing || workflowConcurrency.video || 2,
+        limit: workflowConcurrency.video || 2,
         run: async () => await processVideoEditingTask(taskJob),
       })
     }),
