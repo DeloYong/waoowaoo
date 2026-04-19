@@ -21,7 +21,7 @@ export async function updateVideoEditingTaskStatus(
   })
 
   if (!task) {
-    throw new ApiError('NOT_FOUND', 'Video editing task not found')
+    throw new ApiError('NOT_FOUND', { message: 'Video editing task not found' })
   }
 
   const updatedTask = await prisma.videoEditingTask.update({
@@ -47,7 +47,7 @@ export async function getVideoEditingTask(taskId: string) {
   })
 
   if (!task) {
-    throw new ApiError('NOT_FOUND', 'Video editing task not found')
+    throw new ApiError('NOT_FOUND', { message: 'Video editing task not found' })
   }
 
   return task
