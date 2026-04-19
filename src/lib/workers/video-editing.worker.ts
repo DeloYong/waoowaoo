@@ -222,7 +222,7 @@ async function handleVideoEditingTask(job: Job<TaskJobData>): Promise<{ resultUr
       await addIntroOutro(currentVideoPath, introPath, outroPath, withIntroOutroPath)
       currentVideoPath = withIntroOutroPath
     } else {
-      _ulogInfo('[VideoEditing] Intro or outro file not found, skipping', { introPath, outroPath, introExists, outroExists })
+      logger.info('[VideoEditing] Intro or outro file not found, skipping', { introPath, outroPath, introExists, outroExists })
     }
     await assertTaskActive(job, 'add_intro_outro')
 
@@ -236,7 +236,7 @@ async function handleVideoEditingTask(job: Job<TaskJobData>): Promise<{ resultUr
     if (watermarkExists) {
       await addWatermark(currentVideoPath, watermarkPath, finalVideoPath)
     } else {
-      _ulogInfo('[VideoEditing] Watermark file not found, skipping', { watermarkPath })
+      logger.info('[VideoEditing] Watermark file not found, skipping', { watermarkPath })
       // Rename current file to final path
       await fs.rename(currentVideoPath, finalVideoPath)
     }
