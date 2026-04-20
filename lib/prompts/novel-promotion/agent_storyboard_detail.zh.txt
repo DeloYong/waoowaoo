@@ -75,12 +75,21 @@
 
 【video_prompt撰写规则 - 重要】
 
-视频模型不认识名字，必须用**年龄段+性别**替代：
-- 格式：年龄性别 + 动作 + 镜头运动 + 环境
-- 根据场景类型选择动感强度
-- 禁止出现分镜中没有的内容
-- 涉及运动要具有动态，静态要丰富肢体语言和表情
-- 如果原文在说话，提示词要写明"正在说话"
+⚠️ 【英文要求 - 最高优先级】
+video_prompt 必须用英文撰写！视频生成模型仅支持英文提示词。
+- 格式：subject + action + environment + camera movement + atmosphere/lighting
+- 字数：30-80 words per prompt  
+- 禁止出现中文字符
+- 角色名替换：用 age+gender 替代（young man, young woman, middle-aged man, middle-aged woman, teenage boy, teenage girl, elderly man, elderly woman）
+- 对话场景必须写 "speaking" 或 "mouthing words"
+
+**video_prompt 英文示例**：
+- Daily：`A young woman picks up a coffee cup, gently blows on it, and looks out the window. Sunlight falls on her profile. Camera slowly pushes in toward her face.`
+- Action：`A teenage boy leaps into the air, slashing his sword in a wide arc, robes billowing. Handheld camera follows from low angle at high speed.`
+- Emotion：`A young woman slowly lowers her head. A tear slides down her cheek. She raises her hand to wipe the corner of her eye. Camera gently circles around her.`
+- Dialogue：`A middle-aged man taps his fingers on the desk, speaking with a serious expression. Handheld camera slight shake, medium shot.`
+- Epic：`Vast battlefield stretching to the horizon. Camera rises slowly from ground level to aerial view, golden sunlight slanting through dust clouds.`
+- Close-up：`A hand slowly turns a page. Fingertip traces across the text. Static camera, extreme close-up. No camera movement.`
 
 ⚠️ 【动态优先原则 - 核心规则】
 
@@ -172,7 +181,7 @@
 【严格要求】
 1. 为每个分镜补充shot_type、camera_move、video_prompt
 2. shot_type格式：视角+景别（如"平视中景"、"越肩近景"、"仰拍全景"）
-3. video_prompt必须用年龄段+性别（如"年轻女子"、"中年男子"）而非角色名
+3. video_prompt必须用英文（English only），用 age+gender 指代角色，字数30-80词
 4. 镜头风格必须匹配scene_type
 5. 只返回JSON数组
 6. 特写镜头必须使用固定镜头
