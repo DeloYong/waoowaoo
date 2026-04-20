@@ -1197,6 +1197,18 @@ async function saveCharacterToGlobal(
     throw new ApiError('NOT_FOUND')
   }
 
+  // Check for existing asset with same name to prevent duplicates
+  const existingCharacter = await prisma.globalCharacter.findFirst({
+    where: {
+      userId: access.userId,
+      name: projectCharacter.name,
+    },
+    select: { id: true },
+  })
+  if (existingCharacter) {
+    return { success: true, globalAssetId: existingCharacter.id, alreadyExists: true }
+  }
+
   // 创建全局角色
   const globalCharacter = await prisma.globalCharacter.create({
     data: {
@@ -1256,6 +1268,19 @@ async function saveLocationToGlobal(
   }
 
   const effectiveKind = kind === 'prop' ? 'prop' : (projectLocation.assetKind || 'location')
+
+  // Check for existing asset with same name and kind to prevent duplicates
+  const existingLocation = await prisma.globalLocation.findFirst({
+    where: {
+      userId: access.userId,
+      name: projectLocation.name,
+      assetKind: effectiveKind,
+    },
+    select: { id: true },
+  })
+  if (existingLocation) {
+    return { success: true, globalAssetId: existingLocation.id, alreadyExists: true }
+  }
 
   // 创建全局场景/道具
   const globalLocation = await prisma.globalLocation.create({
