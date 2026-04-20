@@ -195,7 +195,7 @@ export default function StoryboardGroup({
                   {textPanels.map((panel, idx) => (
                     <div key={panel.id} className="border-l-2 border-[var(--glass-stroke-focus)] pl-3">
                       <div className="text-xs font-bold text-[var(--glass-tone-info-fg)] mb-1">
-                        {t('panel.shot')} {panel.panelNumber || idx + 1}
+                        {t('panel.shot')} {panel.panel_number || idx + 1}
                       </div>
                       <div className="text-sm text-[var(--glass-text-secondary)] whitespace-pre-wrap leading-relaxed">
                         {panel.description}
