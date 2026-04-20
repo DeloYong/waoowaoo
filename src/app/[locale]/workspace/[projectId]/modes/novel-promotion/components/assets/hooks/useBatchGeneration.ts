@@ -14,6 +14,7 @@ import { useTranslations } from 'next-intl'
 import { CharacterAppearance } from '@/types/project'
 import { useImageGenerationCount } from '@/lib/image-generation/use-image-generation-count'
 import { useProjectAssets, useRefreshProjectAssets, useGenerateProjectCharacterImage, useGenerateProjectLocationImage, type Character } from '@/lib/query/hooks'
+import { handleInsufficientCredits } from '@/lib/insufficient-credits-modal'
 import {
     createManualKeyBaseline,
     isAppearanceTaskRunning,
@@ -213,6 +214,10 @@ export function useBatchGeneration({
                         submitted = true
                         setBatchProgress(prev => ({ ...prev, current: prev.current + 1 }))
                     } catch (error) {
+                        if (handleInsufficientCredits(error)) {
+                          setIsBatchSubmittingAll(false)
+                          return
+                        }
                         _ulogError(`Failed to generate ${task.type} ${task.id}:`, error)
                         setBatchProgress(prev => ({ ...prev, current: prev.current + 1 }))
                     } finally {

@@ -1,5 +1,6 @@
 'use client'
 import { logError as _ulogError } from '@/lib/logging/core'
+import { handleInsufficientCredits } from '@/lib/insufficient-credits-modal'
 import { useTranslations } from 'next-intl'
 
 /**
@@ -104,6 +105,10 @@ export function useTTSGeneration({
 
             alert(t('tts.voiceDesignSaved', { name: voiceDesignCharacter.name }))
         } catch (error: unknown) {
+            if (handleInsufficientCredits(error)) {
+                setVoiceDesignCharacter(null)
+                return
+            }
             alert(t('tts.saveVoiceDesignFailed', { error: getErrorMessage(error, t('common.unknownError')) }))
         } finally {
             setVoiceDesignCharacter(null)

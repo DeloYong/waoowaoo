@@ -11,6 +11,7 @@ import {
 } from '@/lib/query/hooks'
 import { isAsyncTaskResponse, waitForTaskResult } from '@/lib/task/client'
 import { getErrorMessage, isAbortError } from './panel-operations-shared'
+import { handleInsufficientCredits } from '@/lib/insufficient-credits-modal'
 
 interface UseStoryboardGroupActionsProps {
   projectId: string
@@ -67,6 +68,7 @@ export function useStoryboardGroupActions({
         _ulogInfo('请求被中断（可能是页面刷新），后端仍在执行')
         return
       }
+      if (handleInsufficientCredits(error)) return
       _ulogError('重新生成分镜失败:', error)
       alert(
         t('messages.regenerateGroupFailed', {
@@ -89,6 +91,7 @@ export function useStoryboardGroupActions({
       await addStoryboardGroupMutation.mutateAsync({ episodeId, insertIndex })
       await onRefresh()
     } catch (error: unknown) {
+      if (handleInsufficientCredits(error)) return
       _ulogError('添加分镜组失败:', error)
       alert(
         t('messages.addGroupFailed', {

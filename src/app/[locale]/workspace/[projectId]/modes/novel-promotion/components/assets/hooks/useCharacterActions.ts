@@ -12,6 +12,7 @@ import { useTranslations } from 'next-intl'
 import { useCallback } from 'react'
 import { CharacterAppearance } from '@/types/project'
 import { isAbortError } from '@/lib/error-utils'
+import { handleInsufficientCredits } from '@/lib/insufficient-credits-modal'
 import {
     useProjectAssets,
     useRefreshProjectAssets,
@@ -103,6 +104,8 @@ export function useCharacterActions({
                 appearanceId,
                 imageIndex,
             })
+            // 刷新缓存确保 UI 状态同步
+            refreshAssets()
         } catch (error: unknown) {
             if (isAbortError(error)) {
                 _ulogInfo('请求被中断（可能是页面刷新），后端仍在执行')
@@ -110,7 +113,7 @@ export function useCharacterActions({
             }
             alert(t('image.selectFailed', { error: getErrorMessage(error, t('common.unknownError')) }))
         }
-    }, [selectCharacterImageMutation, t])
+    }, [selectCharacterImageMutation, refreshAssets, t])
 
     // 确认选择并删除其他候选图片
     const handleConfirmSelection = useCallback(async (characterId: string, appearanceId: string) => {
@@ -136,6 +139,7 @@ export function useCharacterActions({
             await regenerateSingleImage.mutateAsync({ characterId, appearanceId, imageIndex })
         } catch (error: unknown) {
             if (!isAbortError(error)) {
+                if (handleInsufficientCredits(error)) throw error
                 alert(t('image.regenerateFailed', { error: getErrorMessage(error, t('common.unknownError')) }))
             }
             throw error
@@ -152,6 +156,7 @@ export function useCharacterActions({
             await regenerateGroup.mutateAsync({ characterId, appearanceId, count })
         } catch (error: unknown) {
             if (!isAbortError(error)) {
+                if (handleInsufficientCredits(error)) throw error
                 alert(t('image.regenerateFailed', { error: getErrorMessage(error, t('common.unknownError')) }))
             }
             throw error
