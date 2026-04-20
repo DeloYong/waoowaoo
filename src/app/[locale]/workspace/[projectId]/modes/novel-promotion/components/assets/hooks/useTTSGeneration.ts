@@ -11,6 +11,7 @@ import { useTranslations } from 'next-intl'
  */
 
 import { useState } from 'react'
+import { toast } from 'react-hot-toast'
 import {
     useProjectAssets,
     useRefreshProjectAssets,
@@ -103,13 +104,13 @@ export function useTTSGeneration({
                 }
             }
 
-            alert(t('tts.voiceDesignSaved', { name: voiceDesignCharacter.name }))
+            toast.success(t('tts.voiceDesignSaved', { name: voiceDesignCharacter.name }))
         } catch (error: unknown) {
             if (handleInsufficientCredits(error)) {
                 setVoiceDesignCharacter(null)
                 return
             }
-            alert(t('tts.saveVoiceDesignFailed', { error: getErrorMessage(error, t('common.unknownError')) }))
+            toast.error(t('tts.saveVoiceDesignFailed', { error: getErrorMessage(error, t('common.unknownError')) }))
         } finally {
             setVoiceDesignCharacter(null)
         }

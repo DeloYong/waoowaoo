@@ -122,7 +122,7 @@ export default function CharacterCardGallery(props: CharacterCardGalleryProps) {
           )}
         </div>
       ) : (
-        <div className="w-full h-full bg-[var(--glass-bg-muted)] flex items-center justify-center">
+        <div className="w-full h-full min-h-[120px] aspect-[4/5] bg-[var(--glass-bg-muted)] flex items-center justify-center">
           {appearanceErrorDisplay && !props.isAppearanceTaskRunning ? (
             <div className="flex flex-col items-center justify-center py-8 px-4 text-center">
               <AppIcon name="alert" className="w-8 h-8 text-[var(--glass-tone-danger-fg)] mb-2" />

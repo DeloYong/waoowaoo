@@ -1,6 +1,8 @@
 'use client'
 import { logInfo as _ulogInfo, logError as _ulogError } from '@/lib/logging/core'
 import { useTranslations } from 'next-intl'
+import { toast } from 'react-hot-toast'
+import { handleInsufficientCredits } from '@/lib/insufficient-credits-modal'
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { PanelEditData } from '../../PanelEditForm'
@@ -209,8 +211,9 @@ export function usePanelCrudActions({
       })
       await onRefresh()
     } catch (error: unknown) {
+      if (handleInsufficientCredits(error)) return
       _ulogError('添加分镜失败:', error)
-      alert(
+      toast.error(
         t('messages.addPanelFailed', {
           error: getErrorMessage(error, t('common.unknownError')),
         }),
@@ -239,7 +242,8 @@ export function usePanelCrudActions({
         _ulogInfo('请求被中断（可能是页面刷新），后端仍在执行')
         return
       }
-      alert(
+      if (handleInsufficientCredits(error)) return
+      toast.error(
         t('messages.deletePanelFailed', {
           error: getErrorMessage(error, t('common.unknownError')),
         }),

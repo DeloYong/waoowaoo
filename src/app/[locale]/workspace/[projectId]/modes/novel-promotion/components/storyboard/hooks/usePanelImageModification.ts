@@ -13,6 +13,19 @@ import {
   updatePanelImageUrlInStoryboards,
 } from './image-generation-runtime'
 
+function dataURLtoFile(dataurl: string, filename: string): File {
+  const arr = dataurl.split(',')
+  const mimeMatch = arr[0].match(/:(.*?);/)
+  const mime = mimeMatch ? mimeMatch[1] : 'image/jpeg'
+  const bstr = atob(arr[1])
+  let n = bstr.length
+  const u8arr = new Uint8Array(n)
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n)
+  }
+  return new File([u8arr], filename, { type: mime })
+}
+
 interface ModifyPanelMutationLike {
   mutateAsync: (payload: {
     storyboardId: string
@@ -65,11 +78,36 @@ export function usePanelImageModification({
       setModifyingPanels((previous) => new Set(previous).add(panelId))
       let isAsync = false
       try {
+        const uploadedImages = await Promise.all(
+          images.map(async (image, idx) => {
+            if (image.startsWith('data:image/')) {
+              try {
+                const file = dataURLtoFile(image, `ref-${Date.now()}-${idx}.jpg`)
+                const formData = new FormData()
+                formData.append('file', file)
+                const res = await fetch('/api/assets/reference-upload', {
+                  method: 'POST',
+                  body: formData,
+                })
+                if (res.ok) {
+                  const resData = await res.json()
+                  if (resData.success && resData.url) {
+                    return resData.url
+                  }
+                }
+              } catch (err) {
+                _ulogError('[modifyPanelImage] Failed to upload reference image', err)
+              }
+            }
+            return image
+          })
+        )
+
         const data = await modifyPanelMutation.mutateAsync({
           storyboardId,
           panelIndex,
           modifyPrompt: prompt,
-          extraImageUrls: images,
+          extraImageUrls: uploadedImages,
           selectedAssets: assets,
         })
         const result = (data || {}) as StoryboardImageMutationResult

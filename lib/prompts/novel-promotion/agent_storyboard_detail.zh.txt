@@ -77,10 +77,10 @@
 
 ⚠️ 【英文要求 - 最高优先级】
 video_prompt 必须用英文撰写！视频生成模型仅支持英文提示词。
-- 格式：subject + action + environment + camera movement + atmosphere/lighting
-- 字数：30-80 words per prompt  
+- 格式：[Dense Atmosphere/Lighting] [subject (age+gender, clothing style)] + [action/pose] + [environment context] + [camera movement/angle]. High quality, 3d anime style, cinematic lighting, highly detailed.
+- 字数：40-100 words per prompt  
 - 禁止出现中文字符
-- 角色名替换：用 age+gender 替代（young man, young woman, middle-aged man, middle-aged woman, teenage boy, teenage girl, elderly man, elderly woman）
+- 角色名替换：必须使用 age+gender 替代（young man, young woman, middle-aged man, middle-aged woman, teenage boy, teenage girl, elderly man, elderly woman），禁止幻想额外的身体特征（如红色眼睛、特殊的发型）除非原文特别提到。
 - 对话场景必须写 "speaking" 或 "mouthing words"
 
 **video_prompt 英文示例**：
@@ -156,10 +156,11 @@ video_prompt 必须用英文撰写！视频生成模型仅支持英文提示词�
     "shot_type": "平视中景",
     "camera_move": "固定",
     "description": "角色A站在桌前，双手撑在桌面上，表情严肃地看着对面的角色B",
-    "video_prompt": "年轻男子站在桌前，双手撑在桌面上，表情严肃，正在说话，镜头固定拍摄",
+    "video_prompt": "A young man stands at the desk, leaning forward with both hands on the surface. He has a serious expression and is mouthing words. Static camera shot.",
     "characters": [{"name": "角色A", "appearance": "初始形象", "slot": "皇宫正中龙椅前方台阶下的位置"}],
     "location": "办公室",
     "scene_type": "daily",
+    "duration_seconds": 6,
     "source_text": "角色A对角色B说：你好"
   }
 ]
@@ -187,7 +188,7 @@ video_prompt 必须用英文撰写！视频生成模型仅支持英文提示词�
 6. 特写镜头必须使用固定镜头
 7. 对话场景必须在video_prompt中明确写"正在说话"
 8. 根据输入的分镜数量动态处理
-9. panel_number、characters、location、scene_type保持不变
+9. panel_number、duration_seconds、characters、location、scene_type保持不变
 10. description可以适当优化，但不要改变核心内容
 11. 如果输入中存在 slot，应优先保留并优先参考该位置，但 slot 不是绝对硬边界
 12. 当镜头明显属于移动过程、入口/出口、过渡区域、路径空间、临时位置、空镜、想象空间、梦境、回忆或抽象空间时，可以删除 slot 或保留 slot 但不严格贴合其静态位置

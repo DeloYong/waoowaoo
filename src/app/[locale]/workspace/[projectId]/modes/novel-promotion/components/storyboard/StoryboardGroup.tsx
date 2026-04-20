@@ -184,12 +184,25 @@ export default function StoryboardGroup({
             className="glass-btn-base glass-btn-soft rounded-xl px-3 py-2 text-sm"
           >
             <AppIcon name="chevronRightMd" className={`h-4 w-4 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
-            <span>{clip.screenplay ? t('panel.stylePrompt') : t('panel.sourceText')}</span>
+            <span>{clip.screenplay ? t('panel.stylePrompt') : textPanels.length > 0 ? '分镜脚本' : t('panel.sourceText')}</span>
           </button>
           {isExpanded && (
             <div className="mt-2 glass-surface-soft p-2">
               {clip.screenplay ? (
                 <ScreenplayDisplay screenplay={clip.screenplay} originalContent={clip.content} />
+              ) : textPanels.length > 0 ? (
+                <div className="space-y-3 p-3">
+                  {textPanels.map((panel, idx) => (
+                    <div key={panel.id} className="border-l-2 border-[var(--glass-stroke-focus)] pl-3">
+                      <div className="text-xs font-bold text-[var(--glass-tone-info-fg)] mb-1">
+                        {t('panel.shot')} {panel.panelNumber || idx + 1}
+                      </div>
+                      <div className="text-sm text-[var(--glass-text-secondary)] whitespace-pre-wrap leading-relaxed">
+                        {panel.description}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               ) : (
                 <div className="whitespace-pre-wrap p-3 text-sm text-[var(--glass-text-secondary)]">
                   {clip.content}

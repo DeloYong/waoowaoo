@@ -24,6 +24,7 @@ export interface StoryboardPanel {
   location?: string
   srt_range?: string
   duration?: number
+  duration_seconds?: number
   video_prompt?: string
   source_text?: string
   candidateImages?: string

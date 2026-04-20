@@ -218,7 +218,7 @@ export const POST = apiHandler(async (
           { videoUrl: '' },
         ],
       },
-      select: { id: true },
+      select: { id: true, duration: true },
     })
 
     if (panels.length === 0) {
@@ -226,8 +226,12 @@ export const POST = apiHandler(async (
     }
 
     const results = await Promise.all(
-      panels.map(async (panel) =>
-        submitTask({
+      panels.map(async (panel) => {
+        const payloadClone = { ...body, generationOptions: { ...(body.generationOptions || {}) } }
+        if (typeof payloadClone.generationOptions.duration !== 'number' && typeof panel.duration === 'number') {
+          payloadClone.generationOptions.duration = panel.duration
+        }
+        return submitTask({
           userId: session.user.id,
           locale,
           requestId: getRequestId(request),
@@ -236,13 +240,13 @@ export const POST = apiHandler(async (
           type: TASK_TYPE.VIDEO_PANEL,
           targetType: 'NovelPromotionPanel',
           targetId: panel.id,
-          payload: withTaskUiPayload(body, {
+          payload: withTaskUiPayload(payloadClone, {
             hasOutputAtStart: await hasPanelVideoOutput(panel.id),
           }),
           dedupeKey: `video_panel:${panel.id}`,
-          billingInfo: buildVideoPanelBillingInfoOrThrow(body),
-        }),
-      ),
+          billingInfo: buildVideoPanelBillingInfoOrThrow(payloadClone),
+        })
+      }),
     )
 
     return NextResponse.json({ tasks: results, total: panels.length })
@@ -256,11 +260,16 @@ export const POST = apiHandler(async (
 
   const panel = await prisma.novelPromotionPanel.findFirst({
     where: { storyboardId, panelIndex: Number(panelIndex) },
-    select: { id: true },
+    select: { id: true, duration: true },
   })
 
   if (!panel) {
     throw new ApiError('NOT_FOUND')
+  }
+
+  const payloadClone = { ...body, generationOptions: { ...(body.generationOptions || {}) } }
+  if (typeof payloadClone.generationOptions.duration !== 'number' && typeof panel.duration === 'number') {
+    payloadClone.generationOptions.duration = panel.duration
   }
 
   const result = await submitTask({
@@ -271,11 +280,11 @@ export const POST = apiHandler(async (
     type: TASK_TYPE.VIDEO_PANEL,
     targetType: 'NovelPromotionPanel',
     targetId: panel.id,
-    payload: withTaskUiPayload(body, {
+    payload: withTaskUiPayload(payloadClone, {
       hasOutputAtStart: await hasPanelVideoOutput(panel.id),
     }),
     dedupeKey: `video_panel:${panel.id}`,
-    billingInfo: buildVideoPanelBillingInfoOrThrow(body),
+    billingInfo: buildVideoPanelBillingInfoOrThrow(payloadClone),
   })
 
   return NextResponse.json(result)

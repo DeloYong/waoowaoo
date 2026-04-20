@@ -7,6 +7,7 @@
 
 import { useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
+import { toast } from 'react-hot-toast'
 import { shouldShowError } from '@/lib/error-utils'
 import { useUploadProjectCharacterVoice } from '@/lib/query/mutations'
 import { AppIcon } from '@/components/ui/icons'
@@ -77,7 +78,7 @@ export default function VoiceSettings({
             setIsPreviewingVoice(true)
         } catch (error: unknown) {
             if (shouldShowError(error)) {
-                alert(t('tts.previewFailed', { error: getErrorMessage(error, t('common.unknownError')) }))
+                toast.error(t('tts.previewFailed', { error: getErrorMessage(error, t('common.unknownError')) }))
             }
             setIsPreviewingVoice(false)
         }
@@ -86,7 +87,15 @@ export default function VoiceSettings({
     // 上传自定义音频
     const handleUploadVoice = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
-        if (!file || !projectId) return
+        if (!file || !projectId) {
+            if (voiceFileInputRef.current) voiceFileInputRef.current.value = ''
+            return
+        }
+
+        if (!confirmUploadVoice()) {
+            if (voiceFileInputRef.current) voiceFileInputRef.current.value = ''
+            return
+        }
 
         uploadVoice.mutate(
             { file, characterId },
@@ -94,10 +103,11 @@ export default function VoiceSettings({
                 onSuccess: (data) => {
                     const result = (data || {}) as UploadedVoiceResult
                     onVoiceChange?.(characterId, result.audioUrl)
+                    toast.success(t('tts.uploaded') || 'Uploaded Successfully')
                 },
                 onError: (error) => {
                     if (shouldShowError(error)) {
-                        alert(t('tts.uploadFailed', { error: error.message }))
+                        toast.error(t('tts.uploadFailed', { error: error.message }))
                     }
                 },
                 onSettled: () => {
@@ -159,7 +169,6 @@ export default function VoiceSettings({
                         {/* 上传音频按钮 */}
                         <button
                             onClick={() => {
-                                if (!confirmUploadVoice()) return
                                 voiceFileInputRef.current?.click()
                             }}
                             disabled={uploadVoice.isPending}

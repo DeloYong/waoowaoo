@@ -238,6 +238,21 @@ export default function CharacterCreationForm({
 
       {createMode === 'description' && (
         <>
+          <div className="space-y-2">
+            <label className="glass-field-label block">
+              {isSubAppearance ? t('character.modifyDescription') : t('character.description')} <span className="text-[var(--glass-tone-danger-fg)]">*</span>
+            </label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={4}
+              placeholder={isSubAppearance
+                ? t('character.modifyDescriptionPlaceholder')
+                : t('character.descPlaceholder')}
+              className="glass-textarea-base w-full px-3 py-2 text-sm resize-none"
+            />
+          </div>
+
           {!isSubAppearance && (
             <div className="glass-surface-soft rounded-xl p-4 space-y-3 border border-[var(--glass-stroke-base)]">
               <div className="flex items-center gap-2 text-sm font-medium text-[var(--glass-tone-info-fg)]">
@@ -269,21 +284,6 @@ export default function CharacterCreationForm({
               </div>
             </div>
           )}
-
-          <div className="space-y-2">
-            <label className="glass-field-label block">
-              {isSubAppearance ? t('character.modifyDescription') : t('character.description')} <span className="text-[var(--glass-tone-danger-fg)]">*</span>
-            </label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={4}
-              placeholder={isSubAppearance
-                ? t('character.modifyDescriptionPlaceholder')
-                : t('character.descPlaceholder')}
-              className="glass-textarea-base w-full px-3 py-2 text-sm resize-none"
-            />
-          </div>
         </>
       )}
     </div>
