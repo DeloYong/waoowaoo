@@ -85,15 +85,14 @@ export default function ProfilePage() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const params = useParams()
-  const locale = params?.locale as string || 'zh'
+  const rawLocale = params?.locale
+  const locale = Array.isArray(rawLocale) ? rawLocale[0] : (rawLocale as string || 'zh')
   const t = useTranslations('profile')
   const tc = useTranslations('common')
 
   const [subInfo, setSubInfo] = useState<SubscriptionInfo | null>(null)
   const [usageData, setUsageData] = useState<UsageData | null>(null)
   const [loading, setLoading] = useState(true)
-  const [trendDateRange, setTrendDateRange] = useState<'7d' | '30d'>('7d')
-  const [activeTab, setActiveTab] = useState<'consumption' | 'tasks'>('consumption')
   const [filterType, setFilterType] = useState<string>('all')
   const [filterDate, setFilterDate] = useState<string>('all')
 
@@ -304,46 +303,11 @@ export default function ProfilePage() {
                     </div>
                   )}
 
-                  {/* 2. 统计图表区域 */}
-                  {usageData && (
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                      {/* 积分消耗折线图 */}
-                      <div className="glass-surface-soft rounded-2xl border border-[var(--glass-stroke-base)] p-6">
-                        <div className="flex items-center justify-between mb-4">
-                          <h3 className="text-lg font-semibold text-[var(--glass-text-primary)]">积分消耗趋势</h3>
-                          <SegmentedControl
-                            options={[
-                              { label: '近7天', value: '7d' },
-                              { label: '近30天', value: '30d' }
-                            ]}
-                            value={trendDateRange}
-                            onChange={(val) => setTrendDateRange(val as '7d' | '30d')}
-                          />
-                        </div>
-                        <div className="h-[300px] flex items-center justify-center bg-[var(--glass-bg-muted)] rounded-xl">
-                          <div className="text-[var(--glass-text-tertiary)]">
-                            折线图组件（需集成recharts后实现）
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* 消耗类型占比饼图 */}
-                      <div className="glass-surface-soft rounded-2xl border border-[var(--glass-stroke-base)] p-6">
-                        <h3 className="text-lg font-semibold text-[var(--glass-text-primary)] mb-4">消耗类型分布</h3>
-                        <div className="h-[300px] flex items-center justify-center bg-[var(--glass-bg-muted)] rounded-xl">
-                          <div className="text-[var(--glass-text-tertiary)]">
-                            饼图组件（需集成recharts后实现）
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* 3. 明细列表区域 */}
+                  {/* 2. 消费明细列表 */}
                   {usageData && (
                     <div className="glass-surface-soft rounded-2xl border border-[var(--glass-stroke-base)] p-6">
                       <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-lg font-semibold text-[var(--glass-text-primary)]">使用明细</h3>
+                        <h3 className="text-lg font-semibold text-[var(--glass-text-primary)]">消费明细</h3>
                         <div className="flex gap-3">
                           <select
                             value={filterType}
@@ -370,208 +334,57 @@ export default function ProfilePage() {
                         </div>
                       </div>
 
-                      {/* Tab切换 */}
-                      <div className="mb-4 border-b border-[var(--glass-stroke-base)]">
-                        <div className="flex gap-6">
-                          <button
-                            onClick={() => setActiveTab('consumption')}
-                            className={`pb-3 px-1 font-medium transition-all ${
-                              activeTab === 'consumption'
-                                ? 'text-blue-600 border-b-2 border-blue-600'
-                                : 'text-[var(--glass-text-secondary)] hover:text-[var(--glass-text-primary)]'
-                            }`}
-                          >
-                            消费明细
-                          </button>
-                          <button
-                            onClick={() => setActiveTab('tasks')}
-                            className={`pb-3 px-1 font-medium transition-all ${
-                              activeTab === 'tasks'
-                                ? 'text-blue-600 border-b-2 border-blue-600'
-                                : 'text-[var(--glass-text-secondary)] hover:text-[var(--glass-text-primary)]'
-                            }`}
-                          >
-                            任务记录
-                          </button>
-                        </div>
+                      <div className="overflow-x-auto">
+                        <table className="w-full">
+                          <thead>
+                            <tr className="border-b border-[var(--glass-stroke-base)]">
+                              <th className="text-left py-3 px-4 text-sm font-medium text-[var(--glass-text-secondary)]">日期</th>
+                              <th className="text-left py-3 px-4 text-sm font-medium text-[var(--glass-text-secondary)]">类型</th>
+                              <th className="text-left py-3 px-4 text-sm font-medium text-[var(--glass-text-secondary)]">描述</th>
+                              <th className="text-right py-3 px-4 text-sm font-medium text-[var(--glass-text-secondary)]">消耗积分</th>
+                              <th className="text-right py-3 px-4 text-sm font-medium text-[var(--glass-text-secondary)]">状态</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {usageData.consumptionRecords.map((record) => (
+                              <tr key={record.id} className="border-b border-[var(--glass-stroke-base)] last:border-0">
+                                <td className="py-4 px-4 text-sm text-[var(--glass-text-primary)]">
+                                  {new Date(record.date).toLocaleString('zh-CN')}
+                                </td>
+                                <td className="py-4 px-4 text-sm text-[var(--glass-text-primary)]">
+                                  <span className="inline-block px-2 py-1 rounded-full bg-blue-100 text-blue-800 text-xs">
+                                    {record.type}
+                                  </span>
+                                </td>
+                                <td className="py-4 px-4 text-sm text-[var(--glass-text-primary)]">
+                                  {record.description}
+                                </td>
+                                <td className="py-4 px-4 text-sm text-right font-medium text-orange-600">
+                                  -{record.credits}
+                                </td>
+                                <td className="py-4 px-4 text-sm text-right">
+                                  <span className={`inline-block px-2 py-1 rounded-full text-xs ${
+                                    record.status === 'success'
+                                      ? 'bg-green-100 text-green-800'
+                                      : record.status === 'failed'
+                                      ? 'bg-red-100 text-red-800'
+                                      : 'bg-yellow-100 text-yellow-800'
+                                  }`}>
+                                    {record.status === 'success' ? '成功' : record.status === 'failed' ? '失败' : '处理中'}
+                                  </span>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                        {usageData.consumptionRecords.length === 0 && (
+                          <div className="text-center py-12 text-[var(--glass-text-tertiary)]">
+                            暂无消费记录
+                          </div>
+                        )}
                       </div>
-
-                      {/* 消费明细列表 */}
-                      {activeTab === 'consumption' && (
-                        <div className="overflow-x-auto">
-                          <table className="w-full">
-                            <thead>
-                              <tr className="border-b border-[var(--glass-stroke-base)]">
-                                <th className="text-left py-3 px-4 text-sm font-medium text-[var(--glass-text-secondary)]">日期</th>
-                                <th className="text-left py-3 px-4 text-sm font-medium text-[var(--glass-text-secondary)]">类型</th>
-                                <th className="text-left py-3 px-4 text-sm font-medium text-[var(--glass-text-secondary)]">描述</th>
-                                <th className="text-right py-3 px-4 text-sm font-medium text-[var(--glass-text-secondary)]">消耗积分</th>
-                                <th className="text-right py-3 px-4 text-sm font-medium text-[var(--glass-text-secondary)]">状态</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {usageData.consumptionRecords.map((record) => (
-                                <tr key={record.id} className="border-b border-[var(--glass-stroke-base)] last:border-0">
-                                  <td className="py-4 px-4 text-sm text-[var(--glass-text-primary)]">
-                                    {new Date(record.date).toLocaleString('zh-CN')}
-                                  </td>
-                                  <td className="py-4 px-4 text-sm text-[var(--glass-text-primary)]">
-                                    <span className="inline-block px-2 py-1 rounded-full bg-blue-100 text-blue-800 text-xs">
-                                      {record.type}
-                                    </span>
-                                  </td>
-                                  <td className="py-4 px-4 text-sm text-[var(--glass-text-primary)]">
-                                    {record.description}
-                                  </td>
-                                  <td className="py-4 px-4 text-sm text-right font-medium text-orange-600">
-                                    -{record.credits}
-                                  </td>
-                                  <td className="py-4 px-4 text-sm text-right">
-                                    <span className={`inline-block px-2 py-1 rounded-full text-xs ${
-                                      record.status === 'success'
-                                        ? 'bg-green-100 text-green-800'
-                                        : record.status === 'failed'
-                                        ? 'bg-red-100 text-red-800'
-                                        : 'bg-yellow-100 text-yellow-800'
-                                    }`}>
-                                      {record.status === 'success' ? '成功' : record.status === 'failed' ? '失败' : '处理中'}
-                                    </span>
-                                  </td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                          {usageData.consumptionRecords.length === 0 && (
-                            <div className="text-center py-12 text-[var(--glass-text-tertiary)]">
-                              暂无消费记录
-                            </div>
-                          )}
-                        </div>
-                      )}
-
-                      {/* 任务记录列表 */}
-                      {activeTab === 'tasks' && (
-                        <div className="overflow-x-auto">
-                          <table className="w-full">
-                            <thead>
-                              <tr className="border-b border-[var(--glass-stroke-base)]">
-                                <th className="text-left py-3 px-4 text-sm font-medium text-[var(--glass-text-secondary)]">日期</th>
-                                <th className="text-left py-3 px-4 text-sm font-medium text-[var(--glass-text-secondary)]">任务名称</th>
-                                <th className="text-left py-3 px-4 text-sm font-medium text-[var(--glass-text-secondary)]">类型</th>
-                                <th className="text-right py-3 px-4 text-sm font-medium text-[var(--glass-text-secondary)]">时长</th>
-                                <th className="text-right py-3 px-4 text-sm font-medium text-[var(--glass-text-secondary)]">消耗积分</th>
-                                <th className="text-right py-3 px-4 text-sm font-medium text-[var(--glass-text-secondary)]">状态</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {usageData.taskRecords.map((record) => (
-                                <tr key={record.id} className="border-b border-[var(--glass-stroke-base)] last:border-0">
-                                  <td className="py-4 px-4 text-sm text-[var(--glass-text-primary)]">
-                                    {new Date(record.date).toLocaleString('zh-CN')}
-                                  </td>
-                                  <td className="py-4 px-4 text-sm text-[var(--glass-text-primary)]">
-                                    {record.name}
-                                  </td>
-                                  <td className="py-4 px-4 text-sm text-[var(--glass-text-primary)]">
-                                    <span className="inline-block px-2 py-1 rounded-full bg-purple-100 text-purple-800 text-xs">
-                                      {record.type}
-                                    </span>
-                                  </td>
-                                  <td className="py-4 px-4 text-sm text-right text-[var(--glass-text-primary)]">
-                                    {record.duration} 秒
-                                  </td>
-                                  <td className="py-4 px-4 text-sm text-right font-medium text-orange-600">
-                                    -{record.credits}
-                                  </td>
-                                  <td className="py-4 px-4 text-sm text-right">
-                                    <span className={`inline-block px-2 py-1 rounded-full text-xs ${
-                                      record.status === 'completed'
-                                        ? 'bg-green-100 text-green-800'
-                                        : record.status === 'failed'
-                                        ? 'bg-red-100 text-red-800'
-                                        : 'bg-blue-100 text-blue-800'
-                                    }`}>
-                                      {record.status === 'completed' ? '已完成' : record.status === 'failed' ? '失败' : '运行中'}
-                                    </span>
-                                  </td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                          {usageData.taskRecords.length === 0 && (
-                            <div className="text-center py-12 text-[var(--glass-text-tertiary)]">
-                              暂无任务记录
-                            </div>
-                          )}
-                        </div>
-                      )}
                     </div>
                   )}
-
-                  {/* 原有积分和订阅详情 */}
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {/* 积分详情 */}
-                    {subInfo?.balance && (
-                      <div className="glass-surface-soft rounded-2xl border border-[var(--glass-stroke-base)] p-6">
-                        <h3 className="text-lg font-semibold text-[var(--glass-text-primary)] mb-4">积分详情</h3>
-                        <div className="grid grid-cols-3 gap-4">
-                          <div>
-                            <div className="text-sm text-[var(--glass-text-secondary)]">套餐积分</div>
-                            <div className="mt-1 text-2xl font-bold text-blue-600">
-                              {subInfo.balance.subscriptionCredits}
-                            </div>
-                          </div>
-                          <div>
-                            <div className="text-sm text-[var(--glass-text-secondary)]">永久积分</div>
-                            <div className="mt-1 text-2xl font-bold text-green-600">
-                              {subInfo.balance.permanentCredits}
-                            </div>
-                          </div>
-                          <div>
-                            <div className="text-sm text-[var(--glass-text-secondary)]">冻结积分</div>
-                            <div className="mt-1 text-2xl font-bold text-orange-600">
-                              {subInfo.balance.frozenCredits}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* 订阅详情 */}
-                    {subInfo?.subscription && (
-                      <div className="glass-surface-soft rounded-2xl border border-[var(--glass-stroke-base)] p-6">
-                        <h3 className="text-lg font-semibold text-[var(--glass-text-primary)] mb-4">订阅详情</h3>
-                        <div className="space-y-3">
-                          <div className="flex justify-between">
-                            <span className="text-[var(--glass-text-secondary)]">套餐</span>
-                            <span className="font-medium">{subInfo.plan?.name || subInfo.subscription.planId}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-[var(--glass-text-secondary)]">状态</span>
-                            <span className="font-medium">{subInfo.subscription.status}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-[var(--glass-text-secondary)]">周期结束</span>
-                            <span className="font-medium">
-                              {new Date(subInfo.subscription.currentPeriodEnd).toLocaleDateString('zh-CN')}
-                            </span>
-                          </div>
-                          {subInfo.plan && (
-                            <>
-                              <div className="flex justify-between">
-                                <span className="text-[var(--glass-text-secondary)]">最大并发</span>
-                                <span className="font-medium">{subInfo.plan.maxConcurrency}</span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span className="text-[var(--glass-text-secondary)]">视频时长上限</span>
-                                <span className="font-medium">{subInfo.plan.maxVideoSeconds} 秒</span>
-                              </div>
-                            </>
-                          )}
-                        </div>
-                      </div>
-                    )}
-                  </div>
 
                   {!subInfo && !usageData && !loading && (
                     <div className="text-center py-12 text-[var(--glass-text-tertiary)]">
