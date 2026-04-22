@@ -3,6 +3,7 @@
 import { SessionProvider } from "next-auth/react"
 import { ToastProvider } from "@/contexts/ToastContext"
 import { QueryProvider } from "@/components/providers/QueryProvider"
+import { InsufficientCreditsProvider } from "@/lib/insufficient-credits-modal"
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -12,7 +13,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
     >
       <QueryProvider>
         <ToastProvider>
-          {children}
+          <InsufficientCreditsProvider>
+            {children}
+          </InsufficientCreditsProvider>
         </ToastProvider>
       </QueryProvider>
     </SessionProvider>

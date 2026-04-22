@@ -69,8 +69,8 @@ export default async function LocaleLayout({
                 <NextIntlClientProvider messages={messages}>
                     <Providers>
                         {children}
+                        <InsufficientCreditsModalProvider />
                     </Providers>
-                    <InsufficientCreditsModalProvider />
                 </NextIntlClientProvider>
 
             </body>
