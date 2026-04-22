@@ -1,7 +1,7 @@
 import createMiddleware from 'next-intl/middleware';
 import { locales, defaultLocale } from '@/i18n';
 
-export default createMiddleware({
+const intlMiddleware = createMiddleware({
     // 支持的所有语言
     locales,
 
@@ -14,6 +14,8 @@ export default createMiddleware({
     // 关闭自动语言检测，避免无前缀跳转触发语言漂移
     localeDetection: false
 });
+
+export default intlMiddleware;
 
 export const config = {
     // 匹配所有路径，除了 api、_next/static、_next/image、favicon.ico 等
