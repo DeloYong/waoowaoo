@@ -247,7 +247,7 @@ export default function ProfilePage() {
               {/* 退出登录 */}
               <button
                 onClick={() => {
-                  signOut({ callbackUrl: `/${locale}` })
+                  signOut({ callbackUrl: window.location.origin + '/home' })
                 }}
                 className="glass-btn-base glass-btn-tone-danger mt-auto flex items-center gap-2 px-4 py-3 text-sm rounded-xl transition-all cursor-pointer"
               >

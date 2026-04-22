@@ -107,12 +107,20 @@ export async function processExpiredSubscriptions(): Promise<{
           data: { status: 'expired' },
         })
 
-        // 清零套餐积分
-        const balance = await tx.userBalance.findUnique({
-          where: { userId: subscription.userId },
-        })
-        if (balance && balance.subscriptionCredits > 0) {
-          creditsCleared = balance.subscriptionCredits
+        // 使用 FOR UPDATE 行锁清零套餐积分，防止并发修改
+        const balance = await tx.$queryRaw<Array<{
+          subscriptionCredits: bigint
+          permanentCredits: bigint
+          frozenCredits: bigint
+        }>>`
+          SELECT subscriptionCredits, permanentCredits, frozenCredits
+          FROM "UserBalance"
+          WHERE userId = ${subscription.userId}
+          FOR UPDATE
+        `.then(rows => rows[0] ?? null)
+
+        if (balance && balance.subscriptionCredits > BigInt(0)) {
+          creditsCleared = Number(balance.subscriptionCredits)
           await tx.userBalance.update({
             where: { userId: subscription.userId },
             data: { subscriptionCredits: 0 },
@@ -125,7 +133,7 @@ export async function processExpiredSubscriptions(): Promise<{
               type: 'subscription_expired_clear',
               amount: 0,
               balanceAfter: 0,
-              description: `套餐过期，清零 ${balance.subscriptionCredits} 套餐积分`,
+              description: `套餐过期，清零 ${creditsCleared} 套餐积分`,
             },
           })
         }

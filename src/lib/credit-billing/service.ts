@@ -41,6 +41,7 @@ export async function getCreditBalance(userId: string): Promise<CreditBalance> {
 
 /**
  * 冻结积分
+ * 使用 FOR UPDATE 行锁防止并发竞态条件
  */
 export async function freezeCredits(
   userId: string,
@@ -67,11 +68,21 @@ export async function freezeCredits(
         }
       }
 
-      // 获取当前余额
-      const balance = await tx.userBalance.findUnique({
-        where: { userId },
-      })
+      // 使用 FOR UPDATE 行锁锁定用户余额记录，防止并发读取
+      // 这确保了在事务期间其他事务无法读取或修改该行
+      const balance = await tx.$queryRaw<Array<{
+        subscriptionCredits: bigint
+        permanentCredits: bigint
+        frozenCredits: bigint
+      }>>`
+        SELECT subscriptionCredits, permanentCredits, frozenCredits
+        FROM "UserBalance"
+        WHERE userId = ${userId}
+        FOR UPDATE
+      `.then(rows => rows[0] ?? null)
+
       if (!balance) {
+        // 用户余额不存在，先创建（此时无锁因为是新记录）
         await tx.userBalance.create({
           data: {
             userId,
@@ -83,109 +94,49 @@ export async function freezeCredits(
             frozenCredits: 0,
           },
         })
+        // 创建后再次锁定读取（处理高并发下的 race condition）
+        const newBalance = await tx.$queryRaw<Array<{
+          subscriptionCredits: bigint
+          permanentCredits: bigint
+          frozenCredits: bigint
+        }>>`
+          SELECT subscriptionCredits, permanentCredits, frozenCredits
+          FROM "UserBalance"
+          WHERE userId = ${userId}
+          FOR UPDATE
+        `.then(rows => rows[0] ?? null)
+
+        if (!newBalance) {
+          return null
+        }
+
+        const available =
+          Number(newBalance.subscriptionCredits) +
+          Number(newBalance.permanentCredits) -
+          Number(newBalance.frozenCredits)
+
+        if (available < credits) {
+          return null
+        }
+
+        return await performFreeze(tx, userId, credits, options, newBalance)
       }
 
       // 检查可用积分
       const available =
-        (balance?.subscriptionCredits ?? 0) +
-        (balance?.permanentCredits ?? 0) -
-        (balance?.frozenCredits ?? 0)
+        Number(balance.subscriptionCredits) +
+        Number(balance.permanentCredits) -
+        Number(balance.frozenCredits)
 
       if (available < credits) {
         return null
       }
 
-      // 冻结积分（先扣 subscription，再扣 permanent）
-      let remainingToFreeze = credits
-      let subscriptionToFreeze = 0
-      let permanentToFreeze = 0
-
-      const currentSub = balance?.subscriptionCredits ?? 0
-      if (currentSub > 0) {
-        subscriptionToFreeze = Math.min(currentSub, remainingToFreeze)
-        remainingToFreeze -= subscriptionToFreeze
-      }
-      if (remainingToFreeze > 0) {
-        permanentToFreeze = remainingToFreeze
-      }
-
-      await tx.userBalance.update({
-        where: { userId },
-        data: {
-          subscriptionCredits: { decrement: subscriptionToFreeze },
-          permanentCredits: { decrement: permanentToFreeze },
-          frozenCredits: { increment: credits },
-        },
-      })
-
-      // 创建冻结记录（复用 BalanceFreeze 表，amount 存积分数）
-      const freezeId = `credit_freeze_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`
-      await tx.balanceFreeze.create({
-        data: {
-          id: freezeId,
-          userId,
-          amount: new Prisma.Decimal(credits),
-          status: 'pending',
-          source: options?.source || 'credit',
-          taskId: options?.taskId || null,
-          requestId: options?.requestId || null,
-          idempotencyKey: options?.idempotencyKey || null,
-          metadata: JSON.stringify({
-            ...(options?.metadata || {}),
-            breakdown: { subscriptionToFreeze, permanentToFreeze },
-          }),
-        },
-      })
-
-      // 记录流水
-      await tx.balanceTransaction.create({
-        data: {
-          userId,
-          type: 'credit_freeze',
-          amount: new Prisma.Decimal(0),
-          balanceAfter: new Prisma.Decimal(0),
-          description: `积分冻结: ${credits}`,
-          freezeId,
-          idempotencyKey: options?.idempotencyKey || null,
-          billingMeta: JSON.stringify({
-            credits,
-            source: options?.source,
-            breakdown: { subscriptionToFreeze, permanentToFreeze },
-          }),
-        },
-      })
-
-      console.log('[Billing] freezeCredits success', {
-        freezeId,
-        userId,
-        credits,
-        subscriptionToFreeze,
-        permanentToFreeze,
-      })
-
-      trackEvent({
-        event: 'billing.freeze',
-        userId,
-        credits,
-        subscriptionToFreeze,
-        permanentToFreeze,
-        balanceBefore: {
-          subscription: currentSub - subscriptionToFreeze,
-          permanent: (balance?.permanentCredits ?? 0) - permanentToFreeze,
-          frozen: (balance?.frozenCredits ?? 0),
-          available: currentSub + (balance?.permanentCredits ?? 0) - (balance?.frozenCredits ?? 0),
-        },
-        balanceAfter: {
-          subscription: currentSub - subscriptionToFreeze,
-          permanent: (balance?.permanentCredits ?? 0) - permanentToFreeze,
-          frozen: (balance?.frozenCredits ?? 0) + credits,
-          available: currentSub + (balance?.permanentCredits ?? 0) - (balance?.frozenCredits ?? 0) - credits,
-        },
-        freezeId,
-        taskId: options?.taskId,
-      })
-
-      return freezeId
+      return await performFreeze(tx, userId, credits, options, balance)
+    }, {
+      // 设置事务超时和最大等待时间，防止死锁
+      maxWait: 5000,
+      timeout: 10000,
     })
 
     return result
@@ -201,8 +152,118 @@ export async function freezeCredits(
       })
       if (existing?.id) return existing.id
     }
+    console.error('[Billing] freezeCredits failed:', error)
     return null
   }
+}
+
+/**
+ * 执行冻结操作（已在事务内持有行锁）
+ */
+async function performFreeze(
+  tx: Parameters<Parameters<typeof prisma.$transaction>[0]>[0],
+  userId: string,
+  credits: number,
+  options?: {
+    source?: string
+    taskId?: string
+    requestId?: string
+    idempotencyKey?: string
+    metadata?: Record<string, unknown>
+  },
+  balance?: { subscriptionCredits: bigint; permanentCredits: bigint; frozenCredits: bigint } | null
+): Promise<string | null> {
+  // 冻结积分（先扣 subscription，再扣 permanent）
+  let remainingToFreeze = credits
+  let subscriptionToFreeze = 0
+  let permanentToFreeze = 0
+
+  const currentSub = balance ? Number(balance.subscriptionCredits) : 0
+  if (currentSub > 0) {
+    subscriptionToFreeze = Math.min(currentSub, remainingToFreeze)
+    remainingToFreeze -= subscriptionToFreeze
+  }
+  if (remainingToFreeze > 0) {
+    permanentToFreeze = remainingToFreeze
+  }
+
+  await tx.userBalance.update({
+    where: { userId },
+    data: {
+      subscriptionCredits: { decrement: subscriptionToFreeze },
+      permanentCredits: { decrement: permanentToFreeze },
+      frozenCredits: { increment: credits },
+    },
+  })
+
+  // 创建冻结记录（复用 BalanceFreeze 表，amount 存积分数）
+  const freezeId = `credit_freeze_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`
+  await tx.balanceFreeze.create({
+    data: {
+      id: freezeId,
+      userId,
+      amount: new Prisma.Decimal(credits),
+      status: 'pending',
+      source: options?.source || 'credit',
+      taskId: options?.taskId || null,
+      requestId: options?.requestId || null,
+      idempotencyKey: options?.idempotencyKey || null,
+      metadata: JSON.stringify({
+        ...(options?.metadata || {}),
+        breakdown: { subscriptionToFreeze, permanentToFreeze },
+      }),
+    },
+  })
+
+  // 记录流水
+  await tx.balanceTransaction.create({
+    data: {
+      userId,
+      type: 'credit_freeze',
+      amount: new Prisma.Decimal(0),
+      balanceAfter: new Prisma.Decimal(0),
+      description: `积分冻结: ${credits}`,
+      freezeId,
+      idempotencyKey: options?.idempotencyKey || null,
+      billingMeta: JSON.stringify({
+        credits,
+        source: options?.source,
+        breakdown: { subscriptionToFreeze, permanentToFreeze },
+      }),
+    },
+  })
+
+  console.log('[Billing] freezeCredits success', {
+    freezeId,
+    userId,
+    credits,
+    subscriptionToFreeze,
+    permanentToFreeze,
+  })
+
+  trackEvent({
+    event: 'billing.freeze',
+    userId,
+    credits,
+    subscriptionToFreeze,
+    permanentToFreeze,
+    balanceBefore: {
+      subscription: currentSub - subscriptionToFreeze,
+      permanent: balance ? Number(balance.permanentCredits) - permanentToFreeze : 0,
+      frozen: balance ? Number(balance.frozenCredits) : 0,
+      available: balance ? Number(balance.subscriptionCredits) + Number(balance.permanentCredits) - Number(balance.frozenCredits) : 0,
+    },
+    balanceAfter: {
+      subscription: currentSub - subscriptionToFreeze,
+      permanent: balance ? Number(balance.permanentCredits) - permanentToFreeze : 0,
+      frozen: balance ? Number(balance.frozenCredits) + credits : credits,
+      available: balance ? Number(balance.subscriptionCredits) + Number(balance.permanentCredits) - Number(balance.frozenCredits) - credits : 0,
+    },
+    freezeId,
+    taskId: options?.taskId,
+  })
+
+  return freezeId
 }
 
 /**
