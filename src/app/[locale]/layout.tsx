@@ -7,6 +7,7 @@ import { getMessages, getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import "../globals.css";
 import { Providers } from "./providers";
+import { InsufficientCreditsModalProvider } from '@/components/InsufficientCreditsModalProvider';
 
 import { locales } from '@/i18n/routing';
 
@@ -69,6 +70,7 @@ export default async function LocaleLayout({
                     <Providers>
                         {children}
                     </Providers>
+                    <InsufficientCreditsModalProvider />
                 </NextIntlClientProvider>
 
             </body>
