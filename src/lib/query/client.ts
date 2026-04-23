@@ -1,4 +1,5 @@
 import { QueryClient } from '@tanstack/react-query'
+import { handleInsufficientCredits } from '@/lib/insufficient-credits-modal'
 
 /**
  * 全局 QueryClient 配置
@@ -23,6 +24,10 @@ export const queryClient = new QueryClient({
         mutations: {
             // mutation 不重试
             retry: 0,
+            // 全局错误处理：拦截 402 积分不足，自动打开充值弹窗
+            onError: (error) => {
+                handleInsufficientCredits(error)
+            },
         },
     },
 })

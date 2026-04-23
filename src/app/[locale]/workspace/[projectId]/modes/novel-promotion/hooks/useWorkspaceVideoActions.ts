@@ -3,6 +3,7 @@
 import { logInfo as _ulogInfo, logError as _ulogError } from '@/lib/logging/core'
 import { useGenerateVideo, useBatchGenerateVideos } from '@/lib/query/hooks/useStoryboards'
 import { useUpdateProjectPanelVideoPrompt, useUpdateProjectClip, useUpdateProjectConfig } from '@/lib/query/hooks'
+import { handleInsufficientCredits } from '@/lib/insufficient-credits-modal'
 import type { BatchVideoGenerationParams, VideoGenerationOptions } from '../components/video'
 
 interface UseWorkspaceVideoActionsParams {
@@ -70,6 +71,8 @@ export function useWorkspaceVideoActions({
         _ulogInfo(t('execution.requestAborted'))
         return
       }
+      // 积分不足时打开弹窗，不再显示粗暴 alert
+      if (handleInsufficientCredits(err)) return
       alert(`${t('execution.generationFailed')}: ${getErrorMessage(err)}`)
       throw err
     }
@@ -96,6 +99,8 @@ export function useWorkspaceVideoActions({
         _ulogInfo(t('execution.requestAborted'))
         return
       }
+      // 积分不足时打开弹窗，不再显示粗暴 alert
+      if (handleInsufficientCredits(err)) return
       alert(`${t('execution.batchVideoFailed')}: ${getErrorMessage(err)}`)
       throw err
     }
