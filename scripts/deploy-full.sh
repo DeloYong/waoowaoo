@@ -21,6 +21,10 @@ echo "步骤 1/4: 拉取最新代码..."
 echo "========================================="
 git fetch origin
 git pull origin feature/saas-credits
+
+# 清除本地 .next 缓存，防止 COPY . . 将旧构建产物带入 Docker
+echo "清除 .next 构建缓存..."
+rm -rf .next
 echo "✅ 代码拉取完成"
 echo ""
 

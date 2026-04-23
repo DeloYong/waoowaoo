@@ -13,6 +13,9 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+# 清除可能残留的旧构建缓存，确保完全重新构建
+RUN rm -rf .next
+
 # Prisma generate + Next.js build
 RUN npm run build
 
