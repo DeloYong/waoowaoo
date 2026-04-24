@@ -114,7 +114,7 @@ export async function processExpiredSubscriptions(): Promise<{
           frozenCredits: bigint
         }>>`
           SELECT subscriptionCredits, permanentCredits, frozenCredits
-          FROM "UserBalance"
+          FROM user_balances
           WHERE userId = ${subscription.userId}
           FOR UPDATE
         `.then(rows => rows[0] ?? null)

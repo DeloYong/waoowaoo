@@ -80,7 +80,7 @@ export async function freezeCredits(
         frozenCredits: bigint
       }>>`
         SELECT subscriptionCredits, permanentCredits, frozenCredits
-        FROM "UserBalance"
+        FROM user_balances
         WHERE userId = ${userId}
         FOR UPDATE
       `.then(rows => rows[0] ?? null)
@@ -105,7 +105,7 @@ export async function freezeCredits(
           frozenCredits: bigint
         }>>`
           SELECT subscriptionCredits, permanentCredits, frozenCredits
-          FROM "UserBalance"
+          FROM user_balances
           WHERE userId = ${userId}
           FOR UPDATE
         `.then(rows => rows[0] ?? null)
