@@ -39,7 +39,7 @@ export async function getCreditBalance(userId: string): Promise<CreditBalance> {
     subscriptionCredits: safeSubscriptionCredits,
     permanentCredits: safePermanentCredits,
     frozenCredits: safeFrozenCredits,
-    availableCredits: safeSubscriptionCredits + safePermanentCredits - safeFrozenCredits,
+    availableCredits: safeSubscriptionCredits + safePermanentCredits,
   }
 }
 
@@ -116,8 +116,7 @@ export async function freezeCredits(
 
         const available =
           Math.max(0, Number(newBalance.subscriptionCredits)) +
-          Math.max(0, Number(newBalance.permanentCredits)) -
-          Math.max(0, Number(newBalance.frozenCredits))
+          Math.max(0, Number(newBalance.permanentCredits))
 
         if (available < credits) {
           return null
@@ -126,11 +125,10 @@ export async function freezeCredits(
         return await performFreeze(tx, userId, credits, options, newBalance)
       }
 
-      // 检查可用积分，确保积分值非负
+      // 检查可用积分（冻结时已从subscription/permanent中扣减，无需再减frozenCredits）
       const available =
         Math.max(0, Number(balance.subscriptionCredits)) +
-        Math.max(0, Number(balance.permanentCredits)) -
-        Math.max(0, Number(balance.frozenCredits))
+        Math.max(0, Number(balance.permanentCredits))
 
       if (available < credits) {
         return null
@@ -253,16 +251,16 @@ async function performFreeze(
     subscriptionToFreeze,
     permanentToFreeze,
     balanceBefore: {
-      subscription: currentSub - subscriptionToFreeze,
-      permanent: balance ? Number(balance.permanentCredits) - permanentToFreeze : 0,
+      subscription: currentSub,
+      permanent: balance ? Number(balance.permanentCredits) : 0,
       frozen: balance ? Number(balance.frozenCredits) : 0,
-      available: balance ? Number(balance.subscriptionCredits) + Number(balance.permanentCredits) - Number(balance.frozenCredits) : 0,
+      available: balance ? Math.max(0, Number(balance.subscriptionCredits)) + Math.max(0, Number(balance.permanentCredits)) : 0,
     },
     balanceAfter: {
       subscription: currentSub - subscriptionToFreeze,
       permanent: balance ? Number(balance.permanentCredits) - permanentToFreeze : 0,
       frozen: balance ? Number(balance.frozenCredits) + credits : credits,
-      available: balance ? Number(balance.subscriptionCredits) + Number(balance.permanentCredits) - Number(balance.frozenCredits) - credits : 0,
+      available: Math.max(0, currentSub - subscriptionToFreeze) + Math.max(0, (balance ? Number(balance.permanentCredits) : 0) - permanentToFreeze),
     },
     freezeId,
     taskId: options?.taskId,
