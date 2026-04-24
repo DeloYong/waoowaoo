@@ -30,12 +30,16 @@ export async function getCreditBalance(userId: string): Promise<CreditBalance> {
     },
   })
 
+  // 确保积分值非负，避免负数导致的计算错误
+  const safeSubscriptionCredits = Math.max(0, Number(balance.subscriptionCredits))
+  const safePermanentCredits = Math.max(0, Number(balance.permanentCredits))
+  const safeFrozenCredits = Math.max(0, Number(balance.frozenCredits))
+
   return {
-    subscriptionCredits: balance.subscriptionCredits,
-    permanentCredits: balance.permanentCredits,
-    frozenCredits: balance.frozenCredits,
-    availableCredits:
-      balance.subscriptionCredits + balance.permanentCredits - balance.frozenCredits,
+    subscriptionCredits: safeSubscriptionCredits,
+    permanentCredits: safePermanentCredits,
+    frozenCredits: safeFrozenCredits,
+    availableCredits: safeSubscriptionCredits + safePermanentCredits - safeFrozenCredits,
   }
 }
 
@@ -111,9 +115,9 @@ export async function freezeCredits(
         }
 
         const available =
-          Number(newBalance.subscriptionCredits) +
-          Number(newBalance.permanentCredits) -
-          Number(newBalance.frozenCredits)
+          Math.max(0, Number(newBalance.subscriptionCredits)) +
+          Math.max(0, Number(newBalance.permanentCredits)) -
+          Math.max(0, Number(newBalance.frozenCredits))
 
         if (available < credits) {
           return null
@@ -122,11 +126,11 @@ export async function freezeCredits(
         return await performFreeze(tx, userId, credits, options, newBalance)
       }
 
-      // 检查可用积分
+      // 检查可用积分，确保积分值非负
       const available =
-        Number(balance.subscriptionCredits) +
-        Number(balance.permanentCredits) -
-        Number(balance.frozenCredits)
+        Math.max(0, Number(balance.subscriptionCredits)) +
+        Math.max(0, Number(balance.permanentCredits)) -
+        Math.max(0, Number(balance.frozenCredits))
 
       if (available < credits) {
         return null
