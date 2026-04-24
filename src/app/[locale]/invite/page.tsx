@@ -1,11 +1,32 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useSession } from 'next-auth/react'
 import { useTranslations } from 'next-intl'
+import { useRouter } from '@/i18n/navigation'
 import Navbar from '@/components/Navbar'
 import { AppIcon } from '@/components/ui/icons'
 import { toast } from 'react-hot-toast'
+
+interface SubscriptionInfo {
+  subscription: {
+    planId: string
+    status: string
+    currentPeriodEnd: string
+    creditsGranted: number
+    videoSecondsUsed: number
+  } | null
+  balance: {
+    subscriptionCredits: number
+    permanentCredits: number
+    frozenCredits: number
+  } | null
+  plan: {
+    name: string
+    maxConcurrency: number
+    maxVideoSeconds: number
+  } | null
+}
 
 interface InviteRecord {
   id: string
@@ -32,8 +53,10 @@ interface RebateLog {
 }
 
 export default function InvitePage() {
-  const { data: session } = useSession()
+  const { data: session, status: sessionStatus } = useSession()
   const tc = useTranslations('common')
+  const t = useTranslations('profile')
+  const router = useRouter()
   const [inviteCode, setInviteCode] = useState<string | null>(null)
   const [inviteList, setInviteList] = useState<InviteRecord[]>([])
   const [stats, setStats] = useState<InviteStats>({
@@ -45,12 +68,40 @@ export default function InvitePage() {
   const [rebateLogs, setRebateLogs] = useState<RebateLog[]>([])
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<'overview' | 'list' | 'rebates'>('overview')
+  const [subInfo, setSubInfo] = useState<SubscriptionInfo | null>(null)
+
+  // 计算总积分
+  const totalCredits = useMemo(() => {
+    if (!subInfo?.balance) return 0
+    return subInfo.balance.subscriptionCredits + subInfo.balance.permanentCredits - subInfo.balance.frozenCredits
+  }, [subInfo?.balance])
+
+  // 获取套餐信息
+  const fetchSubscriptionInfo = async () => {
+    try {
+      const res = await fetch('/api/user/subscription')
+      if (res.ok) {
+        const data = await res.json()
+        setSubInfo(data)
+      }
+    } catch (error) {
+      console.error('获取订阅信息失败:', error)
+    }
+  }
 
   useEffect(() => {
-    if (session) {
-      fetchInviteData()
+    if (sessionStatus === 'loading') return
+    if (!session) {
+      router.push({ pathname: '/auth/signin' })
+      return
     }
-  }, [session])
+    if (session) {
+      Promise.all([
+        fetchInviteData(),
+        fetchSubscriptionInfo()
+      ])
+    }
+  }, [session, sessionStatus, router])
 
   const fetchInviteData = async () => {
     try {
@@ -74,14 +125,43 @@ export default function InvitePage() {
     }
   }
 
-  const copyInviteLink = () => {
+  const copyInviteLink = async () => {
     if (!inviteCode) {
       toast.error('暂无邀请码')
       return
     }
     const url = `${window.location.origin}/zh/auth/signup?invite=${inviteCode}`
-    navigator.clipboard.writeText(url)
-    toast.success('邀请链接已复制到剪贴板')
+
+    try {
+      // 优先使用Clipboard API
+      if (navigator.clipboard) {
+        await navigator.clipboard.writeText(url)
+        toast.success('邀请链接已复制到剪贴板')
+      } else {
+        // Fallback：使用传统复制方法
+        const textArea = document.createElement('textarea')
+        textArea.value = url
+        textArea.style.position = 'fixed'
+        textArea.style.left = '-999999px'
+        textArea.style.top = '-999999px'
+        document.body.appendChild(textArea)
+        textArea.focus()
+        textArea.select()
+
+        try {
+          document.execCommand('copy')
+          toast.success('邀请链接已复制到剪贴板')
+        } catch (fallbackError) {
+          console.error('Fallback copy failed:', fallbackError)
+          toast.error('复制失败，请手动复制链接：' + url)
+        }
+
+        document.body.removeChild(textArea)
+      }
+    } catch (error) {
+      console.error('Copy failed:', error)
+      toast.error('复制失败，请手动复制链接：' + url)
+    }
   }
 
   if (loading) {
@@ -95,11 +175,89 @@ export default function InvitePage() {
     )
   }
 
+  if (sessionStatus === 'loading' || !session) {
+    return (
+      <div className="glass-page flex min-h-screen items-center justify-center">
+        <div className="text-[var(--glass-text-secondary)]">{tc('loading')}</div>
+      </div>
+    )
+  }
+
   return (
     <div className="glass-page min-h-screen">
       <Navbar />
 
-      <main className="max-w-6xl mx-auto px-6 py-16">
+      <main className="max-w-[1400px] mx-auto px-6 py-8">
+        <div className="flex gap-6 h-[calc(100vh-140px)]">
+          {/* 左侧侧边栏 */}
+          <div className="w-64 flex-shrink-0">
+            <div className="glass-surface-elevated h-full flex flex-col p-5">
+              {/* 用户信息 */}
+              <div className="mb-6">
+                <div className="mb-4">
+                  <h2 className="font-semibold text-[var(--glass-text-primary)]">{session.user?.name || t('user')}</h2>
+                  <p className="text-xs text-[var(--glass-text-tertiary)]">{t('personalAccount')}</p>
+                </div>
+
+                {/* 积分卡片 */}
+                <div className="space-y-3">
+                  <div className="glass-surface-soft rounded-2xl border border-[var(--glass-stroke-base)] p-4">
+                    <div className="text-xs font-medium text-[var(--glass-text-secondary)]">可用积分</div>
+                    <div className="mt-2 text-2xl font-bold text-[var(--glass-text-primary)]">
+                      {totalCredits}
+                    </div>
+                  </div>
+
+                  {subInfo?.subscription && (
+                    <div className="glass-surface-soft rounded-2xl border border-[var(--glass-stroke-base)] p-4">
+                      <div className="text-xs font-medium text-[var(--glass-text-secondary)]">{t('currentPlan')}</div>
+                      <div className="mt-1 text-base font-semibold text-[var(--glass-text-primary)]">
+                        {subInfo.plan?.name}
+                      </div>
+                      <div className="mt-1 text-xs text-[var(--glass-text-tertiary)]">
+                        状态: {subInfo.subscription.status === 'active' ? '已激活' : subInfo.subscription.status}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* 导航菜单 */}
+              <nav className="flex-1 space-y-2">
+                <button
+                  onClick={() => router.push({ pathname: '/pricing' })}
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-[var(--glass-text-secondary)] hover:bg-[var(--glass-bg-muted)] transition-all cursor-pointer"
+                >
+                  <AppIcon name="receipt" className="w-5 h-5" />
+                  <span className="font-medium">套餐与定价</span>
+                </button>
+
+                <button
+                  onClick={() => router.push({ pathname: '/invite' })}
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left bg-[var(--glass-bg-muted)] text-[var(--glass-text-primary)] transition-all cursor-pointer"
+                >
+                  <AppIcon name="sparkles" className="w-5 h-5" />
+                  <span className="font-medium">邀请奖励</span>
+                </button>
+              </nav>
+
+              {/* 退出登录 */}
+              <button
+                onClick={() => {
+                  router.push({ pathname: '/profile' })
+                }}
+                className="glass-btn-base glass-btn-tone-default mt-auto flex items-center gap-2 px-4 py-3 text-sm rounded-xl transition-all cursor-pointer"
+              >
+                <AppIcon name="user" className="w-4 h-4" />
+                返回个人中心
+              </button>
+            </div>
+          </div>
+
+          {/* 右侧内容区 */}
+          <div className="flex-1 min-w-0 overflow-y-auto">
+            <div className="glass-surface-elevated min-h-full flex flex-col p-8">
+              <div className="max-w-none">
         {/* 标题 */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-[var(--glass-text-primary)] mb-4">
@@ -311,6 +469,10 @@ export default function InvitePage() {
               )}
             </div>
           )}
+        </div>
+              </div>
+            </div>
+          </div>
         </div>
       </main>
     </div>

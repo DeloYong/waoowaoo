@@ -204,12 +204,12 @@ export default function ProfilePage() {
 
                   {subInfo?.subscription && (
                     <div className="glass-surface-soft rounded-2xl border border-[var(--glass-stroke-base)] p-4">
-                      <div className="text-xs font-medium text-[var(--glass-text-secondary)]">当前套餐</div>
+                      <div className="text-xs font-medium text-[var(--glass-text-secondary)]">{t('currentPlan')}</div>
                       <div className="mt-1 text-base font-semibold text-[var(--glass-text-primary)]">
-                        {subInfo.plan?.name || subInfo.subscription.planId}
+                        {subInfo.plan?.name}
                       </div>
                       <div className="mt-1 text-xs text-[var(--glass-text-tertiary)]">
-                        状态: {subInfo.subscription.status}
+                        状态: {subInfo.subscription.status === 'active' ? '已激活' : subInfo.subscription.status}
                       </div>
                     </div>
                   )}
@@ -234,20 +234,12 @@ export default function ProfilePage() {
                   <span className="font-medium">邀请奖励</span>
                 </button>
 
-                <div
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-[var(--glass-text-tertiary)] cursor-not-allowed opacity-50"
-                  title="模型配置已由管理员统一管理"
-                >
-                  <AppIcon name="settingsHex" className="w-5 h-5" />
-                  <span className="font-medium">API 配置</span>
-                  <span className="ml-auto text-xs">(已禁用)</span>
-                </div>
               </nav>
 
               {/* 退出登录 */}
               <button
                 onClick={() => {
-                  signOut({ callbackUrl: window.location.origin + '/home' })
+                  signOut({ redirect: true, callbackUrl: window.location.origin + '/home' })
                 }}
                 className="glass-btn-base glass-btn-tone-danger mt-auto flex items-center gap-2 px-4 py-3 text-sm rounded-xl transition-all cursor-pointer"
               >
@@ -268,7 +260,7 @@ export default function ProfilePage() {
                   {usageData?.overview && (
                     <div className="glass-surface-soft rounded-2xl border border-[var(--glass-stroke-base)] p-6">
                       <h3 className="text-lg font-semibold text-[var(--glass-text-primary)] mb-4">使用概览</h3>
-                      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                         <div className="p-4 bg-blue-50/50 rounded-xl">
                           <div className="text-sm text-blue-700 mb-1">积分余额</div>
                           <div className="text-2xl font-bold text-blue-900">
@@ -279,18 +271,6 @@ export default function ProfilePage() {
                           <div className="text-sm text-orange-700 mb-1">本月已用</div>
                           <div className="text-2xl font-bold text-orange-900">
                             {loading ? '...' : usageData.overview.usedThisMonth}
-                          </div>
-                        </div>
-                        <div className="p-4 bg-green-50/50 rounded-xl">
-                          <div className="text-sm text-green-700 mb-1">剩余积分</div>
-                          <div className="text-2xl font-bold text-green-900">
-                            {loading ? '...' : usageData.overview.remainingCredits}
-                          </div>
-                        </div>
-                        <div className="p-4 bg-purple-50/50 rounded-xl">
-                          <div className="text-sm text-purple-700 mb-1">已用视频秒数</div>
-                          <div className="text-2xl font-bold text-purple-900">
-                            {loading ? '...' : usageData.overview.usedVideoSeconds}
                           </div>
                         </div>
                         <div className="p-4 bg-pink-50/50 rounded-xl">

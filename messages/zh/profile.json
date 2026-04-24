@@ -1,6 +1,7 @@
 {
     "user": "用户",
     "personalAccount": "个人账户",
+    "currentPlan": "当前套餐",
     "availableBalance": "可用余额",
     "openSourceNoBilling": "开源版本，无需计费",
     "frozen": "冻结",

@@ -1,10 +1,32 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
+import { useSession } from 'next-auth/react'
 import { useTranslations } from 'next-intl'
+import { useRouter } from '@/i18n/navigation'
 import Navbar from '@/components/Navbar'
 import { AppIcon } from '@/components/ui/icons'
 import { toast } from 'react-hot-toast'
+
+interface SubscriptionInfo {
+  subscription: {
+    planId: string
+    status: string
+    currentPeriodEnd: string
+    creditsGranted: number
+    videoSecondsUsed: number
+  } | null
+  balance: {
+    subscriptionCredits: number
+    permanentCredits: number
+    frozenCredits: number
+  } | null
+  plan: {
+    name: string
+    maxConcurrency: number
+    maxVideoSeconds: number
+  } | null
+}
 
 interface Plan {
   id: string
@@ -59,16 +81,49 @@ const COMPARISON_FEATURES = [
 ]
 
 export default function PricingPage() {
+  const { data: session, status: sessionStatus } = useSession()
   const tc = useTranslations('common')
+  const t = useTranslations('profile')
+  const router = useRouter()
   const [plans, setPlans] = useState<Plan[]>([])
   const [loading, setLoading] = useState(true)
   const [purchasingPlanId, setPurchasingPlanId] = useState<string | null>(null)
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly')
   const [openFAQ, setOpenFAQ] = useState<number | null>(null)
+  const [subInfo, setSubInfo] = useState<SubscriptionInfo | null>(null)
+
+  // 计算总积分
+  const totalCredits = useMemo(() => {
+    if (!subInfo?.balance) return 0
+    return subInfo.balance.subscriptionCredits + subInfo.balance.permanentCredits - subInfo.balance.frozenCredits
+  }, [subInfo?.balance])
+
+  // 获取套餐信息
+  const fetchSubscriptionInfo = async () => {
+    try {
+      const res = await fetch('/api/user/subscription')
+      if (res.ok) {
+        const data = await res.json()
+        setSubInfo(data)
+      }
+    } catch (error) {
+      console.error('获取订阅信息失败:', error)
+    }
+  }
 
   useEffect(() => {
-    fetchPlans()
-  }, [])
+    if (sessionStatus === 'loading') return
+    if (!session) {
+      router.push({ pathname: '/auth/signin' })
+      return
+    }
+    if (session) {
+      Promise.all([
+        fetchPlans(),
+        fetchSubscriptionInfo()
+      ])
+    }
+  }, [session, sessionStatus, router])
 
   const fetchPlans = async () => {
     try {
@@ -110,6 +165,14 @@ export default function PricingPage() {
     setOpenFAQ(openFAQ === index ? null : index)
   }
 
+  if (sessionStatus === 'loading' || !session) {
+    return (
+      <div className="glass-page flex min-h-screen items-center justify-center">
+        <div className="text-[var(--glass-text-secondary)]">{tc('loading')}</div>
+      </div>
+    )
+  }
+
   if (loading) {
     return (
       <div className="glass-page min-h-screen">
@@ -127,7 +190,77 @@ export default function PricingPage() {
     <div className="glass-page min-h-screen">
       <Navbar />
 
-      <main className="max-w-7xl mx-auto px-6 py-16">
+      <main className="max-w-[1400px] mx-auto px-6 py-8">
+        <div className="flex gap-6 h-[calc(100vh-140px)]">
+          {/* 左侧侧边栏 */}
+          <div className="w-64 flex-shrink-0">
+            <div className="glass-surface-elevated h-full flex flex-col p-5">
+              {/* 用户信息 */}
+              <div className="mb-6">
+                <div className="mb-4">
+                  <h2 className="font-semibold text-[var(--glass-text-primary)]">{session.user?.name || t('user')}</h2>
+                  <p className="text-xs text-[var(--glass-text-tertiary)]">{t('personalAccount')}</p>
+                </div>
+
+                {/* 积分卡片 */}
+                <div className="space-y-3">
+                  <div className="glass-surface-soft rounded-2xl border border-[var(--glass-stroke-base)] p-4">
+                    <div className="text-xs font-medium text-[var(--glass-text-secondary)]">可用积分</div>
+                    <div className="mt-2 text-2xl font-bold text-[var(--glass-text-primary)]">
+                      {totalCredits}
+                    </div>
+                  </div>
+
+                  {subInfo?.subscription && (
+                    <div className="glass-surface-soft rounded-2xl border border-[var(--glass-stroke-base)] p-4">
+                      <div className="text-xs font-medium text-[var(--glass-text-secondary)]">{t('currentPlan')}</div>
+                      <div className="mt-1 text-base font-semibold text-[var(--glass-text-primary)]">
+                        {subInfo.plan?.name}
+                      </div>
+                      <div className="mt-1 text-xs text-[var(--glass-text-tertiary)]">
+                        状态: {subInfo.subscription.status === 'active' ? '已激活' : subInfo.subscription.status}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* 导航菜单 */}
+              <nav className="flex-1 space-y-2">
+                <button
+                  onClick={() => router.push({ pathname: '/pricing' })}
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left bg-[var(--glass-bg-muted)] text-[var(--glass-text-primary)] transition-all cursor-pointer"
+                >
+                  <AppIcon name="receipt" className="w-5 h-5" />
+                  <span className="font-medium">套餐与定价</span>
+                </button>
+
+                <button
+                  onClick={() => router.push({ pathname: '/invite' })}
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-[var(--glass-text-secondary)] hover:bg-[var(--glass-bg-muted)] transition-all cursor-pointer"
+                >
+                  <AppIcon name="sparkles" className="w-5 h-5" />
+                  <span className="font-medium">邀请奖励</span>
+                </button>
+              </nav>
+
+              {/* 返回个人中心 */}
+              <button
+                onClick={() => {
+                  router.push({ pathname: '/profile' })
+                }}
+                className="glass-btn-base glass-btn-tone-default mt-auto flex items-center gap-2 px-4 py-3 text-sm rounded-xl transition-all cursor-pointer"
+              >
+                <AppIcon name="user" className="w-4 h-4" />
+                返回个人中心
+              </button>
+            </div>
+          </div>
+
+          {/* 右侧内容区 */}
+          <div className="flex-1 min-w-0 overflow-y-auto">
+            <div className="glass-surface-elevated min-h-full flex flex-col p-8">
+              <div className="max-w-none">
         {/* 标题区域 */}
         <div className="text-center mb-16">
           <h1 className="text-5xl font-bold text-[var(--glass-text-primary)] mb-6">
@@ -447,6 +580,10 @@ export default function PricingPage() {
           <p className="text-sm text-[var(--glass-text-tertiary)] mb-2">* 所有套餐均包含基础 AI 模型访问权限</p>
           <p className="text-sm text-[var(--glass-text-tertiary)] mb-2">* 积分可用于图片生成、视频生成、文本处理等所有功能</p>
           <p className="text-sm text-[var(--glass-text-tertiary)]">* 套餐积分每月重置，未使用积分不累积到下月</p>
+        </div>
+              </div>
+            </div>
+          </div>
         </div>
       </main>
     </div>
