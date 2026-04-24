@@ -164,13 +164,14 @@ export async function quoteCredits(
     }
   }
 
-  console.log('[Billing] quoteCredits', {
+  console.log('[Billing] quoteCredits 计算结果', {
     mediaType,
     modelKey,
     quantity,
     tier,
     unitPrice,
     duration: options?.duration,
+    resolution: options?.resolution,
     totalCredits,
   })
 

@@ -855,6 +855,22 @@ export async function prepareTaskBilling(task: {
   if (!freezeId) {
     const { getCreditBalance } = await import('../credit-billing/service')
     const balance = await getCreditBalance(task.userId)
+
+    // 记录积分不足的日志，方便排查
+    _ulogError('积分不足，无法完成操作', {
+      userId: task.userId,
+      taskId: task.id,
+      taskType: info.taskType,
+      requiredCredits: quotedCost,
+      availableCredits: balance.availableCredits,
+      subscriptionCredits: balance.subscriptionCredits,
+      permanentCredits: balance.permanentCredits,
+      frozenCredits: balance.frozenCredits,
+      model: info.model,
+      quantity: info.quantity,
+      metadata: info.metadata,
+    })
+
     throw new InsufficientBalanceError(quotedCost, balance.availableCredits)
   }
 

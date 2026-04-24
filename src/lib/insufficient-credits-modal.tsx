@@ -55,22 +55,35 @@ export function useInsufficientCreditsModal() {
 export function handleInsufficientCredits(error: unknown) {
   if (!globalOpen) return false
 
+  let required: number | undefined
+  let available: number | undefined
+
   // 情况1: HTTP 错误对象带有 status: 402
   if (error && typeof error === 'object') {
-    if ('status' in error) {
-      const httpError = error as { status?: number }
-      if (httpError.status === 402) {
-        globalOpen()
-        return true
+    if ('status' in error && error.status === 402) {
+      // 从错误响应体中提取 required 和 available
+      if ('data' in error && typeof error.data === 'object' && error.data) {
+        if ('required' in error.data && typeof error.data.required === 'number') {
+          required = error.data.required
+        }
+        if ('available' in error.data && typeof error.data.available === 'number') {
+          available = error.data.available
+        }
       }
+      globalOpen({ estimatedCost: required, currentBalance: available })
+      return true
     }
     // 情况2: ApiError 带有 code: 'INSUFFICIENT_BALANCE'
-    if ('code' in error) {
-      const codedError = error as { code?: string }
-      if (codedError.code === 'INSUFFICIENT_BALANCE') {
-        globalOpen()
-        return true
+    if ('code' in error && error.code === 'INSUFFICIENT_BALANCE') {
+      // 从错误对象中提取 required 和 available
+      if ('required' in error && typeof error.required === 'number') {
+        required = error.required
       }
+      if ('available' in error && typeof error.available === 'number') {
+        available = error.available
+      }
+      globalOpen({ estimatedCost: required, currentBalance: available })
+      return true
     }
   }
 
@@ -84,7 +97,13 @@ export function handleInsufficientCredits(error: unknown) {
       msg.includes('INSUFFICIENT') ||
       msg === '402'
     ) {
-      globalOpen()
+      // 尝试从错误消息中提取金额（如果有的话）
+      const requiredMatch = msg.match(/需要(\d+)积分/)
+      const availableMatch = msg.match(/可用(\d+)积分/)
+      if (requiredMatch) required = parseInt(requiredMatch[1], 10)
+      if (availableMatch) available = parseInt(availableMatch[1], 10)
+
+      globalOpen({ estimatedCost: required, currentBalance: available })
       return true
     }
   }
