@@ -178,7 +178,8 @@ async function performFreeze(
   let subscriptionToFreeze = 0
   let permanentToFreeze = 0
 
-  const currentSub = balance ? Number(balance.subscriptionCredits) : 0
+  // 修复：订阅积分如果是负数，当作0处理，避免出现扣减负数违反约束的问题
+  const currentSub = balance ? Math.max(0, Number(balance.subscriptionCredits)) : 0
   if (currentSub > 0) {
     subscriptionToFreeze = Math.min(currentSub, remainingToFreeze)
     remainingToFreeze -= subscriptionToFreeze
