@@ -46,6 +46,8 @@ function NavItem({
     disabledLabel?: string
 }) {
     const handleClick = (e: React.MouseEvent) => {
+        console.log('[CapsuleNav handleClick] label:', label, 'disabled:', disabled, 'href:', href)
+        document.title = `[Clicked: ${label}] ` + document.title
         if (disabled) return
         if (e.button === 1 || e.ctrlKey || e.metaKey) {
             if (href) {
