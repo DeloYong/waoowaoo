@@ -238,8 +238,10 @@ export default function ProfilePage() {
 
               {/* 退出登录 */}
               <button
-                onClick={() => {
-                  signOut({ redirect: true, callbackUrl: window.location.origin + '/home' })
+                onClick={async () => {
+                  await signOut({ redirect: false })
+                  // 手动跳转到当前域名的 home 页面，不依赖 NEXTAUTH_URL
+                  window.location.href = window.location.origin + '/home'
                 }}
                 className="glass-btn-base glass-btn-tone-danger mt-auto flex items-center gap-2 px-4 py-3 text-sm rounded-xl transition-all cursor-pointer"
               >

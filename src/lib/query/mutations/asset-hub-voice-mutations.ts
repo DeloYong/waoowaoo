@@ -79,7 +79,7 @@ export function useSaveDesignedAssetHubVoice() {
         if (vid.startsWith('qwen-tts-vd-')) return 'qwen-designed'
         return 'qwen-designed'
       }
-      const res = await requestJsonWithError('/api/asset-hub/voices', {
+      const res = await requestJsonWithError<{ id: string; voiceId: string; voiceType: string; customVoiceUrl: string }>('/api/asset-hub/voices', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -94,7 +94,13 @@ export function useSaveDesignedAssetHubVoice() {
           language: 'zh',
         }),
       }, '保存失败')
-      return res
+      // 返回新创建的音色信息，供直接绑定使用
+      return {
+        id: res.id,
+        voiceId: res.voiceId,
+        voiceType: res.voiceType,
+        customVoiceUrl: uploadData.key,
+      }
     },
     onSuccess: invalidateVoices,
   })

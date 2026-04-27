@@ -18,7 +18,12 @@ export interface VoiceCreationModalShellProps {
     isOpen: boolean
     folderId: string | null
     onClose: () => void
-    onSuccess: () => void
+    onSuccess: (createdVoice?: {
+        id: string
+        voiceId: string
+        voiceType: string
+        customVoiceUrl: string | null
+    }) => void
     /** 预填充的音色名称（如发言人名字） */
     initialVoiceName?: string
 }
@@ -143,7 +148,7 @@ export function useVoiceCreation({ isOpen, folderId, onClose, onSuccess, initial
         try {
             const voice = generatedVoices[selectedIndex]
 
-            await saveDesignedMutation.mutateAsync({
+            const savedVoice = await saveDesignedMutation.mutateAsync({
                 voiceId: voice.voiceId,
                 voiceBase64: voice.audioBase64,
                 voiceName: voiceName.trim(),
@@ -151,7 +156,8 @@ export function useVoiceCreation({ isOpen, folderId, onClose, onSuccess, initial
                 voicePrompt: voicePrompt.trim()
             })
 
-            onSuccess()
+            // 传递新创建的音色信息，让调用方可以直接使用
+            onSuccess(savedVoice)
             handleClose()
         } catch (err: unknown) {
             const errMsg = err instanceof Error ? err.message : tHub('saveVoiceFailed')

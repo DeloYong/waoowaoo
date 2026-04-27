@@ -87,11 +87,36 @@ export default function SpeakerVoiceBindingDialog({
     }, [speaker, onBound, onClose, t])
 
     // AI 设计音色或上传音频后的回调
-    const handleCreationSuccess = useCallback(() => {
-        // 创建成功后切换到选择模式，让用户从音色库选取刚创建的音色
-        setActiveTab('select')
-        setSubDialogOpen(true)
-    }, [])
+    const handleCreationSuccess = useCallback((createdVoice?: {
+        id: string
+        voiceId: string
+        voiceType: string
+        customVoiceUrl: string | null
+    }) => {
+        // 如果创建成功并返回了音色信息，直接使用它绑定到角色
+        if (createdVoice) {
+            // 根据 voiceId 格式推断 provider
+            const inferProvider = (vid: string): 'bailian' | 'ark' => {
+                if (vid.startsWith('qwen-tts-vd-')) return 'bailian'
+                if (vid.startsWith('S_')) return 'ark'
+                if (vid.includes('_mars_') || vid.includes('_moon_') || vid.includes('_uranus_') || vid.includes('_bigtts')) return 'ark'
+                if (createdVoice.voiceType?.includes('ark') || createdVoice.voiceType?.includes('doubao')) return 'ark'
+                return 'bailian'
+            }
+            const provider = inferProvider(createdVoice.voiceId)
+            onBound(speaker, {
+                provider,
+                voiceType: createdVoice.voiceType,
+                voiceId: createdVoice.voiceId,
+                ...(createdVoice.customVoiceUrl ? { previewAudioUrl: createdVoice.customVoiceUrl } : {}),
+            })
+            onClose()
+        } else {
+            // 如果没有返回音色信息（兼容旧逻辑），切换到选择模式
+            setActiveTab('select')
+            setSubDialogOpen(true)
+        }
+    }, [speaker, onBound, onClose])
 
     const handleTabClick = useCallback((tab: BindingTab) => {
         if (tab === 'upload' && !confirmUploadVoice()) {

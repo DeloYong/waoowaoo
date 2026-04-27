@@ -84,7 +84,9 @@ services:
       MINIO_SECRET_KEY: "minioadmin"
       MINIO_FORCE_PATH_STYLE: "true"
       # 外部访问地址（浏览器实际访问）
-      # 注意: 部署到服务器时需要修改为实际的 IP 或域名
+      # ⚠️ 重要: 部署到服务器时必须设置此环境变量为实际访问地址
+      # 例如: NEXTAUTH_URL=https://your-domain.com
+      # 在 Docker 中设置: docker compose set app.NEXTAUTH_URL=https://your-domain.com
       NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:13000}
       # 容器内自调用地址（服务端 fetch 自己的 API / 文件）
       INTERNAL_APP_URL: "http://127.0.0.1:3000"
