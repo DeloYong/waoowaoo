@@ -148,7 +148,10 @@ export function CapsuleNav({ items, activeId, onItemClick, projectId, episodeId 
                     <NavItem
                         key={item.id}
                         active={activeId === item.id}
-                        onClick={() => onItemClick(item.id)}
+                        onClick={() => {
+                          console.log('[CapsuleNav] 点击导航项:', item.id, 'disabled:', item.disabled)
+                          onItemClick(item.id)
+                        }}
                         label={item.label}
                         status={item.status}
                         href={buildHref(item.id)}
