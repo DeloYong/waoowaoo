@@ -348,7 +348,9 @@ export async function preprocessLipSyncParams(
   }
 
   const audioBinary = await loadBinaryFromInput(params.audioUrl)
-  const isWav = audioBinary.mimeType.includes('wav') || parseWavInfo(audioBinary.buffer) !== null
+  const hasWavMimeType = audioBinary.mimeType.includes('wav')
+  const parsedWavInfo = parseWavInfo(audioBinary.buffer)
+  const isWav = hasWavMimeType || parsedWavInfo !== null
 
   if (!isWav) {
     // 非 WAV 音频无法 pad/trim，跳过预处理直接传给 provider
@@ -363,10 +365,23 @@ export async function preprocessLipSyncParams(
     }
   }
 
-  const parsedAudioDuration = getWavDurationMs(audioBinary.buffer)
+  const parsedAudioDuration = parsedWavInfo ? Math.round((parsedWavInfo.dataSize / parsedWavInfo.byteRate) * 1000) : null
   if (audioDurationMs === null) {
     if (parsedAudioDuration === null) {
-      throw new Error('LIPSYNC_AUDIO_DURATION_PARSE_FAILED')
+      // mimeType 是 wav 但内容无法解析，跳过预处理而不是报错
+      // 因为口型同步 provider 可能可以自己处理这种音频
+      const bufferSize = audioBinary.buffer.length
+      const hasRiffHeader = audioBinary.buffer.subarray(0, 4).toString('ascii') === 'RIFF'
+      const hasWaveHeader = audioBinary.buffer.subarray(8, 12).toString('ascii') === 'WAVE'
+      _ulogInfo(`[LipSync Preprocess] WAV 解析失败但 mimeType 是 wav，跳过 pad/trim 预处理: mime=${audioBinary.mimeType} size=${bufferSize} riff=${hasRiffHeader} wave=${hasWaveHeader}`)
+      return {
+        params: {
+          ...params,
+          videoDurationMs: videoDurationMs ?? params.videoDurationMs,
+        },
+        paddedAudio: false,
+        trimmedAudio: false,
+      }
     }
     audioDurationMs = parsedAudioDuration
   }
