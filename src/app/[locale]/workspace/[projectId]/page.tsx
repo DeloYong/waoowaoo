@@ -44,6 +44,14 @@ export default function ProjectDetailPage() {
   const params = useParams<{ projectId?: string }>()
   const router = useRouter()
   const searchParams = useSearchParams()
+  const [forceRefresh, setForceRefresh] = useState(0)
+
+  // 监听路由变化，强制刷新组件
+  useEffect(() => {
+    console.log('[Page] URL变化，触发重新渲染')
+    setForceRefresh(f => f + 1)
+  }, [searchParams])
+
   if (!params?.projectId) {
     throw new Error('ProjectDetailPage requires projectId route param')
   }
@@ -58,6 +66,9 @@ export default function ProjectDetailPage() {
   const urlStage = searchParams.get('stage') as Stage | null
   const urlEpisodeId = searchParams.get('episode') ?? null
   const currentUrlStage = urlStage && VALID_STAGES.includes(urlStage) ? urlStage : null
+
+  // 强制刷新 key，确保 URL 变化时重新渲染
+  const refreshKey = `${forceRefresh}-${urlStage}-${urlEpisodeId}`
 
   // 🔥 React Query 数据获取
   const queryClient = useQueryClient()
@@ -311,7 +322,7 @@ export default function ProjectDetailPage() {
         <div className="container mx-auto px-4 py-8">
           {isGlobalAssetsView && project.novelPromotionData ? (
             // 全局资产视图（确保数据准备好）
-            <div>
+            <div key={refreshKey}>
               <h1 className="text-2xl font-bold text-[var(--glass-text-primary)] mb-6">{t('globalAssets')}</h1>
               <NovelPromotionWorkspace
                 project={project}
@@ -332,6 +343,7 @@ export default function ProjectDetailPage() {
           ) : selectedEpisodeId && currentEpisode ? (
             // 剧集工作区（确保所有数据都准备好）
             <NovelPromotionWorkspace
+              key={refreshKey}
               project={project}
               projectId={projectId}
               episodeId={selectedEpisodeId}
