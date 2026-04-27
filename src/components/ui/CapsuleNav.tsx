@@ -47,14 +47,20 @@ function NavItem({
 }) {
     const handleClick = (e: React.MouseEvent) => {
         console.log('[CapsuleNav handleClick] label:', label, 'disabled:', disabled, 'href:', href)
+        console.log('[CapsuleNav handleClick] button:', e.button, 'ctrl:', e.ctrlKey, 'meta:', e.metaKey)
         document.title = `[Clicked: ${label}] ` + document.title
-        if (disabled) return
+        if (disabled) {
+            console.log('[CapsuleNav handleClick] 返回: disabled')
+            return
+        }
         if (e.button === 1 || e.ctrlKey || e.metaKey) {
+            console.log('[CapsuleNav handleClick] 返回: 修饰键')
             if (href) {
                 window.open(href, '_blank')
             }
             return
         }
+        console.log('[CapsuleNav handleClick] 调用 onClick()')
         onClick()
     }
 
