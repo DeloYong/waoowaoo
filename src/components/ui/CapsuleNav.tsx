@@ -65,7 +65,7 @@ function NavItem({
     }
 
     return (
-        <div className="relative group">
+        <div className="relative group" onClick={() => console.log('[NavItem] div点击, label:', label, 'disabled:', disabled)}>
             <button
                 onClick={handleClick}
                 onAuxClick={handleAuxClick}
