@@ -135,6 +135,10 @@ export function CapsuleNav({ items, activeId, onItemClick, projectId, episodeId 
     return (
         <nav className="fixed top-20 left-1/2 -translate-x-1/2 z-40 animate-fadeInDown">
             <div
+                onClick={(e) => {
+                  const target = e.target as HTMLElement
+                  console.log('[CapsuleNav] nav点击, target:', target.tagName, target.className.substring(0, 50))
+                }}
                 className="flex rounded-full px-2 py-1"
                 style={{
                     background: 'rgba(255,255,255,0.55)',
