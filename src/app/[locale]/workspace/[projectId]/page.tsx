@@ -48,7 +48,6 @@ export default function ProjectDetailPage() {
 
   // 监听路由变化，强制刷新组件
   useEffect(() => {
-    console.log('[Page] URL变化，触发重新渲染')
     setForceRefresh(f => f + 1)
   }, [searchParams])
 
@@ -80,7 +79,6 @@ export default function ProjectDetailPage() {
 
   // 更新URL参数（stage 和/或 episode）
   const updateUrlParams = useCallback((updates: { stage?: string; episode?: string | null }) => {
-    console.log('[Page] updateUrlParams 被调用, updates:', updates)
     const params = new URLSearchParams(searchParams.toString())
     if (updates.stage !== undefined) {
       params.set('stage', updates.stage)
@@ -93,7 +91,6 @@ export default function ProjectDetailPage() {
       }
     }
     const query = Object.fromEntries(params.entries())
-    console.log('[Page] router.replace to:', query)
     router.replace(
       {
         pathname: `/workspace/${projectId}`,
@@ -105,7 +102,6 @@ export default function ProjectDetailPage() {
 
   // 更新URL中的stage参数（保持向后兼容）
   const updateUrlStage = useCallback((stage: string) => {
-    console.log('[Page] updateUrlStage 被调用, stage:', stage)
     updateUrlParams({ stage })
   }, [updateUrlParams])
 

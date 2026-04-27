@@ -42,15 +42,6 @@ export function useWorkspaceStageNavigation({
     }
   }
 
-  // 调试日志
-  console.log('[StageNav] stageArtifacts:', {
-    hasStory: stageArtifacts.hasStory,
-    hasScript: stageArtifacts.hasScript,
-    hasStoryboard: stageArtifacts.hasStoryboard,
-    hasVideo: stageArtifacts.hasVideo,
-    hasVoice: stageArtifacts.hasVoice,
-  })
-
   return [
     { id: 'config', icon: 'S', label: t('stages.story'), status: getStageStatus('config') },
     { id: 'script', icon: 'A', label: t('stages.script'), status: getStageStatus('assets') },

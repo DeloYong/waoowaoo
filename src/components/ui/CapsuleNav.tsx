@@ -46,21 +46,13 @@ function NavItem({
     disabledLabel?: string
 }) {
     const handleClick = (e: React.MouseEvent) => {
-        console.log('[CapsuleNav handleClick] label:', label, 'disabled:', disabled, 'href:', href)
-        console.log('[CapsuleNav handleClick] button:', e.button, 'ctrl:', e.ctrlKey, 'meta:', e.metaKey)
-        document.title = `[Clicked: ${label}] ` + document.title
-        if (disabled) {
-            console.log('[CapsuleNav handleClick] 返回: disabled')
-            return
-        }
+        if (disabled) return
         if (e.button === 1 || e.ctrlKey || e.metaKey) {
-            console.log('[CapsuleNav handleClick] 返回: 修饰键')
             if (href) {
                 window.open(href, '_blank')
             }
             return
         }
-        console.log('[CapsuleNav handleClick] 调用 onClick()')
         onClick()
     }
 
@@ -73,7 +65,7 @@ function NavItem({
     }
 
     return (
-        <div className="relative group" onClick={() => console.log('[NavItem] div点击, label:', label, 'disabled:', disabled)}>
+        <div className="relative group">
             <button
                 onClick={handleClick}
                 onAuxClick={handleAuxClick}
@@ -143,10 +135,6 @@ export function CapsuleNav({ items, activeId, onItemClick, projectId, episodeId 
     return (
         <nav className="fixed top-20 left-1/2 -translate-x-1/2 z-40 animate-fadeInDown">
             <div
-                onClick={(e) => {
-                  const target = e.target as HTMLElement
-                  console.log('[CapsuleNav] nav点击, target:', target.tagName, target.className.substring(0, 50))
-                }}
                 className="flex rounded-full px-2 py-1"
                 style={{
                     background: 'rgba(255,255,255,0.55)',
@@ -160,10 +148,7 @@ export function CapsuleNav({ items, activeId, onItemClick, projectId, episodeId 
                     <NavItem
                         key={item.id}
                         active={activeId === item.id}
-                        onClick={() => {
-                          console.log('[CapsuleNav] 点击导航项:', item.id, 'disabled:', item.disabled)
-                          onItemClick(item.id)
-                        }}
+                        onClick={() => onItemClick(item.id)}
                         label={item.label}
                         status={item.status}
                         href={buildHref(item.id)}
