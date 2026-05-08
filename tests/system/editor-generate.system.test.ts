@@ -78,7 +78,7 @@ describe('system - editor generate', () => {
   it('generate -> status polling returns correct mapping', async () => {
     const seeded = await seedMinimalDomainState()
     mockAuthenticated(seeded.user.id)
-    workers = await startSystemWorkers(['video'])
+    workers = await startSystemWorkers(['video', 'video-editing'])
 
     // Generate task
     const generateMod = await import('@/app/api/projects/[projectId]/editor/generate/route')

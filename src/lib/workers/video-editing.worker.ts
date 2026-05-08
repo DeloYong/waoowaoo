@@ -54,8 +54,16 @@ async function cleanupTempDir(tempDir: string): Promise<void> {
   }
 }
 
+const INTERNAL_APP_URL = process.env.INTERNAL_APP_URL || 'http://127.0.0.1:3000'
+
 async function downloadFile(url: string, outputPath: string): Promise<void> {
-  const response = await fetch(url)
+  // Ensure we have a complete URL for Node.js fetch
+  let fetchUrl = url
+  if (url.startsWith('/')) {
+    fetchUrl = `${INTERNAL_APP_URL}${url}`
+  }
+
+  const response = await fetch(fetchUrl)
   if (!response.ok) {
     throw new Error(`Failed to download file: ${response.status} ${response.statusText}`)
   }

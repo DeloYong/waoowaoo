@@ -1,7 +1,7 @@
 import type { Worker } from 'bullmq'
 import type { TaskJobData } from '@/lib/task/types'
 
-export type SystemWorkerScope = 'image' | 'video' | 'voice' | 'text'
+export type SystemWorkerScope = 'image' | 'video' | 'voice' | 'text' | 'video-editing'
 
 export type SystemWorkers = Partial<Record<SystemWorkerScope, Worker<TaskJobData>>>
 
@@ -17,6 +17,10 @@ async function createWorker(scope: SystemWorkerScope): Promise<Worker<TaskJobDat
   if (scope === 'voice') {
     const mod = await import('@/lib/workers/voice.worker')
     return mod.createVoiceWorker()
+  }
+  if (scope === 'video-editing') {
+    const mod = await import('@/lib/workers/video-editing.worker')
+    return mod.createVideoEditingWorker()
   }
   const mod = await import('@/lib/workers/text.worker')
   return mod.createTextWorker()
