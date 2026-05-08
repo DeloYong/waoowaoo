@@ -92,8 +92,6 @@ async function concatenateVideosWithTransitions(
   }
 
   // Build complex filter for xfade transitions
-  let filterComplex = ''
-  const inputArgs = inputVideos.map((video, index) => `-i "${video}"`).join(' ')
 
   // First pass: normalize all videos to same resolution and codec
   const tempDir = path.dirname(outputPath)
@@ -106,16 +104,19 @@ async function concatenateVideosWithTransitions(
     normalizedVideos.push(normalizedPath)
   }
 
-  // Build xfade filter
-  filterComplex += `[0:v][0:a]`
-  for (let i = 1; i < normalizedVideos.length; i++) {
-    const duration = await getVideoDuration(normalizedVideos[i-1])
-    const offset = duration - transitionDuration
-    filterComplex += `[${i}:v][${i}:a]xfade=transition=fade:duration=${transitionDuration}:offset=${offset},afade=t=in:st=0:d=${transitionDuration}[v${i}][a${i}];`
-    filterComplex += `[v${i-1}][a${i-1}]`
+  // Build xfade filter chain
+  // First xfade takes [0:v][0:a] and [1:v][1:a], outputs [v1][a1]
+  // Each subsequent xfade takes previous output [v${i-1}:v][v${i-1}:a] and [i:v][i:a], outputs [v${i}][a${i}]
+  let filterComplex = `[0:v][0:a][1:v][1:a]xfade=transition=fade:duration=${transitionDuration}:offset=${await getVideoDuration(normalizedVideos[0]) - transitionDuration},afade=t=in:st=0:d=${transitionDuration}[v1][a1];`
+
+  for (let i = 2; i < normalizedVideos.length; i++) {
+    const prevDuration = await getVideoDuration(normalizedVideos[i - 1])
+    const offset = prevDuration - transitionDuration
+    filterComplex += `[v${i - 1}:v][v${i - 1}:a][${i}:v][${i}:a]xfade=transition=fade:duration=${transitionDuration}:offset=${offset},afade=t=in:st=0:d=${transitionDuration}[v${i}][a${i}];`
   }
-  filterComplex = filterComplex.slice(0, -1) // Remove last semicolon
-  filterComplex += `concat=n=${normalizedVideos.length}:v=1:a=1[outv][outa]`
+
+  // Final concat takes the last xfade output
+  filterComplex += `[v${normalizedVideos.length - 1}:v][v${normalizedVideos.length - 1}:a]concat=n=1:v=1:a=1[outv][outa]`
 
   // Run ffmpeg command with hardware acceleration if available
   const command = `ffmpeg -y ${normalizedVideos.map(v => `-i "${v}"`).join(' ')} \
