@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { requireUserAuth, isErrorResponse } from '@/lib/api-auth'
 import { apiHandler, ApiError } from '@/lib/api-errors'
 import { addTaskJob } from '@/lib/task/queues'
-import { TASK_TYPE } from '@/lib/task/types'
+import { TASK_TYPE, TASK_STATUS } from '@/lib/task/types'
 import { v4 as uuidv4 } from 'uuid'
 
 // POST - 提交视频剪辑任务
@@ -66,6 +66,26 @@ export const POST = apiHandler(async (
       userId: session.user.id,
       status: 'pending',
       progress: 0,
+    },
+  })
+
+  // 在Task表中创建记录（供Worker管理任务生命周期）
+  await prisma.task.create({
+    data: {
+      id: taskId,
+      userId: session.user.id,
+      projectId,
+      episodeId,
+      type: TASK_TYPE.VIDEO_EDITING,
+      status: TASK_STATUS.QUEUED,
+      targetType: 'video_editing',
+      targetId: episodeId,
+      payload: {
+        shardVideos,
+        meta: {
+          locale: 'zh', // TODO: 从用户信息获取
+        },
+      },
     },
   })
 
