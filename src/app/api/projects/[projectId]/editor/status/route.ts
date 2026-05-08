@@ -59,7 +59,7 @@ export const GET = apiHandler(async (
   // Map task status to frontend expected format
   const status = task.status === 'completed' ? 'completed'
     : task.status === 'failed' ? 'failed'
-    : task.status === 'processing' ? 'generating'
+    : task.status === 'processing' || task.status === 'pending' ? 'generating'
     : 'idle'
 
   return NextResponse.json({
