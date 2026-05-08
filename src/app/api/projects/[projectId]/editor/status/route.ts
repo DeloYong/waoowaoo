@@ -56,16 +56,18 @@ export const GET = apiHandler(async (
     throw new ApiError('NOT_FOUND', { message: 'Video editing task not found' })
   }
 
+  // Map task status to frontend expected format
+  const status = task.status === 'completed' ? 'completed'
+    : task.status === 'failed' ? 'failed'
+    : task.status === 'processing' ? 'generating'
+    : 'idle'
+
   return NextResponse.json({
     success: true,
-    task: {
-      id: task.id,
-      status: task.status,
-      progress: task.progress,
-      resultUrl: task.resultUrl,
-      errorMessage: task.errorMessage,
-      createdAt: task.createdAt,
-      updatedAt: task.updatedAt,
-    },
+    status,
+    progress: task.progress,
+    videoUrl: task.resultUrl,
+    downloadUrl: task.resultUrl, // Same as resultUrl for now
+    message: task.errorMessage || undefined,
   })
 })
