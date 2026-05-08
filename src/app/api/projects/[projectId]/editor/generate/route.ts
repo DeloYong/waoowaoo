@@ -41,18 +41,16 @@ export const POST = apiHandler(async (
     throw new ApiError('INVALID_PARAMS', { message: 'clipIds is required and must be a non-empty array' })
   }
 
-  // 查询所有片段的视频URL
-  const clips = await prisma.novelPromotionShot.findMany({
+  // 查询所有面板的视频URL
+  const panels = await prisma.novelPromotionPanel.findMany({
     where: {
       id: { in: clipIds },
     },
   })
 
-  const shardVideos = clips.map(clip =>
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (clip as any).videoUrl ||
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (clip as any).lipSyncVideoUrl
+  const shardVideos = panels.map(panel =>
+    panel.videoUrl ||
+    panel.lipSyncVideoUrl
   ).filter(Boolean) as string[]
   if (shardVideos.length === 0) {
     throw new ApiError('INVALID_PARAMS', { message: 'No valid video clips found' })
