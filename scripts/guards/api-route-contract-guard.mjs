@@ -18,6 +18,7 @@ export const PUBLIC_ROUTE_ALLOWLIST = new Set([
   'src/app/api/auth/[...nextauth]/route.ts',
   'src/app/api/auth/register/route.ts',
   'src/app/api/cos/image/route.ts',
+  'src/app/api/cron/generate-daily-stats/route.ts',
   'src/app/api/cron/subscription-cycle/route.ts',
   'src/app/api/files/[...path]/route.ts',
   'src/app/api/storage/sign/route.ts',
