@@ -4,26 +4,28 @@ import EditorStage from './EditorStage'
 import { useWorkspaceStageRuntime } from '../WorkspaceStageRuntimeContext'
 import { useWorkspaceEpisodeStageData } from '../hooks/useWorkspaceEpisodeStageData'
 import { useWorkspaceProvider } from '../WorkspaceProvider'
+import type { NovelPromotionStoryboard } from '@/types/project'
 
 export default function EditorStageRoute() {
   const runtime = useWorkspaceStageRuntime()
   const { projectId, episodeId } = useWorkspaceProvider()
-  const { clips } = useWorkspaceEpisodeStageData()
+  const { storyboards } = useWorkspaceEpisodeStageData()
 
-  const videoClips = clips
-    .filter(clip =>
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (clip as any).lipSyncVideoUrl || (clip as any).videoUrl
+  // 从 storyboards[].panels[] 中获取有视频的片段
+  const videoClips = storyboards
+    .flatMap((storyboard: NovelPromotionStoryboard) =>
+      (storyboard.panels || [])
+        .filter((panel) =>
+          !!panel.videoUrl || !!(panel as { lipSyncVideoUrl?: string | null }).lipSyncVideoUrl
+        )
+        .map((panel, panelIndex) => ({
+          id: panel.id || `${storyboard.id}-panel-${panelIndex}`,
+          name: panel.panelNumber ? `镜头 ${panel.panelNumber}` : `镜头 ${panelIndex + 1}`,
+          thumbnailUrl: panel.imageUrl || '',
+          videoUrl: (panel as { lipSyncVideoUrl?: string | null }).lipSyncVideoUrl || panel.videoUrl || '',
+          duration: panel.duration || 5,
+        }))
     )
-    .map(clip => ({
-      id: clip.id,
-      name: clip.summary || `Clip ${clip.id.slice(0, 8)}`,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      thumbnailUrl: (clip as any).frameUrl || '',
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      videoUrl: (clip as any).lipSyncVideoUrl || (clip as any).videoUrl || '',
-      duration: (clip.end || 0) - (clip.start || 0),
-    }))
 
   if (!episodeId) return null
 

@@ -1,0 +1,39 @@
+{
+  "title": "AI Video Editor",
+  "buttons": {
+    "back": "← Back",
+    "generateFullVideo": "Generate Full Video",
+    "previewFullVideo": "Preview Full Video",
+    "downloadVideo": "Download Video",
+    "regenerate": "Regenerate",
+    "retry": "Retry"
+  },
+  "clips": {
+    "title": "Video Clips"
+  },
+  "player": {
+    "noVideoSelected": "No Video Selected",
+    "selectClipToPreview": "Select a clip to preview"
+  },
+  "actions": {
+    "title": "Actions",
+    "noClipsAvailable": "No clips available"
+  },
+  "generating": {
+    "starting": "Generating full video...",
+    "completed": "Generation completed!",
+    "failed": "Generation failed, please retry"
+  },
+  "progress": {
+    "title": "Progress"
+  },
+  "status": {
+    "idle": "Idle",
+    "generating": "Generating",
+    "completed": "Completed",
+    "failed": "Failed"
+  },
+  "messages": {
+    "selectClipsHint": "Select clips above and click 'Generate Full Video'"
+  }
+}
