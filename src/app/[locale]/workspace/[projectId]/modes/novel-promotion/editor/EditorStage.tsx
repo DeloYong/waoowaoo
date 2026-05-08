@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useTranslations } from 'next-intl'
 import { AppIcon } from '@/components/ui/icons'
 import TaskStatusInline from '@/components/task/TaskStatusInline'
@@ -43,7 +43,7 @@ export default function EditorStage({
   const [statusMessage, setStatusMessage] = useState('')
   const [generatedVideoUrl, setGeneratedVideoUrl] = useState<string | null>(null)
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null)
-  const [pollingInterval, setPollingInterval] = useState<NodeJS.Timeout | null>(null)
+  const intervalRef = useRef<NodeJS.Timeout | null>(null)
 
   const fetchStatus = useCallback(async () => {
     try {
@@ -57,20 +57,20 @@ export default function EditorStage({
       if (data.status === 'completed') {
         setGeneratedVideoUrl(data.videoUrl || null)
         setDownloadUrl(data.downloadUrl || null)
-        if (pollingInterval) {
-          clearInterval(pollingInterval)
-          setPollingInterval(null)
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current)
+          intervalRef.current = null
         }
       } else if (data.status === 'failed') {
-        if (pollingInterval) {
-          clearInterval(pollingInterval)
-          setPollingInterval(null)
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current)
+          intervalRef.current = null
         }
       }
     } catch (err) {
       console.error('Failed to fetch generation status:', err)
     }
-  }, [projectId, episodeId, pollingInterval])
+  }, [projectId, episodeId])
 
   const handleGenerate = async () => {
     if (generationStatus === 'generating') return
@@ -94,8 +94,7 @@ export default function EditorStage({
       if (!res.ok) throw new Error('Failed to start generation')
 
       // Start polling
-      const interval = setInterval(fetchStatus, 3000)
-      setPollingInterval(interval)
+      intervalRef.current = setInterval(fetchStatus, 3000)
 
     } catch (err) {
       console.error('Generation failed:', err)
@@ -119,11 +118,11 @@ export default function EditorStage({
   // Clean up polling on unmount
   useEffect(() => {
     return () => {
-      if (pollingInterval) {
-        clearInterval(pollingInterval)
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
       }
     }
-  }, [pollingInterval])
+  }, [])
 
   return (
     <div className="px-4 pb-8 max-w-[1920px] mx-auto">
