@@ -142,10 +142,10 @@ export default function VoiceDesignDialogBase({
     }
   }
 
-  const doSave = () => {
+  const doSave = async () => {
     if (selectedIndex !== null && generatedVoices[selectedIndex]) {
       const voice = generatedVoices[selectedIndex]
-      onSave(voice.voiceId, voice.audioBase64)
+      await onSave(voice.voiceId, voice.audioBase64)
       handleClose()
     }
   }
@@ -272,7 +272,7 @@ export default function VoiceDesignDialogBase({
                 {t('cancel')}
               </button>
               <button
-                onClick={doSave}
+                onClick={() => void doSave()}
                 className="glass-btn-base glass-btn-danger flex-1 py-2 rounded-lg text-sm"
               >
                 {tv('confirmReplaceBtn')}
