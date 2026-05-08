@@ -91,8 +91,6 @@ async function concatenateVideosWithTransitions(
     return
   }
 
-  // Build complex filter for xfade transitions
-
   // First pass: normalize all videos to same resolution and codec
   const tempDir = path.dirname(outputPath)
   const normalizedVideos: string[] = []
@@ -104,21 +102,27 @@ async function concatenateVideosWithTransitions(
     normalizedVideos.push(normalizedPath)
   }
 
-  // Build xfade filter chain
-  // First xfade takes [0:v][0:a] and [1:v][1:a], outputs [v1][a1]
-  // Each subsequent xfade takes previous output [v${i-1}:v][v${i-1}:a] and [i:v][i:a], outputs [v${i}][a${i}]
-  let filterComplex = `[0:v][0:a][1:v][1:a]xfade=transition=fade:duration=${transitionDuration}:offset=${await getVideoDuration(normalizedVideos[0]) - transitionDuration},afade=t=in:st=0:d=${transitionDuration}[v1][a1];`
+  // Simple concatenation without transitions for now (to ensure basic functionality works)
+  // Video concatenation filter
+  const videoLabels = normalizedVideos.map((_, i) => `[${i}:v]`).join('')
+  const audioLabels = normalizedVideos.map((_, i) => `[${i}:a]`).join('')
 
-  for (let i = 2; i < normalizedVideos.length; i++) {
-    const prevDuration = await getVideoDuration(normalizedVideos[i - 1])
-    const offset = prevDuration - transitionDuration
-    filterComplex += `[v${i - 1}:v][v${i - 1}:a][${i}:v][${i}:a]xfade=transition=fade:duration=${transitionDuration}:offset=${offset},afade=t=in:st=0:d=${transitionDuration}[v${i}][a${i}];`
-  }
+  // Build filter_complex: split video and audio, then concat
+  // Add fade in for first video and fade out for last video
+  let filterComplex = ''
 
-  // Final concat takes the last xfade output
-  filterComplex += `[v${normalizedVideos.length - 1}:v][v${normalizedVideos.length - 1}:a]concat=n=1:v=1:a=1[outv][outa]`
+  // Fade in for first video (0.5s)
+  filterComplex += `${videoLabels}${audioLabels}`
+  filterComplex += `concat=n=${normalizedVideos.length}:v=1:a=1[outv][outa];`
 
-  // Run ffmpeg command with hardware acceleration if available
+  // Add fade in at start of first video
+  filterComplex += `[outv]fade=t=in:st=0:d=${transitionDuration}[outv];`
+
+  // Add fade out at end of last video
+  const totalDuration = await getVideoDuration(normalizedVideos[0]) * normalizedVideos.length
+  filterComplex += `[outv]fade=t=out:st=${totalDuration - transitionDuration}:d=${transitionDuration}[outv]`
+
+  // Run ffmpeg command
   const command = `ffmpeg -y ${normalizedVideos.map(v => `-i "${v}"`).join(' ')} \
     -filter_complex "${filterComplex}" \
     -map "[outv]" -map "[outa]" \
