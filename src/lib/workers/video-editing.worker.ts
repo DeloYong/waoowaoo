@@ -123,11 +123,10 @@ async function concatenateVideosWithTransitions(
   filterComplex += `[outv]fade=t=out:st=${totalDuration - transitionDuration}:d=${transitionDuration}[outv]`
 
   // Run ffmpeg command
-  const command = `ffmpeg -y ${normalizedVideos.map(v => `-i "${v}"`).join(' ')} \
+  const command = `ffmpeg -y -hwaccel auto ${normalizedVideos.map(v => `-i "${v}"`).join(' ')} \
     -filter_complex "${filterComplex}" \
     -map "[outv]" -map "[outa]" \
     -c:v libx264 -c:a aac \
-    -hwaccel auto \
     "${outputPath}"`
 
   await exec(command)
@@ -154,7 +153,6 @@ async function addIntroOutro(
     -filter_complex "[0:v][0:a][1:v][1:a][2:v][2:a]concat=n=3:v=1:a=1[outv][outa]" \
     -map "[outv]" -map "[outa]" \
     -c:v libx264 -c:a aac \
-    -hwaccel auto \
     "${outputPath}"`
 
   await exec(command)
@@ -169,7 +167,6 @@ async function addWatermark(
   const command = `ffmpeg -y -i "${inputVideo}" -i "${watermarkPath}" \
     -filter_complex "[1:v]scale=iw*0.1:-1[wm];[0:v][wm]overlay=W-w-20:H-h-20:format=auto" \
     -c:v libx264 -c:a aac \
-    -hwaccel auto \
     "${outputPath}"`
 
   await exec(command)
