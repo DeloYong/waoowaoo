@@ -50,14 +50,25 @@ ssh -i your-key.pem ubuntu@your-instance-ip
 
 ## 2. 基础环境配置
 
-### 2.1 系统更新
+> **注意**：不同 Linux 发行版使用的包管理器不同：
+> - **Ubuntu/Debian**: 使用 `apt`
+> - **Amazon Linux/CentOS/RHEL**: 使用 `yum` 或 `dnf`
+
+### 2.1 Ubuntu 系统更新
 
 ```bash
 sudo apt update && sudo apt upgrade -y
 ```
 
-### 2.2 安装基础依赖
+### 2.2 Amazon Linux 系统更新
 
+```bash
+sudo yum update -y
+```
+
+### 2.3 安装基础依赖
+
+**Ubuntu/Debian:**
 ```bash
 sudo apt install -y \
     curl \
@@ -70,25 +81,51 @@ sudo apt install -y \
     ffmpeg
 ```
 
-### 2.3 安装 Docker
-
+**Amazon Linux:**
 ```bash
-# 安装 Docker
-curl -fsSL https://get.docker.com | sudo sh
+sudo yum install -y \
+    git \
+    curl \
+    wget \
+    unzip \
+    gcc \
+    gcc-c++ \
+    make \
+    python3 \
+    python3-pip
 
-# 添加当前用户到 docker 组
-sudo usermod -aG docker ubuntu
-
-# 启动 Docker 并设置开机自启
-sudo systemctl enable docker
-sudo systemctl start docker
-
-# 重新登录使组成员生效
-exit
-ssh -i your-key.pem ubuntu@your-instance-ip
+# 安装 ffmpeg (Amazon Linux Extras)
+sudo amazon-linux-extras install epel -y
+sudo yum install -y ffmpeg
 ```
 
-### 2.4 安装 Docker Compose
+### 2.4 安装 Docker
+
+**Ubuntu/Debian:**
+```bash
+curl -fsSL https://get.docker.com | sudo sh
+sudo usermod -aG docker ubuntu
+sudo systemctl enable docker
+sudo systemctl start docker
+```
+
+**Amazon Linux:**
+```bash
+sudo yum install -y docker
+sudo usermod -aG docker ec2-user
+sudo systemctl enable docker
+sudo systemctl start docker
+```
+
+**重新登录使组成员生效:**
+```bash
+exit
+ssh -i your-key.pem ubuntu@your-instance-ip  # Ubuntu
+# 或
+ssh -i your-key.pem ec2-user@your-instance-ip  # Amazon Linux
+```
+
+### 2.5 安装 Docker Compose
 
 ```bash
 sudo curl -L "https://github.com/docker/compose/releases/download/v2.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -124,16 +161,23 @@ npm --version
 
 ### 3.1 克隆代码仓库
 
+**Ubuntu:**
 ```bash
-# 创建项目目录
 sudo mkdir -p /var/www
 sudo chown ubuntu:ubuntu /var/www
-
 cd /var/www
+```
 
-# 克隆仓库（替换为你的仓库地址）
+**Amazon Linux:**
+```bash
+sudo mkdir -p /var/www
+sudo chown ec2-user:ec2-user /var/www
+cd /var/www
+```
+
+```bash
+# 克隆仓库
 git clone https://github.com/DeloYong/waoowaoo.git
-
 cd waoowaoo
 ```
 
