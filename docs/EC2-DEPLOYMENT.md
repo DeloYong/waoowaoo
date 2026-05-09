@@ -27,23 +27,30 @@
 
 ### 1.2 安全组配置
 
-入站规则：
+**在 AWS 控制台配置：**
+
+1. EC2 → 实例 → 选择你的实例 → 安全 → 安全组 → 编辑入站规则
+
+**需要的入站规则：**
 
 | 类型 | 端口范围 | 来源 | 说明 |
 |------|----------|------|------|
-| SSH | 22 | 你的IP | 远程连接 |
+| SSH | 22 | 你的IP/32 | 远程连接（建议只允许你的IP） |
 | HTTP | 80 | 0.0.0.0/0 | Web 访问 |
 | HTTPS | 443 | 0.0.0.0/0 | HTTPS 访问 |
-| 自定义 TCP | 13000 | 0.0.0.0/0 | 应用端口 |
+| 自定义 TCP | 13000 | 0.0.0.0/0 | 应用端口（必须！） |
+
+**出站规则：** 保持默认（允许所有流量）
 
 ### 1.3 登录实例
 
 ```bash
-# 下载密钥对后设置权限
+# 下载密钥对后设置权限（必须！）
 chmod 400 your-key.pem
 
 # SSH 登录
-ssh -i your-key.pem ubuntu@your-instance-ip
+ssh -i your-key.pem ubuntu@your-instance-ip      # Ubuntu
+ssh -i your-key.pem ec2-user@your-instance-ip     # Amazon Linux
 ```
 
 ---
@@ -226,6 +233,9 @@ sudo chown -R ubuntu:ubuntu /var/www/waoowaoo
 ```bash
 cd /var/www/waoowaoo
 
+# 给脚本添加执行权限
+chmod +x scripts/deploy-full.sh
+
 # 运行完整部署脚本
 bash scripts/deploy-full.sh
 ```
@@ -243,25 +253,28 @@ bash scripts/deploy-full.sh
 ```bash
 cd /var/www/waoowaoo
 
-# 1. 停止现有容器
+# 1. 给脚本添加执行权限
+chmod +x scripts/deploy-full.sh
+
+# 2. 停止现有容器
 docker compose down
 
-# 2. 删除旧镜像
+# 3. 删除旧镜像
 docker rmi waoowaoo-app:latest 2>/dev/null || true
 
-# 3. 构建新镜像
+# 4. 构建新镜像（可能需要 5-10 分钟）
 DOCKER_BUILDKIT=0 docker build --no-cache -t waoowaoo-app:latest .
 
-# 4. 启动容器
+# 5. 启动容器
 docker compose up -d
 
-# 5. 等待启动
+# 6. 等待启动
 sleep 30
 
-# 6. 执行数据库迁移
+# 7. 执行数据库迁移
 docker exec waoowaoo-app npx prisma migrate deploy
 
-# 7. 初始化套餐数据
+# 8. 初始化套餐数据
 docker exec waoowaoo-app npx tsx prisma/seed-plans.ts
 ```
 
