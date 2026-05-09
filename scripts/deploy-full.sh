@@ -2,12 +2,26 @@
 
 # EC2 完整部署脚本 - 包含代码拉取、Docker 重建和套餐数据导入
 # 用法: 在 EC2 的 waoowaoo 目录下运行: bash deploy-full.sh
+#
+# 注意: Amazon Linux 使用 docker-compose V1 (带连字符)
+# 如果是 Docker Compose V2 (不带连字符)，将 docker-compose 改为 docker compose
 
 set -e
+
+# 检测 Docker Compose 版本并设置命令
+if docker compose version &>/dev/null; then
+    DC_CMD="docker compose"
+elif docker-compose --version &>/dev/null; then
+    DC_CMD="docker-compose"
+else
+    echo "错误: 未找到 docker compose 或 docker-compose 命令"
+    exit 1
+fi
 
 echo "========================================="
 echo "  waoowaoo 完整部署脚本"
 echo "========================================="
+echo "使用命令: $DC_CMD"
 echo ""
 
 # 清理Docker无用资源
@@ -17,7 +31,7 @@ echo "✅ Docker清理完成"
 echo ""
 
 # 步骤 1: 拉取最新代码
-echo "步骤 1/4: 拉取最新代码..."
+echo "步骤 1/7: 拉取最新代码..."
 echo "========================================="
 git fetch origin
 git pull origin feature/saas-credits
@@ -29,7 +43,7 @@ echo "✅ 代码拉取完成"
 echo ""
 
 # 步骤 2: 重建 Docker 镜像
-echo "步骤 2/4: 重建 Docker 镜像..."
+echo "步骤 2/7: 重建 Docker 镜像..."
 echo "========================================="
 echo "注意: Next.js 生产构建会静态生成所有路由,必须重建镜像"
 echo "开始时间: $(date)"
@@ -37,7 +51,7 @@ echo ""
 
 # 停止旧容器
 echo "停止现有容器..."
-docker compose down || true
+$DC_CMD down || true
 
 # 删除旧镜像
 echo "删除旧镜像..."
@@ -72,16 +86,16 @@ docker images waoowaoo-app
 echo ""
 
 # 步骤 3: 启动容器
-echo "步骤 3/4: 启动容器..."
+echo "步骤 3/7: 启动容器..."
 echo "========================================="
-docker compose up -d
+$DC_CMD up -d
 echo "✅ 容器启动完成"
 echo ""
 
 # 等待应用启动
 echo "等待应用启动(30秒)..."
 for i in $(seq 1 30); do
-    if docker compose ps | grep -q "healthy\|Up"; then
+    if $DC_CMD ps | grep -q "healthy\|Up"; then
         echo "✅ 容器已启动 ($i/30秒)"
         break
     fi
@@ -90,46 +104,38 @@ done
 
 echo ""
 echo "容器状态:"
-docker compose ps
+$DC_CMD ps
 echo ""
 
-# 步骤 4: 数据初始化与补全
-echo "步骤 4/5: 初始化套餐数据并补全用户邀请码..."
+# 步骤 4: 执行数据库迁移
+echo "步骤 4/7: 执行数据库迁移..."
 echo "========================================="
-
-# 等待 MySQL 完全启动
 echo "等待 MySQL 启动(10秒)..."
 sleep 10
+docker exec waoowaoo-app npx prisma migrate deploy
+echo "✅ 数据库迁移完成"
+echo ""
 
-# 执行种子脚本
-echo "开始导入套餐数据..."
+# 步骤 5: 初始化套餐数据
+echo "步骤 5/7: 初始化套餐数据..."
+echo "========================================="
 docker exec waoowaoo-app npx tsx prisma/seed-plans.ts
-
 echo ""
 echo "验证套餐数据..."
-docker exec waoowaoo-mysql mysql -uroot -pwaoowaoo123 waoowaoo -e "SELECT id, name, monthlyPrice, yearlyPrice, monthlyCredits FROM subscription_plans ORDER BY sortOrder;"
-
-echo ""
+docker exec waoowaoo-mysql mysql -uroot -pwaoowaoo123 waoowaoo -e "SELECT id, name, monthlyPrice, monthlyCredits FROM subscription_plans ORDER BY sortOrder;"
 echo "✅ 套餐数据导入完成"
 echo ""
 
-# 步骤 5: 补全已有用户邀请码
-echo "步骤 5/6: 补全已有用户邀请码..."
+# 步骤 6: 补全已有用户邀请码
+echo "步骤 6/7: 补全已有用户邀请码..."
 echo "========================================="
 docker exec waoowaoo-app npx tsx scripts/migrations/backfill-invite-codes.ts || echo "⚠️  邀请码补全失败（可能无需要补全的用户）"
 echo ""
 
-# 步骤 6: 清理用户模型配置
-echo "步骤 6/7: 清理用户模型配置，统一使用系统默认..."
+# 步骤 7: 清理用户模型配置
+echo "步骤 7/7: 清理用户模型配置，统一使用系统默认..."
 echo "========================================="
 docker exec waoowaoo-app npx tsx scripts/migrations/clear-user-model-configs.ts
-echo ""
-
-# 步骤 7: 执行数据库迁移
-echo "步骤 7/7: 执行数据库迁移..."
-echo "========================================="
-docker exec waoowaoo-app npx prisma migrate deploy
-echo "✅ 数据库迁移完成"
 echo ""
 
 # 显示部署信息
@@ -141,23 +147,21 @@ echo "  ⏰ Cron任务配置提醒"
 echo "========================================="
 echo "已集成每日统计报表功能，需要配置定时任务："
 echo ""
-echo "自动配置Cron任务（每日凌晨1点生成统计数据）："
-echo "sudo bash scripts/setup-cron.sh"
-echo ""
 echo "手动配置："
 echo "crontab -e"
-echo "添加行：0 1 * * * curl -X POST http://127.0.0.1:13000/api/cron/generate-daily-stats -H \"Authorization: Bearer $(grep CRON_SECRET .env | cut -d '=' -f2)\""
+echo "添加行：0 1 * * * curl -X POST http://127.0.0.1:13000/api/cron/generate-daily-stats -H \"Authorization: Bearer CRON_SECRET值\""
 echo ""
 
 echo "========================================="
 echo "  🎉 部署完成!"
 echo "========================================="
+echo " 命令: $DC_CMD"
 echo " 分支: feature/saas-credits"
 echo " 版本: $VERSION"
 echo "========================================="
 echo ""
 echo "📋 下一步操作:"
-echo "1. 访问 http://54.206.102.49:13000/zh/pricing 查看套餐页面"
-echo "2. 访问 http://54.206.102.49:13000/zh/admin/platform-keys 配置系统默认模型"
-echo "3. 测试项目配置弹窗，确认模型参数区域已移除"
+echo "1. 设置管理员: chmod +x scripts/set-admin.sh && ./scripts/set-admin.sh 你的用户名"
+echo "2. 访问 http://你的IP:13000/zh 登录账号"
+echo "3. 访问 http://你的IP:13000/zh/admin/platform-keys 配置系统默认模型"
 echo ""
