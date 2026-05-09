@@ -7,8 +7,9 @@
 1. [EC2 实例创建](#1-ec2-实例创建)
 2. [基础环境配置](#2-基础环境配置)
 3. [项目部署](#3-项目部署)
-4. [常用运维命令](#4-常用运维命令)
-5. [故障排查](#5-故障排查)
+4. [用户与管理员设置](#4-用户与管理员设置)
+5. [常用运维命令](#5-常用运维命令)
+6. [故障排查](#6-故障排查)
 
 ---
 
@@ -293,7 +294,52 @@ curl http://localhost:13000
 
 ---
 
-## 4. 常用运维命令
+## 4. 用户与管理员设置
+
+### 4.1 创建账号
+
+**方式1：通过网页注册**
+1. 访问 `http://你的IP:13000/zh`
+2. 点击注册，使用邮箱注册账号
+
+**方式2：通过 API 注册**
+```bash
+curl -X POST http://localhost:13000/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"name": "your-email@example.com", "password": "your-password"}'
+```
+
+### 4.2 设置管理员
+
+注册账号后，使用脚本将某个邮箱设为管理员：
+
+```bash
+cd /var/www/waoowaoo
+
+# 给脚本添加执行权限
+chmod +x scripts/set-admin.sh
+
+# 设置管理员（替换为你的邮箱）
+./scripts/set-admin.sh your-email@example.com
+```
+
+**验证管理员权限：**
+- 访问 `http://你的IP:13000/zh/admin/platform-keys`
+- 如果能打开管理后台，说明设置成功
+
+### 4.3 初始化数据库（首次部署必须执行）
+
+```bash
+# 执行数据库迁移
+docker-compose exec app npx prisma migrate deploy
+
+# 初始化套餐数据
+docker-compose exec app npx tsx prisma/seed-plans.ts
+```
+
+---
+
+## 5. 常用运维命令
 
 ### 4.1 容器管理
 
@@ -374,7 +420,7 @@ docker system prune -af
 
 ---
 
-## 5. 故障排查
+## 6. 故障排查
 
 ### 5.1 容器启动失败
 
