@@ -122,8 +122,8 @@ async function concatenateVideosWithTransitions(
   const totalDuration = await getVideoDuration(normalizedVideos[0]) * normalizedVideos.length
   filterComplex += `[outv]fade=t=out:st=${totalDuration - transitionDuration}:d=${transitionDuration}[outv]`
 
-  // Run ffmpeg command
-  const command = `ffmpeg -y -hwaccel auto ${normalizedVideos.map(v => `-i "${v}"`).join(' ')} \
+  // Run ffmpeg command (no hwaccel - not supported in container)
+  const command = `ffmpeg -y ${normalizedVideos.map(v => `-i "${v}"`).join(' ')} \
     -filter_complex "${filterComplex}" \
     -map "[outv]" -map "[outa]" \
     -c:v libx264 -c:a aac \
