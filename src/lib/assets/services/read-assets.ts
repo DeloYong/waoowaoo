@@ -26,6 +26,7 @@ async function readProjectAssets(projectId: string): Promise<AssetSummary[]> {
           appearances: {
             orderBy: { appearanceIndex: 'asc' },
           },
+          customVoiceMedia: true,
         },
         orderBy: { createdAt: 'asc' },
       },
