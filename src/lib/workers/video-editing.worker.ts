@@ -102,31 +102,15 @@ async function concatenateVideosWithTransitions(
     normalizedVideos.push(normalizedPath)
   }
 
-  // Simple concatenation without transitions for now (to ensure basic functionality works)
-  // Video concatenation filter
-  const videoLabels = normalizedVideos.map((_, i) => `[${i}:v]`).join('')
-  const audioLabels = normalizedVideos.map((_, i) => `[${i}:a]`).join('')
+  // Simple concatenation - only video for now (some source videos may lack audio)
+  const videoInputs = normalizedVideos.map((_, i) => `[${i}:v]`).join('')
 
-  // Build filter_complex: split video and audio, then concat
-  // Add fade in for first video and fade out for last video
-  let filterComplex = ''
+  const filterComplex = `${videoInputs}concat=n=${normalizedVideos.length}:v=1:a=0[outv]`
 
-  // Fade in for first video (0.5s)
-  filterComplex += `${videoLabels}${audioLabels}`
-  filterComplex += `concat=n=${normalizedVideos.length}:v=1:a=1[outv][outa];`
-
-  // Add fade in at start of first video
-  filterComplex += `[outv]fade=t=in:st=0:d=${transitionDuration}[outv];`
-
-  // Add fade out at end of last video
-  const totalDuration = await getVideoDuration(normalizedVideos[0]) * normalizedVideos.length
-  filterComplex += `[outv]fade=t=out:st=${totalDuration - transitionDuration}:d=${transitionDuration}[outv]`
-
-  // Run ffmpeg command (no hwaccel - not supported in container)
   const command = `ffmpeg -y ${normalizedVideos.map(v => `-i "${v}"`).join(' ')} \
     -filter_complex "${filterComplex}" \
-    -map "[outv]" -map "[outa]" \
-    -c:v libx264 -c:a aac \
+    -map "[outv]" \
+    -c:v libx264 \
     "${outputPath}"`
 
   await exec(command)
