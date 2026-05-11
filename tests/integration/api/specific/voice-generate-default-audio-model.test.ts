@@ -254,4 +254,70 @@ describe('api specific - voice generate default audio model', () => {
     expect(json.error?.message).toBe('请先为该发言人绑定火山引擎音色')
     expect(submitTaskMock).not.toHaveBeenCalled()
   })
+
+  it('returns provider mismatch error when character has bailian voice but using ark model', async () => {
+    apiConfigMock.resolveModelSelectionOrSingle.mockResolvedValueOnce({
+      provider: 'ark',
+      modelId: 'doubao-tts-v1',
+      modelKey: 'ark::doubao-tts-v1',
+      mediaType: 'audio',
+    })
+    prismaMock.novelPromotionProject.findUnique.mockResolvedValueOnce({
+      id: 'np-1',
+      audioModel: 'ark::doubao-tts-v1',
+      characters: [
+        { name: 'Narrator', customVoiceUrl: null, voiceId: 'qwen-tts-vd-123456' },
+      ],
+    })
+
+    const mod = await import('@/app/api/novel-promotion/[projectId]/voice-generate/route')
+    const req = buildMockRequest({
+      path: '/api/novel-promotion/project-1/voice-generate',
+      method: 'POST',
+      body: {
+        episodeId: 'episode-1',
+        lineId: 'line-1',
+      },
+    })
+
+    const res = await mod.POST(req, { params: Promise.resolve({ projectId: 'project-1' }) })
+    expect(res.status).toBe(400)
+
+    const json = await res.json()
+    expect(json.error?.message).toBe('该角色使用的是阿里云百炼音色，请切换到百炼语音合成模型')
+    expect(submitTaskMock).not.toHaveBeenCalled()
+  })
+
+  it('returns provider mismatch error when character has ark voice but using bailian model', async () => {
+    apiConfigMock.resolveModelSelectionOrSingle.mockResolvedValueOnce({
+      provider: 'bailian',
+      modelId: 'qwen-tts-vd-20260126',
+      modelKey: 'bailian::qwen-tts-vd-20260126',
+      mediaType: 'audio',
+    })
+    prismaMock.novelPromotionProject.findUnique.mockResolvedValueOnce({
+      id: 'np-1',
+      audioModel: 'bailian::qwen-tts-vd-20260126',
+      characters: [
+        { name: 'Narrator', customVoiceUrl: null, voiceId: 'S_abc123' },
+      ],
+    })
+
+    const mod = await import('@/app/api/novel-promotion/[projectId]/voice-generate/route')
+    const req = buildMockRequest({
+      path: '/api/novel-promotion/project-1/voice-generate',
+      method: 'POST',
+      body: {
+        episodeId: 'episode-1',
+        lineId: 'line-1',
+      },
+    })
+
+    const res = await mod.POST(req, { params: Promise.resolve({ projectId: 'project-1' }) })
+    expect(res.status).toBe(400)
+
+    const json = await res.json()
+    expect(json.error?.message).toBe('该角色使用的是火山引擎音色，请切换到火山引擎语音合成模型')
+    expect(submitTaskMock).not.toHaveBeenCalled()
+  })
 })

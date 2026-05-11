@@ -56,7 +56,17 @@ function validateSpeakerVoiceForProvider(
     return { ok: true }
   }
 
+  const characterVoiceId = character?.voiceId || ''
+  const hasBailianVoiceId = characterVoiceId.startsWith('qwen-tts-vd-')
+  const hasArkVoiceId = looksLikeArkVoiceId(characterVoiceId)
+
   if (providerKey === 'bailian') {
+    if (hasArkVoiceId) {
+      return {
+        ok: false,
+        message: '该角色使用的是火山引擎音色，请切换到火山引擎语音合成模型',
+      }
+    }
     const hasUploadedReference =
       !!character?.customVoiceUrl ||
       (speakerVoice?.provider === 'fal' && !!speakerVoice.audioUrl)
@@ -73,8 +83,13 @@ function validateSpeakerVoiceForProvider(
   }
 
   if (providerKey === 'ark') {
-    const hasNonArkVoiceId =
-      !!character?.voiceId && !looksLikeArkVoiceId(character.voiceId)
+    if (hasBailianVoiceId) {
+      return {
+        ok: false,
+        message: '该角色使用的是阿里云百炼音色，请切换到百炼语音合成模型',
+      }
+    }
+    const hasNonArkVoiceId = !!characterVoiceId && !hasArkVoiceId
     if (hasNonArkVoiceId) {
       return {
         ok: false,
