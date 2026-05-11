@@ -17,7 +17,7 @@ const prismaMock = vi.hoisted(() => ({
     findUnique: vi.fn<() => Promise<{
       id: string
       audioModel: string | null
-      characters: Array<{ name: string; customVoiceUrl: string; voiceId: string | null }>
+      characters: Array<{ name: string; customVoiceUrl: string | null; voiceId: string | null }>
     } | null>>(async () => ({
       id: 'np-1',
       audioModel: 'fal::project-tts-model',
@@ -65,6 +65,17 @@ vi.mock('@/lib/api-auth', () => authMock)
 vi.mock('@/lib/prisma', () => ({ prisma: prismaMock }))
 vi.mock('@/lib/task/submitter', () => ({ submitTask: submitTaskMock }))
 vi.mock('@/lib/api-config', () => apiConfigMock)
+const configServiceMock = vi.hoisted(() => ({
+  getProjectModelConfig: vi.fn(async () => ({
+    audioModel: 'fal::project-tts-model',
+  })),
+}))
+
+vi.mock('@/lib/api-auth', () => authMock)
+vi.mock('@/lib/prisma', () => ({ prisma: prismaMock }))
+vi.mock('@/lib/task/submitter', () => ({ submitTask: submitTaskMock }))
+vi.mock('@/lib/api-config', () => apiConfigMock)
+vi.mock('@/lib/config-service', () => configServiceMock)
 vi.mock('@/lib/task/resolve-locale', () => ({
   resolveRequiredTaskLocale: vi.fn(() => 'zh'),
 }))
@@ -78,6 +89,9 @@ vi.mock('@/lib/task/has-output', () => ({
 describe('api specific - voice generate default audio model', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    configServiceMock.getProjectModelConfig.mockImplementation(async () => ({
+      audioModel: 'fal::project-tts-model',
+    }))
   })
 
   it('uses project audioModel when request does not provide one', async () => {
@@ -126,13 +140,9 @@ describe('api specific - voice generate default audio model', () => {
   })
 
   it('falls back to user preference audioModel when project audioModel is empty', async () => {
-    prismaMock.novelPromotionProject.findUnique.mockResolvedValueOnce({
-      id: 'np-1',
-      audioModel: null,
-      characters: [
-        { name: 'Narrator', customVoiceUrl: 'https://voice.example/narrator.wav', voiceId: null },
-      ],
-    })
+    configServiceMock.getProjectModelConfig.mockImplementation(async () => ({
+      audioModel: '',
+    }))
 
     const mod = await import('@/app/api/novel-promotion/[projectId]/voice-generate/route')
     const req = buildMockRequest({
@@ -148,7 +158,7 @@ describe('api specific - voice generate default audio model', () => {
     expect(res.status).toBe(200)
     expect(apiConfigMock.resolveModelSelectionOrSingle).toHaveBeenCalledWith(
       'user-1',
-      'fal::fal-ai/index-tts-2/text-to-speech',
+      null,
       'audio',
     )
   })
@@ -176,6 +186,72 @@ describe('api specific - voice generate default audio model', () => {
 
     const json = await res.json()
     expect(json.error?.message).toBe('无音色ID，QwenTTS 必须使用 AI 设计音色')
+    expect(submitTaskMock).not.toHaveBeenCalled()
+  })
+
+  it('returns an explicit ark voiceId error when character has non-ark voiceId', async () => {
+    apiConfigMock.resolveModelSelectionOrSingle.mockResolvedValueOnce({
+      provider: 'ark',
+      modelId: 'doubao-tts-v1',
+      modelKey: 'ark::doubao-tts-v1',
+      mediaType: 'audio',
+    })
+    prismaMock.novelPromotionProject.findUnique.mockResolvedValueOnce({
+      id: 'np-1',
+      audioModel: 'ark::doubao-tts-v1',
+      characters: [
+        { name: 'Narrator', customVoiceUrl: 'https://voice.example/narrator.wav', voiceId: 'qwen-tts-vd-xxx' },
+      ],
+    })
+
+    const mod = await import('@/app/api/novel-promotion/[projectId]/voice-generate/route')
+    const req = buildMockRequest({
+      path: '/api/novel-promotion/project-1/voice-generate',
+      method: 'POST',
+      body: {
+        episodeId: 'episode-1',
+        lineId: 'line-1',
+      },
+    })
+
+    const res = await mod.POST(req, { params: Promise.resolve({ projectId: 'project-1' }) })
+    expect(res.status).toBe(400)
+
+    const json = await res.json()
+    expect(json.error?.message).toBe('无火山引擎音色ID，Doubao TTS 必须使用 AI 设计音色')
+    expect(submitTaskMock).not.toHaveBeenCalled()
+  })
+
+  it('returns ark binding error when no voice binding for ark provider', async () => {
+    apiConfigMock.resolveModelSelectionOrSingle.mockResolvedValueOnce({
+      provider: 'ark',
+      modelId: 'doubao-tts-v1',
+      modelKey: 'ark::doubao-tts-v1',
+      mediaType: 'audio',
+    })
+    prismaMock.novelPromotionProject.findUnique.mockResolvedValueOnce({
+      id: 'np-1',
+      audioModel: 'ark::doubao-tts-v1',
+      characters: [
+        { name: 'Narrator', customVoiceUrl: null, voiceId: null },
+      ],
+    })
+
+    const mod = await import('@/app/api/novel-promotion/[projectId]/voice-generate/route')
+    const req = buildMockRequest({
+      path: '/api/novel-promotion/project-1/voice-generate',
+      method: 'POST',
+      body: {
+        episodeId: 'episode-1',
+        lineId: 'line-1',
+      },
+    })
+
+    const res = await mod.POST(req, { params: Promise.resolve({ projectId: 'project-1' }) })
+    expect(res.status).toBe(400)
+
+    const json = await res.json()
+    expect(json.error?.message).toBe('请先为该发言人绑定火山引擎音色')
     expect(submitTaskMock).not.toHaveBeenCalled()
   })
 })

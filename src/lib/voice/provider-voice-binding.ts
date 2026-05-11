@@ -89,7 +89,7 @@ function readTrimmedString(input: unknown): string | null {
  * - 包含 _mars_, _moon_, _uranus_, _bigtts（大模型音色）
  * - 包含 _conversation_wvae_（对话音色）
  */
-function looksLikeArkVoiceId(voiceId: string | null): boolean {
+export function looksLikeArkVoiceId(voiceId: string | null): boolean {
   if (!voiceId) return false
   if (voiceId.startsWith('S_')) return true
   if (voiceId.includes('_mars_') || voiceId.includes('_moon_') || voiceId.includes('_uranus_') || voiceId.includes('_bigtts')) return true

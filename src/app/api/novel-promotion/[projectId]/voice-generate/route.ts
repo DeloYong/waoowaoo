@@ -14,6 +14,7 @@ import { getProviderKey, resolveModelSelectionOrSingle } from '@/lib/api-config'
 import { getProjectModelConfig } from '@/lib/config-service'
 import {
   hasVoiceBindingForProvider,
+  looksLikeArkVoiceId,
   parseSpeakerVoiceMap,
   type CharacterVoiceFields,
   type SpeakerVoiceMap,
@@ -68,6 +69,21 @@ function validateSpeakerVoiceForProvider(
     return {
       ok: false,
       message: '请先为该发言人绑定百炼音色',
+    }
+  }
+
+  if (providerKey === 'ark') {
+    const hasNonArkVoiceId =
+      !!character?.voiceId && !looksLikeArkVoiceId(character.voiceId)
+    if (hasNonArkVoiceId) {
+      return {
+        ok: false,
+        message: '无火山引擎音色ID，Doubao TTS 必须使用 AI 设计音色',
+      }
+    }
+    return {
+      ok: false,
+      message: '请先为该发言人绑定火山引擎音色',
     }
   }
 
