@@ -200,7 +200,7 @@ describe('api specific - voice generate default audio model', () => {
       id: 'np-1',
       audioModel: 'ark::doubao-tts-v1',
       characters: [
-        { name: 'Narrator', customVoiceUrl: 'https://voice.example/narrator.wav', voiceId: 'qwen-tts-vd-xxx' },
+        { name: 'Narrator', customVoiceUrl: 'https://voice.example/narrator.wav', voiceId: 'some-other-tts-voice-id' },
       ],
     })
 

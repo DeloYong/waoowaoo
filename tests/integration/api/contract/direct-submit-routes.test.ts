@@ -378,7 +378,7 @@ const DIRECT_CASES: ReadonlyArray<DirectRouteCase> = [
   },
   {
     routeFile: 'src/app/api/asset-hub/voice-design/route.ts',
-    body: { voicePrompt: 'female calm narrator', previewText: '你好世界' },
+    body: { voicePrompt: 'female calm narrator', previewText: '你好世界，这是测试' },
     expectedTaskType: TASK_TYPE.ASSET_HUB_VOICE_DESIGN,
     expectedTargetType: 'GlobalAssetHubVoiceDesign',
     expectedProjectId: 'global-asset-hub',
