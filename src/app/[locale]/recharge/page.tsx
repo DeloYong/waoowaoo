@@ -255,74 +255,75 @@ export default function RechargePage() {
             {/* 套餐列表 */}
             {loading ? (
               <div className="flex items-center justify-center py-20">
-                <div className="text-[var(--glass-text-secondary)]">加载中...</div>
+                <div className="text-white/60">加载中...</div>
               </div>
             ) : packages.length === 0 ? (
-              <div className="glass-surface-elevated rounded-2xl p-12 text-center">
-                <AppIcon name="package" className="w-16 h-16 mx-auto mb-4 text-[var(--glass-text-tertiary)]" />
-                <p className="text-[var(--glass-text-secondary)]">暂无可用充值套餐</p>
-              </div>
+              <WuhuEmptyState
+                title="暂无可用充值套餐"
+                expression="thinking"
+              />
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {packages.map((pkg) => (
-                  <div
-                    key={pkg.id}
-                    onClick={() => setSelectedPackage(pkg)}
-                    className={`glass-surface-elevated rounded-2xl p-6 cursor-pointer transition-all duration-200 relative ${
-                      selectedPackage?.id === pkg.id
-                        ? 'ring-2 ring-blue-500 shadow-lg scale-[1.02]'
-                        : 'hover:shadow-md'
-                    }`}
-                  >
-                    {pkg.isPopular && (
-                      <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                        <span className="bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
-                          🔥 热门推荐
-                        </span>
-                      </div>
-                    )}
-
-                    <div className="text-center">
-                      <h3 className="text-lg font-bold text-[var(--glass-text-primary)] mb-2">
-                        {pkg.name}
-                      </h3>
-
-                      <div className="mb-4">
-                        <span className="text-4xl font-bold text-blue-600">¥{pkg.price.toFixed(2)}</span>
-                        {pkg.originalPrice && (
-                          <span className="text-sm text-[var(--glass-text-tertiary)] line-through ml-2">
-                            ¥{pkg.originalPrice.toFixed(2)}
-                          </span>
-                        )}
-                      </div>
-
-                      <div className="space-y-2 text-sm mb-6">
-                        <div className="flex items-center justify-center gap-2">
-                          <span className="text-[var(--glass-text-secondary)]">基础积分：</span>
-                          <span className="font-medium text-[var(--glass-text-primary)]">{pkg.credits}</span>
-                        </div>
-                        {pkg.bonusCredits > 0 && (
-                          <div className="flex items-center justify-center gap-2">
-                            <span className="text-orange-500 font-medium">🎁 赠送积分：</span>
-                            <span className="font-bold text-orange-500">+{pkg.bonusCredits}</span>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {packages.map((pkg) => (
+                    <div
+                      key={pkg.id}
+                      onClick={() => setSelectedPackage(pkg)}
+                      className={`relative cursor-pointer transition-all duration-300 ${selectedPackage?.id === pkg.id ? 'scale-[1.02]' : 'hover:scale-[1.01]'}`}
+                    >
+                      <WuhuCard
+                        glow={selectedPackage?.id === pkg.id ? 'pink' : 'purple'}
+                        className={`p-6 h-full ${selectedPackage?.id === pkg.id ? 'wuhu-package-selected' : ''}`}
+                      >
+                        {pkg.isPopular && (
+                          <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
+                            <span className="wuhu-tag-popular text-white text-xs font-bold px-3 py-1 rounded-full">
+                              🔥 热门推荐
+                            </span>
                           </div>
                         )}
-                        <div className="pt-2 border-t border-[var(--glass-stroke-base)]">
-                          <span className="text-lg font-bold text-[var(--glass-text-primary)]">
-                            总共 {pkg.totalCredits} 积分
-                          </span>
-                        </div>
-                      </div>
 
-                      {pkg.discount && (
-                        <div className="inline-block bg-blue-50 text-blue-600 text-xs font-medium px-2 py-1 rounded">
-                          {pkg.discount}折优惠
+                        <div className="text-center">
+                          <h3 className="text-lg font-bold text-white mb-2">
+                            {pkg.name}
+                          </h3>
+
+                          <div className="mb-4">
+                            <span className="text-4xl font-black wuhu-neon-number">¥{pkg.price.toFixed(2)}</span>
+                            {pkg.originalPrice && (
+                              <span className="text-sm text-white/40 line-through ml-2">
+                                ¥{pkg.originalPrice.toFixed(2)}
+                              </span>
+                            )}
+                          </div>
+
+                          <div className="space-y-2 text-sm mb-6">
+                            <div className="flex items-center justify-center gap-2">
+                              <span className="text-white/60">基础积分：</span>
+                              <span className="font-medium text-white">{pkg.credits}</span>
+                            </div>
+                            {pkg.bonusCredits > 0 && (
+                              <div className="flex items-center justify-center gap-2">
+                                <span className="text-orange-400 font-medium">🎁 赠送积分：</span>
+                                <span className="font-bold text-orange-400">+{pkg.bonusCredits}</span>
+                              </div>
+                            )}
+                            <div className="pt-2 border-t border-white/10">
+                              <span className="text-lg font-bold text-white">
+                                总共 {pkg.totalCredits} 积分
+                              </span>
+                            </div>
+                          </div>
+
+                          {pkg.discount && (
+                            <div className="inline-block bg-purple-500/30 text-purple-300 text-xs font-medium px-2 py-1 rounded border border-purple-500/30">
+                              {pkg.discount}折优惠
+                            </div>
+                          )}
                         </div>
-                      )}
+                      </WuhuCard>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
             )}
 
             {/* 支付方式选择 */}
