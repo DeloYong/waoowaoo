@@ -86,7 +86,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="glass-nav sticky top-0 z-50">
+      <nav className="sticky top-0 z-50 bg-[var(--wuhu-bg-surface)]/90 backdrop-blur-xl border-b border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_30px_rgba(167,87,255,0.2)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-2">
@@ -98,8 +98,8 @@ export default function Navbar() {
                 onClick={openModal}
                 disabled={!update}
                 className={`relative inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] font-semibold tracking-[0.02em] transition-all ${update
-                  ? 'border-[var(--glass-tone-warning-fg)]/40 bg-[linear-gradient(135deg,var(--glass-tone-warning-bg),var(--glass-bg-surface-strong))] text-[var(--glass-tone-warning-fg)] shadow-[0_8px_24px_-16px_rgba(245,158,11,0.9)] hover:brightness-105'
-                  : 'border-[var(--glass-stroke-base)] bg-[var(--glass-bg-surface)] text-[var(--glass-text-secondary)] hover:border-[var(--glass-stroke-focus)] hover:text-[var(--glass-text-primary)] disabled:cursor-default'
+                  ? 'border-[var(--wuhu-neon-orange)]/40 bg-[var(--wuhu-bg-card)] text-[var(--wuhu-neon-orange)] shadow-[0_8px_24px_-16px_rgba(255,159,67,0.4)] hover:brightness-110'
+                  : 'border-[var(--wuhu-neon-purple)]/30 bg-[var(--wuhu-bg-surface)] text-white/60 hover:border-[var(--wuhu-neon-purple)]/60 hover:text-white disabled:cursor-default'
                   }`}
                 aria-label={tc('updateNotice.openDialog')}
               >
@@ -108,8 +108,8 @@ export default function Navbar() {
                   {tc('betaVersion', { version: currentVersion })}
                   {update ? (
                     <span className="relative inline-flex items-center">
-                      {shouldPulse ? <span className="absolute -inset-1.5 animate-ping rounded-full bg-[var(--glass-tone-warning-fg)] opacity-20" /> : null}
-                      <span className="relative inline-flex items-center gap-1 rounded-full bg-[var(--glass-tone-warning-fg)]/16 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.04em]">
+                      {shouldPulse ? <span className="absolute -inset-1.5 animate-ping rounded-full bg-[var(--wuhu-neon-orange)] opacity-20" /> : null}
+                      <span className="relative inline-flex items-center gap-1 rounded-full bg-[var(--wuhu-neon-orange)]/20 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.04em]">
                         <AppIcon name="upload" className="h-3 w-3" />
                         {tc('updateNotice.updateTag')}
                       </span>
@@ -121,14 +121,14 @@ export default function Navbar() {
                 type="button"
                 onClick={() => void handleCheckUpdate()}
                 disabled={manualChecking}
-                className="rounded-full p-1.5 text-[var(--glass-text-tertiary)] hover:bg-[var(--glass-bg-muted)] hover:text-[var(--glass-text-secondary)] transition-colors disabled:opacity-40"
+                className="rounded-full p-1.5 text-white/40 hover:bg-[var(--wuhu-bg-card)] hover:text-white/70 transition-colors disabled:opacity-40"
                 title={tc('updateNotice.checkUpdate')}
               >
                 <AppIcon name="refresh" className={`h-3.5 w-3.5 ${manualChecking ? 'animate-spin' : ''}`} />
               </button>
               {checkMsg === 'upToDate' && !update && (
                 <span
-                  className="text-[11px] text-[var(--glass-tone-success-fg)] font-medium transition-opacity duration-1000"
+                  className="text-[11px] text-[var(--wuhu-neon-cyan)] font-medium transition-opacity duration-1000"
                   style={{ opacity: checkMsgFading ? 0 : 1 }}
                 >
                   ✓ {tc('updateNotice.upToDate')}
@@ -139,9 +139,9 @@ export default function Navbar() {
               {status === 'loading' ? (
                 /* Session 加载中骨架屏 */
                 <div className="flex items-center space-x-4">
-                  <div className="h-4 w-16 rounded-full bg-[var(--glass-bg-muted)] animate-pulse" />
-                  <div className="h-4 w-16 rounded-full bg-[var(--glass-bg-muted)] animate-pulse" />
-                  <div className="h-8 w-20 rounded-lg bg-[var(--glass-bg-muted)] animate-pulse" />
+                  <div className="h-4 w-16 rounded-full bg-[var(--wuhu-bg-card)] animate-pulse" />
+                  <div className="h-4 w-16 rounded-full bg-[var(--wuhu-bg-card)] animate-pulse" />
+                  <div className="h-8 w-20 rounded-lg bg-[var(--wuhu-bg-card)] animate-pulse" />
                 </div>
               ) : session ? (
                 <>
@@ -150,17 +150,17 @@ export default function Navbar() {
                     <div className="flex items-center gap-3">
                       <Link
                         href={{ pathname: '/recharge' }}
-                        className="flex items-center gap-2 px-3 py-1.5 bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)] hover:border-[var(--glass-stroke-focus)] transition-colors"
+                        className="flex items-center gap-2 px-3 py-1.5 bg-[var(--wuhu-bg-card)] rounded-lg border border-[var(--wuhu-neon-purple)]/30 hover:border-[var(--wuhu-neon-pink)] hover:shadow-[0_0_15px_rgba(255,100,200,0.3)] transition-all duration-300"
                         title="点击充值"
                       >
-                        <AppIcon name="coins" className="w-4 h-4 text-yellow-600" />
-                        <span className="text-sm font-semibold text-[var(--glass-text-primary)]">
+                        <AppIcon name="coins" className="w-4 h-4 text-[var(--wuhu-neon-orange)]" />
+                        <span className="text-sm font-semibold text-white wuhu-text-gradient">
                           {creditsInfo.totalCredits}
                         </span>
-                        <AppIcon name="plus" className="w-3.5 h-3.5 text-blue-500" />
+                        <AppIcon name="plus" className="w-3.5 h-3.5 text-[var(--wuhu-neon-cyan)]" />
                       </Link>
                       {creditsInfo.planName && (
-                        <div className="px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium">
+                        <div className="px-3 py-1.5 bg-[var(--wuhu-neon-purple)]/20 rounded-lg text-sm font-medium text-[var(--wuhu-neon-purple)] border border-[var(--wuhu-neon-purple)]/40">
                           {creditsInfo.planName}
                         </div>
                       )}
@@ -169,21 +169,21 @@ export default function Navbar() {
 
                   <Link
                     href={{ pathname: '/workspace' }}
-                    className="text-sm text-[var(--glass-text-secondary)] hover:text-[var(--glass-text-primary)] font-medium transition-colors flex items-center gap-1"
+                    className="text-sm text-white/70 hover:text-white font-medium transition-colors flex items-center gap-1"
                   >
                     <AppIcon name="monitor" className="w-4 h-4" />
                     {t('workspace')}
                   </Link>
                   <Link
                     href={{ pathname: '/workspace/asset-hub' }}
-                    className="text-sm text-[var(--glass-text-secondary)] hover:text-[var(--glass-text-primary)] font-medium transition-colors flex items-center gap-1"
+                    className="text-sm text-white/70 hover:text-white font-medium transition-colors flex items-center gap-1"
                   >
                     <AppIcon name="folderHeart" className="w-4 h-4" />
                     {t('assetHub')}
                   </Link>
                   <Link
                     href={{ pathname: '/profile' }}
-                    className="text-sm text-[var(--glass-text-secondary)] hover:text-[var(--glass-text-primary)] font-medium transition-colors flex items-center gap-1"
+                    className="text-sm text-white/70 hover:text-white font-medium transition-colors flex items-center gap-1"
                     title={t('profile')}
                   >
                     <AppIcon name="userRoundCog" className="w-5 h-5" />
@@ -193,7 +193,7 @@ export default function Navbar() {
                   <a
                     href={downloadLogsHref}
                     download
-                    className="text-sm text-[var(--glass-text-secondary)] hover:text-[var(--glass-text-primary)] font-medium transition-colors flex items-center gap-1"
+                    className="text-sm text-white/70 hover:text-white font-medium transition-colors flex items-center gap-1"
                     title={t('downloadLogs')}
                   >
                     <AppIcon name="download" className="w-4 h-4" />
@@ -205,13 +205,13 @@ export default function Navbar() {
                 <>
                   <Link
                     href={{ pathname: '/auth/signin' }}
-                    className="text-sm text-[var(--glass-text-secondary)] hover:text-[var(--glass-text-primary)] font-medium transition-colors"
+                    className="text-sm text-white/70 hover:text-white font-medium transition-colors"
                   >
                     {t('signin')}
                   </Link>
                   <Link
                     href={{ pathname: '/auth/signup' }}
-                    className="glass-btn-base glass-btn-primary px-4 py-2 text-sm font-medium"
+                    className="px-4 py-2 text-sm font-medium rounded-lg bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)] hover:shadow-[0_0_25px_rgba(255,100,200,0.5)] transition-all duration-300"
                   >
                     {t('signup')}
                   </Link>
