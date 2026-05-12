@@ -608,3 +608,47 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* ========================================
+   Wuhu Brand Animations
+   ======================================== */
+
+/* Neon Breathing Pulse */
+@keyframes wuhu-neon-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 10px var(--wuhu-neon-purple),
+      0 0 20px rgba(167, 87, 255, 0.5);
+  }
+  50% {
+    box-shadow:
+      0 0 20px var(--wuhu-neon-pink),
+      0 0 40px rgba(255, 100, 200, 0.3);
+  }
+}
+
+.wuhu-animate-pulse {
+  animation: wuhu-neon-pulse 2s ease-in-out infinite;
+}
+
+/* Floating Animation for Mascot */
+@keyframes wuhu-float {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-10px) rotate(2deg); }
+}
+
+.wuhu-animate-float {
+  animation: wuhu-float 3s ease-in-out infinite;
+}
+
+/* Rainbow Border Glow */
+@keyframes wuhu-rainbow-glow {
+  0% { box-shadow: 0 0 15px var(--wuhu-neon-purple); }
+  33% { box-shadow: 0 0 15px var(--wuhu-neon-pink); }
+  66% { box-shadow: 0 0 15px var(--wuhu-neon-cyan); }
+  100% { box-shadow: 0 0 15px var(--wuhu-neon-purple); }
+}
+
+.wuhu-animate-rainbow {
+  animation: wuhu-rainbow-glow 4s linear infinite;
+}
