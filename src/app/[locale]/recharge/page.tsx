@@ -328,75 +328,69 @@ export default function RechargePage() {
 
             {/* 支付方式选择 */}
             {selectedPackage && (
-              <div className="glass-surface-elevated rounded-2xl p-6 mt-8">
-                <h3 className="text-lg font-bold text-[var(--glass-text-primary)] mb-4">
+              <WuhuCard glow="cyan" className="p-6 mt-8">
+                <h3 className="text-lg font-bold text-white mb-4">
                   选择支付方式
                 </h3>
 
                 <div className="grid grid-cols-2 gap-4 mb-6">
                   <button
                     onClick={() => setPaymentMethod('alipay')}
-                    className={`p-4 rounded-xl border-2 transition-all ${
-                      paymentMethod === 'alipay'
-                        ? 'border-blue-500 bg-blue-50'
-                        : 'border-[var(--glass-stroke-base)] hover:border-[var(--glass-stroke-strong)]'
-                    }`}
+                    className={`p-4 rounded-xl border-2 border-white/20 transition-all ${paymentMethod === 'alipay' ? 'wuhu-payment-alipay' : 'hover:border-white/40'}`}
                   >
                     <div className="flex items-center justify-center gap-3">
-                      <AppIcon name="coins" className="w-8 h-8 text-blue-500" />
+                      <AppIcon name="coins" className="w-8 h-8 text-blue-400" />
                       <div className="text-left">
-                        <div className="font-semibold text-[var(--glass-text-primary)]">支付宝</div>
-                        <div className="text-xs text-[var(--glass-text-secondary)]">推荐使用</div>
+                        <div className="font-semibold text-white">支付宝</div>
+                        <div className="text-xs text-white/60">推荐使用</div>
                       </div>
                     </div>
                   </button>
 
                   <button
                     onClick={() => setPaymentMethod('wechat')}
-                    className={`p-4 rounded-xl border-2 transition-all ${
-                      paymentMethod === 'wechat'
-                        ? 'border-green-500 bg-green-50'
-                        : 'border-[var(--glass-stroke-base)] hover:border-[var(--glass-stroke-strong)]'
-                    }`}
+                    className={`p-4 rounded-xl border-2 border-white/20 transition-all ${paymentMethod === 'wechat' ? 'wuhu-payment-wechat' : 'hover:border-white/40'}`}
                   >
                     <div className="flex items-center justify-center gap-3">
-                      <AppIcon name="coins" className="w-8 h-8 text-green-500" />
+                      <AppIcon name="coins" className="w-8 h-8 text-green-400" />
                       <div className="text-left">
-                        <div className="font-semibold text-[var(--glass-text-primary)]">微信支付</div>
-                        <div className="text-xs text-[var(--glass-text-secondary)]">便捷安全</div>
+                        <div className="font-semibold text-white">微信支付</div>
+                        <div className="text-xs text-white/60">便捷安全</div>
                       </div>
                     </div>
                   </button>
                 </div>
 
                 {/* 订单摘要 */}
-                <div className="bg-[var(--glass-bg-surface)] rounded-xl p-4 mb-6">
+                <div className="bg-white/5 rounded-xl p-4 mb-6 border border-white/10">
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-[var(--glass-text-secondary)]">充值套餐</span>
-                    <span className="font-medium text-[var(--glass-text-primary)]">{selectedPackage.name}</span>
+                    <span className="text-white/60">充值套餐</span>
+                    <span className="font-medium text-white">{selectedPackage.name}</span>
                   </div>
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-[var(--glass-text-secondary)]">获得积分</span>
-                    <span className="font-bold text-[var(--glass-text-primary)]">{selectedPackage.totalCredits} 积分</span>
+                    <span className="text-white/60">获得积分</span>
+                    <span className="font-bold text-white">{selectedPackage.totalCredits} 积分</span>
                   </div>
-                  <div className="flex justify-between items-center pt-3 border-t border-[var(--glass-stroke-base)]">
-                    <span className="text-[var(--glass-text-secondary)]">应付金额</span>
-                    <span className="text-2xl font-bold text-blue-600">¥{selectedPackage.price.toFixed(2)}</span>
+                  <div className="flex justify-between items-center pt-3 border-t border-white/10">
+                    <span className="text-white/60">应付金额</span>
+                    <span className="text-3xl font-black wuhu-neon-number">¥{selectedPackage.price.toFixed(2)}</span>
                   </div>
                 </div>
 
-                <button
+                <WuhuButton
+                  variant="gradient"
+                  glow={true}
                   onClick={handleRecharge}
                   disabled={submitting}
-                  className="w-full py-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full py-4 text-lg font-bold"
                 >
-                  {submitting ? '创建订单中...' : '立即支付'}
-                </button>
+                  {submitting ? '创建订单中...' : '芜湖，立即起飞！🚀'}
+                </WuhuButton>
 
-                <p className="text-center text-xs text-[var(--glass-text-tertiary)] mt-4">
+                <p className="text-center text-xs text-white/40 mt-4">
                   支付成功后积分将自动发放到您的账户
                 </p>
-              </div>
+              </WuhuCard>
             )}
           </div>
 
