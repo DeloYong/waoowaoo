@@ -293,14 +293,14 @@ export default function WorkspacePage() {
 
   if (status === 'loading' || !session) {
     return (
-      <div className="glass-page min-h-screen flex items-center justify-center">
-        <div className="text-[var(--glass-text-secondary)]">{tc('loading')}</div>
+      <div className="min-h-screen flex items-center justify-center bg-[var(--wuhu-bg-primary)]">
+        <div className="text-white/70">{tc('loading')}</div>
       </div>
     )
   }
 
   return (
-    <div className="glass-page min-h-screen">
+    <div className="min-h-screen bg-[var(--wuhu-bg-primary)]">
       {/* Header - 统一导航栏 */}
       <Navbar />
 
@@ -308,8 +308,8 @@ export default function WorkspacePage() {
       <main className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 py-8">
         <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-[var(--glass-text-primary)] mb-2">{t('title')}</h1>
-            <p className="text-[var(--glass-text-secondary)]">{t('subtitle')}</p>
+            <h1 className="text-3xl font-bold text-white mb-2">{t('title')}</h1>
+            <p className="text-white/70">{t('subtitle')}</p>
           </div>
 
           {/* 搜索框 */}
@@ -320,11 +320,11 @@ export default function WorkspacePage() {
               onChange={(e) => setSearchInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
               placeholder={t('searchPlaceholder')}
-              className="glass-input-base w-64 px-3 py-2"
+              className="w-64 px-3 py-2 bg-[var(--wuhu-bg-card)]/90 border border-[var(--wuhu-neon-purple)]/30 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(236,72,153,0.3)] transition-all"
             />
             <button
               onClick={handleSearch}
-              className="glass-btn-base glass-btn-primary px-4 py-2"
+              className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)] px-4 py-2 rounded-xl font-medium hover:shadow-[0_0_20px_rgba(167,87,255,0.6)] transition-all"
             >
               {t('searchButton')}
             </button>
@@ -335,7 +335,7 @@ export default function WorkspacePage() {
                   setSearchQuery('')
                   setPagination(prev => ({ ...prev, page: 1 }))
                 }}
-                className="glass-btn-base glass-btn-secondary px-4 py-2"
+                className="bg-[var(--wuhu-bg-card)]/90 border border-[var(--wuhu-neon-purple)]/30 text-white/70 px-4 py-2 rounded-xl hover:border-[var(--wuhu-neon-purple)]/60 transition-all"
               >
                 {t('clearButton')}
               </button>
@@ -348,13 +348,13 @@ export default function WorkspacePage() {
           {/* New Project Card */}
           <div
             onClick={() => openCreateModal()}
-            className="glass-surface p-6 cursor-pointer group flex items-center justify-center bg-gradient-to-br from-blue-500/5 via-cyan-500/5 to-blue-600/5 hover:from-blue-500/10 hover:via-cyan-500/10 hover:to-blue-600/10 transition-all duration-300"
+            className="bg-[var(--wuhu-bg-card)]/90 border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_30px_rgba(167,87,255,0.15)] rounded-xl p-6 cursor-pointer group flex items-center justify-center hover:shadow-[0_0_40px_rgba(167,87,255,0.3)] hover:border-[var(--wuhu-neon-purple)]/60 transition-all duration-300"
           >
             <div className="flex flex-col items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:shadow-blue-500/40 group-hover:scale-110 transition-all duration-300">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] flex items-center justify-center shadow-lg shadow-[rgba(167,87,255,0.3)] group-hover:shadow-[0_0_20px_rgba(167,87,255,0.5)] group-hover:scale-110 transition-all duration-300">
                 <AppIcon name="plus" className="w-6 h-6 text-white" />
               </div>
-              <span className="text-sm font-medium text-[var(--glass-text-secondary)] group-hover:text-[var(--glass-text-primary)] transition-colors">{t('newProject')}</span>
+              <span className="text-sm font-medium text-white/70 group-hover:text-white transition-colors">{t('newProject')}</span>
             </div>
           </div>
 
@@ -362,10 +362,10 @@ export default function WorkspacePage() {
           {loading ? (
             // Loading skeleton
             Array.from({ length: 3 }).map((_, index) => (
-              <div key={index} className="glass-surface p-6 animate-pulse">
-                <div className="h-4 bg-[var(--glass-bg-muted)] rounded mb-3"></div>
-                <div className="h-3 bg-[var(--glass-bg-muted)] rounded mb-2"></div>
-                <div className="h-3 bg-[var(--glass-bg-muted)] rounded w-2/3"></div>
+              <div key={index} className="bg-[var(--wuhu-bg-card)]/90 border border-[var(--wuhu-neon-purple)]/30 rounded-xl p-6 animate-pulse">
+                <div className="h-4 bg-white/10 rounded mb-3"></div>
+                <div className="h-3 bg-white/10 rounded mb-2"></div>
+                <div className="h-3 bg-white/10 rounded w-2/3"></div>
               </div>
             ))
           ) : (
@@ -373,24 +373,24 @@ export default function WorkspacePage() {
               <Link
                 key={project.id}
                 href={{ pathname: `/workspace/${project.id}` }}
-                className="glass-surface cursor-pointer relative group block hover:border-[var(--glass-tone-info-fg)]/40 transition-all duration-300 overflow-hidden"
+                className="bg-[var(--wuhu-bg-card)]/90 border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_30px_rgba(167,87,255,0.15)] rounded-xl cursor-pointer relative group block hover:shadow-[0_0_40px_rgba(167,87,255,0.3)] hover:border-[var(--wuhu-neon-purple)]/60 transition-all duration-300 overflow-hidden"
               >
                 {/* 悬停光效 */}
-                <div className="absolute inset-0 rounded-[inherit] bg-gradient-to-br from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                <div className="absolute inset-0 rounded-[inherit] bg-gradient-to-br from-[var(--wuhu-neon-purple)]/10 to-[var(--wuhu-neon-pink)]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
                 <div className="p-5 relative z-10">
                   {/* 操作按钮 */}
                   <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-20">
                     <button
                       onClick={(e) => openEditModal(project, e)}
-                      className="glass-btn-base glass-btn-secondary p-2 rounded-lg transition-colors"
+                      className="bg-[var(--wuhu-bg-card)]/90 border border-[var(--wuhu-neon-purple)]/30 p-2 rounded-lg transition-colors hover:border-[var(--wuhu-neon-purple)]/60"
                       title={t('editProject')}
                     >
-                      <AppIcon name="editSquare" className="w-4 h-4 text-[var(--glass-tone-info-fg)]" />
+                      <AppIcon name="editSquare" className="w-4 h-4 text-white/70" />
                     </button>
                     <button
                       onClick={(e) => openDeleteConfirm(project, e)}
-                      className="glass-btn-base glass-btn-secondary p-2 rounded-lg transition-colors"
+                      className="bg-[var(--wuhu-bg-card)]/90 border border-[var(--wuhu-neon-purple)]/30 p-2 rounded-lg transition-colors hover:border-[var(--wuhu-neon-pink)]/60"
                       title={t('deleteProject')}
                       disabled={deletingProjectId === project.id}
                     >
@@ -411,15 +411,15 @@ export default function WorkspacePage() {
                   </div>
 
                   {/* 标题 */}
-                  <h3 className="text-lg font-bold text-[var(--glass-text-primary)] mb-2 line-clamp-2 pr-20 group-hover:text-[var(--glass-tone-info-fg)] transition-colors">
+                  <h3 className="text-lg font-bold text-white mb-2 line-clamp-2 pr-20 group-hover:text-[var(--wuhu-neon-pink)] transition-colors">
                     {project.name}
                   </h3>
 
                   {/* 描述：优先用户描述，fallback 到第一集故事 */}
                   {(project.description || project.stats?.firstEpisodePreview) && (
                     <div className="flex items-start gap-2 mb-4">
-                      <AppIcon name="fileText" className="w-4 h-4 text-[var(--glass-text-tertiary)] mt-0.5 flex-shrink-0" />
-                      <p className="text-sm text-[var(--glass-text-secondary)] line-clamp-2 leading-relaxed">
+                      <AppIcon name="fileText" className="w-4 h-4 text-white/50 mt-0.5 flex-shrink-0" />
+                      <p className="text-sm text-white/70 line-clamp-2 leading-relaxed">
                         {project.description || project.stats?.firstEpisodePreview}
                       </p>
                     </div>
@@ -454,13 +454,13 @@ export default function WorkspacePage() {
                     </div>
                   ) : (
                     <div className="flex items-center gap-2.5 mb-3">
-                      <AppIcon name="statsBar" className="w-4 h-4 text-[var(--glass-text-tertiary)] flex-shrink-0" />
-                      <span className="text-xs text-[var(--glass-text-tertiary)]">{t('noContent')}</span>
+                      <AppIcon name="statsBar" className="w-4 h-4 text-white/50 flex-shrink-0" />
+                      <span className="text-xs text-white/50">{t('noContent')}</span>
                     </div>
                   )}
 
                   {/* 底部信息 */}
-                  <div className="flex items-center justify-between text-[11px] text-[var(--glass-text-tertiary)]">
+                  <div className="flex items-center justify-between text-[11px] text-white/50">
                     <div className="flex items-center gap-1">
                       <AppIcon name="clock" className="w-3 h-3" />
                       {formatDate(project.updatedAt)}
@@ -480,19 +480,19 @@ export default function WorkspacePage() {
         {/* Empty State */}
         {!loading && projects.length === 0 && (
           <div className="text-center py-12">
-            <div className="w-16 h-16 bg-[var(--glass-bg-muted)] rounded-xl flex items-center justify-center mx-auto mb-4">
-              <AppIcon name="folderCards" className="w-8 h-8 text-[var(--glass-text-tertiary)]" />
+            <div className="w-16 h-16 bg-[var(--wuhu-bg-card)]/90 border border-[var(--wuhu-neon-purple)]/30 rounded-xl flex items-center justify-center mx-auto mb-4">
+              <AppIcon name="folderCards" className="w-8 h-8 text-white/50" />
             </div>
-            <h3 className="text-lg font-medium text-[var(--glass-text-primary)] mb-2">
+            <h3 className="text-lg font-medium text-white mb-2">
               {searchQuery ? t('noResults') : t('noProjects')}
             </h3>
-            <p className="text-[var(--glass-text-secondary)] mb-6">
+            <p className="text-white/70 mb-6">
               {searchQuery ? t('noResultsDesc') : t('noProjectsDesc')}
             </p>
             {!searchQuery && (
               <button
                 onClick={() => openCreateModal()}
-                className="glass-btn-base glass-btn-primary px-6 py-3"
+                className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)] px-6 py-3 rounded-xl font-medium hover:shadow-[0_0_20px_rgba(167,87,255,0.6)] transition-all"
               >
                 {t('newProject')}
               </button>
@@ -506,7 +506,7 @@ export default function WorkspacePage() {
             <button
               onClick={() => handlePageChange(pagination.page - 1)}
               disabled={pagination.page <= 1}
-              className="glass-btn-base glass-btn-secondary px-3 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-[var(--wuhu-bg-card)]/90 border border-[var(--wuhu-neon-purple)]/30 text-white px-3 py-2 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:border-[var(--wuhu-neon-purple)]/60 transition-all"
             >
               <AppIcon name="chevronLeft" className="w-5 h-5" />
             </button>
@@ -523,13 +523,13 @@ export default function WorkspacePage() {
                 <span key={page} className="flex items-center">
                   {/* 显示省略号 */}
                   {index > 0 && array[index - 1] !== page - 1 && (
-                    <span className="px-2 text-[var(--glass-text-tertiary)]">...</span>
+                    <span className="px-2 text-white/50">...</span>
                   )}
                   <button
                     onClick={() => handlePageChange(page)}
-                    className={`glass-btn-base px-4 py-2 ${page === pagination.page
-                      ? 'glass-btn-primary'
-                      : 'glass-btn-secondary'
+                    className={`px-4 py-2 rounded-xl transition-all ${page === pagination.page
+                      ? 'bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)]'
+                      : 'bg-[var(--wuhu-bg-card)]/90 border border-[var(--wuhu-neon-purple)]/30 text-white hover:border-[var(--wuhu-neon-purple)]/60'
                       }`}
                   >
                     {page}
@@ -540,12 +540,12 @@ export default function WorkspacePage() {
             <button
               onClick={() => handlePageChange(pagination.page + 1)}
               disabled={pagination.page >= pagination.totalPages}
-              className="glass-btn-base glass-btn-secondary px-3 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-[var(--wuhu-bg-card)]/90 border border-[var(--wuhu-neon-purple)]/30 text-white px-3 py-2 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:border-[var(--wuhu-neon-purple)]/60 transition-all"
             >
               <AppIcon name="chevronRight" className="w-5 h-5" />
             </button>
 
-            <span className="ml-4 text-sm text-[var(--glass-text-tertiary)]">
+            <span className="ml-4 text-sm text-white/50">
               {t('totalProjects', { count: pagination.total })}
             </span>
           </div>
@@ -554,12 +554,12 @@ export default function WorkspacePage() {
 
       {/* Create Project Modal - 简化版，只有名称和描述 */}
       {showCreateModal && (
-        <div className="fixed inset-0 glass-overlay flex items-center justify-center z-50 backdrop-blur-sm">
-          <div className="glass-surface-modal p-6 w-full max-w-md mx-4">
-            <h2 className="text-xl font-bold text-[var(--glass-text-primary)] mb-4">{t('createProject')}</h2>
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 backdrop-blur-sm">
+          <div className="bg-[var(--wuhu-bg-card)]/95 border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_50px_rgba(167,87,255,0.2)] rounded-2xl p-6 w-full max-w-md mx-4">
+            <h2 className="text-xl font-bold text-white mb-4">{t('createProject')}</h2>
             <form onSubmit={handleCreateProject}>
               <div className="mb-4">
-                <label htmlFor="name" className="glass-field-label block mb-2">
+                <label htmlFor="name" className="block mb-2 text-white/70 font-medium">
                   {t('projectName')} *
                 </label>
                 <input
@@ -572,7 +572,7 @@ export default function WorkspacePage() {
                       setCreateError(null)
                     }
                   }}
-                  className="glass-input-base w-full px-3 py-2"
+                  className="w-full px-3 py-2 bg-black/30 border border-[var(--wuhu-neon-purple)]/30 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(236,72,153,0.3)] transition-all"
                   placeholder={t('projectNamePlaceholder')}
                   maxLength={100}
                   required
@@ -580,7 +580,7 @@ export default function WorkspacePage() {
                 />
               </div>
               <div className="mb-6">
-                <label htmlFor="description" className="glass-field-label block mb-2">
+                <label htmlFor="description" className="block mb-2 text-white/70 font-medium">
                   {t('projectDescription')}
                 </label>
                 <textarea
@@ -592,14 +592,14 @@ export default function WorkspacePage() {
                       setCreateError(null)
                     }
                   }}
-                  className="glass-textarea-base w-full px-3 py-2"
+                  className="w-full px-3 py-2 bg-black/30 border border-[var(--wuhu-neon-purple)]/30 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(236,72,153,0.3)] transition-all"
                   placeholder={t('projectDescriptionPlaceholder')}
                   rows={3}
                   maxLength={500}
                 />
               </div>
               {createError && (
-                <p className="mb-4 rounded-xl border border-red-500/20 bg-red-500/10 px-3 py-2 text-sm text-red-600">
+                <p className="mb-4 rounded-xl border border-[var(--wuhu-neon-pink)]/30 bg-[var(--wuhu-neon-pink)]/10 px-3 py-2 text-sm text-[var(--wuhu-neon-pink)]">
                   {createError}
                 </p>
               )}
@@ -611,14 +611,14 @@ export default function WorkspacePage() {
                     setCreateError(null)
                     setFormData({ name: '', description: '' })
                   }}
-                  className="glass-btn-base glass-btn-secondary px-4 py-2"
+                  className="bg-[var(--wuhu-bg-card)]/90 border border-[var(--wuhu-neon-purple)]/30 text-white px-4 py-2 rounded-xl hover:border-[var(--wuhu-neon-purple)]/60 transition-all"
                   disabled={createLoading}
                 >
                   {tc('cancel')}
                 </button>
                 <button
                   type="submit"
-                  className="glass-btn-base glass-btn-primary px-4 py-2 disabled:opacity-50"
+                  className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)] px-4 py-2 rounded-xl font-medium hover:shadow-[0_0_20px_rgba(167,87,255,0.6)] transition-all disabled:opacity-50"
                   disabled={createLoading || !formData.name.trim()}
                 >
                   {createLoading ? t('creating') : t('createProject')}
@@ -631,12 +631,12 @@ export default function WorkspacePage() {
 
       {/* Edit Project Modal */}
       {showEditModal && editingProject && (
-        <div className="fixed inset-0 glass-overlay flex items-center justify-center z-50 backdrop-blur-sm">
-          <div className="glass-surface-modal p-6 w-full max-w-md mx-4">
-            <h2 className="text-xl font-bold text-[var(--glass-text-primary)] mb-4">{t('editProject')}</h2>
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 backdrop-blur-sm">
+          <div className="bg-[var(--wuhu-bg-card)]/95 border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_50px_rgba(167,87,255,0.2)] rounded-2xl p-6 w-full max-w-md mx-4">
+            <h2 className="text-xl font-bold text-white mb-4">{t('editProject')}</h2>
             <form onSubmit={handleEditProject}>
               <div className="mb-4">
-                <label htmlFor="edit-name" className="glass-field-label block mb-2">
+                <label htmlFor="edit-name" className="block mb-2 text-white/70 font-medium">
                   {t('projectName')} *
                 </label>
                 <input
@@ -649,14 +649,14 @@ export default function WorkspacePage() {
                       setEditError(null)
                     }
                   }}
-                  className="glass-input-base w-full px-3 py-2"
+                  className="w-full px-3 py-2 bg-black/30 border border-[var(--wuhu-neon-purple)]/30 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(236,72,153,0.3)] transition-all"
                   placeholder={t('projectNamePlaceholder')}
                   maxLength={100}
                   required
                 />
               </div>
               <div className="mb-6">
-                <label htmlFor="edit-description" className="glass-field-label block mb-2">
+                <label htmlFor="edit-description" className="block mb-2 text-white/70 font-medium">
                   {t('projectDescription')}
                 </label>
                 <textarea
@@ -668,14 +668,14 @@ export default function WorkspacePage() {
                       setEditError(null)
                     }
                   }}
-                  className="glass-textarea-base w-full px-3 py-2"
+                  className="w-full px-3 py-2 bg-black/30 border border-[var(--wuhu-neon-purple)]/30 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(236,72,153,0.3)] transition-all"
                   placeholder={t('projectDescriptionPlaceholder')}
                   rows={3}
                   maxLength={500}
                 />
               </div>
               {editError && (
-                <p className="mb-4 rounded-xl border border-red-500/20 bg-red-500/10 px-3 py-2 text-sm text-red-600">
+                <p className="mb-4 rounded-xl border border-[var(--wuhu-neon-pink)]/30 bg-[var(--wuhu-neon-pink)]/10 px-3 py-2 text-sm text-[var(--wuhu-neon-pink)]">
                   {editError}
                 </p>
               )}
@@ -688,14 +688,14 @@ export default function WorkspacePage() {
                     setEditError(null)
                     setEditFormData({ name: '', description: '' })
                   }}
-                  className="glass-btn-base glass-btn-secondary px-4 py-2"
+                  className="bg-[var(--wuhu-bg-card)]/90 border border-[var(--wuhu-neon-purple)]/30 text-white px-4 py-2 rounded-xl hover:border-[var(--wuhu-neon-purple)]/60 transition-all"
                   disabled={createLoading}
                 >
                   {tc('cancel')}
                 </button>
                 <button
                   type="submit"
-                  className="glass-btn-base glass-btn-primary px-4 py-2 disabled:opacity-50"
+                  className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)] px-4 py-2 rounded-xl font-medium hover:shadow-[0_0_20px_rgba(167,87,255,0.6)] transition-all disabled:opacity-50"
                   disabled={createLoading || !editFormData.name.trim()}
                 >
                   {createLoading ? t('saving') : tc('save')}

@@ -167,18 +167,18 @@ export default function PricingPage() {
 
   if (sessionStatus === 'loading' || !session) {
     return (
-      <div className="glass-page flex min-h-screen items-center justify-center">
-        <div className="text-[var(--glass-text-secondary)]">{tc('loading')}</div>
+      <div className="min-h-screen flex items-center justify-center bg-[var(--wuhu-bg-primary)]">
+        <div className="text-white/70">{tc('loading')}</div>
       </div>
     )
   }
 
   if (loading) {
     return (
-      <div className="glass-page min-h-screen">
+      <div className="min-h-screen bg-[var(--wuhu-bg-primary)]">
         <Navbar />
         <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-[var(--glass-text-secondary)]">{tc('loading')}</div>
+          <div className="text-white/70">{tc('loading')}</div>
         </div>
       </div>
     )
@@ -187,37 +187,37 @@ export default function PricingPage() {
   const activePlans = plans.filter(p => p.isActive)
 
   return (
-    <div className="glass-page min-h-screen">
+    <div className="min-h-screen bg-[var(--wuhu-bg-primary)]">
       <Navbar />
 
       <main className="max-w-[1400px] mx-auto px-6 py-8">
         <div className="flex gap-6 h-[calc(100vh-140px)]">
           {/* 左侧侧边栏 */}
           <div className="w-64 flex-shrink-0">
-            <div className="glass-surface-elevated h-full flex flex-col p-5">
+            <div className="bg-[var(--wuhu-bg-card)]/90 border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_30px_rgba(167,87,255,0.15)] rounded-xl h-full flex flex-col p-5">
               {/* 用户信息 */}
               <div className="mb-6">
                 <div className="mb-4">
-                  <h2 className="font-semibold text-[var(--glass-text-primary)]">{session.user?.name || t('user')}</h2>
-                  <p className="text-xs text-[var(--glass-text-tertiary)]">{t('personalAccount')}</p>
+                  <h2 className="font-semibold text-white">{session.user?.name || t('user')}</h2>
+                  <p className="text-xs text-white/50">{t('personalAccount')}</p>
                 </div>
 
                 {/* 积分卡片 */}
                 <div className="space-y-3">
-                  <div className="glass-surface-soft rounded-2xl border border-[var(--glass-stroke-base)] p-4">
-                    <div className="text-xs font-medium text-[var(--glass-text-secondary)]">可用积分</div>
-                    <div className="mt-2 text-2xl font-bold text-[var(--glass-text-primary)]">
+                  <div className="bg-black/30 border border-[var(--wuhu-neon-purple)]/20 rounded-2xl p-4">
+                    <div className="text-xs font-medium text-white/70">可用积分</div>
+                    <div className="mt-2 text-2xl font-bold text-white">
                       {totalCredits}
                     </div>
                   </div>
 
                   {subInfo?.subscription && (
-                    <div className="glass-surface-soft rounded-2xl border border-[var(--glass-stroke-base)] p-4">
-                      <div className="text-xs font-medium text-[var(--glass-text-secondary)]">{t('currentPlan')}</div>
-                      <div className="mt-1 text-base font-semibold text-[var(--glass-text-primary)]">
+                    <div className="bg-black/30 border border-[var(--wuhu-neon-purple)]/20 rounded-2xl p-4">
+                      <div className="text-xs font-medium text-white/70">{t('currentPlan')}</div>
+                      <div className="mt-1 text-base font-semibold text-white">
                         {subInfo.plan?.name}
                       </div>
-                      <div className="mt-1 text-xs text-[var(--glass-text-tertiary)]">
+                      <div className="mt-1 text-xs text-white/50">
                         状态: {subInfo.subscription.status === 'active' ? '已激活' : subInfo.subscription.status}
                       </div>
                     </div>
@@ -229,7 +229,7 @@ export default function PricingPage() {
               <nav className="flex-1 space-y-2">
                 <button
                   onClick={() => router.push({ pathname: '/pricing' })}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left bg-[var(--glass-bg-muted)] text-[var(--glass-text-primary)] transition-all cursor-pointer"
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left bg-[var(--wuhu-neon-purple)]/20 text-white transition-all cursor-pointer"
                 >
                   <AppIcon name="receipt" className="w-5 h-5" />
                   <span className="font-medium">套餐与定价</span>
@@ -237,7 +237,7 @@ export default function PricingPage() {
 
                 <button
                   onClick={() => router.push({ pathname: '/invite' })}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-[var(--glass-text-secondary)] hover:bg-[var(--glass-bg-muted)] transition-all cursor-pointer"
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-white/70 hover:bg-[var(--wuhu-neon-purple)]/20 transition-all cursor-pointer"
                 >
                   <AppIcon name="sparkles" className="w-5 h-5" />
                   <span className="font-medium">邀请奖励</span>
@@ -249,7 +249,7 @@ export default function PricingPage() {
                 onClick={() => {
                   router.push({ pathname: '/profile' })
                 }}
-                className="glass-btn-base glass-btn-tone-default mt-auto flex items-center gap-2 px-4 py-3 text-sm rounded-xl transition-all cursor-pointer"
+                className="mt-auto flex items-center gap-2 px-4 py-3 text-sm rounded-xl transition-all cursor-pointer bg-[var(--wuhu-bg-card)]/90 border border-[var(--wuhu-neon-purple)]/30 text-white hover:border-[var(--wuhu-neon-purple)]/60"
               >
                 <AppIcon name="user" className="w-4 h-4" />
                 返回个人中心
@@ -259,27 +259,27 @@ export default function PricingPage() {
 
           {/* 右侧内容区 */}
           <div className="flex-1 min-w-0 overflow-y-auto">
-            <div className="glass-surface-elevated min-h-full flex flex-col p-8">
+            <div className="bg-[var(--wuhu-bg-card)]/90 border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_30px_rgba(167,87,255,0.15)] rounded-xl min-h-full flex flex-col p-8">
               <div className="max-w-none">
         {/* 标题区域 */}
         <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-[var(--glass-text-primary)] mb-6">
+          <h1 className="text-5xl font-bold text-white mb-6">
             选择适合您的套餐
           </h1>
-          <p className="text-xl text-[var(--glass-text-secondary)] max-w-2xl mx-auto">
+          <p className="text-xl text-white/70 max-w-2xl mx-auto">
             灵活的定价方案，满足从个人创作者到企业团队的所有需求
           </p>
         </div>
 
         {/* 计费周期切换 */}
         <div className="flex justify-center mb-16">
-          <div className="inline-flex bg-[var(--glass-bg-surface)] rounded-xl p-1.5 border border-[var(--glass-stroke-soft)] shadow-sm">
+          <div className="inline-flex bg-black/30 rounded-xl p-1.5 border border-[var(--wuhu-neon-purple)]/30 shadow-sm">
             <button
               onClick={() => setBillingCycle('monthly')}
               className={`px-8 py-3 rounded-lg text-sm font-semibold transition-all duration-200 ${
                 billingCycle === 'monthly'
-                  ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md'
-                  : 'text-[var(--glass-text-secondary)] hover:text-[var(--glass-text-primary)] hover:bg-[var(--glass-bg-surface-strong)]'
+                  ? 'bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)]'
+                  : 'text-white/70 hover:text-white hover:bg-white/10'
               }`}
             >
               月付
@@ -288,8 +288,8 @@ export default function PricingPage() {
               onClick={() => setBillingCycle('yearly')}
               className={`px-8 py-3 rounded-lg text-sm font-semibold transition-all duration-200 relative ${
                 billingCycle === 'yearly'
-                  ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md'
-                  : 'text-[var(--glass-text-secondary)] hover:text-[var(--glass-text-primary)] hover:bg-[var(--glass-bg-surface-strong)]'
+                  ? 'bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)]'
+                  : 'text-white/70 hover:text-white hover:bg-white/10'
               }`}
             >
               年付
@@ -332,13 +332,13 @@ export default function PricingPage() {
                 key={plan.id}
                 className={`relative rounded-2xl p-px transition-all duration-300 hover:scale-[1.02] ${
                   isPopular
-                    ? 'bg-gradient-to-b from-blue-400 via-blue-500 to-blue-600 shadow-xl shadow-blue-200'
-                    : 'bg-[var(--glass-stroke-soft)] hover:shadow-lg'
+                    ? 'bg-gradient-to-b from-[var(--wuhu-neon-purple)] via-[var(--wuhu-neon-pink)] to-pink-500 shadow-[0_0_40px_rgba(236,72,153,0.3)]'
+                    : 'bg-[var(--wuhu-neon-purple)]/30 hover:shadow-[0_0_30px_rgba(167,87,255,0.2)]'
                 }`}
               >
                 {isPopular && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
-                    <span className="bg-gradient-to-r from-blue-500 to-blue-600 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-md">
+                    <span className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-[0_0_15px_rgba(236,72,153,0.4)]">
                       最受欢迎
                     </span>
                   </div>
@@ -346,22 +346,22 @@ export default function PricingPage() {
 
                 <div className={`h-full rounded-2xl p-6 ${
                   isPopular
-                    ? 'bg-gradient-to-b from-white to-blue-50'
-                    : 'bg-[var(--glass-bg-surface)]'
+                    ? 'bg-gradient-to-b from-[var(--wuhu-bg-card)] to-[var(--wuhu-neon-purple)]/10'
+                    : 'bg-[var(--wuhu-bg-card)]'
                 }`}>
                   {/* 套餐名称 */}
                   <div className="mb-6">
                     <h3 className={`text-xl font-bold mb-2 ${
-                      isPopular ? 'text-blue-600' : 'text-[var(--glass-text-primary)]'
+                      isPopular ? 'text-[var(--wuhu-neon-pink)]' : 'text-white'
                     }`}>
                       {plan.name}
                     </h3>
                     <div className="flex items-baseline gap-1">
-                      <span className="text-4xl font-bold text-[var(--glass-text-primary)]">
+                      <span className="text-4xl font-bold text-white">
                         {priceDisplay}
                       </span>
                       {priceNote && (
-                        <span className="text-sm text-[var(--glass-text-tertiary)]">{priceNote}</span>
+                        <span className="text-sm text-white/50">{priceNote}</span>
                       )}
                     </div>
                   </div>
@@ -371,29 +371,29 @@ export default function PricingPage() {
                     {!isEnterprise && (
                       <>
                         <div className="flex items-center gap-3 text-sm">
-                          <div className="w-8 h-8 rounded-lg bg-yellow-100 flex items-center justify-center flex-shrink-0">
-                            <AppIcon name="coins" className="w-4 h-4 text-yellow-600" />
+                          <div className="w-8 h-8 rounded-lg bg-yellow-500/20 flex items-center justify-center flex-shrink-0">
+                            <AppIcon name="coins" className="w-4 h-4 text-yellow-400" />
                           </div>
-                          <span className="text-[var(--glass-text-secondary)]">{plan.monthlyCredits} 积分/月</span>
+                          <span className="text-white/70">{plan.monthlyCredits} 积分/月</span>
                         </div>
                         <div className="flex items-center gap-3 text-sm">
-                          <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
-                            <AppIcon name="video" className="w-4 h-4 text-blue-600" />
+                          <div className="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+                            <AppIcon name="video" className="w-4 h-4 text-blue-400" />
                           </div>
-                          <span className="text-[var(--glass-text-secondary)]">{plan.maxVideoSeconds} 秒视频时长</span>
+                          <span className="text-white/70">{plan.maxVideoSeconds} 秒视频时长</span>
                         </div>
                         <div className="flex items-center gap-3 text-sm">
-                          <div className="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center flex-shrink-0">
-                            <AppIcon name="package" className="w-4 h-4 text-green-600" />
+                          <div className="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center flex-shrink-0">
+                            <AppIcon name="package" className="w-4 h-4 text-green-400" />
                           </div>
-                          <span className="text-[var(--glass-text-secondary)]">{plan.maxConcurrency} 个并发任务</span>
+                          <span className="text-white/70">{plan.maxConcurrency} 个并发任务</span>
                         </div>
                         {plan.trialDays > 0 && (
                           <div className="flex items-center gap-3 text-sm">
-                            <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0">
-                              <AppIcon name="sparkles" className="w-4 h-4 text-purple-600" />
+                            <div className="w-8 h-8 rounded-lg bg-[var(--wuhu-neon-purple)]/20 flex items-center justify-center flex-shrink-0">
+                              <AppIcon name="sparkles" className="w-4 h-4 text-[var(--wuhu-neon-purple)]" />
                             </div>
-                            <span className="text-[var(--glass-text-secondary)]">{plan.trialDays} 天试用期</span>
+                            <span className="text-white/70">{plan.trialDays} 天试用期</span>
                           </div>
                         )}
                       </>
@@ -401,34 +401,34 @@ export default function PricingPage() {
                     {isEnterprise && (
                       <>
                         <div className="flex items-center gap-3 text-sm">
-                          <div className="w-8 h-8 rounded-lg bg-yellow-100 flex items-center justify-center flex-shrink-0">
-                            <AppIcon name="coins" className="w-4 h-4 text-yellow-600" />
+                          <div className="w-8 h-8 rounded-lg bg-yellow-500/20 flex items-center justify-center flex-shrink-0">
+                            <AppIcon name="coins" className="w-4 h-4 text-yellow-400" />
                           </div>
-                          <span className="text-[var(--glass-text-secondary)]">无限积分</span>
+                          <span className="text-white/70">无限积分</span>
                         </div>
                         <div className="flex items-center gap-3 text-sm">
-                          <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
-                            <AppIcon name="video" className="w-4 h-4 text-blue-600" />
+                          <div className="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+                            <AppIcon name="video" className="w-4 h-4 text-blue-400" />
                           </div>
-                          <span className="text-[var(--glass-text-secondary)]">无限视频时长</span>
+                          <span className="text-white/70">无限视频时长</span>
                         </div>
                         <div className="flex items-center gap-3 text-sm">
-                          <div className="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center flex-shrink-0">
-                            <AppIcon name="bolt" className="w-4 h-4 text-green-600" />
+                          <div className="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center flex-shrink-0">
+                            <AppIcon name="bolt" className="w-4 h-4 text-green-400" />
                           </div>
-                          <span className="text-[var(--glass-text-secondary)]">{plan.maxConcurrency} 个并发任务</span>
+                          <span className="text-white/70">{plan.maxConcurrency} 个并发任务</span>
                         </div>
                         <div className="flex items-center gap-3 text-sm">
-                          <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0">
-                            <AppIcon name="cpu" className="w-4 h-4 text-purple-600" />
+                          <div className="w-8 h-8 rounded-lg bg-[var(--wuhu-neon-purple)]/20 flex items-center justify-center flex-shrink-0">
+                            <AppIcon name="cpu" className="w-4 h-4 text-[var(--wuhu-neon-purple)]" />
                           </div>
-                          <span className="text-[var(--glass-text-secondary)]">API 访问权限</span>
+                          <span className="text-white/70">API 访问权限</span>
                         </div>
                         <div className="flex items-center gap-3 text-sm">
-                          <div className="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center flex-shrink-0">
-                            <AppIcon name="bookmark" className="w-4 h-4 text-indigo-600" />
+                          <div className="w-8 h-8 rounded-lg bg-[var(--wuhu-neon-pink)]/20 flex items-center justify-center flex-shrink-0">
+                            <AppIcon name="bookmark" className="w-4 h-4 text-[var(--wuhu-neon-pink)]" />
                           </div>
-                          <span className="text-[var(--glass-text-secondary)]">专属技术支持</span>
+                          <span className="text-white/70">专属技术支持</span>
                         </div>
                       </>
                     )}
@@ -441,11 +441,9 @@ export default function PricingPage() {
                     className={`w-full py-3.5 rounded-xl font-semibold transition-all duration-200 ${
                       purchasingPlanId === plan.id ? 'opacity-70 cursor-not-allowed' : ''
                     } ${
-                      isEnterprise
-                        ? 'bg-gradient-to-r from-purple-500 to-purple-600 text-white hover:from-purple-600 hover:to-purple-700 shadow-md hover:shadow-lg'
-                        : isPopular
-                        ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 shadow-md hover:shadow-lg'
-                        : 'bg-[var(--glass-bg-canvas)] text-[var(--glass-text-primary)] border-2 border-[var(--glass-stroke-base)] hover:bg-[var(--glass-bg-surface-strong)] hover:border-[var(--glass-stroke-strong)]'
+                      isEnterprise || isPopular
+                        ? 'bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)] hover:shadow-[0_0_25px_rgba(236,72,153,0.5)]'
+                        : 'bg-transparent text-white border-2 border-[var(--wuhu-neon-purple)]/30 hover:bg-[var(--wuhu-neon-purple)]/10 hover:border-[var(--wuhu-neon-purple)]/60'
                     }`}
                   >
                     {purchasingPlanId === plan.id ? '订阅中...' : isEnterprise ? '联系我们' : '立即订阅'}
@@ -458,17 +456,17 @@ export default function PricingPage() {
 
         {/* 功能对比表 */}
         <div className="mb-24">
-          <h2 className="text-3xl font-bold text-center text-[var(--glass-text-primary)] mb-12">
+          <h2 className="text-3xl font-bold text-center text-white mb-12">
             功能对比
           </h2>
-          <div className="bg-[var(--glass-bg-surface)] rounded-2xl border border-[var(--glass-stroke-soft)] overflow-hidden shadow-sm">
+          <div className="bg-[var(--wuhu-bg-card)] rounded-2xl border border-[var(--wuhu-neon-purple)]/30 overflow-hidden shadow-[0_0_30px_rgba(167,87,255,0.1)]">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="bg-[var(--glass-bg-surface-strong)] border-b border-[var(--glass-stroke-soft)]">
-                    <th className="text-left py-5 px-6 font-semibold text-[var(--glass-text-secondary)]">功能</th>
+                  <tr className="bg-black/30 border-b border-[var(--wuhu-neon-purple)]/20">
+                    <th className="text-left py-5 px-6 font-semibold text-white/70">功能</th>
                     {activePlans.map(plan => (
-                      <th key={plan.id} className="py-5 px-6 text-center font-semibold text-[var(--glass-text-primary)]">
+                      <th key={plan.id} className="py-5 px-6 text-center font-semibold text-white">
                         {plan.name}
                       </th>
                     ))}
@@ -476,16 +474,16 @@ export default function PricingPage() {
                 </thead>
                 <tbody>
                   {COMPARISON_FEATURES.map((feature, idx) => (
-                    <tr key={feature.key} className={`border-b border-[var(--glass-stroke-soft)] ${
-                      idx % 2 === 0 ? 'bg-transparent' : 'bg-[var(--glass-bg-canvas)]/30'
+                    <tr key={feature.key} className={`border-b border-[var(--wuhu-neon-purple)]/20 ${
+                      idx % 2 === 0 ? 'bg-transparent' : 'bg-white/5'
                     }`}>
-                      <td className="py-4 px-6 text-[var(--glass-text-secondary)] font-medium">
+                      <td className="py-4 px-6 text-white/70 font-medium">
                         {feature.label}
                       </td>
                       {activePlans.map(plan => {
                         const isEnterprise = plan.monthlyPrice < 0
                         return (
-                          <td key={plan.id} className="py-4 px-6 text-center text-[var(--glass-text-primary)]">
+                          <td key={plan.id} className="py-4 px-6 text-center text-white">
                             {feature.format(
                               plan[feature.key as keyof Plan] as number,
                               isEnterprise
@@ -496,42 +494,42 @@ export default function PricingPage() {
                     </tr>
                   ))}
                   {/* 额外功能行 */}
-                  <tr className="border-b border-[var(--glass-stroke-soft)]">
-                    <td className="py-4 px-6 text-[var(--glass-text-secondary)] font-medium">AI模型访问</td>
+                  <tr className="border-b border-[var(--wuhu-neon-purple)]/20">
+                    <td className="py-4 px-6 text-white/70 font-medium">AI模型访问</td>
                     {activePlans.map(plan => (
                       <td key={plan.id} className="py-4 px-6 text-center">
                         {plan.id === 'free' ? (
-                          <span className="text-[var(--glass-text-tertiary)]">基础模型</span>
+                          <span className="text-white/50">基础模型</span>
                         ) : plan.id === 'enterprise' ? (
-                          <span className="text-green-600 font-medium">全部模型 + 专属</span>
+                          <span className="text-green-400 font-medium">全部模型 + 专属</span>
                         ) : (
-                          <span className="text-green-600 font-medium">全部模型</span>
+                          <span className="text-green-400 font-medium">全部模型</span>
                         )}
                       </td>
                     ))}
                   </tr>
-                  <tr className="border-b border-[var(--glass-stroke-soft)]">
-                    <td className="py-4 px-6 text-[var(--glass-text-secondary)] font-medium">技术支持</td>
+                  <tr className="border-b border-[var(--wuhu-neon-purple)]/20">
+                    <td className="py-4 px-6 text-white/70 font-medium">技术支持</td>
                     {activePlans.map(plan => (
                       <td key={plan.id} className="py-4 px-6 text-center">
                         {plan.id === 'enterprise' ? (
-                          <span className="text-green-600 font-medium">专属客服</span>
+                          <span className="text-green-400 font-medium">专属客服</span>
                         ) : plan.id === 'free' ? (
-                          <span className="text-[var(--glass-text-tertiary)]">社区支持</span>
+                          <span className="text-white/50">社区支持</span>
                         ) : (
-                          <span>标准支持</span>
+                          <span className="text-white">标准支持</span>
                         )}
                       </td>
                     ))}
                   </tr>
                   <tr>
-                    <td className="py-4 px-6 text-[var(--glass-text-secondary)] font-medium">API访问</td>
+                    <td className="py-4 px-6 text-white/70 font-medium">API访问</td>
                     {activePlans.map(plan => (
                       <td key={plan.id} className="py-4 px-6 text-center">
                         {plan.id === 'enterprise' ? (
-                          <AppIcon name="check" className="w-5 h-5 text-green-600 inline" />
+                          <AppIcon name="check" className="w-5 h-5 text-green-400 inline" />
                         ) : (
-                          <AppIcon name="close" className="w-5 h-5 text-[var(--glass-text-tertiary)] inline" />
+                          <AppIcon name="close" className="w-5 h-5 text-white/30 inline" />
                         )}
                       </td>
                     ))}
@@ -544,29 +542,29 @@ export default function PricingPage() {
 
         {/* FAQ 区域 */}
         <div className="mb-16">
-          <h2 className="text-3xl font-bold text-center text-[var(--glass-text-primary)] mb-12">
+          <h2 className="text-3xl font-bold text-center text-white mb-12">
             常见问题
           </h2>
           <div className="max-w-3xl mx-auto space-y-4">
             {FAQ_DATA.map((item, index) => (
               <div
                 key={index}
-                className="bg-[var(--glass-bg-surface)] rounded-xl border border-[var(--glass-stroke-soft)] overflow-hidden transition-all duration-200 hover:shadow-md"
+                className="bg-[var(--wuhu-bg-card)] rounded-xl border border-[var(--wuhu-neon-purple)]/30 overflow-hidden transition-all duration-200 hover:shadow-[0_0_20px_rgba(167,87,255,0.15)]"
               >
                 <button
                   onClick={() => toggleFAQ(index)}
                   className="w-full flex items-center justify-between py-5 px-6 text-left"
                 >
-                  <span className="font-semibold text-[var(--glass-text-primary)] pr-4">
+                  <span className="font-semibold text-white pr-4">
                     {item.question}
                   </span>
                   <AppIcon
                     name={openFAQ === index ? 'chevronUp' : 'chevronDown'}
-                    className="w-5 h-5 text-[var(--glass-text-secondary)] flex-shrink-0 transition-transform duration-200"
+                    className="w-5 h-5 text-white/70 flex-shrink-0 transition-transform duration-200"
                   />
                 </button>
                 {openFAQ === index && (
-                  <div className="px-6 pb-5 text-[var(--glass-text-secondary)] leading-relaxed">
+                  <div className="px-6 pb-5 text-white/70 leading-relaxed">
                     {item.answer}
                   </div>
                 )}
@@ -577,9 +575,9 @@ export default function PricingPage() {
 
         {/* 底部说明 */}
         <div className="mt-16 text-center">
-          <p className="text-sm text-[var(--glass-text-tertiary)] mb-2">* 所有套餐均包含基础 AI 模型访问权限</p>
-          <p className="text-sm text-[var(--glass-text-tertiary)] mb-2">* 积分可用于图片生成、视频生成、文本处理等所有功能</p>
-          <p className="text-sm text-[var(--glass-text-tertiary)]">* 套餐积分每月重置，未使用积分不累积到下月</p>
+          <p className="text-sm text-white/50 mb-2">* 所有套餐均包含基础 AI 模型访问权限</p>
+          <p className="text-sm text-white/50 mb-2">* 积分可用于图片生成、视频生成、文本处理等所有功能</p>
+          <p className="text-sm text-white/50">* 套餐积分每月重置，未使用积分不累积到下月</p>
         </div>
               </div>
             </div>
