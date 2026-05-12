@@ -168,13 +168,13 @@ export default function RechargePage() {
   // 获取状态显示文本
   const getStatusText = (status: string) => {
     const statusMap: Record<string, { text: string; color: string }> = {
-      pending: { text: '待支付', color: 'text-yellow-600' },
-      paid: { text: '支付成功', color: 'text-green-600' },
-      failed: { text: '支付失败', color: 'text-red-600' },
-      cancelled: { text: '已取消', color: 'text-gray-500' },
-      expired: { text: '已过期', color: 'text-gray-500' },
+      pending: { text: '待支付', color: 'text-yellow-400' },
+      paid: { text: '支付成功', color: 'text-green-400' },
+      failed: { text: '支付失败', color: 'text-red-400' },
+      cancelled: { text: '已取消', color: 'text-white/50' },
+      expired: { text: '已过期', color: 'text-white/50' },
     }
-    return statusMap[status] || { text: status, color: 'text-gray-500' }
+    return statusMap[status] || { text: status, color: 'text-white/50' }
   }
 
   const getPaymentMethodText = (method: string) => {
@@ -396,15 +396,18 @@ export default function RechargePage() {
 
           {/* 右侧 - 订单记录 */}
           <div className="w-80 flex-shrink-0">
-            <div className="glass-surface-elevated rounded-2xl p-6 sticky top-8">
-              <h3 className="text-lg font-bold text-[var(--glass-text-primary)] mb-4">
+            <WuhuCard glow="purple" className="p-6 sticky top-8">
+              <h3 className="text-lg font-bold text-white mb-4">
                 最近充值记录
               </h3>
 
               {recentOrders.length === 0 ? (
-                <div className="text-center py-8">
-                  <AppIcon name="receipt" className="w-12 h-12 mx-auto mb-3 text-[var(--glass-text-tertiary)]" />
-                  <p className="text-sm text-[var(--glass-text-secondary)]">暂无充值记录</p>
+                <div className="py-8">
+                  <WuhuEmptyState
+                    title="暂无充值记录"
+                    description="完成首次充值后记录将显示在这里"
+                    expression="thinking"
+                  />
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -413,14 +416,14 @@ export default function RechargePage() {
                     return (
                       <div
                         key={order.orderId}
-                        className="bg-[var(--glass-bg-surface)] rounded-xl p-4"
+                        className="bg-white/5 rounded-xl p-4 border border-white/10"
                       >
                         <div className="flex justify-between items-start mb-2">
                           <div>
-                            <div className="font-medium text-[var(--glass-text-primary)]">
+                            <div className="font-medium text-white">
                               {order.credits} 积分
                             </div>
-                            <div className="text-xs text-[var(--glass-text-tertiary)]">
+                            <div className="text-xs text-white/40">
                               {order.orderNo}
                             </div>
                           </div>
@@ -429,10 +432,10 @@ export default function RechargePage() {
                           </div>
                         </div>
                         <div className="flex justify-between items-center text-sm">
-                          <span className="text-[var(--glass-text-secondary)]">
+                          <span className="text-white/60">
                             {getPaymentMethodText(order.paymentMethod)}
                           </span>
-                          <span className="font-bold text-[var(--glass-text-primary)]">
+                          <span className="font-bold text-white">
                             ¥{order.amount.toFixed(2)}
                           </span>
                         </div>
@@ -444,11 +447,11 @@ export default function RechargePage() {
 
               <button
                 onClick={() => router.push({ pathname: '/profile' })}
-                className="w-full mt-6 glass-btn-base glass-btn-tone-default py-3 text-sm"
+                className="w-full mt-6 py-3 rounded-xl border border-white/20 text-white/80 hover:text-white hover:border-white/40 transition-all text-sm font-medium"
               >
                 查看全部记录
               </button>
-            </div>
+            </WuhuCard>
           </div>
         </div>
       </main>
