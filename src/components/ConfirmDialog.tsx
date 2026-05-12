@@ -33,24 +33,24 @@ export default function ConfirmDialog({
   const typeStyles = {
     danger: {
       icon: (
-        <AppIcon name="alert" className="w-6 h-6 text-[var(--glass-tone-danger-fg)]" />
+        <AppIcon name="alert" className="w-6 h-6 text-red-400" />
       ),
-      confirmBg: 'glass-btn-tone-danger',
-      iconBg: 'bg-[var(--glass-tone-danger-bg)]'
+      confirmBg: 'bg-gradient-to-r from-red-500 to-red-600 text-white shadow-[0_0_15px_rgba(239,68,68,0.4)]',
+      iconBg: 'bg-gradient-to-br from-red-500/20 to-red-600/30 border border-red-500/40 shadow-[0_0_20px_rgba(239,68,68,0.3)]'
     },
     warning: {
       icon: (
-        <AppIcon name="alert" className="w-6 h-6 text-[var(--glass-tone-warning-fg)]" />
+        <AppIcon name="alert" className="w-6 h-6 text-orange-400" />
       ),
-      confirmBg: 'glass-btn-tone-warning',
-      iconBg: 'bg-[var(--glass-tone-warning-bg)]'
+      confirmBg: 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-[0_0_15px_rgba(249,115,22,0.4)]',
+      iconBg: 'bg-gradient-to-br from-orange-500/20 to-orange-600/30 border border-orange-500/40 shadow-[0_0_20px_rgba(249,115,22,0.3)]'
     },
     info: {
       icon: (
-        <AppIcon name="info" className="w-6 h-6 text-[var(--glass-tone-info-fg)]" />
+        <AppIcon name="info" className="w-6 h-6 text-[var(--wuhu-neon-cyan)]" />
       ),
-      confirmBg: 'glass-btn-tone-info',
-      iconBg: 'bg-[var(--glass-tone-info-bg)]'
+      confirmBg: 'bg-gradient-to-r from-[var(--wuhu-neon-cyan)] to-[var(--wuhu-neon-purple)] text-white shadow-[0_0_15px_rgba(100,255,255,0.4)]',
+      iconBg: 'bg-gradient-to-br from-[var(--wuhu-neon-cyan)]/20 to-[var(--wuhu-neon-purple)]/30 border border-[var(--wuhu-neon-cyan)]/40 shadow-[0_0_20px_rgba(100,255,255,0.3)]'
     }
   }
 
@@ -60,14 +60,14 @@ export default function ConfirmDialog({
     <>
       {/* 背景遮罩 */}
       <div
-        className="fixed inset-0 z-50 glass-overlay animate-fade-in"
+        className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm animate-fade-in"
         onClick={onCancel}
       />
 
       {/* 对话框 */}
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
         <div
-          className="glass-surface-modal max-w-md w-full p-6 pointer-events-auto animate-scale-in"
+          className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_40px_rgba(167,87,255,0.3)] rounded-2xl max-w-md w-full p-6 pointer-events-auto animate-scale-in"
           onClick={(e) => e.stopPropagation()}
         >
           {/* 图标 */}
@@ -76,12 +76,12 @@ export default function ConfirmDialog({
           </div>
 
           {/* 标题 */}
-          <h3 className="mb-2 text-xl font-semibold text-[var(--glass-text-primary)]">
+          <h3 className="mb-2 text-xl font-semibold text-white">
             {title}
           </h3>
 
           {/* 消息 */}
-          <p className="mb-6 text-[var(--glass-text-secondary)]">
+          <p className="mb-6 text-white/70">
             {message}
           </p>
 
@@ -89,13 +89,13 @@ export default function ConfirmDialog({
           <div className="flex gap-3">
             <button
               onClick={onCancel}
-              className="glass-btn-base glass-btn-secondary flex-1 px-4 py-2.5 font-medium rounded-xl"
+              className="border border-[var(--wuhu-neon-purple)]/30 text-white/70 hover:bg-[var(--wuhu-neon-purple)]/20 hover:text-white rounded-xl flex-1 px-4 py-2.5 font-medium"
             >
               {finalCancelText}
             </button>
             <button
               onClick={onConfirm}
-              className={`glass-btn-base flex-1 px-4 py-2.5 font-medium rounded-xl ${currentStyle.confirmBg}`}
+              className={`flex-1 px-4 py-2.5 font-medium rounded-xl ${currentStyle.confirmBg}`}
             >
               {finalConfirmText}
             </button>
