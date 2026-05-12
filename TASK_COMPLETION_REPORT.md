@@ -105,6 +105,13 @@
 - **修复**：修改测试用例的 previewText 为 `'你好世界，这是测试'`（10个字符）
 - **文件**：`tests/integration/api/contract/direct-submit-routes.test.ts`
 
+#### 3. 新增数据库基线脚本（解决P3005错误）
+**问题**：部署时运行 `npx prisma migrate deploy` 出现 P3005 错误（数据库 schema 不为空但无 migration 记录）
+- **场景**：数据库已有数据和表结构，但 `_prisma_migrations` 表不存在
+- **解决方案**：新增数据库基线脚本，自动标记现有迁移为已应用
+- **文件**：`scripts/migrations/baseline-existing-database.ts`
+- **使用方法**：`npx tsx scripts/migrations/baseline-existing-database.ts`
+
 ### 待处理问题（低优先级）
 以下为项目中已存在的测试失败，与本次修改无关，可后续安排时间处理：
 
