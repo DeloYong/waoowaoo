@@ -163,14 +163,14 @@ export default function HomePage() {
 
   if (status === 'loading' || !session) {
     return (
-      <div className="glass-page min-h-screen flex items-center justify-center">
-        <div className="text-[var(--glass-text-secondary)]">{tc('loading')}</div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-white/60">{tc('loading')}</div>
       </div>
     )
   }
 
   return (
-    <div className="glass-page min-h-screen">
+    <div className="min-h-screen">
       <Navbar />
 
       {/* 自定义呼吸动画 */}
@@ -204,17 +204,17 @@ export default function HomePage() {
         {/* ─── 取景器整体包裹：标题 + 输入框 ─── */}
         <div className="w-full relative p-5">
           {/* 四角校准线 */}
-          <span className="absolute top-0 left-0 w-5 h-5 border-t border-l border-[var(--glass-text-primary)] pointer-events-none z-10" style={{ animation: 'bracket-breathe 8s ease-in-out infinite' }} />
-          <span className="absolute top-0 right-0 w-5 h-5 border-t border-r border-[var(--glass-text-primary)] pointer-events-none z-10" style={{ animation: 'bracket-breathe 8s ease-in-out infinite' }} />
-          <span className="absolute bottom-0 left-0 w-5 h-5 border-b border-l border-[var(--glass-text-primary)] pointer-events-none z-10" style={{ animation: 'bracket-breathe 8s ease-in-out infinite' }} />
-          <span className="absolute bottom-0 right-0 w-5 h-5 border-b border-r border-[var(--glass-text-primary)] pointer-events-none z-10" style={{ animation: 'bracket-breathe 8s ease-in-out infinite' }} />
+          <span className="absolute top-0 left-0 w-5 h-5 border-t border-l border-[var(--wuhu-neon-purple)]/60 shadow-[0_0_8px_rgba(167,87,255,0.5)] pointer-events-none z-10" style={{ animation: 'bracket-breathe 8s ease-in-out infinite' }} />
+          <span className="absolute top-0 right-0 w-5 h-5 border-t border-r border-[var(--wuhu-neon-purple)]/60 shadow-[0_0_8px_rgba(167,87,255,0.5)] pointer-events-none z-10" style={{ animation: 'bracket-breathe 8s ease-in-out infinite' }} />
+          <span className="absolute bottom-0 left-0 w-5 h-5 border-b border-l border-[var(--wuhu-neon-purple)]/60 shadow-[0_0_8px_rgba(167,87,255,0.5)] pointer-events-none z-10" style={{ animation: 'bracket-breathe 8s ease-in-out infinite' }} />
+          <span className="absolute bottom-0 right-0 w-5 h-5 border-b border-r border-[var(--wuhu-neon-purple)]/60 shadow-[0_0_8px_rgba(167,87,255,0.5)] pointer-events-none z-10" style={{ animation: 'bracket-breathe 8s ease-in-out infinite' }} />
 
           {/* REC 录制指示灯 */}
           <span
             className="absolute top-2 right-7 flex items-center gap-1 z-10"
             style={{ animation: 'bracket-breathe 2s ease-in-out infinite' }}
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-red-500 shadow-[0_0_4px_rgba(239,68,68,0.7)]" />
+            <span className="w-1.5 h-1.5 rounded-full bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.8)]" />
             <span className="text-[8px] font-mono font-bold tracking-widest text-red-500/70">REC</span>
           </span>
 
@@ -226,7 +226,7 @@ export default function HomePage() {
             <div
               className="absolute -inset-10 rounded-[48px] pointer-events-none"
               style={{
-                background: 'radial-gradient(ellipse 80% 60% at 30% 40%, rgba(6, 182, 212, 0.4), transparent 70%)',
+                background: 'radial-gradient(ellipse 80% 60% at 30% 40%, rgba(100,255,255,0.4), transparent 70%)',
                 animation: 'breathe-drift-1 8s ease-in-out infinite',
                 filter: 'blur(30px)',
               }}
@@ -234,7 +234,7 @@ export default function HomePage() {
             <div
               className="absolute -inset-10 rounded-[48px] pointer-events-none"
               style={{
-                background: 'radial-gradient(ellipse 70% 80% at 70% 60%, rgba(139, 92, 246, 0.35), transparent 70%)',
+                background: 'radial-gradient(ellipse 70% 80% at 70% 60%, rgba(167,87,255,0.35), transparent 70%)',
                 animation: 'breathe-drift-2 10s ease-in-out infinite',
                 filter: 'blur(35px)',
               }}
@@ -242,7 +242,7 @@ export default function HomePage() {
             <div
               className="absolute -inset-12 rounded-[56px] pointer-events-none"
               style={{
-                background: 'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(59, 130, 246, 0.3), transparent 70%)',
+                background: 'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(255,100,200,0.3), transparent 70%)',
                 animation: 'breathe-drift-3 12s ease-in-out infinite',
                 filter: 'blur(40px)',
               }}
@@ -272,7 +272,7 @@ export default function HomePage() {
                 <button
                   onClick={() => void handleCreate()}
                   disabled={!inputValue.trim() || createLoading}
-                  className="glass-btn-base glass-btn-primary h-10 flex-shrink-0 px-5 text-sm disabled:opacity-50"
+                  className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(167,87,255,0.5)] hover:shadow-[0_0_25px_rgba(255,100,200,0.6)] h-10 flex-shrink-0 px-5 text-sm disabled:opacity-50 transition-all duration-300 rounded-lg font-medium"
                 >
                   {createLoading ? tc('loading') : t('startCreation')}
                   <AppIcon name="arrowRight" className="w-4 h-4" />
@@ -282,13 +282,13 @@ export default function HomePage() {
                 <button
                   onClick={() => setAiWriteOpen(true)}
                   disabled={createLoading}
-                  className="glass-btn-base flex h-10 flex-shrink-0 items-center gap-1.5 border border-[var(--glass-stroke-strong)] px-3 text-sm transition-all hover:border-[var(--glass-tone-info-fg)]/40"
+                  className="flex h-10 flex-shrink-0 items-center gap-1.5 border border-[var(--wuhu-neon-purple)]/40 px-3 text-sm transition-all hover:border-[var(--wuhu-neon-pink)] hover:shadow-[0_0_15px_rgba(255,100,200,0.3)] rounded-lg bg-transparent"
                 >
-                  <AppIcon name="sparkles" className="w-4 h-4 text-[#7c3aed]" />
+                  <AppIcon name="sparkles" className="w-4 h-4 text-[var(--wuhu-neon-purple)]" />
                   <span
                     className="font-medium"
                     style={{
-                      background: 'linear-gradient(135deg, #3b82f6, #7c3aed)',
+                      background: 'linear-gradient(135deg, var(--wuhu-neon-cyan), var(--wuhu-neon-purple))',
                       WebkitBackgroundClip: 'text',
                       WebkitTextFillColor: 'transparent',
                     }}
@@ -298,7 +298,7 @@ export default function HomePage() {
                 </button>
               )}
               footer={createError ? (
-                <p className="rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-600">
+                <p className="rounded-xl bg-[var(--wuhu-neon-orange)]/10 border border-[var(--wuhu-neon-orange)]/40 px-4 py-3 text-sm text-[var(--wuhu-neon-orange)]">
                   {createError}
                 </p>
               ) : null}
@@ -318,10 +318,10 @@ export default function HomePage() {
       {/* 最近项目 */}
       <section className="px-4 sm:px-6 lg:px-10 pb-8 max-w-[1400px] mx-auto w-full">
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-sm font-semibold text-[var(--glass-text-secondary)]">{t('recentProjects')}</h2>
+          <h2 className="text-sm font-semibold text-white/60">{t('recentProjects')}</h2>
           <Link
             href={{ pathname: '/workspace' }}
-            className="text-xs text-[var(--glass-tone-info-fg)] hover:underline font-medium"
+            className="text-xs text-[var(--wuhu-neon-cyan)] hover:text-[var(--wuhu-neon-pink)] hover:underline font-medium transition-colors"
           >
             {t('viewAll')}
           </Link>
@@ -330,19 +330,19 @@ export default function HomePage() {
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
             {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="glass-surface p-5 animate-pulse">
-                <div className="h-4 bg-[var(--glass-bg-muted)] rounded mb-3" />
-                <div className="h-3 bg-[var(--glass-bg-muted)] rounded mb-2" />
-                <div className="h-3 bg-[var(--glass-bg-muted)] rounded w-2/3" />
+              <div key={i} className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/20 p-5 animate-pulse rounded-xl">
+                <div className="h-4 bg-white/10 rounded mb-3" />
+                <div className="h-3 bg-white/10 rounded mb-2" />
+                <div className="h-3 bg-white/10 rounded w-2/3" />
               </div>
             ))}
           </div>
         ) : projects.length === 0 ? (
           <div className="text-center py-12">
-            <div className="w-12 h-12 bg-[var(--glass-bg-muted)] rounded-xl flex items-center justify-center mx-auto mb-3">
-              <AppIcon name="folderCards" className="w-6 h-6 text-[var(--glass-text-tertiary)]" />
+            <div className="w-12 h-12 bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 rounded-xl flex items-center justify-center mx-auto mb-3">
+              <AppIcon name="folderCards" className="w-6 h-6 text-white/40" />
             </div>
-            <p className="text-sm text-[var(--glass-text-tertiary)]">{t('noProjects')}</p>
+            <p className="text-sm text-white/40">{t('noProjects')}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
@@ -350,17 +350,17 @@ export default function HomePage() {
               <Link
                 key={project.id}
                 href={{ pathname: `/workspace/${project.id}` }}
-                className="glass-surface cursor-pointer group hover:border-[var(--glass-tone-info-fg)]/40 transition-all duration-300 overflow-hidden relative block"
+                className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/20 cursor-pointer group hover:border-[var(--wuhu-neon-pink)] hover:shadow-[0_0_20px_rgba(255,100,200,0.3)] transition-all duration-300 overflow-hidden relative block rounded-xl"
               >
-                <div className="absolute inset-0 rounded-[inherit] bg-gradient-to-br from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                <div className="absolute inset-0 rounded-[inherit] bg-gradient-to-br from-[var(--wuhu-neon-purple)]/10 to-[var(--wuhu-neon-pink)]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                 <div className="p-5 relative z-10">
-                  <h3 className="text-sm font-bold text-[var(--glass-text-primary)] mb-2 group-hover:text-[var(--glass-tone-info-fg)] transition-colors line-clamp-1">
+                  <h3 className="text-sm font-bold text-white mb-2 group-hover:text-[var(--wuhu-neon-cyan)] transition-colors line-clamp-1">
                     {project.name}
                   </h3>
                   {(project.description || project.stats?.firstEpisodePreview) && (
                     <div className="flex items-start gap-2 mb-3">
-                      <AppIcon name="fileText" className="w-3.5 h-3.5 text-[var(--glass-text-tertiary)] mt-0.5 flex-shrink-0" />
-                      <p className="text-xs text-[var(--glass-text-secondary)] line-clamp-2 leading-relaxed">
+                      <AppIcon name="fileText" className="w-3.5 h-3.5 text-white/40 mt-0.5 flex-shrink-0" />
+                      <p className="text-xs text-white/60 line-clamp-2 leading-relaxed">
                         {project.description || project.stats?.firstEpisodePreview}
                       </p>
                     </div>
@@ -369,7 +369,7 @@ export default function HomePage() {
                     <div className="flex items-center gap-2 mb-3">
                       <IconGradientDefs className="w-0 h-0 absolute" aria-hidden="true" />
                       <AppIcon name="statsBarGradient" className="w-4 h-4 flex-shrink-0" />
-                      <div className="flex items-center gap-3 text-sm font-semibold bg-gradient-to-r from-blue-500 to-cyan-500 bg-clip-text text-transparent">
+                      <div className="flex items-center gap-3 text-sm font-semibold bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-cyan)] bg-clip-text text-transparent">
                         {project.stats.episodes > 0 && (
                           <span className="flex items-center gap-1">
                             <AppIcon name="statsEpisodeGradient" className="w-3.5 h-3.5" />
@@ -391,7 +391,7 @@ export default function HomePage() {
                       </div>
                     </div>
                   )}
-                  <div className="flex items-center gap-1 text-[10px] text-[var(--glass-text-tertiary)]">
+                  <div className="flex items-center gap-1 text-[10px] text-white/40">
                     <AppIcon name="clock" className="w-3 h-3" />
                     {formatTimeAgo(project.updatedAt)}
                   </div>
