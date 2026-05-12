@@ -6,7 +6,10 @@ import { useRouter } from '@/i18n/navigation'
 import Navbar from '@/components/Navbar'
 import { AppIcon } from '@/components/ui/icons'
 import { toast } from 'react-hot-toast'
-import { getCreditBalance } from '@/lib/credit-billing/service'
+import WuhuMascot from '@/components/WuhuMascot'
+import { WuhuCard } from '@/components/ui/wuhu-card'
+import { WuhuButton } from '@/components/ui/wuhu-button'
+import WuhuEmptyState from '@/components/WuhuEmptyState'
 
 interface RechargePackage {
   id: string
@@ -192,7 +195,7 @@ export default function RechargePage() {
   }
 
   return (
-    <div className="glass-page min-h-screen">
+    <div className="wuhu-page-bg min-h-screen">
       <Navbar />
 
       <main className="max-w-[1200px] mx-auto px-6 py-8">
