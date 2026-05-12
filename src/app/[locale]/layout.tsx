@@ -64,7 +64,7 @@ export default async function LocaleLayout({
                 )}
             </head>
             <body
-                className={`${GeistSans.variable} ${GeistMono.variable} antialiased`}
+                className={`${GeistSans.variable} ${GeistMono.variable} antialiased wuhu-theme wuhu-page-bg min-h-screen`}
             >
                 <NextIntlClientProvider messages={messages}>
                     <Providers>
