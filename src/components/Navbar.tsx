@@ -1,11 +1,11 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Image from 'next/image'
 import { useSession } from 'next-auth/react'
 import { useTranslations } from 'next-intl'
 import LanguageSwitcher from './LanguageSwitcher'
 import { AppIcon } from '@/components/ui/icons'
+import WuhuLogo from './WuhuLogo'
 import UpdateNoticeModal from './UpdateNoticeModal'
 import { useGithubReleaseUpdate } from '@/hooks/common/useGithubReleaseUpdate'
 import { Link } from '@/i18n/navigation'
@@ -91,13 +91,7 @@ export default function Navbar() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-2">
               <Link href={session ? buildAuthenticatedHomeTarget() : { pathname: '/' }} className="group">
-                <Image
-                  src="/logo-small.png?v=1"
-                  alt={tc('appName')}
-                  width={80}
-                  height={80}
-                  className="object-contain transition-transform group-hover:scale-110"
-                />
+                <WuhuLogo size="md" animated={true} />
               </Link>
               <button
                 type="button"
