@@ -652,3 +652,50 @@ body {
 .wuhu-animate-rainbow {
   animation: wuhu-rainbow-glow 4s linear infinite;
 }
+
+/* ========================================
+   Wuhu Recharge Page Specific Styles
+   ======================================== */
+
+/* Neon number display for balance and price */
+.wuhu-neon-number {
+  background: var(--wuhu-gradient-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 20px rgba(167, 87, 255, 0.5);
+}
+
+/* Popular tag glow effect */
+.wuhu-tag-popular {
+  background: linear-gradient(135deg, #f97316, #ef4444);
+  box-shadow: 0 0 15px rgba(249, 115, 22, 0.5);
+}
+
+/* Selected package pulse animation */
+.wuhu-package-selected {
+  animation: wuhu-neon-pulse 2s ease-in-out infinite;
+}
+
+/* Dark page background for recharge */
+.wuhu-page-bg {
+  background: linear-gradient(
+    135deg,
+    oklch(0.12 0.05 280) 0%,
+    oklch(0.15 0.04 290) 50%,
+    oklch(0.13 0.05 300) 100%
+  );
+}
+
+/* Glow border for payment method selection */
+.wuhu-payment-alipay {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+  background: rgba(59, 130, 246, 0.1) !important;
+}
+
+.wuhu-payment-wechat {
+  border-color: #22c55e !important;
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.4);
+  background: rgba(34, 197, 94, 0.1) !important;
+}
