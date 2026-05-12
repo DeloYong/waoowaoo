@@ -43,21 +43,21 @@ export default function SignIn() {
   }
 
   return (
-    <div className="glass-page min-h-screen">
+    <div className="wuhu-page-bg min-h-screen">
       <Navbar />
       <div className="flex items-center justify-center px-4 py-12">
         <div className="max-w-md w-full">
-          <div className="glass-surface-modal p-8">
+          <div className="bg-[var(--wuhu-bg-card)]/90 border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_40px_rgba(167,87,255,0.2)] rounded-2xl p-8">
             <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-[var(--glass-text-primary)] mb-2">
+              <h1 className="text-3xl font-bold text-white mb-2">
                 {t('welcomeBack')}
               </h1>
-              <p className="text-[var(--glass-text-secondary)]">{t('loginTo')}</p>
+              <p className="text-white/70">{t('loginTo')}</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label htmlFor="username" className="glass-field-label block mb-2">
+                <label htmlFor="username" className="text-white/80 block mb-2">
                   {t('phoneNumber')}
                 </label>
                 <input
@@ -68,13 +68,13 @@ export default function SignIn() {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   required
-                  className="glass-input-base w-full px-4 py-3"
+                  className="bg-[var(--wuhu-bg-surface)] border border-[var(--wuhu-neon-purple)]/30 focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_20px_rgba(255,100,200,0.3)] text-white placeholder:text-white/40 rounded-lg w-full px-4 py-3 outline-none transition-all duration-300"
                   placeholder={t('phoneNumberPlaceholder')}
                 />
               </div>
 
               <div>
-                <label htmlFor="password" className="glass-field-label block mb-2">
+                <label htmlFor="password" className="text-white/80 block mb-2">
                   {t('password')}
                 </label>
                 <input
@@ -85,13 +85,13 @@ export default function SignIn() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="glass-input-base w-full px-4 py-3"
+                  className="bg-[var(--wuhu-bg-surface)] border border-[var(--wuhu-neon-purple)]/30 focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_20px_rgba(255,100,200,0.3)] text-white placeholder:text-white/40 rounded-lg w-full px-4 py-3 outline-none transition-all duration-300"
                   placeholder={t('passwordPlaceholder')}
                 />
               </div>
 
               {error && (
-                <div className="bg-[var(--glass-tone-danger-bg)] border border-[color:color-mix(in_srgb,var(--glass-tone-danger-fg)_22%,transparent)] text-[var(--glass-tone-danger-fg)] px-4 py-3 rounded-lg text-sm">
+                <div className="bg-red-500/20 border border-red-500/50 text-red-300 px-4 py-3 rounded-lg text-sm">
                   {error}
                 </div>
               )}
@@ -99,23 +99,23 @@ export default function SignIn() {
               <button
                 type="submit"
                 disabled={loading}
-                className="glass-btn-base glass-btn-primary w-full py-3 px-4 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] shadow-[0_0_20px_rgba(167,87,255,0.4)] hover:shadow-[0_0_30px_rgba(255,100,200,0.5)] text-white rounded-lg w-full py-3 px-4 font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
               >
                 {loading ? t('loginButtonLoading') : t('loginButton')}
               </button>
             </form>
 
             <div className="mt-6 text-center">
-              <p className="text-[var(--glass-text-secondary)]">
+              <p className="text-white/70">
                 {t('noAccount')}{" "}
-                <Link href={{ pathname: '/auth/signup' }} className="text-[var(--glass-tone-info-fg)] hover:underline font-medium">
+                <Link href={{ pathname: '/auth/signup' }} className="text-[var(--wuhu-neon-cyan)] hover:text-[var(--wuhu-neon-pink)] hover:underline font-medium transition-colors duration-300">
                   {t('signupNow')}
                 </Link>
               </p>
             </div>
 
             <div className="mt-6 text-center">
-              <Link href={{ pathname: '/' }} className="text-[var(--glass-text-tertiary)] hover:text-[var(--glass-text-secondary)] text-sm">
+              <Link href={{ pathname: '/' }} className="text-white/50 hover:text-white/70 text-sm transition-colors duration-300">
                 {t('backToHome')}
               </Link>
             </div>

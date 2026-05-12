@@ -77,21 +77,21 @@ export default function SignUp() {
   }
 
   return (
-    <div className="glass-page min-h-screen">
+    <div className="wuhu-page-bg min-h-screen">
       <Navbar />
       <div className="flex items-center justify-center px-4 py-12">
         <div className="max-w-md w-full">
-          <div className="glass-surface-modal p-8">
+          <div className="bg-[var(--wuhu-bg-card)]/90 border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_40px_rgba(167,87,255,0.2)] rounded-2xl p-8">
             <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-[var(--glass-text-primary)] mb-2">
+              <h1 className="text-3xl font-bold text-white mb-2">
                 {t('createAccount')}
               </h1>
-              <p className="text-[var(--glass-text-secondary)]">{t('joinPlatform')}</p>
+              <p className="text-white/70">{t('joinPlatform')}</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label htmlFor="name" className="glass-field-label block mb-2">
+                <label htmlFor="name" className="text-white/80 block mb-2">
                   {t('phoneNumber')}
                 </label>
                 <input
@@ -102,13 +102,13 @@ export default function SignUp() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
-                  className="glass-input-base w-full px-4 py-3"
+                  className="bg-[var(--wuhu-bg-surface)] border border-[var(--wuhu-neon-purple)]/30 focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_20px_rgba(255,100,200,0.3)] text-white placeholder:text-white/40 rounded-lg w-full px-4 py-3 outline-none transition-all duration-300"
                   placeholder={t('phoneNumberPlaceholder')}
                 />
               </div>
 
               <div>
-                <label htmlFor="password" className="glass-field-label block mb-2">
+                <label htmlFor="password" className="text-white/80 block mb-2">
                   {t('password')}
                 </label>
                 <input
@@ -119,14 +119,14 @@ export default function SignUp() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="glass-input-base w-full px-4 py-3"
+                  className="bg-[var(--wuhu-bg-surface)] border border-[var(--wuhu-neon-purple)]/30 focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_20px_rgba(255,100,200,0.3)] text-white placeholder:text-white/40 rounded-lg w-full px-4 py-3 outline-none transition-all duration-300"
                   placeholder={t('passwordMinPlaceholder')}
                 />
                 <PasswordStrengthIndicator password={password} />
               </div>
 
               <div>
-                <label htmlFor="confirmPassword" className="glass-field-label block mb-2">
+                <label htmlFor="confirmPassword" className="text-white/80 block mb-2">
                   {t('confirmPassword')}
                 </label>
                 <input
@@ -137,13 +137,13 @@ export default function SignUp() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
-                  className="glass-input-base w-full px-4 py-3"
+                  className="bg-[var(--wuhu-bg-surface)] border border-[var(--wuhu-neon-purple)]/30 focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_20px_rgba(255,100,200,0.3)] text-white placeholder:text-white/40 rounded-lg w-full px-4 py-3 outline-none transition-all duration-300"
                   placeholder={t('confirmPasswordPlaceholder')}
                 />
               </div>
 
               <div>
-                <label htmlFor="inviteCode" className="glass-field-label block mb-2">
+                <label htmlFor="inviteCode" className="text-white/80 block mb-2">
                   邀请码（选填）
                 </label>
                 <input
@@ -152,25 +152,25 @@ export default function SignUp() {
                   type="text"
                   value={inviteCode}
                   onChange={(e) => setInviteCode(e.target.value.toUpperCase())}
-                  className="glass-input-base w-full px-4 py-3"
+                  className="bg-[var(--wuhu-bg-surface)] border border-[var(--wuhu-neon-purple)]/30 focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_20px_rgba(255,100,200,0.3)] text-white placeholder:text-white/40 rounded-lg w-full px-4 py-3 outline-none transition-all duration-300"
                   placeholder="请输入6位邀请码"
                   maxLength={6}
                 />
                 {inviteCode && (
-                  <p className="mt-1 text-xs text-[var(--glass-text-tertiary)]">
+                  <p className="mt-1 text-xs text-white/50">
                     邀请码: {inviteCode}
                   </p>
                 )}
               </div>
 
               {error && (
-                <div className="bg-[var(--glass-tone-danger-bg)] border border-[color:color-mix(in_srgb,var(--glass-tone-danger-fg)_22%,transparent)] text-[var(--glass-tone-danger-fg)] px-4 py-3 rounded-lg text-sm">
+                <div className="bg-red-500/20 border border-red-500/50 text-red-300 px-4 py-3 rounded-lg text-sm">
                   {error}
                 </div>
               )}
 
               {success && (
-                <div className="bg-[var(--glass-tone-success-bg)] border border-[color:color-mix(in_srgb,var(--glass-tone-success-fg)_22%,transparent)] text-[var(--glass-tone-success-fg)] px-4 py-3 rounded-lg text-sm">
+                <div className="bg-green-500/20 border border-green-500/50 text-green-300 px-4 py-3 rounded-lg text-sm">
                   {success}
                 </div>
               )}
@@ -178,23 +178,23 @@ export default function SignUp() {
               <button
                 type="submit"
                 disabled={loading}
-                className="glass-btn-base glass-btn-primary w-full py-3 px-4 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] shadow-[0_0_20px_rgba(167,87,255,0.4)] hover:shadow-[0_0_30px_rgba(255,100,200,0.5)] text-white rounded-lg w-full py-3 px-4 font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
               >
                 {loading ? t('signupButtonLoading') : t('signupButton')}
               </button>
             </form>
 
             <div className="mt-6 text-center">
-              <p className="text-[var(--glass-text-secondary)]">
+              <p className="text-white/70">
                 {t('hasAccount')}{" "}
-                <Link href={{ pathname: '/auth/signin' }} className="text-[var(--glass-tone-info-fg)] hover:underline font-medium">
+                <Link href={{ pathname: '/auth/signin' }} className="text-[var(--wuhu-neon-cyan)] hover:text-[var(--wuhu-neon-pink)] hover:underline font-medium transition-colors duration-300">
                   {t('signinNow')}
                 </Link>
               </p>
             </div>
 
             <div className="mt-6 text-center">
-              <Link href={{ pathname: '/' }} className="text-[var(--glass-text-tertiary)] hover:text-[var(--glass-text-secondary)] text-sm">
+              <Link href={{ pathname: '/' }} className="text-white/50 hover:text-white/70 text-sm transition-colors duration-300">
                 {t('backToHome')}
               </Link>
             </div>
