@@ -99,6 +99,76 @@
 - **修复**：修改测试使用 `some-other-tts-voice-id`，这是一个既不匹配ark也不匹配bailian格式的音色ID
 - **文件**：`tests/integration/api/specific/voice-generate-default-audio-model.test.ts`
 
+---
+
+## 第五部分：支付网关集成 (2026-05-12)
+
+### 功能概览
+完整实现SaaS平台充值支付系统，包含数据库设计、支付服务、API接口、前端页面全链路。
+
+### 数据库模型
+**PaymentOrder 表**：支付订单管理
+- 核心字段：`orderNo`、`amount`、`currency`、`credits`、`status`、`paymentMethod`、`paymentChannel`
+- 状态流转：`pending` → `paid` / `failed` / `cancelled` / `expired` / `refunded`
+- 索引：`userId`、`orderNo`、`status`、`createdAt`
+
+**RechargePackage 表**：充值套餐配置
+- 核心字段：`name`、`credits`、`price`、`originalPrice`、`bonusCredits`、`isPopular`、`isActive`
+- 预置5档套餐：基础版(¥9.9)、标准版(¥49)、专业版(¥99)、企业版(¥299)、旗舰版(¥999)
+
+### 后端服务 (`src/lib/payment/`)
+| 模块 | 功能 |
+|------|------|
+| `types.ts` | PaymentStatus/PaymentMethod/PaymentChannel 类型定义，CreateOrderParams 接口 |
+| `service.ts` | 订单创建、状态查询、支付成功/失败处理、取消订单、套餐查询、退款处理 |
+| `index.ts` | 统一导出入口 |
+
+**核心业务逻辑**：
+1. 支付成功自动调用 `grantCredits` 发放积分
+2. 订单号生成规则：`PAY + timestamp + random(4)`
+3. 支持按用户分页查询历史订单
+4. 过期订单自动清理机制
+
+### API 路由
+| 路由 | 方法 | 功能 |
+|------|------|------|
+| `/api/payment/orders` | GET | 查询用户订单列表 |
+| `/api/payment/orders` | POST | 创建支付订单 |
+| `/api/payment/orders/[orderId]` | GET | 查询订单状态 |
+| `/api/payment/orders/[orderId]` | DELETE | 取消订单 |
+| `/api/payment/callback` | GET/POST | 支付渠道异步回调处理 |
+| `/api/payment/mock` | GET | 开发环境模拟支付页面 |
+| `/api/payment/packages` | GET | 获取可用充值套餐 |
+| `/api/payment/packages` | POST | 管理员创建套餐 |
+
+### 前端页面
+**充值页面** (`/recharge`)
+- 套餐网格展示，支持 Popular 标签高亮
+- 支付宝/微信支付方式选择
+- 实时订单状态轮询
+- 最近订单历史侧边栏
+
+**导航集成**：Navbar 余额显示区域点击跳转充值页面
+
+### 契约与测试
+- ✅ 所有支付路由已加入 `ROUTE_CATALOG`
+- ✅ 分类：`category: 'user'`，`contractGroup: 'user-project-routes'`
+- ✅ 新增 `payment-routes.test.ts` 路由契约测试
+- ✅ 支付回调与模拟页面加入公开路由白名单
+
+### 部署验证
+- ✅ `npm run build` 构建通过
+- ✅ TypeScript 类型检查通过
+- ✅ 数据库迁移 SQL 已生成
+- ✅ 代码已推送至 `feature/saas-credits` 分支
+
+### 后续优化项（待实现）
+- 真实支付渠道SDK对接（支付宝/微信）
+- 支付回调签名验证
+- 退款功能完善
+- 管理后台订单管理界面
+- 支付成功邮件通知
+
 #### 2. voice-design 路由测试失败
 **问题**：`src/app/api/asset-hub/voice-design/route.ts` 测试返回 400 错误
 - **原因**：测试用例的 `previewText: '你好世界'` 只有4个字符，但验证函数要求至少5个字符
