@@ -111,11 +111,11 @@ async function main() {
       `, id, checksum, now, migrationName, now)
 
       console.log(`✅ ${migrationName}`)
-    } catch (error: any) {
-      if (error.code === 'ER_DUP_ENTRY') {
+    } catch (error) {
+      if ((error as { code?: string }).code === 'ER_DUP_ENTRY') {
         console.log(`ℹ️  ${migrationName} - 已存在，跳过`)
       } else {
-        console.error(`❌ ${migrationName} - 失败:`, error.message)
+        console.error(`❌ ${migrationName} - 失败:`, (error as Error).message)
         throw error
       }
     }

@@ -566,6 +566,9 @@ model User {
   preferences   UserPreference?
   subscription  UserSubscription?
 
+  // 支付订单
+  paymentOrders PaymentOrder[]
+
   // 资产中心
   globalAssetFolders GlobalAssetFolder[]
   globalCharacters   GlobalCharacter[]
@@ -1171,4 +1174,55 @@ model LegacyMediaRefBackup {
   @@index([runId])
   @@index([tableName, fieldName])
   @@map("legacy_media_refs_backup")
+}
+
+// ==================== 支付订单系统 ====================
+model PaymentOrder {
+  id                 String   @id @default(uuid())
+  userId             String
+  orderNo            String   @unique // 商户订单号
+  amount             Decimal  @db.Decimal(10, 2) // 支付金额（元）
+  currency           String   @default("CNY") // 货币类型
+  credits            Int // 充值积分数量
+  status             String   @default("pending") // pending/paid/failed/refunded/cancelled/expired
+  paymentMethod      String? // alipay/wechat/stripe
+  paymentChannel     String? // 支付渠道：app/pc/h5/qrcode
+  thirdPartyOrderId  String? @db.VarChar(256) // 第三方支付订单号
+  paidAt             DateTime? // 支付完成时间
+  expiredAt          DateTime // 订单过期时间
+  refundedAt         DateTime?
+  refundAmount       Decimal? @db.Decimal(10, 2)
+  metadata           Json? // 附加信息（支付参数、回调数据等）
+  failureReason      String? @db.Text // 失败原因
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([orderNo])
+  @@index([status])
+  @@index([thirdPartyOrderId])
+  @@index([createdAt])
+  @@map("payment_orders")
+}
+
+// ==================== 充值套餐配置 ====================
+model RechargePackage {
+  id                 String   @id @default(uuid())
+  name               String // 套餐名称
+  credits            Int // 积分数量
+  price              Decimal  @db.Decimal(10, 2) // 价格（元）
+  originalPrice      Decimal? @db.Decimal(10, 2) // 原价，用于显示折扣
+  bonusCredits       Int      @default(0) // 赠送积分
+  isPopular          Boolean  @default(false) // 是否热门推荐
+  isActive           Boolean  @default(true) // 是否启用
+  sortOrder          Int      @default(0) // 排序权重
+  description        String?  @db.Text // 套餐描述
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@index([isActive])
+  @@index([sortOrder])
+  @@map("recharge_packages")
 }

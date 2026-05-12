@@ -12,6 +12,7 @@ export const API_HANDLER_ALLOWLIST = new Set([
   'src/app/api/auth/[...nextauth]/route.ts',
   'src/app/api/files/[...path]/route.ts',
   'src/app/api/system/boot-id/route.ts',
+  'src/app/api/payment/mock/route.ts',
 ])
 
 export const PUBLIC_ROUTE_ALLOWLIST = new Set([
@@ -23,6 +24,8 @@ export const PUBLIC_ROUTE_ALLOWLIST = new Set([
   'src/app/api/files/[...path]/route.ts',
   'src/app/api/storage/sign/route.ts',
   'src/app/api/system/boot-id/route.ts',
+  'src/app/api/payment/callback/route.ts',
+  'src/app/api/payment/mock/route.ts',
 ])
 
 const AUTH_CALL_PATTERNS = [

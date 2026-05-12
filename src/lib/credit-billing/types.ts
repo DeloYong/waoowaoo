@@ -45,6 +45,7 @@ export type CreditTransactionType =
   | 'credit_freeze'
   | 'credit_deduct'
   | 'credit_unfreeze'
+  | 'recharge'
 
 export type GuardCheckResult =
   | {

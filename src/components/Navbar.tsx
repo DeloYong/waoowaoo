@@ -154,12 +154,17 @@ export default function Navbar() {
                   {/* 积分余额显示 */}
                   {creditsInfo && (
                     <div className="flex items-center gap-3">
-                      <div className="flex items-center gap-2 px-3 py-1.5 bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)]">
+                      <Link
+                        href={{ pathname: '/recharge' }}
+                        className="flex items-center gap-2 px-3 py-1.5 bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)] hover:border-[var(--glass-stroke-focus)] transition-colors"
+                        title="点击充值"
+                      >
                         <AppIcon name="coins" className="w-4 h-4 text-yellow-600" />
                         <span className="text-sm font-semibold text-[var(--glass-text-primary)]">
                           {creditsInfo.totalCredits}
                         </span>
-                      </div>
+                        <AppIcon name="plus" className="w-3.5 h-3.5 text-blue-500" />
+                      </Link>
                       {creditsInfo.planName && (
                         <div className="px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium">
                           {creditsInfo.planName}

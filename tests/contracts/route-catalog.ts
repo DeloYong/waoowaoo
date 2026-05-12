@@ -159,6 +159,11 @@ const ROUTE_FILES = [
   'src/app/api/projects/[projectId]/editor/status/route.ts',
   'src/app/api/projects/[projectId]/route.ts',
   'src/app/api/projects/route.ts',
+  'src/app/api/payment/callback/route.ts',
+  'src/app/api/payment/mock/route.ts',
+  'src/app/api/payment/orders/[orderId]/route.ts',
+  'src/app/api/payment/orders/route.ts',
+  'src/app/api/payment/packages/route.ts',
   'src/app/api/runs/[runId]/cancel/route.ts',
   'src/app/api/runs/[runId]/events/route.ts',
   'src/app/api/runs/[runId]/route.ts',
@@ -207,7 +212,7 @@ function resolveCategory(routeFile: string): RouteCategory {
   ) {
     return 'tasks'
   }
-  if (routeFile.startsWith('src/app/api/user/') || routeFile === 'src/app/api/user-preference/route.ts') return 'user'
+  if (routeFile.startsWith('src/app/api/user/') || routeFile.startsWith('src/app/api/payment/') || routeFile === 'src/app/api/user-preference/route.ts') return 'user'
   if (routeFile.startsWith('src/app/api/auth/')) return 'auth'
   if (routeFile.startsWith('src/app/api/system/')) return 'system'
   return 'infra'
@@ -259,7 +264,11 @@ function resolveContractGroup(routeFile: string): RouteContractGroup {
   ) {
     return 'task-infra-routes'
   }
-  if (routeFile.startsWith('src/app/api/projects/') || routeFile.startsWith('src/app/api/user/')) {
+  if (
+    routeFile.startsWith('src/app/api/projects/')
+    || routeFile.startsWith('src/app/api/user/')
+    || routeFile.startsWith('src/app/api/payment/')
+  ) {
     return 'user-project-routes'
   }
   if (routeFile.startsWith('src/app/api/auth/')) return 'auth-routes'
