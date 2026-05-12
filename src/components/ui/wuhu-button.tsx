@@ -1,7 +1,5 @@
 'use client'
 
-import { Button } from '@/components/ui/SharedComponents'
-
 interface WuhuButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'ghost' | 'gradient'
   glow?: boolean
@@ -15,7 +13,7 @@ export function WuhuButton({
   children,
   ...props
 }: WuhuButtonProps) {
-  const baseStyles = "transition-all duration-300 font-medium"
+  const baseStyles = "px-4 py-2 rounded-lg transition-all duration-300 font-medium"
 
   const variants = {
     primary: "bg-[var(--wuhu-neon-purple)] text-white hover:brightness-110",
@@ -27,7 +25,7 @@ export function WuhuButton({
   const glowStyles = glow && variant !== 'ghost' ? "wuhu-glow-purple wuhu-glow-hover" : ""
 
   return (
-    <Button
+    <button
       className={`
         ${baseStyles}
         ${variants[variant]}
@@ -37,6 +35,6 @@ export function WuhuButton({
       {...props}
     >
       {children}
-    </Button>
+    </button>
   )
 }
