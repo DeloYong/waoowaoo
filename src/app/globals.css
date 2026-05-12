@@ -35,6 +35,49 @@
   --ring: var(--wuhu-neon-purple);
 }
 
+/* ========================================
+   Wuhu Neon Glow Effects
+   ======================================== */
+
+/* Neon Border Glow */
+.wuhu-glow-purple {
+  box-shadow:
+    0 0 10px var(--wuhu-neon-purple),
+    0 0 20px rgba(167, 87, 255, 0.3),
+    inset 0 0 10px rgba(167, 87, 255, 0.1);
+}
+
+.wuhu-glow-pink {
+  box-shadow:
+    0 0 10px var(--wuhu-neon-pink),
+    0 0 20px rgba(255, 100, 200, 0.3),
+    inset 0 0 10px rgba(255, 100, 200, 0.1);
+}
+
+.wuhu-glow-cyan {
+  box-shadow:
+    0 0 10px var(--wuhu-neon-cyan),
+    0 0 20px rgba(100, 255, 255, 0.3),
+    inset 0 0 10px rgba(100, 255, 255, 0.1);
+}
+
+/* Hover Glow Enhancement */
+.wuhu-glow-hover:hover {
+  box-shadow:
+    0 0 20px var(--wuhu-neon-pink),
+    0 0 40px rgba(255, 100, 200, 0.3),
+    inset 0 0 15px rgba(167, 87, 255, 0.2);
+}
+
+/* Text Gradient */
+.wuhu-text-gradient {
+  background: var(--wuhu-gradient-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
 @import "../styles/ui-tokens-glass.css";
 @import "../styles/ui-semantic-glass.css";
 
