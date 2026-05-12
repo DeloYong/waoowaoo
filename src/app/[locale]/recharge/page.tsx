@@ -203,41 +203,54 @@ export default function RechargePage() {
           {/* 左侧 - 套餐选择 */}
           <div className="flex-1">
             <div className="mb-8">
-              <h1 className="text-3xl font-bold text-[var(--glass-text-primary)] mb-2">
+              <h1 className="text-3xl font-bold text-white mb-2">
                 积分充值
               </h1>
-              <p className="text-[var(--glass-text-secondary)]">
+              <p className="text-white/60">
                 选择适合您的充值套餐，立即获得积分用于AI创作
               </p>
             </div>
 
-            {/* 余额卡片 */}
-            <div className="glass-surface-elevated rounded-2xl p-6 mb-8">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-sm text-[var(--glass-text-secondary)] mb-1">当前可用积分</div>
-                  <div className="text-4xl font-bold text-[var(--glass-text-primary)]">
+            {/* 欢迎区域 - 带吉祥物 */}
+            <WuhuCard glow="purple" className="mb-8 overflow-hidden">
+              <div className="flex items-center gap-6 p-2">
+                {/* 吉祥物 */}
+                <div className="flex-shrink-0">
+                  <WuhuMascot expression="happy" size="md" animated={true} />
+                </div>
+
+                {/* 余额信息 */}
+                <div className="flex-1">
+                  <div className="text-lg font-bold text-white mb-1">
+                    芜湖起飞！🚀
+                  </div>
+                  <div className="text-sm text-white/60 mb-3">
+                    当前可用积分
+                  </div>
+                  <div className="text-5xl font-black wuhu-neon-number mb-4">
                     {balance.subscriptionCredits + balance.permanentCredits - balance.frozenCredits}
                   </div>
+                  <div className="flex gap-6">
+                    <div className="text-sm">
+                      <span className="text-white/60">套餐积分：</span>
+                      <span className="font-medium text-white">{balance.subscriptionCredits}</span>
+                    </div>
+                    <div className="text-sm">
+                      <span className="text-white/60">永久积分：</span>
+                      <span className="font-medium text-white">{balance.permanentCredits}</span>
+                    </div>
+                  </div>
                 </div>
+
+                {/* 查看明细按钮 */}
                 <button
                   onClick={() => router.push({ pathname: '/profile' })}
-                  className="glass-btn-base glass-btn-tone-default px-4 py-2 text-sm"
+                  className="flex-shrink-0 px-5 py-2.5 rounded-xl border border-white/20 text-white/80 hover:text-white hover:border-white/40 transition-all text-sm font-medium"
                 >
                   查看明细
                 </button>
               </div>
-              <div className="flex gap-4 mt-4 pt-4 border-t border-[var(--glass-stroke-base)]">
-                <div className="text-sm">
-                  <span className="text-[var(--glass-text-secondary)]">套餐积分：</span>
-                  <span className="font-medium text-[var(--glass-text-primary)]">{balance.subscriptionCredits}</span>
-                </div>
-                <div className="text-sm">
-                  <span className="text-[var(--glass-text-secondary)]">永久积分：</span>
-                  <span className="font-medium text-[var(--glass-text-primary)]">{balance.permanentCredits}</span>
-                </div>
-              </div>
-            </div>
+            </WuhuCard>
 
             {/* 套餐列表 */}
             {loading ? (
