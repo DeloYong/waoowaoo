@@ -25,13 +25,13 @@ export default function WuhuMascot({
   const expr = expressions[expression]
 
   const sizeMap = {
-    sm: { w: 60, h: 60, fontSize: '12px' },
-    md: { w: 100, h: 100, fontSize: '18px' },
-    lg: { w: 160, h: 160, fontSize: '28px' },
-    xl: { w: 240, h: 240, fontSize: '42px' }
+    sm: { w: 60, h: 60, fontSize: '10px', gap: '4px' },
+    md: { w: 100, h: 100, fontSize: '16px', gap: '8px' },
+    lg: { w: 160, h: 160, fontSize: '26px', gap: '12px' },
+    xl: { w: 240, h: 240, fontSize: '40px', gap: '16px' }
   }
 
-  const { w, h, fontSize } = sizeMap[size]
+  const { w, h, fontSize, gap } = sizeMap[size]
 
   return (
     <div
@@ -40,52 +40,69 @@ export default function WuhuMascot({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <svg width={w} height={h} viewBox="0 0 100 100">
-        {/* Body glow */}
-        <defs>
-          <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-            <feMerge>
-              <feMergeNode in="coloredBlur"/>
-              <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-          </filter>
-          <linearGradient id="bodyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="oklch(0.65 0.28 290)" />
-            <stop offset="50%" stopColor="oklch(0.7 0.32 350)" />
-            <stop offset="100%" stopColor="oklch(0.75 0.25 180)" />
-          </linearGradient>
-        </defs>
+      {/* Main body - neon gradient monster */}
+      <div
+        className="absolute rounded-full transition-transform duration-300"
+        style={{
+          width: w * 0.85,
+          height: h * 0.75,
+          left: w * 0.075,
+          top: h * 0.15,
+          background: 'linear-gradient(135deg, oklch(0.65 0.28 290), oklch(0.7 0.32 350), oklch(0.75 0.25 180))',
+          boxShadow: `
+            0 0 15px oklch(0.65 0.28 290),
+            0 0 30px oklch(0.7 0.32 350),
+            0 0 45px oklch(0.75 0.25 180)
+          `,
+          transform: isHovered ? 'scale(1.05)' : 'scale(1)',
+          transformOrigin: 'center'
+        }}
+      />
 
-        {/* Body - round monster shape */}
-        <ellipse
-          cx="50" cy="55" rx="35" ry="32"
-          fill="url(#bodyGradient)"
-          filter="url(#neonGlow)"
-          style={{ transform: isHovered ? 'scale(1.05)' : 'scale(1)', transformOrigin: 'center', transition: 'transform 0.3s ease' }}
-        />
+      {/* Left horn */}
+      <div
+        style={{
+          position: 'absolute',
+          left: w * 0.12,
+          top: h * 0.02,
+          width: 0,
+          height: 0,
+          borderLeft: `${w * 0.06}px solid transparent`,
+          borderRight: `${w * 0.06}px solid transparent`,
+          borderBottom: `${h * 0.15}px solid oklch(0.65 0.28 290)`,
+          filter: 'drop-shadow(0 0 8px oklch(0.65 0.28 290))'
+        }}
+      />
 
-        {/* Little horns */}
-        <path d="M30 28 L25 15 L35 25 Z" fill="oklch(0.65 0.28 290)" filter="url(#neonGlow)" />
-        <path d="M70 28 L75 15 L65 25 Z" fill="oklch(0.65 0.28 290)" filter="url(#neonGlow)" />
-
-        {/* Eyes and mouth are placed via text overlay for simplicity */}
-      </svg>
+      {/* Right horn */}
+      <div
+        style={{
+          position: 'absolute',
+          right: w * 0.12,
+          top: h * 0.02,
+          width: 0,
+          height: 0,
+          borderLeft: `${w * 0.06}px solid transparent`,
+          borderRight: `${w * 0.06}px solid transparent`,
+          borderBottom: `${h * 0.15}px solid oklch(0.65 0.28 290)`,
+          filter: 'drop-shadow(0 0 8px oklch(0.65 0.28 290))'
+        }}
+      />
 
       {/* Face overlay */}
       <div
         className="absolute inset-0 flex flex-col items-center justify-center text-white font-bold"
         style={{
           fontSize,
-          textShadow: '0 0 10px rgba(255,255,255,0.8)',
-          paddingTop: size === 'sm' ? '4px' : '8px'
+          textShadow: '0 0 10px rgba(255,255,255,0.9), 0 0 20px rgba(255,255,255,0.5)',
+          paddingTop: size === 'sm' ? '2px' : '4px'
         }}
       >
-        <div className="flex gap-2">
+        <div className="flex" style={{ gap }}>
           <span>{expr.leftEye}</span>
           <span>{expr.rightEye}</span>
         </div>
-        <div style={{ marginTop: '-2px' }}>{expr.mouth}</div>
+        <div style={{ marginTop: '-1px' }}>{expr.mouth}</div>
       </div>
     </div>
   )
