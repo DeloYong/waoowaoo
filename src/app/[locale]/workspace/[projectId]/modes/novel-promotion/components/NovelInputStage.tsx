@@ -159,10 +159,10 @@ export default function NovelInputStage({
       {/* 当前编辑剧集提示 - 顶部居中醒目显示 */}
       {episodeName && (
         <div className="text-center py-1">
-          <div className="text-lg font-semibold text-[var(--glass-text-primary)]">
+          <div className="text-lg font-semibold text-white">
             {t("storyInput.currentEditing", { name: episodeName })}
           </div>
-          <div className="text-sm text-[var(--glass-text-tertiary)] mt-1">{t("storyInput.editingTip")}</div>
+          <div className="text-sm text-white/50 mt-1">{t("storyInput.editingTip")}</div>
         </div>
       )}
 
@@ -203,7 +203,7 @@ export default function NovelInputStage({
             <button
               onClick={handleStartClick}
               disabled={!hasContent || isSubmittingTask || isSwitchingStage}
-              className="glass-btn-base glass-btn-primary h-10 flex-shrink-0 px-5 text-sm disabled:opacity-50 flex items-center gap-2"
+              className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] h-10 flex-shrink-0 px-5 text-sm disabled:opacity-50 flex items-center gap-2 rounded-xl text-white font-semibold shadow-[0_0_20px_rgba(167,87,255,0.4)] hover:shadow-[0_0_30px_rgba(255,100,200,0.5)] transition-all"
             >
               {isSwitchingStage ? (
                 <TaskStatusInline state={stageSwitchingState} className="text-white [&>span]:text-white [&_svg]:text-white" />
@@ -219,7 +219,7 @@ export default function NovelInputStage({
             <button
               onClick={() => setAiWriteOpen(true)}
               disabled={isSubmittingTask || isSwitchingStage}
-              className="glass-btn-base flex h-10 flex-shrink-0 items-center gap-1.5 border border-[var(--glass-stroke-strong)] px-3 text-sm transition-all hover:border-[var(--glass-tone-info-fg)]/40"
+              className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 flex h-10 flex-shrink-0 items-center gap-1.5 px-3 text-sm transition-all hover:border-[var(--wuhu-neon-pink)]/50 hover:shadow-[0_0_20px_rgba(167,87,255,0.2)] rounded-xl text-white"
             >
               <AppIcon name="sparkles" className="w-4 h-4 text-[#7c3aed]" />
               <span
@@ -245,14 +245,14 @@ export default function NovelInputStage({
       />
 
       {/* 资产库引导提示 */}
-      <div className="glass-surface p-4">
+      <div className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/20 shadow-[0_0_20px_rgba(167,87,255,0.1)] p-4 rounded-2xl">
         <div className="flex items-start gap-3">
-          <div className="w-10 h-10 glass-surface-soft rounded-xl flex items-center justify-center flex-shrink-0">
-            <AppIcon name="folderCards" className="w-5 h-5 text-[var(--glass-text-secondary)]" />
+          <div className="w-10 h-10 bg-[var(--wuhu-bg-surface)] rounded-xl flex items-center justify-center flex-shrink-0">
+            <AppIcon name="folderCards" className="w-5 h-5 text-[var(--wuhu-neon-purple)]" />
           </div>
           <div className="flex-1 min-w-0">
-            <div className="font-semibold text-[var(--glass-text-secondary)] mb-1">{t("storyInput.assetLibraryTip.title")}</div>
-            <p className="text-sm text-[var(--glass-text-tertiary)] leading-relaxed">
+            <div className="font-semibold text-white/80 mb-1">{t("storyInput.assetLibraryTip.title")}</div>
+            <p className="text-sm text-white/50 leading-relaxed">
               {t("storyInput.assetLibraryTip.description")}
             </p>
           </div>
@@ -261,24 +261,24 @@ export default function NovelInputStage({
 
       {/* 旁白开关 */}
       {onEnableNarrationChange && (
-        <div className="glass-surface p-6">
-          <div className="glass-surface-soft flex items-center justify-between p-4 rounded-xl">
+        <div className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/20 shadow-[0_0_20px_rgba(167,87,255,0.1)] p-6 rounded-2xl">
+          <div className="bg-[var(--wuhu-bg-surface)] flex items-center justify-between p-4 rounded-xl">
             <div className="flex items-center gap-3">
-              <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[var(--glass-tone-info-bg)] text-[var(--glass-tone-info-fg)] font-semibold text-sm">VO</span>
+              <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[var(--wuhu-neon-purple)]/20 text-[var(--wuhu-neon-purple)] font-semibold text-sm">VO</span>
               <div>
-                <div className="font-medium text-[var(--glass-text-primary)]">{t("storyInput.narration.title")}</div>
-                <div className="text-xs text-[var(--glass-text-tertiary)]">{t("storyInput.narration.description")}</div>
+                <div className="font-medium text-white">{t("storyInput.narration.title")}</div>
+                <div className="text-xs text-white/50">{t("storyInput.narration.description")}</div>
               </div>
             </div>
             <button
               onClick={() => onEnableNarrationChange(!enableNarration)}
               className={`relative w-14 h-8 rounded-full transition-colors ${enableNarration
-                ? 'bg-[var(--glass-accent-from)]'
-                : 'bg-[var(--glass-stroke-strong)]'
+                ? 'bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] shadow-[0_0_15px_rgba(255,100,200,0.5)]'
+                : 'bg-white/20'
                 }`}
             >
               <span
-                className={`absolute top-1 left-1 w-6 h-6 bg-[var(--glass-bg-surface)] rounded-full shadow-sm transition-transform ${enableNarration ? 'translate-x-6' : 'translate-x-0'
+                className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full shadow-sm transition-transform ${enableNarration ? 'translate-x-6' : 'translate-x-0'
                   }`}
               />
             </button>

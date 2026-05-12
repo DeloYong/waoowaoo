@@ -46,12 +46,12 @@ export function FolderSidebar({
 
     return (
         <div className="w-56 flex-shrink-0">
-            <div className="glass-surface p-4">
+            <div className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/20 rounded-xl p-4">
                 <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-sm font-medium text-[var(--glass-text-secondary)]">{t('folders')}</h3>
+                    <h3 className="text-sm font-medium text-white/70">{t('folders')}</h3>
                     <button
                         onClick={onCreateFolder}
-                        className="glass-btn-base glass-btn-primary h-6 w-6 rounded-full flex items-center justify-center"
+                        className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] h-6 w-6 rounded-full flex items-center justify-center text-white shadow-[0_0_10px_rgba(167,87,255,0.4)]"
                         title={t('newFolder')}
                     >
                         <PlusIcon className="w-4 h-4" />
@@ -62,9 +62,9 @@ export function FolderSidebar({
                     {/* 所有资产 */}
                     <button
                         onClick={() => onSelectFolder(null)}
-                        className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left text-sm transition-colors ${selectedFolderId === null
-                                ? 'bg-[var(--glass-tone-info-bg)] text-[var(--glass-tone-info-fg)]'
-                                : 'text-[var(--glass-text-secondary)] hover:bg-[var(--glass-bg-muted)]'
+                        className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left text-sm transition-all ${selectedFolderId === null
+                                ? 'bg-gradient-to-r from-[var(--wuhu-neon-purple)]/30 to-[var(--wuhu-neon-pink)]/30 text-white border-l-2 border-[var(--wuhu-neon-pink)] shadow-[0_0_15px_rgba(255,100,200,0.2)]'
+                                : 'text-white/70 hover:bg-[var(--wuhu-neon-purple)]/10 hover:text-white'
                             }`}
                     >
                         <FolderIcon className="w-4 h-4" />
@@ -75,9 +75,9 @@ export function FolderSidebar({
                     {folders.map((folder) => (
                         <div
                             key={folder.id}
-                            className={`group flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${selectedFolderId === folder.id
-                                    ? 'bg-[var(--glass-tone-info-bg)] text-[var(--glass-tone-info-fg)]'
-                                    : 'text-[var(--glass-text-secondary)] hover:bg-[var(--glass-bg-muted)]'
+                            className={`group flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${selectedFolderId === folder.id
+                                    ? 'bg-gradient-to-r from-[var(--wuhu-neon-purple)]/30 to-[var(--wuhu-neon-pink)]/30 text-white border-l-2 border-[var(--wuhu-neon-pink)] shadow-[0_0_15px_rgba(255,100,200,0.2)]'
+                                    : 'text-white/70 hover:bg-[var(--wuhu-neon-purple)]/10 hover:text-white'
                                 }`}
                         >
                             <button
@@ -95,7 +95,7 @@ export function FolderSidebar({
                                         e.stopPropagation()
                                         onEditFolder(folder)
                                     }}
-                                    className="glass-btn-base glass-btn-soft h-5 w-5 rounded flex items-center justify-center"
+                                    className="h-5 w-5 rounded flex items-center justify-center text-white/50 hover:text-white hover:bg-[var(--wuhu-neon-purple)]/20"
                                     title={t('editFolder')}
                                 >
                                     <PencilIcon className="w-3 h-3" />
@@ -105,7 +105,7 @@ export function FolderSidebar({
                                         e.stopPropagation()
                                         onDeleteFolder(folder.id)
                                     }}
-                                    className="glass-btn-base glass-btn-tone-danger h-5 w-5 rounded flex items-center justify-center"
+                                    className="h-5 w-5 rounded flex items-center justify-center text-white/50 hover:text-[var(--wuhu-neon-pink)] hover:bg-[var(--wuhu-neon-pink)]/20"
                                     title={t('deleteFolder')}
                                 >
                                     <TrashIcon className="w-3 h-3" />
@@ -115,7 +115,7 @@ export function FolderSidebar({
                     ))}
 
                     {folders.length === 0 && (
-                        <div className="text-xs text-[var(--glass-text-tertiary)] text-center py-4">
+                        <div className="text-xs text-white/40 text-center py-4">
                             {t('noFolders')}
                         </div>
                     )}

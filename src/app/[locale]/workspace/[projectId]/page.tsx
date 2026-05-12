@@ -278,10 +278,10 @@ export default function ProjectDetailPage() {
 
   if (isInitializing) {
     return (
-      <div className="glass-page min-h-screen">
+      <div className="bg-[var(--wuhu-bg-dark)] min-h-screen">
         <Navbar />
         <main className="flex items-center justify-center h-[calc(100vh-64px)]">
-          <div className="text-[var(--glass-text-secondary)]">{tc('loading')}</div>
+          <div className="text-white/70">{tc('loading')}</div>
         </main>
       </div>
     )
@@ -290,14 +290,14 @@ export default function ProjectDetailPage() {
   // Error状态
   if (error || !project) {
     return (
-      <div className="glass-page min-h-screen">
+      <div className="bg-[var(--wuhu-bg-dark)] min-h-screen">
         <Navbar />
         <main className="container mx-auto px-4 py-8">
-          <div className="glass-surface p-6 text-center">
-            <p className="text-[var(--glass-tone-danger-fg)] mb-4">{error || t('projectNotFound')}</p>
+          <div className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/20 shadow-[0_0_20px_rgba(167,87,255,0.15)] p-6 rounded-2xl text-center">
+            <p className="text-[var(--wuhu-neon-pink)] mb-4">{error || t('projectNotFound')}</p>
             <button
               onClick={() => router.push({ pathname: '/workspace' })}
-              className="glass-btn-base glass-btn-primary px-6 py-2"
+              className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] px-6 py-2 rounded-xl text-white font-semibold shadow-[0_0_20px_rgba(167,87,255,0.4)] hover:shadow-[0_0_30px_rgba(255,100,200,0.5)] transition-all"
             >
               {t('backToWorkspace')}
             </button>
@@ -308,7 +308,7 @@ export default function ProjectDetailPage() {
   }
 
   return (
-    <div className="glass-page min-h-screen flex flex-col">
+    <div className="bg-[var(--wuhu-bg-dark)] min-h-screen flex flex-col">
       <Navbar />
 
       {/* V3 UI: 浮动导航替代了旧的 Sidebar */}
@@ -355,11 +355,11 @@ export default function ProjectDetailPage() {
             />
           ) : (
             // 加载中
-            <div className="glass-surface p-8 text-center">
-              <div className="mx-auto mb-4 w-12 h-12 rounded-full flex items-center justify-center bg-[var(--glass-bg-muted)] text-[var(--glass-text-tertiary)]">
+            <div className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/20 shadow-[0_0_20px_rgba(167,87,255,0.15)] p-8 rounded-2xl text-center">
+              <div className="mx-auto mb-4 w-12 h-12 rounded-full flex items-center justify-center bg-[var(--wuhu-bg-surface)] text-white/50">
                 <TaskStatusInline state={initLoadingState} className="[&>span]:sr-only" />
               </div>
-              <h2 className="text-xl font-semibold text-[var(--glass-text-secondary)] mb-2">{tc('loading')}</h2>
+              <h2 className="text-xl font-semibold text-white/70 mb-2">{tc('loading')}</h2>
             </div>
           )}
         </div>

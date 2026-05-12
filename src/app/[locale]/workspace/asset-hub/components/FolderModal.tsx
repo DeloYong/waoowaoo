@@ -32,17 +32,17 @@ export function FolderModal({ folder, onClose, onSave }: FolderModalProps) {
     }
 
     return (
-        <div className="fixed inset-0 glass-overlay flex items-center justify-center z-50 p-4">
-            <div className="glass-surface-modal max-w-sm w-full">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_50px_rgba(167,87,255,0.35)] rounded-2xl max-w-sm w-full">
                 <div className="p-5">
                     {/* 标题 */}
                     <div className="flex items-center justify-between mb-5">
-                        <h3 className="text-lg font-semibold text-[var(--glass-text-primary)]">
+                        <h3 className="text-lg font-semibold text-white">
                             {folder ? t('editFolder') : t('newFolder')}
                         </h3>
                         <button
                             onClick={onClose}
-                            className="glass-btn-base glass-btn-soft h-8 w-8 rounded-full flex items-center justify-center text-[var(--glass-text-tertiary)] hover:text-[var(--glass-text-secondary)]"
+                            className="h-8 w-8 rounded-full flex items-center justify-center text-white/50 hover:text-white hover:bg-[var(--wuhu-neon-purple)]/20"
                         >
                             <XMarkIcon className="w-5 h-5" />
                         </button>
@@ -50,7 +50,7 @@ export function FolderModal({ folder, onClose, onSave }: FolderModalProps) {
 
                     <form onSubmit={handleSubmit}>
                         <div className="mb-5">
-                            <label className="block text-sm font-medium text-[var(--glass-text-secondary)] mb-2">
+                            <label className="block text-sm font-medium text-white/70 mb-2">
                                 {t('folderName')}
                             </label>
                             <input
@@ -58,7 +58,7 @@ export function FolderModal({ folder, onClose, onSave }: FolderModalProps) {
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 placeholder={t('folderNamePlaceholder')}
-                                className="glass-input-base w-full px-3 py-2 text-sm"
+                                className="bg-[var(--wuhu-bg-surface)] border border-[var(--wuhu-neon-purple)]/30 text-white placeholder:text-white/40 focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_20px_rgba(255,100,200,0.3)] rounded-xl w-full px-3 py-2 text-sm outline-none transition-all"
                                 autoFocus
                             />
                         </div>
@@ -67,14 +67,14 @@ export function FolderModal({ folder, onClose, onSave }: FolderModalProps) {
                             <button
                                 type="button"
                                 onClick={onClose}
-                                className="glass-btn-base glass-btn-secondary px-4 py-2 rounded-lg text-sm"
+                                className="border border-[var(--wuhu-neon-purple)]/40 text-white/80 hover:bg-[var(--wuhu-neon-purple)]/20 px-4 py-2 rounded-lg text-sm transition-all"
                             >
                                 {t('cancel')}
                             </button>
                             <button
                                 type="submit"
                                 disabled={!name.trim()}
-                                className="glass-btn-base glass-btn-primary px-4 py-2 rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)] px-4 py-2 rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                             >
                                 {folder ? t('save') : t('create')}
                             </button>

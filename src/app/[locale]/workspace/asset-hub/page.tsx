@@ -439,17 +439,17 @@ export default function AssetHubPage() {
     }
 
     return (
-        <div className="glass-page min-h-screen">
+        <div className="min-h-screen bg-[var(--wuhu-bg-dark)]">
             <Navbar />
             <div className="max-w-7xl mx-auto px-4 py-6">
                 {/* 页面标题 */}
                 <div className="mb-6">
-                    <h1 className="text-2xl font-bold text-[var(--glass-text-primary)]">{t('title')}</h1>
-                    <p className="text-sm text-[var(--glass-text-secondary)] mt-1">{t('description')}</p>
-                    <p className="text-xs text-[var(--glass-text-tertiary)] mt-2 flex items-center gap-1">
+                    <h1 className="text-2xl font-bold text-white">{t('title')}</h1>
+                    <p className="text-sm text-white/70 mt-1">{t('description')}</p>
+                    <p className="text-xs text-white/50 mt-2 flex items-center gap-1">
                         <AppIcon name="info" className="w-3.5 h-3.5" />
                         {t('modelHint')}
-                        <Link href={{ pathname: '/profile' }} className="text-[var(--glass-tone-info-fg)] hover:underline">{t('modelHintLink')}</Link>
+                        <Link href={{ pathname: '/profile' }} className="text-[var(--wuhu-neon-purple)] hover:underline">{t('modelHintLink')}</Link>
                         {t('modelHintSuffix')}
                     </p>
                 </div>

@@ -108,7 +108,7 @@ export default function StoryInputComposer({
   }, [value, autoResizeTextarea])
 
   return (
-    <div className="relative w-full glass-surface-elevated rounded-2xl">
+    <div className="relative w-full bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/20 shadow-[0_0_30px_rgba(167,87,255,0.15)] rounded-2xl">
       <div className="p-6 pb-4">
         {topRight && (
           <div className="mb-3 flex items-center justify-end">
@@ -125,7 +125,7 @@ export default function StoryInputComposer({
           placeholder={placeholder}
           rows={minRows}
           disabled={disabled}
-          className={`w-full resize-none border-none bg-transparent text-base text-[var(--glass-text-primary)] outline-none placeholder:text-[var(--glass-text-tertiary)] custom-scrollbar ${textareaClassName ?? 'p-5 pb-3'}`}
+          className={`w-full resize-none border-none bg-transparent text-base text-white outline-none placeholder:text-white/30 custom-scrollbar ${textareaClassName ?? 'p-5 pb-3'}`}
         />
       </div>
 
