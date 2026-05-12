@@ -47,6 +47,7 @@ export default function RechargePage() {
   const [submitting, setSubmitting] = useState(false)
   const [balance, setBalance] = useState({ subscriptionCredits: 0, permanentCredits: 0, frozenCredits: 0 })
   const [recentOrders, setRecentOrders] = useState<PaymentOrder[]>([])
+  const [showSuccess, setShowSuccess] = useState(false)
 
   // 加载套餐和余额
   const loadData = useCallback(async () => {
@@ -128,9 +129,11 @@ export default function RechargePage() {
         // 监听支付完成消息
         const messageHandler = (event: MessageEvent) => {
           if (event.data?.type === 'payment_success') {
+            setShowSuccess(true)
             toast.success('支付成功！积分已发放')
             loadData() // 刷新余额和订单列表
             window.removeEventListener('message', messageHandler)
+            setTimeout(() => setShowSuccess(false), 3000)
           }
         }
         window.addEventListener('message', messageHandler)
@@ -142,12 +145,14 @@ export default function RechargePage() {
             if (orderRes.ok) {
               const orderData = await orderRes.json()
               if (orderData.status === 'paid') {
+                setShowSuccess(true)
                 toast.success('支付成功！积分已发放')
                 loadData()
                 clearInterval(pollInterval)
                 if (paymentWindow && !paymentWindow.closed) {
                   paymentWindow.close()
                 }
+                setTimeout(() => setShowSuccess(false), 3000)
               }
             }
           } catch (e) {
@@ -454,6 +459,25 @@ export default function RechargePage() {
             </WuhuCard>
           </div>
         </div>
+
+        {/* 支付成功庆祝动画 */}
+        {showSuccess && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
+            <div className="text-center animate-bounce">
+              <div className="mb-4">
+                <WuhuMascot expression="surprised" size="xl" animated={true} />
+              </div>
+              <div className="text-4xl font-black wuhu-neon-number animate-pulse">
+                支付成功！🎉
+              </div>
+              <div className="text-xl text-white/80 mt-2">
+                积分已发放到您的账户
+              </div>
+            </div>
+            {/* 彩虹光效背景 */}
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-cyan-500/20 animate-pulse" />
+          </div>
+        )}
       </main>
     </div>
   )
