@@ -8,6 +8,7 @@ import Navbar from '@/components/Navbar'
 import WuhuLoading from '@/components/WuhuLoading'
 import { Link } from '@/i18n/navigation'
 import { buildAuthenticatedHomeTarget } from '@/lib/home/default-route'
+import WuhuMascot from '@/components/WuhuMascot'
 
 export default function Home() {
   const t = useTranslations('landing')
@@ -64,27 +65,9 @@ export default function Home() {
             </div>
 
             <div className="relative h-[600px] hidden lg:flex items-center justify-center animate-scale-in" style={{ animationDuration: '1s' }}>
-              <div className="relative w-full max-w-md aspect-square">
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-[radial-gradient(circle,rgba(148,163,184,0.2),transparent_65%)] rounded-full blur-3xl opacity-70"></div>
-                <div className="absolute top-0 right-10 w-64 h-80 bg-[var(--wuhu-bg-card)]/60 border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_30px_rgba(167,87,255,0.2)] rounded-3xl transform rotate-6 animate-float-delayed"></div>
-                <div className="absolute bottom-10 left-10 w-72 h-80 bg-[var(--wuhu-bg-card)]/40 border border-[var(--wuhu-neon-pink)]/20 shadow-[0_0_25px_rgba(255,100,200,0.15)] rounded-3xl transform -rotate-3 animate-float-slow"></div>
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-96 bg-[var(--wuhu-bg-card)]/80 border border-[var(--wuhu-neon-cyan)]/20 shadow-[0_0_40px_rgba(100,255,255,0.15)] rounded-3xl overflow-hidden animate-float">
-                  <div className="p-6 h-full flex flex-col">
-                    <div className="w-full h-48 bg-white/10 rounded-2xl mb-6 relative overflow-hidden group">
-                      <div className="absolute inset-0 bg-[var(--wuhu-neon-purple)]/20 group-hover:bg-[var(--wuhu-neon-purple)]/35 transition-colors"></div>
-                      <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[var(--wuhu-bg-surface)]"></div>
-                      <div className="absolute bottom-4 left-4 w-12 h-12 rounded-lg bg-[var(--wuhu-bg-surface)] border border-[var(--wuhu-neon-cyan)]/30 rotate-12"></div>
-                    </div>
-                    <div className="space-y-3">
-                      <div className="h-3 w-3/4 bg-white/10 rounded-full"></div>
-                      <div className="h-3 w-1/2 bg-white/10 rounded-full"></div>
-                      <div className="pt-4 flex gap-2">
-                        <div className="h-10 w-10 rounded-full bg-[var(--wuhu-bg-surface)] border border-[var(--wuhu-neon-purple)]/20"></div>
-                        <div className="h-10 flex-1 rounded-full bg-[var(--wuhu-neon-purple)]/30 border border-[var(--wuhu-neon-purple)]/30"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              <div className="relative">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300%] h-[300%] bg-[radial-gradient(circle,rgba(167,87,255,0.2),rgba(255,100,200,0.1),transparent_50%)] rounded-full blur-3xl"></div>
+                <WuhuMascot expression="happy" size="xl" animated={true} />
               </div>
             </div>
           </div>

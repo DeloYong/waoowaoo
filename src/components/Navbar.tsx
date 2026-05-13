@@ -24,11 +24,8 @@ interface Plan {
 export default function Navbar() {
   const { data: session, status } = useSession()
   const t = useTranslations('nav')
+  const { currentVersion, update, shouldPulse, showModal, openModal, dismissCurrentUpdate } = useGithubReleaseUpdate()
   const tc = useTranslations('common')
-  const { currentVersion, update, shouldPulse, showModal, openModal, dismissCurrentUpdate, checkNow } = useGithubReleaseUpdate()
-  const [checkMsg, setCheckMsg] = useState<string | null>(null)
-  const [checkMsgFading, setCheckMsgFading] = useState(false)
-  const [manualChecking, setManualChecking] = useState(false)
   const [creditsInfo, setCreditsInfo] = useState<CreditsInfo | null>(null)
   const downloadLogsHref = '/api/admin/download-logs'
 
@@ -70,20 +67,6 @@ export default function Navbar() {
     }
   }
 
-  const handleCheckUpdate = async () => {
-    setCheckMsg(null)
-    setCheckMsgFading(false)
-    setManualChecking(true)
-    const minSpin = new Promise(r => setTimeout(r, 1000))
-    await Promise.all([checkNow(), minSpin])
-    setManualChecking(false)
-    setTimeout(() => {
-      setCheckMsg('upToDate')
-      setTimeout(() => setCheckMsgFading(true), 2000)
-      setTimeout(() => { setCheckMsg(null); setCheckMsgFading(false) }, 3000)
-    }, 100)
-  }
-
   return (
     <>
       <nav className="sticky top-0 z-50 bg-[var(--wuhu-bg-surface)]/90 backdrop-blur-xl border-b border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_30px_rgba(167,87,255,0.2)]">
@@ -117,23 +100,6 @@ export default function Navbar() {
                   ) : null}
                 </span>
               </button>
-              <button
-                type="button"
-                onClick={() => void handleCheckUpdate()}
-                disabled={manualChecking}
-                className="rounded-full p-1.5 text-white/40 hover:bg-[var(--wuhu-bg-card)] hover:text-white/70 transition-colors disabled:opacity-40"
-                title={tc('updateNotice.checkUpdate')}
-              >
-                <AppIcon name="refresh" className={`h-3.5 w-3.5 ${manualChecking ? 'animate-spin' : ''}`} />
-              </button>
-              {checkMsg === 'upToDate' && !update && (
-                <span
-                  className="text-[11px] text-[var(--wuhu-neon-cyan)] font-medium transition-opacity duration-1000"
-                  style={{ opacity: checkMsgFading ? 0 : 1 }}
-                >
-                  ✓ {tc('updateNotice.upToDate')}
-                </span>
-              )}
             </div>
             <div className="flex items-center space-x-6">
               {status === 'loading' ? (

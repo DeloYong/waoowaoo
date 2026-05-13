@@ -54,7 +54,7 @@ export function SegmentedControl<T extends string = string>({
 
     return (
         <div
-            className={`rounded-xl p-[3px] bg-[#e8e8ed] dark:bg-[#1c1c1e] ${isCompact ? 'inline-block max-w-full' : 'block w-full'} ${className}`}
+            className={`rounded-xl p-[3px] bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 ${isCompact ? 'inline-block max-w-full' : 'block w-full'} ${className}`}
         >
             <div
                 ref={gridRef}
@@ -63,7 +63,7 @@ export function SegmentedControl<T extends string = string>({
             >
                 {/* Sliding pill indicator */}
                 <div
-                    className="absolute top-0 bottom-0 rounded-[10px] bg-white dark:bg-[#3a3a3c] shadow-[0_1px_3px_rgba(0,0,0,0.08),0_4px_12px_rgba(0,0,0,0.05)] transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
+                    className="absolute top-0 bottom-0 rounded-[10px] bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] shadow-[0_0_15px_rgba(167,87,255,0.4)] transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
                     style={{ left: indicator.left, width: indicator.width }}
                 />
                 {options.map((opt) => (
@@ -72,8 +72,8 @@ export function SegmentedControl<T extends string = string>({
                         type="button"
                         onClick={() => onChange(opt.value)}
                         className={`relative z-10 flex items-center justify-center gap-1.5 rounded-[10px] px-3 py-1.5 text-[13px] font-semibold transition-colors duration-200 cursor-pointer ${value === opt.value
-                            ? 'text-[#1d1d1f] dark:text-white'
-                            : 'text-[#86868b] hover:text-[#6e6e73]'
+                            ? 'text-white'
+                            : 'text-white/60 hover:text-white/80'
                             }`}
                     >
                         {opt.label}
