@@ -173,7 +173,7 @@ export function useDeleteProjectPanel(projectId: string) {
  * 删除 storyboard group
  */
 
-export function useDeleteProjectStoryboardGroup(projectId: string) {
+export function useDeleteProjectStoryboardGroup(projectId: string, episodeId?: string) {
     const queryClient = useQueryClient()
     return useMutation({
         mutationFn: async ({ storyboardId }: { storyboardId: string }) => {
@@ -185,6 +185,9 @@ export function useDeleteProjectStoryboardGroup(projectId: string) {
         },
         onSettled: () => {
             invalidateQueryTemplates(queryClient, [queryKeys.projectAssets.all(projectId)])
+            if (episodeId) {
+                queryClient.invalidateQueries({ queryKey: queryKeys.episodeData(projectId, episodeId) })
+            }
         },
     })
 }

@@ -29,7 +29,7 @@ export function useStoryboardGroupActions({
   const [addingStoryboardGroup, setAddingStoryboardGroup] = useState(false)
   const [movingClipId, setMovingClipId] = useState<string | null>(null)
 
-  const deleteStoryboardMutation = useDeleteProjectStoryboardGroup(projectId)
+  const deleteStoryboardMutation = useDeleteProjectStoryboardGroup(projectId, episodeId)
   const regenerateStoryboardTextMutation = useRegenerateProjectStoryboardText(projectId)
   const addStoryboardGroupMutation = useCreateProjectStoryboardGroup(projectId)
   const moveStoryboardGroupMutation = useMoveProjectStoryboardGroup(projectId)
