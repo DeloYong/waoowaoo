@@ -29,10 +29,13 @@ const GlassButton = forwardRef<HTMLButtonElement, GlassButtonProps>(function Gla
   ref
 ) {
   const variantClass =
-    variant === 'primary' ? 'glass-btn-primary' :
-      variant === 'ghost' ? 'glass-btn-ghost' :
-        variant === 'danger' ? 'glass-btn-danger' :
-          'glass-btn-secondary'
+    variant === 'primary'
+      ? 'bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)] hover:shadow-[0_0_25px_rgba(255,100,200,0.5)] transition-all duration-300'
+      : variant === 'ghost'
+        ? 'bg-transparent text-white/70 hover:bg-white/10 hover:text-white transition-all duration-200'
+        : variant === 'danger'
+          ? 'bg-gradient-to-r from-red-600 to-red-500 text-white shadow-[0_0_15px_rgba(220,38,38,0.4)] hover:shadow-[0_0_25px_rgba(239,68,68,0.5)] transition-all duration-300'
+          : 'bg-[var(--wuhu-bg-surface)] border border-white/20 text-white hover:border-[var(--wuhu-neon-pink)] hover:shadow-[0_0_15px_rgba(255,100,200,0.3)] transition-all duration-300'
 
   const sizeClass =
     size === 'sm' ? 'h-8 px-3 text-xs' :
@@ -50,7 +53,14 @@ const GlassButton = forwardRef<HTMLButtonElement, GlassButtonProps>(function Gla
   return (
     <button
       ref={ref}
-      className={cx('glass-btn-base', variantClass, sizeClass, className)}
+      className={cx(
+        'inline-flex items-center justify-center gap-2 font-semibold rounded-xl transition-all duration-200 whitespace-nowrap',
+        variantClass,
+        sizeClass,
+        disabled ? 'opacity-40 cursor-not-allowed' : '',
+        loading ? 'animate-pulse' : '',
+        className
+      )}
       disabled={disabled || loading}
       {...props}
     >

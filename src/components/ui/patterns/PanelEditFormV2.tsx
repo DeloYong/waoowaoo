@@ -86,8 +86,8 @@ export default function PanelEditFormV2({
 
       {panelData.sourceText ? (
         <GlassField label={t('panel.sourceText')}>
-          <div className="rounded-[var(--glass-radius-md)] bg-[var(--glass-bg-surface-strong)] px-3 py-2.5">
-            <p className="text-sm leading-6 text-[var(--glass-text-secondary)]">&ldquo;{panelData.sourceText}&rdquo;</p>
+          <div className="rounded-xl bg-[var(--wuhu-bg-surface)] px-3 py-2.5">
+            <p className="text-sm leading-6 text-white/70">&ldquo;{panelData.sourceText}&rdquo;</p>
           </div>
         </GlassField>
       ) : null}
@@ -119,7 +119,7 @@ export default function PanelEditFormV2({
             <button
               type="button"
               onClick={onOpenLocationPicker}
-              className="inline-flex h-8 w-8 items-center justify-center text-[var(--glass-text-secondary)] hover:text-[var(--glass-tone-info-fg)] transition-colors"
+              className="inline-flex h-8 w-8 items-center justify-center text-white/70 hover:text-[var(--glass-tone-info-fg)] transition-colors"
               aria-label={t('panel.editLocation')}
               title={t('panel.editLocation')}
             >
@@ -132,7 +132,7 @@ export default function PanelEditFormV2({
               <GlassChip tone="success" onRemove={onRemoveLocation}>{panelData.location}</GlassChip>
             </div>
           ) : (
-            <p className="text-xs text-[var(--glass-text-tertiary)]">{t('panel.locationNotEdited')}</p>
+            <p className="text-xs text-white/50">{t('panel.locationNotEdited')}</p>
           )}
         </GlassField>
 
@@ -142,7 +142,7 @@ export default function PanelEditFormV2({
             <button
               type="button"
               onClick={onOpenCharacterPicker}
-              className="inline-flex h-8 w-8 items-center justify-center text-[var(--glass-text-secondary)] hover:text-[var(--glass-tone-info-fg)] transition-colors"
+              className="inline-flex h-8 w-8 items-center justify-center text-white/70 hover:text-[var(--glass-tone-info-fg)] transition-colors"
               aria-label={t('panel.editCharacter')}
               title={t('panel.editCharacter')}
             >
@@ -159,7 +159,7 @@ export default function PanelEditFormV2({
               ))}
             </div>
           ) : (
-            <p className="text-xs text-[var(--glass-text-tertiary)]">{t('panel.charactersNotEdited')}</p>
+            <p className="text-xs text-white/50">{t('panel.charactersNotEdited')}</p>
           )}
         </GlassField>
       </div>

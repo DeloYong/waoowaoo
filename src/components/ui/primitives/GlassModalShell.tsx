@@ -60,23 +60,27 @@ export default function GlassModalShell({
       }}
     >
       <div
-        className="glass-overlay absolute inset-0"
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-fadeIn"
         onMouseDown={() => {
           if (closeOnBackdrop) onClose()
         }}
       />
-      <div className={cx('glass-surface-modal relative z-10 w-full overflow-hidden', maxWidthClass)}>
+      <div className={cx(
+        'bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_50px_rgba(167,87,255,0.3)] rounded-2xl',
+        'relative z-10 w-full overflow-hidden',
+        maxWidthClass
+      )}>
         {(title || description || showCloseButton) && (
           <div className="flex items-start justify-between gap-4 px-5 py-4 sm:px-6">
             <div>
-              {title ? <h2 className="text-lg font-semibold text-[var(--glass-text-primary)] sm:text-xl">{title}</h2> : null}
-              {description ? <p className="mt-1 text-sm text-[var(--glass-text-secondary)]">{description}</p> : null}
+              {title ? <h2 className="text-lg font-semibold text-white sm:text-xl">{title}</h2> : null}
+              {description ? <p className="mt-1 text-sm text-white/70">{description}</p> : null}
             </div>
             {showCloseButton ? (
               <button
                 type="button"
                 onClick={onClose}
-                className="glass-btn-base glass-btn-ghost h-9 w-9"
+                className="inline-flex items-center justify-center h-9 w-9 rounded-xl text-white/40 hover:text-white hover:bg-white/10 transition-all duration-200"
                 aria-label="close"
               >
                 <AppIcon name="close" className="h-5 w-5" />
@@ -85,12 +89,12 @@ export default function GlassModalShell({
           </div>
         )}
 
-        <div className="glass-divider" />
+        <div className="border-t border-white/10" />
         <div className="px-5 py-4 sm:px-6 sm:py-5">{children}</div>
 
         {footer ? (
           <>
-            <div className="glass-divider" />
+            <div className="border-t border-white/10" />
             <div className="px-5 py-4 sm:px-6">{footer}</div>
           </>
         ) : null}

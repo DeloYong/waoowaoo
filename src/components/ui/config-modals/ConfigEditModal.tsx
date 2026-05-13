@@ -52,18 +52,18 @@ export function SettingsModal({
 
     return (
         <div
-            className="fixed inset-0 z-[100] flex items-center justify-center glass-overlay animate-fadeIn"
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm animate-fadeIn"
             onClick={(e) => {
                 if (e.target === e.currentTarget) onClose()
             }}
         >
-            <div className="glass-surface-modal p-7 w-full max-w-3xl transform transition-all scale-100 max-h-[90vh] flex flex-col">
+            <div className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_50px_rgba(167,87,255,0.3)] rounded-2xl p-7 w-full max-w-3xl transform transition-all scale-100 max-h-[90vh] flex flex-col">
                 <div className="flex justify-between items-center mb-2">
-                    <h2 className="text-2xl font-bold text-[var(--glass-text-primary)]">{t('title')}</h2>
+                    <h2 className="text-2xl font-bold text-white">{t('title')}</h2>
                     <div className="flex items-center gap-3">
-                        <div className={`glass-chip text-xs transition-all duration-300 ${saveStatus === 'saved'
-                            ? 'glass-chip-success'
-                            : 'glass-chip-neutral'
+                        <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-[var(--wuhu-bg-surface)] border transition-all duration-200 ${saveStatus === 'saved'
+                            ? 'text-[var(--wuhu-neon-cyan)] border-[var(--wuhu-neon-cyan)]/40'
+                            : 'text-white/70 border-white/20'
                             }`}>
                             {saveStatus === 'saved' ? (
                                 <>
@@ -72,26 +72,26 @@ export function SettingsModal({
                                 </>
                             ) : (
                                 <>
-                                    <span className="w-1.5 h-1.5 bg-[var(--glass-tone-success-fg)] rounded-full"></span>
+                                    <span className="w-1.5 h-1.5 bg-[var(--wuhu-neon-cyan)] rounded-full"></span>
                                     {t('autoSave')}
                                 </>
                             )}
                         </div>
                         <button
                             onClick={onClose}
-                            className="glass-btn-base glass-btn-soft rounded-full p-2 text-[var(--glass-text-tertiary)] hover:text-[var(--glass-text-secondary)]"
+                            className="inline-flex items-center justify-center rounded-full p-2 text-white/50 hover:text-white hover:bg-white/10 transition-all duration-200"
                         >
                             <AppIcon name="close" className="w-6 h-6" />
                         </button>
                     </div>
                 </div>
-                <p className="text-[12px] text-[var(--glass-text-tertiary)] mb-6">{t('subtitle')}</p>
+                <p className="text-[12px] text-white/50 mb-6">{t('subtitle')}</p>
                 <div className="space-y-5 flex-1 min-h-0 overflow-y-auto custom-scrollbar">
-                    <div className="glass-surface-soft p-5 sm:p-6 space-y-4">
-                        <h3 className="text-sm font-semibold text-[var(--glass-text-tertiary)]">{t('visualSettings')}</h3>
+                    <div className="bg-[var(--wuhu-bg-surface)]/50 border border-white/5 rounded-2xl p-5 sm:p-6 space-y-4">
+                        <h3 className="text-sm font-semibold text-white/70">{t('visualSettings')}</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
-                                <label className="text-sm font-medium text-[var(--glass-text-secondary)]">{t('visualStyle')}</label>
+                                <label className="text-sm font-medium text-white/70">{t('visualStyle')}</label>
                                 <StyleSelector
                                     value={artStyle}
                                     onChange={(value) => handleChange(onArtStyleChange)(value)}
@@ -99,7 +99,7 @@ export function SettingsModal({
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-sm font-medium text-[var(--glass-text-secondary)]">{t('aspectRatio')}</label>
+                                <label className="text-sm font-medium text-white/70">{t('aspectRatio')}</label>
                                 <RatioSelector
                                     value={videoRatio}
                                     onChange={(value) => { handleChange(onVideoRatioChange)(value) }}
@@ -109,8 +109,8 @@ export function SettingsModal({
                         </div>
                     </div>
 
-                    <div className="glass-surface-soft p-5 sm:p-6">
-                        <p className="text-sm text-[var(--glass-text-tertiary)]">
+                    <div className="bg-[var(--wuhu-bg-surface)]/50 border border-white/5 rounded-2xl p-5 sm:p-6">
+                        <p className="text-sm text-white/50">
                             模型配置已由管理员统一管理，无需个人设置
                         </p>
                     </div>

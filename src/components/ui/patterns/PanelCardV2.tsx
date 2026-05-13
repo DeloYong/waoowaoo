@@ -79,7 +79,7 @@ export default function PanelCardV2({
       className={`ui-pattern-panel-card ui-pattern-panel-card-${uiMode} relative overflow-hidden`}
     >
       <div className="relative">
-        <div className="aspect-[9/16] w-full overflow-hidden bg-[rgba(255,255,255,0.35)]">
+        <div className="aspect-[9/16] w-full overflow-hidden bg-[var(--wuhu-bg-surface)]">
           {isDeleting || isModifying || isTaskRunning ? (
             <div className="flex h-full items-center justify-center">
               <GlassChip tone={isDeleting ? 'danger' : 'info'}>
@@ -156,7 +156,7 @@ export default function PanelCardV2({
                     key={index}
                     type="button"
                     onClick={() => onSelectCandidateIndex(panel.id, index)}
-                    className={`h-2.5 w-2.5 rounded-full ${index === candidateData.selectedIndex ? 'bg-[var(--glass-accent-from)]' : 'bg-[var(--glass-bg-surface)]/80 border border-[var(--glass-stroke-base)]'}`}
+                    className={`h-2.5 w-2.5 rounded-full ${index === candidateData.selectedIndex ? 'bg-[var(--wuhu-neon-pink)]' : 'bg-[var(--wuhu-bg-surface)]/80 border border-white/20'}`}
                     aria-label={`candidate-${index + 1}`}
                   />
                 ))}

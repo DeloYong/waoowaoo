@@ -30,9 +30,9 @@ export default function GlassField({
       {(label || actions) && (
         <div className="flex items-center justify-between gap-2">
           {label ? (
-            <label htmlFor={id} className="glass-field-label">
+            <label htmlFor={id} className="text-sm font-semibold text-white">
               {label}
-              {required ? <span className="ml-1 text-[var(--glass-tone-danger-fg)]">*</span> : null}
+              {required ? <span className="ml-1 text-red-400">*</span> : null}
             </label>
           ) : <span />}
           {actions}
@@ -40,9 +40,9 @@ export default function GlassField({
       )}
       {children}
       {error ? (
-        <p className="text-xs text-[var(--glass-tone-danger-fg)]">{error}</p>
+        <p className="text-xs text-red-400">{error}</p>
       ) : hint ? (
-        <p className="glass-field-hint">{hint}</p>
+        <p className="text-xs text-white/50">{hint}</p>
       ) : null}
     </div>
   )

@@ -35,8 +35,8 @@ export default function StoryboardHeaderV2({
     <GlassSurface variant="elevated" className={`ui-pattern-header ui-pattern-header-${uiMode} space-y-4`}>
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="space-y-1">
-          <h3 className="text-sm font-semibold text-[var(--glass-text-primary)]">{t('header.storyboardPanel')} (V2)</h3>
-          <p className="text-sm text-[var(--glass-text-secondary)]">
+          <h3 className="text-sm font-semibold text-white">{t('header.storyboardPanel')} (V2)</h3>
+          <p className="text-sm text-white/70">
             {t('header.segmentsCount', { count: totalSegments })} {t('header.panelsCount', { count: totalPanels })}
           </p>
         </div>
