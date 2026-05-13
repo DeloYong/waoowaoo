@@ -93,24 +93,24 @@ export default function ImageEditModal({
   }
 
   return (
-    <div className="fixed inset-0 bg-[var(--glass-overlay)] z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div
-        className="bg-[var(--glass-bg-surface)] rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+        className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_50px_rgba(167,87,255,0.3)] rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
         onPaste={handlePaste}
       >
-        <div className="p-6 border-b">
-          <h3 className="text-lg font-bold text-[var(--glass-text-primary)]">{t('imageEdit.title')}</h3>
-          <p className="text-sm text-[var(--glass-text-tertiary)] mt-1">{t('imageEdit.subtitle')}</p>
+        <div className="p-6 border-b border-[var(--wuhu-neon-purple)]/20">
+          <h3 className="text-lg font-bold text-white">{t('imageEdit.title')}</h3>
+          <p className="text-sm text-white/50 mt-1">{t('imageEdit.subtitle')}</p>
         </div>
 
         <div className="p-6 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-[var(--glass-text-secondary)] mb-2">{t('prompts.aiInstruction')}</label>
+            <label className="block text-sm font-medium text-white/70 mb-2">{t('prompts.aiInstruction')}</label>
             <textarea
               value={editPrompt}
               onChange={(event) => setEditPrompt(event.target.value)}
               placeholder={t('imageEdit.promptPlaceholder')}
-              className="w-full h-24 px-3 py-2 border border-[var(--glass-stroke-strong)] rounded-lg focus:ring-2 focus:ring-[var(--glass-tone-info-fg)] focus:border-[var(--glass-stroke-focus)] resize-none"
+              className="w-full h-24 px-3 py-2 border border-white/20 bg-[var(--wuhu-bg-surface)] text-white rounded-lg focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(255,100,200,0.3)] resize-none placeholder:text-white/30"
               autoFocus
             />
           </div>
@@ -123,8 +123,8 @@ export default function ImageEditModal({
           />
 
           <div>
-            <label className="block text-sm font-medium text-[var(--glass-text-secondary)] mb-2">
-              {t('imageEdit.referenceImagesLabel')} <span className="text-[var(--glass-text-tertiary)] font-normal">{t('imageEdit.referenceImagesHint')}</span>
+            <label className="block text-sm font-medium text-white/70 mb-2">
+              {t('imageEdit.referenceImagesLabel')} <span className="text-white/50 font-normal">{t('imageEdit.referenceImagesHint')}</span>
             </label>
             <input
               ref={fileInputRef}
@@ -145,7 +145,7 @@ export default function ImageEditModal({
                   />
                   <button
                     onClick={() => removeImage(index)}
-                    className="absolute -top-1 -right-1 w-5 h-5 bg-[var(--glass-tone-danger-fg)] text-white rounded-full text-xs flex items-center justify-center hover:bg-[var(--glass-tone-danger-fg)]"
+                    className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center hover:bg-red-600 transition-colors"
                   >
                     <AppIcon name="closeSm" className="h-3 w-3" />
                   </button>
@@ -153,7 +153,7 @@ export default function ImageEditModal({
               ))}
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="w-16 h-16 border-2 border-dashed border-[var(--glass-stroke-strong)] rounded-lg flex items-center justify-center text-[var(--glass-text-tertiary)] hover:border-[var(--glass-stroke-focus)] hover:text-[var(--glass-tone-info-fg)] transition-colors"
+                className="w-16 h-16 border-2 border-dashed border-white/20 rounded-lg flex items-center justify-center text-white/50 hover:border-[var(--wuhu-neon-purple)] hover:text-[var(--wuhu-neon-purple)] transition-colors"
               >
                 <AppIcon name="plus" className="w-6 h-6" />
               </button>
@@ -161,17 +161,17 @@ export default function ImageEditModal({
           </div>
         </div>
 
-        <div className="p-6 border-t flex justify-end gap-3">
+        <div className="p-6 border-t border-[var(--wuhu-neon-purple)]/20 flex justify-end gap-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-[var(--glass-text-secondary)] hover:bg-[var(--glass-bg-muted)] rounded-lg transition-colors"
+            className="px-4 py-2 text-white/70 border border-white/20 rounded-lg hover:border-[var(--wuhu-neon-pink)] hover:text-white hover:bg-white/10 transition-all"
           >
             {t('candidate.cancel')}
           </button>
           <button
             onClick={handleSubmit}
             disabled={!editPrompt.trim()}
-            className="px-4 py-2 bg-[var(--glass-accent-from)] text-white rounded-lg hover:bg-[var(--glass-accent-to)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="px-4 py-2 bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white rounded-lg shadow-[0_0_15px_rgba(167,87,255,0.4)] hover:shadow-[0_0_25px_rgba(167,87,255,0.6)] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
             {t('imageEdit.start')}
           </button>

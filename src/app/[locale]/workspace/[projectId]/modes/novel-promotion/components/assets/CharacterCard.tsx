@@ -273,7 +273,7 @@ export default function CharacterCard({
     )
 
     return (
-      <div className="col-span-3 bg-[var(--glass-bg-surface)] rounded-lg border-2 border-[var(--glass-stroke-base)] p-4 shadow-sm transition-all">
+      <div className="col-span-3 bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/20 rounded-xl transition-all duration-300 hover:border-[var(--wuhu-neon-pink)] hover:shadow-[0_0_25px_rgba(255,100,200,0.25)] p-4">
         <input
           ref={fileInputRef}
           type="file"

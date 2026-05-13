@@ -136,7 +136,7 @@ export default function StoryboardGroup({
   )
 
   return (
-    <div className={`glass-surface-elevated p-6 relative ${failedError ? 'border-2 border-[var(--glass-stroke-danger)] bg-[var(--glass-danger-ring)]' : ''}`}>
+    <div className={`bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_20px_rgba(167,87,255,0.15)] rounded-2xl p-6 relative ${failedError ? 'border-2 border-red-500/60 bg-red-500/10' : ''}`}>
       {failedError && (
         <StoryboardGroupFailedAlert
           failedError={failedError}
@@ -181,30 +181,30 @@ export default function StoryboardGroup({
         <div className="mb-4">
           <button
             onClick={onToggleExpand}
-            className="glass-btn-base glass-btn-soft rounded-xl px-3 py-2 text-sm"
+            className="border border-white/20 text-white/70 hover:border-[var(--wuhu-neon-pink)] hover:text-white hover:bg-white/10 rounded-xl px-3 py-2 text-sm transition-all"
           >
             <AppIcon name="chevronRightMd" className={`h-4 w-4 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
             <span>{clip.screenplay ? t('panel.stylePrompt') : textPanels.length > 0 ? '分镜脚本' : t('panel.sourceText')}</span>
           </button>
           {isExpanded && (
-            <div className="mt-2 glass-surface-soft p-2">
+            <div className="mt-2 bg-[var(--wuhu-bg-surface)] border border-white/10 rounded-xl p-2">
               {clip.screenplay ? (
                 <ScreenplayDisplay screenplay={clip.screenplay} originalContent={clip.content} />
               ) : textPanels.length > 0 ? (
                 <div className="space-y-3 p-3">
                   {textPanels.map((panel, idx) => (
-                    <div key={panel.id} className="border-l-2 border-[var(--glass-stroke-focus)] pl-3">
-                      <div className="text-xs font-bold text-[var(--glass-tone-info-fg)] mb-1">
+                    <div key={panel.id} className="border-l-2 border-[var(--wuhu-neon-purple)]/50 pl-3">
+                      <div className="text-xs font-bold text-[var(--wuhu-neon-purple)] mb-1">
                         {t('panel.shot')} {panel.panel_number || idx + 1}
                       </div>
-                      <div className="text-sm text-[var(--glass-text-secondary)] whitespace-pre-wrap leading-relaxed">
+                      <div className="text-sm text-white/70 whitespace-pre-wrap leading-relaxed">
                         {panel.description}
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="whitespace-pre-wrap p-3 text-sm text-[var(--glass-text-secondary)]">
+                <div className="whitespace-pre-wrap p-3 text-sm text-white/70">
                   {clip.content}
                 </div>
               )}

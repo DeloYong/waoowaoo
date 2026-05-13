@@ -143,23 +143,23 @@ export default function PanelVariantModal({
 
   const modalContent = (
     <div
-      className="fixed inset-0 glass-overlay flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
       style={{ zIndex: 9999 }}
       onClick={handleClose}
     >
       <div
-        className="glass-surface-modal w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col"
+        className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_50px_rgba(167,87,255,0.3)] rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col"
         onClick={(event) => event.stopPropagation()}
       >
-        <div className="px-5 py-3 border-b border-[var(--glass-stroke-base)] flex items-center justify-between">
-          <h2 className="text-base font-bold text-[var(--glass-text-primary)] flex items-center gap-2">
-            <AppIcon name="videoWide" className="h-4 w-4 text-[var(--glass-text-secondary)]" />
+        <div className="px-5 py-3 border-b border-[var(--wuhu-neon-purple)]/20 flex items-center justify-between">
+          <h2 className="text-base font-bold text-white flex items-center gap-2">
+            <AppIcon name="videoWide" className="h-4 w-4 text-white/70" />
             {t('variant.shotTitle', { number: panel.panelNumber ?? '' })}
           </h2>
           <button
             onClick={handleClose}
             disabled={isSubmittingVariantTask || isAnalyzing}
-            className="glass-btn-base glass-btn-soft p-1.5 disabled:opacity-50"
+            className="text-white/50 hover:text-white transition-colors p-1.5 disabled:opacity-50"
           >
             <AppIcon name="close" className="w-5 h-5" />
           </button>
@@ -172,26 +172,26 @@ export default function PanelVariantModal({
                 <MediaImageWithLoading
                   src={panel.imageUrl}
                   alt={t('variant.shotNum', { number: panel.panelNumber ?? '' })}
-                  containerClassName="w-full aspect-[9/16] rounded-lg shadow-[var(--glass-shadow-sm)]"
-                  className="w-full aspect-[9/16] object-cover rounded-lg shadow-[var(--glass-shadow-sm)]"
+                  containerClassName="w-full aspect-[9/16] rounded-lg shadow-[0_0_20px_rgba(167,87,255,0.2)]"
+                  className="w-full aspect-[9/16] object-cover rounded-lg shadow-[0_0_20px_rgba(167,87,255,0.2)]"
                   width={256}
                   height={456}
                   sizes="128px"
                 />
               ) : (
-                <div className="w-full aspect-[9/16] bg-[var(--glass-bg-muted)] rounded-lg flex items-center justify-center text-[var(--glass-text-tertiary)] text-xs">
+                <div className="w-full aspect-[9/16] bg-[var(--wuhu-bg-surface)] rounded-lg flex items-center justify-center text-white/50 text-xs">
                   {t('variant.noImage')}
                 </div>
               )}
-              <div className="text-xs text-[var(--glass-text-tertiary)] mt-1 text-center">#{panel.panelNumber}</div>
+              <div className="text-xs text-white/50 mt-1 text-center">#{panel.panelNumber}</div>
             </div>
             <div className="flex-1">
-              <h3 className="text-sm font-medium text-[var(--glass-text-primary)] mb-1">{t('variant.originalDescription')}</h3>
-              <p className="text-sm text-[var(--glass-text-secondary)]">{panel.description || t('variant.noDescription')}</p>
+              <h3 className="text-sm font-medium text-white mb-1">{t('variant.originalDescription')}</h3>
+              <p className="text-sm text-white/70">{panel.description || t('variant.noDescription')}</p>
             </div>
           </div>
 
-          <div className="glass-divider" />
+          <div className="h-px bg-gradient-to-r from-transparent via-[var(--wuhu-neon-purple)]/30 to-transparent" />
 
           <PanelVariantModalSuggestionList
             isAnalyzing={isAnalyzing}
@@ -207,7 +207,7 @@ export default function PanelVariantModal({
             }}
           />
 
-          <div className="glass-divider" />
+          <div className="h-px bg-gradient-to-r from-transparent via-[var(--wuhu-neon-purple)]/30 to-transparent" />
 
           <PanelVariantModalCustomOptions
             customInput={customInput}
@@ -220,11 +220,11 @@ export default function PanelVariantModal({
           />
         </div>
 
-        <div className="px-5 py-3 border-t border-[var(--glass-stroke-base)] flex justify-end gap-3">
+        <div className="px-5 py-3 border-t border-[var(--wuhu-neon-purple)]/20 flex justify-end gap-3">
           <button
             onClick={handleClose}
             disabled={isSubmittingVariantTask || isAnalyzing}
-            className="glass-btn-base glass-btn-secondary px-4 py-2 text-sm disabled:opacity-50"
+            className="border border-white/20 text-white/70 hover:border-[var(--wuhu-neon-pink)] hover:text-white hover:bg-white/10 px-4 py-2 text-sm rounded-lg transition-all disabled:opacity-50"
           >
             {t('candidate.cancel')}
           </button>
@@ -233,12 +233,12 @@ export default function PanelVariantModal({
               void handleCustomVariant()
             }}
             disabled={isSubmittingVariantTask || !customInput.trim()}
-            className={`glass-btn-base px-4 py-2 text-sm rounded-lg ${isSubmittingVariantTask || !customInput.trim() ? 'glass-btn-soft text-[var(--glass-text-tertiary)] cursor-not-allowed' : 'glass-btn-primary text-white'}`}
+            className={`px-4 py-2 text-sm rounded-lg transition-all ${isSubmittingVariantTask || !customInput.trim() ? 'bg-[var(--wuhu-bg-surface)] text-white/30 cursor-not-allowed' : 'bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)] hover:shadow-[0_0_25px_rgba(167,87,255,0.6)]'}`}
           >
             {isSubmittingVariantTask ? (
               <TaskStatusInline
                 state={variantTaskRunningState}
-                className="text-[var(--glass-text-tertiary)] [&>span]:text-[var(--glass-text-tertiary)] [&_svg]:text-[var(--glass-text-tertiary)]"
+                className="text-white/70 [&>span]:text-white/70 [&_svg]:text-white/70"
               />
             ) : t('variant.useCustomGenerate')}
           </button>

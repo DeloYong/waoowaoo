@@ -156,27 +156,27 @@ export default function SpeakerVoiceBindingDialog({
     // 主弹窗：Tab 切换
     return createPortal(
         <>
-            <div className="fixed inset-0 z-[9999] glass-overlay" onClick={handleClose} />
+            <div className="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-sm" onClick={handleClose} />
             <div
-                className="fixed z-[10000] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 glass-surface-modal w-full max-w-md overflow-hidden"
+                className="fixed z-[10000] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_50px_rgba(167,87,255,0.3)] rounded-2xl w-full max-w-md overflow-hidden"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* 头部 */}
-                <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--glass-stroke-base)] bg-[var(--glass-bg-surface-strong)]">
+                <div className="flex items-center justify-between px-5 py-4 border-b border-white/10 bg-white/5">
                     <div className="flex items-center gap-2 min-w-0">
-                        <AppIcon name="mic" className="w-5 h-5 text-[var(--glass-tone-info-fg)] shrink-0" />
-                        <h2 className="font-semibold text-[var(--glass-text-primary)] truncate">
+                        <AppIcon name="mic" className="w-5 h-5 text-[var(--wuhu-neon-purple)] shrink-0" />
+                        <h2 className="font-semibold text-white truncate">
                             {t('title', { speaker })}
                         </h2>
                     </div>
-                    <button onClick={handleClose} className="glass-btn-base glass-btn-soft p-1 text-[var(--glass-text-tertiary)] shrink-0">
+                    <button onClick={handleClose} className="p-1 text-white/40 hover:text-white hover:bg-white/10 rounded-lg shrink-0 transition-colors">
                         <AppIcon name="close" className="w-5 h-5" />
                     </button>
                 </div>
 
                 {/* 描述 */}
                 <div className="px-5 pt-4 pb-2">
-                    <p className="text-sm text-[var(--glass-text-secondary)]">
+                    <p className="text-sm text-white/70">
                         {t('description')}
                     </p>
                 </div>
@@ -196,19 +196,19 @@ export default function SpeakerVoiceBindingDialog({
                 {/* Tab 内容区 — 显示描述和进入按钮 */}
                 <div className="p-5">
                     <div className="text-center py-6">
-                        <div className={`w-14 h-14 mx-auto rounded-full flex items-center justify-center mb-3 ${activeTab === 'select' ? 'bg-[var(--glass-tone-info-bg)]'
-                            : activeTab === 'upload' ? 'bg-[var(--glass-tone-success-bg)]'
-                                : 'bg-[var(--glass-accent-bg,var(--glass-tone-info-bg))]'
+                        <div className={`w-14 h-14 mx-auto rounded-full flex items-center justify-center mb-3 ${activeTab === 'select' ? 'bg-[var(--wuhu-neon-purple)]/15'
+                            : activeTab === 'upload' ? 'bg-[var(--wuhu-neon-cyan)]/15'
+                                : 'bg-[var(--wuhu-neon-pink)]/15'
                             }`}>
                             <AppIcon
                                 name={activeTab === 'select' ? 'mic' : activeTab === 'upload' ? 'cloudUpload' : 'idea'}
-                                className={`w-6 h-6 ${activeTab === 'select' ? 'text-[var(--glass-tone-info-fg)]'
-                                    : activeTab === 'upload' ? 'text-[var(--glass-tone-success-fg)]'
-                                        : 'text-[var(--glass-accent-from,var(--glass-tone-info-fg))]'
+                                className={`w-6 h-6 ${activeTab === 'select' ? 'text-[var(--wuhu-neon-purple)]'
+                                    : activeTab === 'upload' ? 'text-[var(--wuhu-neon-cyan)]'
+                                        : 'text-[var(--wuhu-neon-pink)]'
                                     }`}
                             />
                         </div>
-                        <p className="text-sm text-[var(--glass-text-secondary)] mb-4">
+                        <p className="text-sm text-white/70 mb-4">
                             {activeTab === 'select' && t('selectFromLibraryDesc')}
                             {activeTab === 'upload' && t('uploadAudioDesc')}
                             {activeTab === 'design' && t('aiDesignDesc')}
@@ -218,7 +218,7 @@ export default function SpeakerVoiceBindingDialog({
                                 if (activeTab === 'upload' && !confirmUploadVoice()) return
                                 setSubDialogOpen(true)
                             }}
-                            className="glass-btn-base glass-btn-primary px-8 py-2.5 rounded-lg text-sm font-medium"
+                            className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)] px-8 py-2.5 rounded-lg text-sm font-medium hover:shadow-[0_0_25px_rgba(167,87,255,0.6)] transition-all"
                         >
                             {activeTab === 'select' && t('selectFromLibrary')}
                             {activeTab === 'upload' && t('uploadAudio')}

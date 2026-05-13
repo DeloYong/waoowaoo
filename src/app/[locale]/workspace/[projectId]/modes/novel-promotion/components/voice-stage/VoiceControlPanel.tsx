@@ -140,15 +140,14 @@ export default function VoiceControlPanel({
       {children}
 
       {isLineEditorOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--glass-overlay)] p-4" onClick={onCancelEdit}>
-          <div className="w-full max-w-xl bg-[var(--glass-bg-surface)] rounded-2xl shadow-2xl border border-[var(--glass-stroke-base)] p-5" onClick={(event) => event.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={onCancelEdit}>
+          <div className="w-full max-w-xl bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_50px_rgba(167,87,255,0.3)] rounded-2xl p-5" onClick={(event) => event.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-[var(--glass-text-primary)]">
-                {editingLineId ? t('lineEditor.editTitle') : t('lineEditor.addTitle')}
-              </h3>
+              <h3 className="text-lg font-semibold text-white">
+                {editingLineId ? t('lineEditor.editTitle') : t('lineEditor.addTitle')}</h3>
               <button
                 onClick={onCancelEdit}
-                className="p-1 text-[var(--glass-text-tertiary)] hover:text-[var(--glass-text-secondary)] transition-colors"
+                className="p-1 text-white/40 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
                 title={t('common.cancel')}
               >
                 <AppIcon name="close" className="w-5 h-5" />
@@ -157,22 +156,22 @@ export default function VoiceControlPanel({
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-[var(--glass-text-secondary)] mb-1.5">{t('lineEditor.contentLabel')}</label>
+                <label className="block text-sm font-medium text-white/70 mb-1.5">{t('lineEditor.contentLabel')}</label>
                 <textarea
                   value={editingContent}
                   onChange={(event) => onEditingContentChange(event.target.value)}
                   placeholder={t('lineEditor.contentPlaceholder')}
                   rows={4}
-                  className="w-full rounded-xl border border-[var(--glass-stroke-strong)] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--glass-tone-info-fg)] resize-y"
+                  className="w-full rounded-xl border border-white/20 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--wuhu-neon-purple)] resize-y bg-[var(--wuhu-bg-card)] text-white/70 placeholder:text-white/30"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[var(--glass-text-secondary)] mb-1.5">{t('lineEditor.speakerLabel')}</label>
+                <label className="block text-sm font-medium text-white/70 mb-1.5">{t('lineEditor.speakerLabel')}</label>
                 <select
                   value={editingSpeaker}
                   onChange={(event) => onEditingSpeakerChange(event.target.value)}
-                  className="w-full rounded-xl border border-[var(--glass-stroke-strong)] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--glass-tone-info-fg)]"
+                  className="w-full rounded-xl border border-white/20 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--wuhu-neon-purple)] bg-[var(--wuhu-bg-card)] text-white/70"
                 >
                   <option value="" disabled>{t('lineEditor.selectSpeaker')}</option>
                   {speakerOptions.map((speaker) => (
@@ -182,16 +181,16 @@ export default function VoiceControlPanel({
                   ))}
                 </select>
                 {speakerOptions.length === 0 && (
-                  <p className="mt-1 text-xs text-[var(--glass-tone-warning-fg)]">{t('lineEditor.noSpeakerOptions')}</p>
+                  <p className="mt-1 text-xs text-[var(--wuhu-neon-orange)]">{t('lineEditor.noSpeakerOptions')}</p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[var(--glass-text-secondary)] mb-1.5">{t('lineEditor.bindPanelLabel')}</label>
+                <label className="block text-sm font-medium text-white/70 mb-1.5">{t('lineEditor.bindPanelLabel')}</label>
                 <select
                   value={editingMatchedPanelId}
                   onChange={(event) => onEditingMatchedPanelIdChange(event.target.value)}
-                  className="w-full rounded-xl border border-[var(--glass-stroke-strong)] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--glass-tone-info-fg)]"
+                  className="w-full rounded-xl border border-white/20 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--wuhu-neon-purple)] bg-[var(--wuhu-bg-card)] text-white/70"
                 >
                   <option value="">{t('lineEditor.unboundPanel')}</option>
                   {bindablePanelOptions.map((panel) => (
@@ -207,14 +206,14 @@ export default function VoiceControlPanel({
               <button
                 onClick={onCancelEdit}
                 disabled={isSavingLineEditor}
-                className="px-4 py-2 text-sm rounded-lg border border-[var(--glass-stroke-base)] text-[var(--glass-text-secondary)] hover:bg-[var(--glass-bg-muted)] disabled:opacity-60"
+                className="px-4 py-2 text-sm rounded-lg border border-white/20 text-white/70 hover:bg-white/10 disabled:opacity-60 transition-colors"
               >
                 {t('common.cancel')}
               </button>
               <button
                 onClick={onSaveEdit}
                 disabled={isSavingLineEditor}
-                className="px-4 py-2 text-sm rounded-lg bg-[var(--glass-accent-from)] text-white hover:bg-[var(--glass-accent-to)] disabled:opacity-60 flex items-center gap-2"
+                className="px-4 py-2 text-sm rounded-lg bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)] disabled:opacity-60 flex items-center gap-2 transition-all"
               >
                 {isSavingLineEditor && (
                   <TaskStatusInline state={savingLineEditorState} className="text-white [&>span]:text-white [&_svg]:text-white" />

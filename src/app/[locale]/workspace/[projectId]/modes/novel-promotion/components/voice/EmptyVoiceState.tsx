@@ -24,16 +24,16 @@ export default function EmptyVoiceState({
         : null
 
     return (
-        <div className="glass-surface-elevated p-10 text-center">
-            <div className="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--glass-tone-info-bg)] text-[var(--glass-tone-info-fg)]">
+        <div className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_50px_rgba(167,87,255,0.3)] rounded-xl p-10 text-center">
+            <div className="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--wuhu-neon-purple)]/15 text-[var(--wuhu-neon-purple)]">
                 <AppIcon name="micOutline" className="h-7 w-7" />
             </div>
-            <h3 className="text-xl font-bold text-[var(--glass-text-secondary)] mb-2">{t("empty.title")}</h3>
-            <p className="text-[var(--glass-text-tertiary)] mb-6">{t("empty.description")}</p>
+            <h3 className="text-xl font-bold text-white/70 mb-2">{t("empty.title")}</h3>
+            <p className="text-white/50 mb-6">{t("empty.description")}</p>
             <button
                 onClick={onAnalyze}
                 disabled={analyzing}
-                className="glass-btn-base glass-btn-primary inline-flex items-center gap-2 px-6 py-3 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)] inline-flex items-center gap-2 px-6 py-3 font-medium disabled:opacity-50 disabled:cursor-not-allowed rounded-xl"
             >
                 {analyzing ? (
                     <TaskStatusInline state={analyzingState} className="text-white [&>span]:text-white [&_svg]:text-white" />
@@ -44,7 +44,7 @@ export default function EmptyVoiceState({
                     </>
                 )}
             </button>
-            <p className="text-sm text-[var(--glass-text-tertiary)] mt-6">
+            <p className="text-sm text-white/50 mt-6">
                 {t("empty.hint")}
             </p>
         </div>

@@ -341,46 +341,46 @@ export function AssistantChatModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center glass-overlay px-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
       onClick={onClose}
     >
       <div
-        className="glass-surface-modal w-full max-w-3xl overflow-hidden rounded-2xl"
+        className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_50px_rgba(167,87,255,0.3)] w-full max-w-3xl overflow-hidden rounded-2xl"
         onClick={(event) => event.stopPropagation()}
       >
-        <div className="flex items-center justify-between border-b border-[var(--glass-stroke-base)] px-4 py-3">
+        <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
           <div>
-            <h3 className="text-sm font-semibold text-[var(--glass-text-primary)]">{title}</h3>
-            <p className="text-xs text-[var(--glass-text-secondary)]">{subtitle}</p>
+            <h3 className="text-sm font-semibold text-white">{title}</h3>
+            <p className="text-xs text-white/50">{subtitle}</p>
           </div>
           <button
             onClick={onClose}
-            className="glass-icon-btn-sm"
+            className="p-1 text-white/40 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
             title={closeLabel}
           >
             <AppIcon name="close" className="h-4 w-4" />
           </button>
         </div>
 
-        <div className="h-[420px] overflow-hidden bg-[var(--glass-bg-soft)]">
+        <div className="h-[420px] overflow-hidden bg-black/20">
           {completed ? (
             <div className="flex h-full items-center justify-center px-4 py-4">
-              <div className="w-full max-w-md rounded-2xl border border-[var(--glass-stroke-base)] bg-[var(--glass-bg-surface)] px-6 py-7 text-center shadow-sm">
+              <div className="w-full max-w-md rounded-2xl border border-[var(--wuhu-neon-cyan)]/30 bg-[var(--wuhu-bg-card)] px-6 py-7 text-center shadow-[0_0_30px_rgba(0,255,255,0.2)]">
                 <div className="relative mx-auto mb-4 flex h-20 w-20 items-center justify-center">
-                  <div className="absolute h-20 w-20 rounded-full bg-emerald-500/20 animate-ping" />
-                  <div className="relative z-10 flex h-20 w-20 items-center justify-center rounded-full border border-emerald-400/60 bg-emerald-500/15">
-                    <AppIcon name="check" className="h-10 w-10 text-emerald-500" />
+                  <div className="absolute h-20 w-20 rounded-full bg-[var(--wuhu-neon-cyan)]/20 animate-ping" />
+                  <div className="relative z-10 flex h-20 w-20 items-center justify-center rounded-full border border-[var(--wuhu-neon-cyan)]/60 bg-[var(--wuhu-neon-cyan)]/15">
+                    <AppIcon name="check" className="h-10 w-10 text-[var(--wuhu-neon-cyan)]" />
                   </div>
                 </div>
-                <div className="text-base font-semibold text-[var(--glass-text-primary)]">
+                <div className="text-base font-semibold text-white">
                   {completedTitle || assistantLabel}
                 </div>
                 {completedMessage && (
-                  <div className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-[var(--glass-text-secondary)]">
+                  <div className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-white/70">
                     {completedMessage}
                   </div>
                 )}
-                <div className="mt-4 text-xs text-[var(--glass-text-tertiary)]">
+                <div className="mt-4 text-xs text-white/50">
                   {closeLabel}
                 </div>
               </div>
@@ -390,11 +390,11 @@ export function AssistantChatModal({
               <ConversationContent className="h-full space-y-3 p-4">
                 {shouldShowEmptyAssistantMessage && (
                   <Message from="assistant">
-                    <MessageContent className="max-w-[84%] rounded-2xl rounded-bl-md border border-[var(--glass-stroke-base)] bg-[var(--glass-bg-surface)] px-3 py-2">
-                      <div className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-[var(--glass-text-tertiary)]">
+                    <MessageContent className="max-w-[84%] rounded-2xl rounded-bl-md border-l-4 border-[var(--wuhu-neon-cyan)] bg-[var(--wuhu-bg-card)] px-3 py-2 shadow-[0_0_15px_rgba(0,255,255,0.1)]">
+                      <div className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-[var(--wuhu-neon-cyan)]">
                         {assistantLabel}
                       </div>
-                      <MessageResponse className="whitespace-pre-wrap break-words leading-relaxed">
+                      <MessageResponse className="whitespace-pre-wrap break-words leading-relaxed text-white/70">
                         {emptyAssistantMessage}
                       </MessageResponse>
                     </MessageContent>
@@ -408,26 +408,26 @@ export function AssistantChatModal({
                     <Message key={message.id} from={message.role}>
                       <MessageContent
                         className={isAssistant
-                          ? 'max-w-[84%] rounded-2xl rounded-bl-md border border-[var(--glass-stroke-base)] bg-[var(--glass-bg-surface)] px-3 py-2'
-                          : 'max-w-[84%] rounded-2xl rounded-br-md bg-[var(--brand-primary)]/15 px-3 py-2'}
+                          ? 'max-w-[84%] rounded-2xl rounded-bl-md border-l-4 border-[var(--wuhu-neon-cyan)] bg-[var(--wuhu-bg-card)] px-3 py-2 shadow-[0_0_15px_rgba(0,255,255,0.1)]'
+                          : 'max-w-[84%] rounded-2xl rounded-br-md border-r-4 border-[var(--wuhu-neon-pink)] bg-[var(--wuhu-bg-card)] px-3 py-2 shadow-[0_0_15px_rgba(255,0,128,0.1)]'}
                       >
-                        <div className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-[var(--glass-text-tertiary)]">
-                          {isAssistant ? assistantLabel : userLabel}
+                        <div className="mb-1 text-[11px] font-semibold uppercase tracking-wide">
+                          {isAssistant ? (<span className="text-[var(--wuhu-neon-cyan)]">{assistantLabel}</span>) : (<span className="text-[var(--wuhu-neon-pink)]">{userLabel}</span>)}
                         </div>
 
                         {isAssistant && message.reasoningLines.length > 0 && (
                           <Reasoning
                             open={Boolean(expandedReasoningByMessageId[message.id])}
                             onOpenChange={(nextOpenState) => setReasoningExpanded(message.id, nextOpenState)}
-                            className="mb-2 rounded-xl border border-[var(--glass-stroke-base)] bg-[var(--glass-bg-soft)] p-2"
+                            className="mb-2 rounded-xl border border-white/10 bg-black/20 p-2"
                           >
-                            <ReasoningTrigger className="text-xs text-[var(--glass-text-secondary)]">
+                            <ReasoningTrigger className="text-xs text-white/50">
                               <span className="mr-2">{reasoningTitle}</span>
-                              <span className="text-[11px] text-[var(--glass-text-tertiary)]">
+                              <span className="text-[11px] text-white/40">
                                 {expandedReasoningByMessageId[message.id] ? reasoningCollapseLabel : reasoningExpandLabel}
                               </span>
                             </ReasoningTrigger>
-                            <ReasoningContent className="space-y-1 border-t border-[var(--glass-stroke-base)] pt-2 text-xs text-[var(--glass-text-secondary)]">
+                            <ReasoningContent className="space-y-1 border-t border-white/10 pt-2 text-xs text-white/60">
                               {message.reasoningLines.join('\n\n')}
                             </ReasoningContent>
                           </Reasoning>
@@ -437,7 +437,7 @@ export function AssistantChatModal({
                           <MessageResponse
                             key={`${message.id}-line-${index}`}
                             className={joinClassNames(
-                              'whitespace-pre-wrap break-words leading-relaxed',
+                              'whitespace-pre-wrap break-words leading-relaxed text-white/70',
                               isStreamingAssistantMessage ? 'assistant-streaming-response' : undefined,
                             )}
                           >
@@ -449,7 +449,7 @@ export function AssistantChatModal({
                           <Tool
                             key={`${message.id}-tool-${index}`}
                             defaultOpen={tool.state !== 'output-available'}
-                            className="mt-2 border-[var(--glass-stroke-base)] bg-[var(--glass-bg-soft)]"
+                            className="mt-2 border border-white/10 bg-black/20"
                           >
                             {tool.partType === 'dynamic-tool'
                               ? <ToolHeader type={tool.partType} state={tool.state} toolName={tool.toolName} />
@@ -470,17 +470,17 @@ export function AssistantChatModal({
 
                 {pending && !completed && (
                   <Message from="assistant">
-                    <MessageContent className="max-w-[84%] rounded-2xl rounded-bl-md border border-[var(--glass-stroke-base)] bg-[var(--glass-bg-surface)] px-3 py-2">
-                      <div className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-[var(--glass-text-tertiary)]">
+                    <MessageContent className="max-w-[84%] rounded-2xl rounded-bl-md border-l-4 border-[var(--wuhu-neon-cyan)] bg-[var(--wuhu-bg-card)] px-3 py-2 shadow-[0_0_15px_rgba(0,255,255,0.1)] animate-pulse">
+                      <div className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-[var(--wuhu-neon-cyan)]">
                         {assistantLabel}
                       </div>
-                      <MessageResponse>{pendingLabel}</MessageResponse>
+                      <MessageResponse className="text-white/70">{pendingLabel}</MessageResponse>
                     </MessageContent>
                   </Message>
                 )}
 
                 {errorMessage && (
-                  <div className="rounded-xl border border-[var(--glass-stroke-base)] bg-[var(--glass-bg-surface)] px-3 py-2 text-xs text-[var(--glass-text-secondary)]">
+                  <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs text-red-400">
                     {errorMessage}
                   </div>
                 )}
@@ -490,12 +490,12 @@ export function AssistantChatModal({
           )}
         </div>
 
-        <div className="border-t border-[var(--glass-stroke-base)] px-4 py-3">
+        <div className="border-t border-white/10 px-4 py-3 bg-black/20">
           <div className="flex items-center gap-2">
             {completed ? (
               <button
                 onClick={onClose}
-                className="glass-btn-base glass-btn-primary ml-auto px-3 py-2 text-sm font-medium"
+                className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)] ml-auto px-3 py-2 text-sm font-medium rounded-xl"
               >
                 {closeLabel}
               </button>
@@ -507,13 +507,13 @@ export function AssistantChatModal({
                   onChange={(event) => onInputChange(event.target.value)}
                   onKeyDown={(event) => onEnterSubmit(event, onSend)}
                   placeholder={inputPlaceholder}
-                  className="glass-input-base flex-1 px-3 py-2 text-sm"
+                  className="flex-1 px-3 py-2 text-sm rounded-xl bg-[var(--wuhu-bg-card)] border border-white/20 text-white/70 placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[var(--wuhu-neon-purple)] focus:border-[var(--wuhu-neon-purple)] transition-all"
                   disabled={pending}
                 />
                 <button
                   onClick={onSend}
                   disabled={pending}
-                  className="glass-btn-base glass-btn-primary px-3 py-2 text-sm font-medium disabled:opacity-60"
+                  className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)] px-3 py-2 text-sm font-medium disabled:opacity-60 rounded-xl transition-all hover:shadow-[0_0_25px_rgba(167,87,255,0.6)]"
                 >
                   {pending ? pendingLabel : sendLabel}
                 </button>

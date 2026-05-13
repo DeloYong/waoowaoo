@@ -74,16 +74,16 @@ export default function LocationSection({
     const generateType = resolveLocationBackedGenerateType(assetType)
 
     return (
-        <div className="glass-surface p-6">
+        <div className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/20 rounded-xl p-6">
             <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
                     <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--glass-tone-info-bg)] text-[var(--glass-tone-info-fg)]">
                         <AppIcon name="imageLandscape" className="h-5 w-5" />
                     </span>
-                    <h3 className="text-lg font-bold text-[var(--glass-text-primary)]">
+                    <h3 className="text-lg font-bold text-white">
                         {assetType === 'prop' ? t('stage.propAssets') : t("stage.locationAssets")}
                     </h3>
-                    <span className="text-sm text-[var(--glass-text-tertiary)] bg-[var(--glass-bg-muted)]/50 px-2 py-1 rounded-lg">
+                    <span className="text-sm text-white/40 bg-white/5 px-2 py-1 rounded-lg">
                         {assetType === 'prop'
                             ? t('stage.propCounts', { count: locations.length })
                             : t("stage.locationCounts", { count: locations.length })}

@@ -43,10 +43,10 @@ export default function SpeakerVoiceStatus({
     // 嵌入模式：紧凑布局
     if (embedded) {
         return (
-            <div className="glass-surface px-4 py-3 mb-3 mx-4">
+            <div className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 rounded-xl px-4 py-3 mb-3 mx-4">
                 <div className="flex items-center justify-between mb-2">
-                    <h4 className="text-sm font-semibold text-[var(--glass-text-primary)]">{t("embedded.speakerVoiceStatus")}</h4>
-                    <span className="text-xs text-[var(--glass-text-tertiary)]">{t("embedded.speakersCount", { count: speakers.length })}</span>
+                    <h4 className="text-sm font-semibold text-white">{t("embedded.speakerVoiceStatus")}</h4>
+                    <span className="text-xs text-white/50">{t("embedded.speakersCount", { count: speakers.length })}</span>
                 </div>
                 <div className="flex flex-wrap gap-2">
                     {speakers.map(speaker => {
@@ -56,27 +56,27 @@ export default function SpeakerVoiceStatus({
                         return (
                             <div
                                 key={speaker}
-                                className="w-full sm:w-[280px] max-w-full flex items-center gap-1.5 rounded-xl border border-[var(--glass-stroke-base)] bg-[var(--glass-bg-surface-strong)] px-3 py-2"
+                                className="w-full sm:w-[280px] max-w-full flex items-center gap-1.5 rounded-xl border border-[var(--wuhu-neon-purple)]/30 bg-[var(--wuhu-bg-card)] px-3 py-2 hover:border-[var(--wuhu-neon-pink)]/50 transition-colors"
                             >
                                 <div className="min-w-0">
-                                    <div className="text-sm font-semibold text-[var(--glass-text-primary)] truncate">{speaker}</div>
-                                    <div className="text-xs text-[var(--glass-text-tertiary)]">{t("speakerVoice.linesCount", { count })}</div>
+                                    <div className="text-sm font-semibold text-white truncate">{speaker}</div>
+                                    <div className="text-xs text-white/50">{t("speakerVoice.linesCount", { count })}</div>
                                 </div>
                                 <span className={`text-xs px-2 py-1 rounded-full ${hasVoice
-                                    ? 'bg-[var(--glass-tone-success-bg)] text-[var(--glass-tone-success-fg)]'
-                                    : 'bg-[var(--glass-tone-warning-bg)] text-[var(--glass-tone-warning-fg)]'
+                                    ? 'bg-[var(--wuhu-neon-cyan)]/15 text-[var(--wuhu-neon-cyan)] border border-[var(--wuhu-neon-cyan)]/30'
+                                    : 'bg-[var(--wuhu-neon-orange)]/15 text-[var(--wuhu-neon-orange)] border border-[var(--wuhu-neon-orange)]/30'
                                     }`}>
                                     {hasVoice ? t("speakerVoice.configuredStatus") : t("speakerVoice.pendingStatus")}
                                 </span>
                                 {/* 无匹配角色时显示内联标记 */}
                                 {!hasCharacter && !hasVoice && (
-                                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[var(--glass-tone-info-bg)] text-[var(--glass-tone-info-fg)]">
+                                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[var(--wuhu-neon-purple)]/15 text-[var(--wuhu-neon-purple)] border border-[var(--wuhu-neon-purple)]/30">
                                         {t("speakerVoice.inlineLabel")}
                                     </span>
                                 )}
                                 <button
                                     onClick={() => handleVoiceSettings(speaker)}
-                                    className="glass-btn-base glass-btn-secondary text-xs px-2.5 py-1.5 font-medium whitespace-nowrap shrink-0"
+                                    className="border border-white/20 text-white/70 hover:border-[var(--wuhu-neon-pink)] hover:text-white text-xs px-2.5 py-1.5 font-medium whitespace-nowrap shrink-0 rounded-lg transition-colors"
                                 >
                                     {t("speakerVoice.voiceSettings")}
                                 </button>
@@ -90,11 +90,11 @@ export default function SpeakerVoiceStatus({
 
     // 标准模式：完整布局
     return (
-        <div className="glass-surface p-5">
-            <h3 className="text-lg font-bold text-[var(--glass-text-primary)] mb-4 flex items-center gap-2">
-                <span className="w-1.5 h-5 bg-[var(--glass-accent-from)] rounded-full" />
+        <div className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_50px_rgba(167,87,255,0.2)] rounded-xl p-5">
+            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                <span className="w-1.5 h-5 bg-gradient-to-b from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] rounded-full" />
                 {t("speakerVoice.title")}
-                <span className="text-sm font-normal text-[var(--glass-text-tertiary)] ml-2">
+                <span className="text-sm font-normal text-white/50 ml-2">
                     （{t("speakerVoice.hint")}）
                 </span>
             </h3>
@@ -105,23 +105,23 @@ export default function SpeakerVoiceStatus({
                     const hasCharacter = hasSpeakerCharacter ? hasSpeakerCharacter(speaker) : true
 
                     return (
-                        <div key={speaker} className="w-full sm:w-[280px] max-w-full flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[var(--glass-stroke-base)] bg-[var(--glass-bg-surface-strong)]">
+                        <div key={speaker} className="w-full sm:w-[280px] max-w-full flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[var(--wuhu-neon-purple)]/30 bg-[var(--wuhu-bg-card)] hover:border-[var(--wuhu-neon-pink)]/50 transition-colors">
                             <div className="min-w-0">
-                                <div className="font-semibold text-[var(--glass-text-primary)] truncate" title={speaker}>{speaker}</div>
-                                <div className="text-xs text-[var(--glass-text-tertiary)]">{t("speakerVoice.linesCount", { count: speakerStats[speaker] })}</div>
+                                <div className="font-semibold text-white truncate" title={speaker}>{speaker}</div>
+                                <div className="text-xs text-white/50">{t("speakerVoice.linesCount", { count: speakerStats[speaker] })}</div>
                             </div>
-                            <span className={`text-xs px-2 py-1 rounded-full ${hasVoice ? 'bg-[var(--glass-tone-success-bg)] text-[var(--glass-tone-success-fg)]' : 'bg-[var(--glass-tone-warning-bg)] text-[var(--glass-tone-warning-fg)]'}`}>
+                            <span className={`text-xs px-2 py-1 rounded-full ${hasVoice ? 'bg-[var(--wuhu-neon-cyan)]/15 text-[var(--wuhu-neon-cyan)] border border-[var(--wuhu-neon-cyan)]/30' : 'bg-[var(--wuhu-neon-orange)]/15 text-[var(--wuhu-neon-orange)] border border-[var(--wuhu-neon-orange)]/30'}`}>
                                 {hasVoice ? t("speakerVoice.configuredStatus") : t("speakerVoice.pendingStatus")}
                             </span>
                             {/* 无匹配角色时显示内联标记 */}
                             {!hasCharacter && !hasVoice && (
-                                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[var(--glass-tone-info-bg)] text-[var(--glass-tone-info-fg)]">
+                                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[var(--wuhu-neon-purple)]/15 text-[var(--wuhu-neon-purple)] border border-[var(--wuhu-neon-purple)]/30">
                                     {t("speakerVoice.inlineLabel")}
                                 </span>
                             )}
                             <button
                                 onClick={() => handleVoiceSettings(speaker)}
-                                className="glass-btn-base glass-btn-secondary text-xs px-2.5 py-1.5"
+                                className="border border-white/20 text-white/70 hover:border-[var(--wuhu-neon-pink)] hover:text-white text-xs px-2.5 py-1.5 rounded-lg transition-colors"
                             >
                                 {t("speakerVoice.voiceSettings")}
                             </button>

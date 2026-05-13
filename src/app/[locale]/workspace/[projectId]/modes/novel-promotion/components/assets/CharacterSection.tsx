@@ -191,19 +191,19 @@ export default function CharacterSection({
     }, [characters, focusCharacterId, focusCharacterRequestId])
 
     return (
-        <div className="glass-surface p-6">
+        <div className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/20 rounded-xl p-6">
             <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--glass-bg-muted)] text-[var(--glass-text-secondary)]">
+                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 text-[var(--glass-text-secondary)]">
                         <AppIcon name="user" className="h-5 w-5" />
                     </span>
-                    <h3 className="text-lg font-bold text-[var(--glass-text-primary)]">{t("stage.characterAssets")}</h3>
+                    <h3 className="text-lg font-bold text-white">{t("stage.characterAssets")}</h3>
                     {isAnalyzingAssets && (
                         <span className="px-2 py-1 text-xs bg-[var(--glass-tone-info-bg)] text-[var(--glass-tone-info-fg)] rounded-lg flex items-center gap-1">
                             <TaskStatusInline state={analyzingAssetsState} />
                         </span>
                     )}
-                    <span className="text-sm text-[var(--glass-text-tertiary)] bg-[var(--glass-bg-muted)]/50 px-2 py-1 rounded-lg">
+                    <span className="text-sm text-white/40 bg-white/5 px-2 py-1 rounded-lg">
                         {t("stage.counts", { characterCount: characters.length, appearanceCount: totalAppearances })}
                     </span>
                 </div>
@@ -224,8 +224,8 @@ export default function CharacterSection({
                             <span className="inline-flex h-5 w-5 items-center justify-center rounded-md bg-[var(--glass-tone-info-bg)]">
                                 <AppIcon name="sparkles" className="h-3 w-3 text-[var(--glass-tone-info-fg)]" />
                             </span>
-                            <span className="text-sm font-semibold text-[var(--glass-text-primary)]">{t('stage.pendingProfilesBanner')}</span>
-                            <span className="text-xs text-[var(--glass-text-tertiary)]">{t('stage.pendingProfilesHint')}</span>
+                            <span className="text-sm font-semibold text-white">{t('stage.pendingProfilesBanner')}</span>
+                            <span className="text-xs text-white/40">{t('stage.pendingProfilesHint')}</span>
                         </div>
                         <button
                             onClick={onBatchConfirm}
@@ -279,13 +279,13 @@ export default function CharacterSection({
                         <div
                             key={character.id}
                             id={`project-character-${character.id}`}
-                            className={`glass-surface rounded-xl p-4 scroll-mt-24 transition-all duration-700 ${highlightedCharacterId === character.id ? 'ring-2 ring-[var(--glass-focus-ring)] bg-[var(--glass-tone-info-bg)]/40' : ''}`}
+                            className={`bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/20 rounded-xl p-4 scroll-mt-24 transition-all duration-700 hover:border-[var(--wuhu-neon-pink)] hover:shadow-[0_0_25px_rgba(255,100,200,0.25)] ${highlightedCharacterId === character.id ? 'border-[var(--wuhu-neon-pink)] shadow-[0_0_30px_rgba(255,100,200,0.3)]' : ''}`}
                         >
                             {/* 角色标题 */}
                             <div className="flex items-center justify-between pb-2">
                                 <div className="flex items-center gap-3">
-                                    <h3 className="text-base font-semibold text-[var(--glass-text-primary)]">{character.name}</h3>
-                                    <span className="text-xs text-[var(--glass-text-tertiary)]">
+                                    <h3 className="text-base font-semibold text-white">{character.name}</h3>
+                                    <span className="text-xs text-white/40">
                                         {t("character.assetCount", { count: sortedAppearances.length })}
                                     </span>
                                 </div>

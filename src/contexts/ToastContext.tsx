@@ -175,7 +175,7 @@ function ToastContainer({
                     {/* 关闭按钮 */}
                     <button
                         onClick={() => onDismiss(toast.id)}
-                        className="glass-btn-base glass-btn-ghost w-6 h-6 rounded-md p-0 opacity-70 hover:opacity-100 transition-opacity"
+                        className="border border-white/20 text-white/70 hover:bg-white/10 hover:text-white w-6 h-6 rounded-md p-0 opacity-70 hover:opacity-100 transition-opacity"
                     >
                         <AppIcon name="close" className="w-4 h-4" />
                     </button>
@@ -192,14 +192,14 @@ function ToastContainer({
 function getToastStyle(type: Toast['type']): string {
     switch (type) {
         case 'success':
-            return 'bg-[var(--glass-tone-success-bg)] text-[var(--glass-tone-success-fg)] border-[color:color-mix(in_srgb,var(--glass-tone-success-fg)_22%,transparent)]'
+            return 'bg-[var(--wuhu-neon-cyan)]/15 text-[var(--wuhu-neon-cyan)] border border-[var(--wuhu-neon-cyan)]/30 shadow-[0_0_15px_rgba(100,255,255,0.2)]'
         case 'error':
-            return 'bg-[var(--glass-tone-danger-bg)] text-[var(--glass-tone-danger-fg)] border-[color:color-mix(in_srgb,var(--glass-tone-danger-fg)_22%,transparent)]'
+            return 'bg-red-500/15 text-red-400 border border-red-500/30 shadow-[0_0_15px_rgba(239,68,68,0.2)]'
         case 'warning':
-            return 'bg-[var(--glass-tone-warning-bg)] text-[var(--glass-tone-warning-fg)] border-[color:color-mix(in_srgb,var(--glass-tone-warning-fg)_22%,transparent)]'
+            return 'bg-[var(--wuhu-neon-orange)]/15 text-[var(--wuhu-neon-orange)] border border-[var(--wuhu-neon-orange)]/30 shadow-[0_0_15px_rgba(249,115,22,0.2)]'
         case 'info':
         default:
-            return 'bg-[var(--glass-tone-info-bg)] text-[var(--glass-tone-info-fg)] border-[color:color-mix(in_srgb,var(--glass-tone-info-fg)_22%,transparent)]'
+            return 'bg-[var(--wuhu-neon-purple)]/15 text-[var(--wuhu-neon-purple)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_15px_rgba(167,87,255,0.2)]'
     }
 }
 

@@ -47,25 +47,25 @@ export default function EmotionSettingsPanel({
     }
 
     return (
-        <div className="px-4 py-3 bg-[var(--glass-tone-info-bg)] space-y-3">
+        <div className="px-4 py-3 bg-[var(--wuhu-neon-purple)]/10 space-y-3">
             {/* 情绪提示词 */}
             <div>
-                <label className="block text-xs text-[var(--glass-tone-info-fg)] mb-1.5 font-medium">
-                    {t("emotionPrompt")} <span className="text-[var(--glass-text-tertiary)] font-normal">{t("emotionPromptTip")}</span>
+                <label className="block text-xs text-[var(--wuhu-neon-purple)] mb-1.5 font-medium">
+                    {t("emotionPrompt")} <span className="text-white/40 font-normal">{t("emotionPromptTip")}</span>
                 </label>
                 <input
                     type="text"
                     value={prompt}
                     onChange={(e) => handlePromptChange(e.target.value)}
                     placeholder={t("emotionPlaceholder")}
-                    className="w-full px-3 py-2 text-sm border border-[var(--glass-stroke-focus)]/60 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--glass-tone-info-fg)]/50 focus:border-[var(--glass-stroke-focus)] bg-[var(--glass-bg-surface)]"
+                    className="w-full px-3 py-2 text-sm border border-[var(--wuhu-neon-purple)]/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--wuhu-neon-purple)]/50 focus:border-[var(--wuhu-neon-purple)] bg-[var(--wuhu-bg-card)] text-white/70 placeholder:text-white/30"
                 />
             </div>
 
             {/* 情绪强度滑块 */}
             <div>
-                <label className="block text-xs text-[var(--glass-tone-info-fg)] mb-1.5 font-medium">
-                    {t("emotionStrength")}: <span className="font-bold">{strength.toFixed(1)}</span>
+                <label className="block text-xs text-[var(--wuhu-neon-purple)] mb-1.5 font-medium">
+                    {t("emotionStrength")}: <span className="font-bold text-white">{strength.toFixed(1)}</span>
                 </label>
                 <input
                     type="range"
@@ -74,9 +74,9 @@ export default function EmotionSettingsPanel({
                     step="0.1"
                     value={strength}
                     onChange={(e) => handleStrengthChange(parseFloat(e.target.value))}
-                    className="w-full h-2 bg-[var(--glass-tone-info-bg)] rounded-lg appearance-none cursor-pointer accent-[var(--glass-accent-from)]"
+                    className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[var(--wuhu-neon-pink)]"
                 />
-                <div className="flex justify-between text-[10px] text-[var(--glass-text-tertiary)] mt-1">
+                <div className="flex justify-between text-[10px] text-white/40 mt-1">
                     <span>{t("flat")}</span>
                     <span>{t("intense")}</span>
                 </div>
@@ -86,7 +86,7 @@ export default function EmotionSettingsPanel({
             <button
                 onClick={handleGenerate}
                 disabled={isVoiceGenerationRunning}
-                className="w-full py-2 text-sm bg-[var(--glass-tone-success-fg)] text-white rounded-xl hover:bg-[var(--glass-tone-success-fg)] font-medium transition-all shadow-[var(--glass-shadow-sm)] disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-2 text-sm bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white rounded-xl font-medium transition-all shadow-[0_0_15px_rgba(167,87,255,0.4)] hover:shadow-[0_0_25px_rgba(167,87,255,0.6)] disabled:opacity-50 disabled:cursor-not-allowed"
             >
                 {isVoiceGenerationRunning ? (
                     <TaskStatusInline state={voiceGenerationState} className="justify-center text-white [&>span]:text-white [&_svg]:text-white" />

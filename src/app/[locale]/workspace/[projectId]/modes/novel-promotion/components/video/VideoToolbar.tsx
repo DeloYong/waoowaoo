@@ -49,22 +49,22 @@ export default function VideoToolbar({
     })
     : null
   return (
-    <div className="glass-surface p-4">
+    <div className="bg-[var(--wuhu-bg-card)] p-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <span className="text-sm font-semibold text-[var(--glass-text-secondary)]">
+          <span className="text-sm font-semibold text-white/70">
              {t('toolbar.title')}
           </span>
-          <span className="text-sm text-[var(--glass-text-tertiary)]">
+          <span className="text-sm text-white/50">
             {t('toolbar.totalShots', { count: totalPanels })}
             {runningCount > 0 && (
-              <span className="text-[var(--glass-tone-info-fg)] ml-2 animate-pulse">({t('toolbar.generatingShots', { count: runningCount })})</span>
+              <span className="text-[var(--wuhu-neon-purple)] ml-2 animate-pulse">({t('toolbar.generatingShots', { count: runningCount })})</span>
             )}
             {videosWithUrl > 0 && (
-              <span className="text-[var(--glass-tone-success-fg)] ml-2">({t('toolbar.completedShots', { count: videosWithUrl })})</span>
+              <span className="text-[var(--wuhu-neon-cyan)] ml-2">({t('toolbar.completedShots', { count: videosWithUrl })})</span>
             )}
             {failedCount > 0 && (
-              <span className="text-[var(--glass-tone-danger-fg)] ml-2">({t('toolbar.failedShots', { count: failedCount })})</span>
+              <span className="text-red-400 ml-2">({t('toolbar.failedShots', { count: failedCount })})</span>
             )}
           </span>
         </div>
@@ -111,7 +111,7 @@ export default function VideoToolbar({
           )}
           <button
             onClick={onBack}
-            className="glass-btn-base glass-btn-secondary flex items-center gap-2 px-4 py-2 text-sm font-medium border border-[var(--glass-stroke-base)] hover:text-[var(--glass-tone-info-fg)]"
+            className="glass-btn-base glass-btn-secondary flex items-center gap-2 px-4 py-2 text-sm font-medium border border-[var(--glass-stroke-base)] hover:text-[var(--wuhu-neon-purple)]"
           >
             <AppIcon name="chevronLeft" className="w-4 h-4" />
             <span>{t('toolbar.back')}</span>

@@ -82,8 +82,8 @@ export function SpotlightCharCard({
       className={`
         group relative min-w-0 rounded-xl cursor-pointer transition-all duration-500 ease-out
         ${isActive
-          ? 'opacity-100 scale-100 ring-2 ring-[var(--glass-focus-ring-strong)] shadow-[var(--glass-shadow-md)] bg-[var(--glass-bg-surface)]'
-          : 'opacity-50 scale-95 grayscale hover:grayscale-0 hover:opacity-100 hover:scale-95 bg-[var(--glass-bg-muted)]'
+          ? 'opacity-100 scale-100 ring-2 ring-[var(--wuhu-neon-purple)] shadow-[0_0_20px_rgba(168,85,247,0.25)] bg-[var(--wuhu-bg-card)]'
+          : 'opacity-50 scale-95 grayscale hover:grayscale-0 hover:opacity-100 hover:scale-95 bg-white/5'
         }
       `}
     >
@@ -95,13 +95,13 @@ export function SpotlightCharCard({
               onRemove()
             }
           }}
-          className="absolute right-2 top-2 h-5 w-5 rounded-full bg-[var(--glass-tone-danger-fg)] text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-md hover:bg-[var(--glass-tone-danger-fg)] hover:scale-110 z-20"
+          className="absolute right-2 top-2 h-5 w-5 rounded-full bg-[var(--wuhu-neon-pink)] text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-[0_0_10px_rgba(255,100,200,0.5)] hover:scale-110 z-20"
           title={tScript('asset.removeFromClip')}
         >
           <AppIcon name="closeSm" className="h-3 w-3" />
         </button>
       )}
-      <div className="aspect-square relative rounded-t-xl overflow-hidden bg-[var(--glass-bg-muted)]">
+      <div className="aspect-square relative rounded-t-xl overflow-hidden bg-white/5">
         {imageUrl ? (
           <MediaImageWithLoading
             src={imageUrl}
@@ -111,14 +111,14 @@ export function SpotlightCharCard({
             onClick={(e) => { e.stopPropagation(); setPreviewImage(imageUrl) }}
           />
         ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center bg-[var(--glass-bg-surface-strong)] p-3">
-            <div className="w-10 h-10 rounded-full bg-[var(--glass-bg-muted)] flex items-center justify-center mb-2">
-              <AppIcon name="userCircle" className="w-5 h-5 text-[var(--glass-text-tertiary)]" />
+          <div className="w-full h-full flex flex-col items-center justify-center bg-white/5 p-3">
+            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center mb-2">
+              <AppIcon name="userCircle" className="w-5 h-5 text-white/50" />
             </div>
             {onOpenAssetLibrary && (
               <button
                 onClick={(e) => { e.stopPropagation(); onOpenAssetLibrary() }}
-                className="text-[11px] text-[var(--glass-text-secondary)] font-medium hover:text-[var(--glass-tone-info-fg)] transition-colors text-center leading-tight"
+                className="text-[11px] text-white/70 font-medium hover:text-[var(--wuhu-neon-purple)] transition-colors text-center leading-tight"
               >
                 {tScript('asset.generateCharacter')}
               </button>
@@ -126,24 +126,24 @@ export function SpotlightCharCard({
           </div>
         )}
         {isActive && (
-          <div className="absolute top-2 right-2 w-2 h-2 bg-[var(--glass-tone-success-fg)] rounded-full shadow-[0_0_8px_rgba(74,222,128,0.8)] border border-white" />
+          <div className="absolute top-2 right-2 w-2 h-2 bg-[var(--wuhu-neon-pink)] rounded-full shadow-[0_0_10px_rgba(255,100,200,0.8)] border border-white" />
         )}
       </div>
       <div className="p-2 text-center">
-        <div className={`text-sm font-bold truncate ${isActive ? 'text-[var(--glass-text-primary)]' : 'text-[var(--glass-text-tertiary)]'}`}>
+        <div className={`text-sm font-bold truncate ${isActive ? 'text-white' : 'text-white/50'}`}>
           {char.name}
         </div>
         {appearance?.changeReason && (
-          <div className="text-xs text-[var(--glass-text-tertiary)] truncate">{appearance.changeReason}</div>
+          <div className="text-xs text-white/50 truncate">{appearance.changeReason}</div>
         )}
         <button
           onClick={hasVoice ? handlePlayVoice : undefined}
           disabled={!hasVoice}
           className={`mt-1.5 w-full flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg text-xs font-medium transition-all ${!hasVoice
-            ? 'bg-[var(--glass-bg-muted)] text-[var(--glass-text-tertiary)] cursor-not-allowed border border-dashed border-[var(--glass-stroke-base)]'
+            ? 'bg-white/5 text-white/40 cursor-not-allowed border border-dashed border-white/20'
             : isPlaying
-              ? 'bg-[var(--glass-accent-from)] text-white'
-              : 'bg-[var(--glass-bg-muted)] text-[var(--glass-text-secondary)] hover:bg-[var(--glass-tone-info-bg)] hover:text-[var(--glass-tone-info-fg)]'
+              ? 'bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(168,85,247,0.4)]'
+              : 'bg-white/5 text-white/70 hover:bg-[var(--wuhu-neon-purple)]/20 hover:text-white'
             }`}
         >
           {!hasVoice ? (
@@ -211,8 +211,8 @@ export function SpotlightLocationCard({
       className={`
         group relative min-w-0 rounded-xl cursor-pointer transition-all duration-500 ease-out
         ${isActive
-          ? 'opacity-100 scale-100 ring-2 ring-[var(--glass-stroke-success)] shadow-[var(--glass-shadow-md)] bg-[var(--glass-bg-surface)]'
-          : 'opacity-50 scale-95 grayscale hover:grayscale-0 hover:opacity-100 hover:scale-95 bg-[var(--glass-bg-muted)]'
+          ? 'opacity-100 scale-100 ring-2 ring-[var(--wuhu-neon-purple)] shadow-[0_0_20px_rgba(168,85,247,0.25)] bg-[var(--wuhu-bg-card)]'
+          : 'opacity-50 scale-95 grayscale hover:grayscale-0 hover:opacity-100 hover:scale-95 bg-white/5'
         }
       `}
     >
@@ -224,13 +224,13 @@ export function SpotlightLocationCard({
               onRemove()
             }
           }}
-          className="absolute right-2 top-2 h-5 w-5 rounded-full bg-[var(--glass-tone-danger-fg)] text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-md hover:bg-[var(--glass-tone-danger-fg)] hover:scale-110 z-20"
+          className="absolute right-2 top-2 h-5 w-5 rounded-full bg-[var(--wuhu-neon-pink)] text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-[0_0_10px_rgba(255,100,200,0.5)] hover:scale-110 z-20"
           title={tScript('asset.removeFromClip')}
         >
           <AppIcon name="closeSm" className="h-3 w-3" />
         </button>
       )}
-      <div className="aspect-video relative rounded-t-xl overflow-hidden bg-[var(--glass-bg-muted)]">
+      <div className="aspect-video relative rounded-t-xl overflow-hidden bg-white/5">
         {imageUrl ? (
           <MediaImageWithLoading
             src={imageUrl}
@@ -240,14 +240,14 @@ export function SpotlightLocationCard({
             onClick={(e) => { e.stopPropagation(); setPreviewImage(imageUrl) }}
           />
         ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center bg-[var(--glass-bg-surface-strong)] p-3">
-            <div className="w-10 h-10 rounded-full bg-[var(--glass-bg-muted)] flex items-center justify-center mb-2">
-              <AppIcon name="imagePreview" className="w-5 h-5 text-[var(--glass-text-tertiary)]" />
+          <div className="w-full h-full flex flex-col items-center justify-center bg-white/5 p-3">
+            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center mb-2">
+              <AppIcon name="imagePreview" className="w-5 h-5 text-white/50" />
             </div>
             {onOpenAssetLibrary && (
               <button
                 onClick={(e) => { e.stopPropagation(); onOpenAssetLibrary() }}
-                className="text-[11px] text-[var(--glass-text-secondary)] font-medium hover:text-[var(--glass-tone-info-fg)] transition-colors text-center leading-tight"
+                className="text-[11px] text-white/70 font-medium hover:text-[var(--wuhu-neon-purple)] transition-colors text-center leading-tight"
               >
                 {tScript('asset.generateLocation')}
               </button>
@@ -255,11 +255,11 @@ export function SpotlightLocationCard({
           </div>
         )}
         {isActive && (
-          <div className="absolute top-2 right-2 w-2 h-2 bg-[var(--glass-tone-success-fg)] rounded-full shadow-[0_0_8px_rgba(74,222,128,0.8)] border border-white" />
+          <div className="absolute top-2 right-2 w-2 h-2 bg-[var(--wuhu-neon-pink)] rounded-full shadow-[0_0_10px_rgba(255,100,200,0.8)] border border-white" />
         )}
       </div>
       <div className="p-2 text-center">
-        <div className={`text-sm font-bold truncate ${isActive ? 'text-[var(--glass-text-primary)]' : 'text-[var(--glass-text-tertiary)]'}`}>
+        <div className={`text-sm font-bold truncate ${isActive ? 'text-white' : 'text-white/50'}`}>
           {location.name}
         </div>
       </div>

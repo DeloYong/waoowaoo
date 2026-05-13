@@ -2,7 +2,6 @@
 import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import './ImageSection.css'
-import { GlassButton } from '@/components/ui/primitives'
 import { MediaImageWithLoading } from '@/components/media/MediaImageWithLoading'
 import TaskStatusOverlay from '@/components/task/TaskStatusOverlay'
 import { resolveTaskPresentationState } from '@/lib/task/presentation'
@@ -82,7 +81,7 @@ export default function ImageSection({
     })
 
     return (
-      <div className="relative flex h-full w-full items-center justify-center overflow-hidden bg-[var(--glass-bg-surface-modal)] backdrop-blur-md group/loading">
+      <div className="relative flex h-full w-full items-center justify-center overflow-hidden bg-black/40 backdrop-blur-md group/loading">
         {backdropImageUrl && (
           <MediaImageWithLoading
             src={backdropImageUrl}
@@ -92,7 +91,7 @@ export default function ImageSection({
             sizes="(max-width: 768px) 100vw, 33vw"
           />
         )}
-        <div className={`absolute inset-0 ${backdropImageUrl ? 'bg-black/45 backdrop-blur-[1px]' : 'bg-[var(--glass-bg-surface-modal)] backdrop-blur-md'}`} />
+        <div className={`absolute inset-0 ${backdropImageUrl ? 'bg-black/45 backdrop-blur-[1px]' : 'bg-black/40 backdrop-blur-md'}`} />
         <TaskStatusOverlay
           state={state}
           className={backdropImageUrl ? 'bg-black/45 backdrop-blur-[1px]' : undefined}
@@ -102,13 +101,13 @@ export default function ImageSection({
   }
 
   const renderFailedState = () => (
-    <div className="flex h-full w-full flex-col items-center justify-center gap-1 bg-[var(--glass-danger-ring)] text-[var(--glass-tone-danger-fg)] p-2">
+    <div className="flex h-full w-full flex-col items-center justify-center gap-1 bg-red-500/15 text-red-400 border border-red-500/30 p-2">
       <AppIcon name="alert" className="w-6 h-6 mb-1" />
       <span className="text-xs text-center font-medium">{t('image.failed')}</span>
       <span className="text-[10px] text-center mt-1 line-clamp-2 px-1">{failedError}</span>
       <button
         onClick={onClearError}
-        className="glass-btn-base glass-btn-tone-danger mt-1 px-2 py-1 text-[10px] rounded-md"
+        className="border border-red-500/50 bg-red-500/20 hover:bg-red-500/30 text-red-400 mt-1 px-2 py-1 text-[10px] rounded-md transition-all"
       >
         {t('variant.close')}
       </button>
@@ -116,25 +115,24 @@ export default function ImageSection({
   )
 
   const renderEmptyState = () => (
-    <div className="flex h-full w-full flex-col items-center justify-center gap-2 bg-[var(--glass-bg-surface-strong)] text-[var(--glass-text-tertiary)]">
+    <div className="flex h-full w-full flex-col items-center justify-center gap-2 bg-[var(--wuhu-bg-surface)] text-white/50">
       <AppIcon name="imagePreview" className="w-8 h-8" />
       <span className="text-xs">{t('video.toolbar.showPending')}</span>
-      <GlassButton
-        variant="primary"
-        size="sm"
+      <button
         onClick={() => {
           triggerPulse()
           onRegeneratePanelImage(panelId, 1, false)
         }}
+        className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)] px-4 py-2 rounded-lg text-sm font-medium transition-all hover:shadow-[0_0_25px_rgba(167,87,255,0.6)]"
       >
         {t('panel.generateImage')}
-      </GlassButton>
+      </button>
     </div>
   )
 
   return (
     <div
-      className={`relative overflow-hidden group rounded-t-2xl transition-all bg-[var(--glass-bg-muted)] ${isTaskPulseAnimating ? 'animate-brightness-boost' : ''}`}
+      className={`relative overflow-hidden group rounded-t-2xl transition-all bg-[var(--wuhu-bg-surface)] border-b border-[var(--wuhu-neon-purple)]/20 ${isTaskPulseAnimating ? 'animate-brightness-boost' : ''}`}
       style={{ aspectRatio: cssAspectRatio }}
     >
       {isDeleting ? (
@@ -174,11 +172,11 @@ export default function ImageSection({
       )}
 
       <div className="absolute top-2 left-2">
-        <span className="glass-chip glass-chip-neutral px-2 py-0.5 text-xs font-medium">{globalPanelNumber}</span>
+        <span className="bg-black/50 text-white px-2 py-0.5 rounded-lg text-xs font-medium backdrop-blur-sm">{globalPanelNumber}</span>
       </div>
 
       <div className="absolute top-2 right-2">
-        <span className="glass-chip glass-chip-info px-2 py-0.5 text-xs">{shotType}</span>
+        <span className="bg-[var(--wuhu-neon-purple)]/30 text-[var(--wuhu-neon-purple)] border border-[var(--wuhu-neon-purple)]/40 px-2 py-0.5 rounded-lg text-xs">{shotType}</span>
       </div>
 
       {!candidateData && (

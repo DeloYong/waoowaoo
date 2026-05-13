@@ -88,10 +88,8 @@ export default function PanelCard({
 }: PanelCardProps) {
   const t = useTranslations('storyboard')
   return (
-    <GlassSurface
-      variant="elevated"
-      padded={false}
-      className="relative h-full overflow-visible transition-all hover:shadow-[var(--glass-shadow-md)] group/card"
+    <div
+      className="relative h-full overflow-visible transition-all bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/40 shadow-[0_0_20px_rgba(167,87,255,0.2)] rounded-2xl hover:shadow-[0_0_30px_rgba(167,87,255,0.4)] hover:border-[var(--wuhu-neon-pink)]/60 group/card"
       data-storyboard-id={storyboardId}
     >
       {/* 删除按钮 - 右上角外部 */}
@@ -157,6 +155,6 @@ export default function PanelCard({
           onRemoveLocation={onRemoveLocation}
         />
       </div>
-    </GlassSurface>
+    </div>
   )
 }

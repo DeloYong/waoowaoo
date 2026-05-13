@@ -25,17 +25,16 @@ export default function PanelActionButtons({
     const t = useTranslations('storyboard')
     const baseButtonClass = `
         group relative h-7 w-7 rounded-full
-        glass-btn-base border border-[var(--glass-stroke-base)]
-        bg-[var(--glass-bg-surface)] text-[var(--glass-text-secondary)]
-        shadow-[var(--glass-shadow-sm)] transition-all duration-200 ease-out
+        border border-white/20
+        bg-[var(--wuhu-bg-card)] text-white/50
+        shadow-none transition-all duration-200 ease-out
         flex items-center justify-center
     `
     const enabledButtonClass = `
-        hover:-translate-y-0.5 hover:shadow-[var(--glass-shadow-md)]
-        hover:border-[var(--glass-stroke-focus)] hover:bg-[var(--glass-tone-info-bg)]
+        hover:text-white hover:bg-white/10 hover:border-[var(--wuhu-neon-pink)]
     `
     const disabledButtonClass = `
-        bg-[var(--glass-bg-muted)] text-[var(--glass-text-tertiary)] cursor-not-allowed
+        bg-[var(--wuhu-bg-surface)] text-white/30 cursor-not-allowed
     `
 
     return (
@@ -55,7 +54,7 @@ export default function PanelActionButtons({
                 {/* Hover 时显示提示 */}
                 <span className={`
                     absolute -top-8 left-1/2 -translate-x-1/2
-                    px-2 py-1 text-xs text-white bg-[var(--glass-overlay)] rounded
+                    px-2 py-1 text-xs text-white bg-black/70 backdrop-blur-sm rounded-lg
                     opacity-0 group-hover:opacity-100
                     transition-opacity duration-200
                     whitespace-nowrap pointer-events-none
@@ -80,7 +79,7 @@ export default function PanelActionButtons({
                 {/* Hover 时显示提示 */}
                 <span className={`
                     absolute -top-8 left-1/2 -translate-x-1/2
-                    px-2 py-1 text-xs text-white bg-[var(--glass-overlay)] rounded
+                    px-2 py-1 text-xs text-white bg-black/70 backdrop-blur-sm rounded-lg
                     opacity-0 group-hover:opacity-100
                     transition-opacity duration-200
                     whitespace-nowrap pointer-events-none

@@ -234,7 +234,7 @@ export default function LocationCard({
     )
 
     return (
-      <div className="col-span-3 glass-surface-elevated p-4 transition-all">
+      <div className="col-span-3 bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/20 rounded-xl transition-all duration-300 hover:border-[var(--wuhu-neon-pink)] hover:shadow-[0_0_25px_rgba(255,100,200,0.25)] p-4 transition-all">
         <input
           ref={fileInputRef}
           type="file"
@@ -377,7 +377,7 @@ export default function LocationCard({
   const canGenerate = canGenerateLocationBackedAsset(location)
 
   return (
-    <div className="flex flex-col gap-2 glass-surface-elevated p-3">
+    <div className="flex flex-col gap-2 bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/20 rounded-xl transition-all duration-300 hover:border-[var(--wuhu-neon-pink)] hover:shadow-[0_0_25px_rgba(255,100,200,0.25)] p-3">
       <input
         ref={fileInputRef}
         type="file"

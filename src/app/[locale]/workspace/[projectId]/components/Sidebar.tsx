@@ -128,25 +128,25 @@ export default function Sidebar({
                 <div className="flex flex-col items-center">
                     {/* 拖动手柄 */}
                     <div
-                        className="w-6 h-4 bg-[var(--glass-bg-muted)] rounded-t cursor-ns-resize flex items-center justify-center hover:bg-[var(--glass-bg-surface-strong)] transition-colors"
+                        className="w-6 h-4 bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 rounded-t cursor-ns-resize flex items-center justify-center hover:border-[var(--wuhu-neon-purple)]/60 transition-colors"
                         onMouseDown={handleDragStart}
                         title={t('sidebar.dragToMove')}
                     >
                         <div className="flex gap-0.5">
-                            <div className="w-0.5 h-1.5 bg-[var(--glass-text-tertiary)] rounded-full" />
-                            <div className="w-0.5 h-1.5 bg-[var(--glass-text-tertiary)] rounded-full" />
-                            <div className="w-0.5 h-1.5 bg-[var(--glass-text-tertiary)] rounded-full" />
+                            <div className="w-0.5 h-1.5 bg-[var(--wuhu-neon-pink)] rounded-full" />
+                            <div className="w-0.5 h-1.5 bg-[var(--wuhu-neon-pink)] rounded-full" />
+                            <div className="w-0.5 h-1.5 bg-[var(--wuhu-neon-pink)] rounded-full" />
                         </div>
                     </div>
 
                     {/* 展开按钮 */}
                     <div
-                        className={`glass-surface rounded-r-xl cursor-pointer transition-all flex items-center gap-1 px-2 py-3 ${isExpanded ? 'bg-[var(--glass-tone-info-bg)] border-[var(--glass-stroke-focus)]' : ''
+                        className={`bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 rounded-r-xl cursor-pointer transition-all flex items-center gap-1 px-2 py-3 ${isExpanded ? 'shadow-[0_0_20px_rgba(168,85,247,0.3)] border-[var(--wuhu-neon-purple)]' : ''
                             }`}
                         onClick={() => setIsExpanded(!isExpanded)}
                     >
-                        <AppIcon name="chevronRight" className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180 text-[var(--glass-tone-info-fg)]' : 'text-[var(--glass-text-tertiary)]'}`} />
-                        <span className={`text-xs font-medium whitespace-nowrap ${isExpanded ? 'text-[var(--glass-tone-info-fg)]' : 'text-[var(--glass-text-secondary)]'}`}>
+                        <AppIcon name="chevronRight" className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180 text-[var(--wuhu-neon-pink)]' : 'text-white/50'}`} />
+                        <span className={`text-xs font-medium whitespace-nowrap ${isExpanded ? 'text-[var(--wuhu-neon-pink)]' : 'text-white/70'}`}>
                             {t('episode')}
                         </span>
                     </div>
@@ -164,37 +164,37 @@ export default function Sidebar({
 
                     {/* 侧边面板 */}
                     <div
-                        className="fixed left-12 glass-surface-modal rounded-r-xl z-50 w-64 max-h-[70vh] overflow-hidden flex flex-col"
+                        className="fixed left-12 bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_30px_rgba(168,85,247,0.2)] rounded-r-xl z-50 w-64 max-h-[70vh] overflow-hidden flex flex-col"
                         style={{ top: position.y - 50 }}
                     >
                         {/* 标题栏 */}
-                        <div className="p-4 border-b border-[var(--glass-stroke-base)] bg-[var(--glass-bg-surface-strong)]">
+                        <div className="p-4 border-b border-white/10 bg-[var(--wuhu-bg-card)]">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <h3 className="font-bold text-[var(--glass-text-primary)] text-sm flex items-center gap-1.5">
-                                        <AppIcon name="monitor" className="w-4 h-4 text-[var(--glass-tone-info-fg)]" />
+                                    <h3 className="font-bold text-white text-sm flex items-center gap-1.5">
+                                        <AppIcon name="monitor" className="w-4 h-4 text-[var(--wuhu-neon-purple)]" />
                                         <span>{t('sidebar.listTitle')}</span>
                                     </h3>
-                                    <p className="text-xs text-[var(--glass-text-secondary)] mt-0.5 truncate" title={projectName}>
+                                    <p className="text-xs text-white/70 mt-0.5 truncate" title={projectName}>
                                         {projectName}
                                     </p>
                                 </div>
-                                <span className="text-xs text-[var(--glass-text-tertiary)] bg-[var(--glass-bg-muted)] px-2 py-0.5 rounded">
+                                <span className="text-xs text-white/50 bg-[var(--wuhu-neon-purple)]/20 px-2 py-0.5 rounded">
                                     {t('sidebar.episodeCount', { count: episodes.length })}
                                 </span>
                             </div>
                         </div>
 
                         {/* 全局资产入口 */}
-                        <div className="px-3 py-2 border-b border-[var(--glass-stroke-base)]">
+                        <div className="px-3 py-2 border-b border-white/10">
                             <button
                                 onClick={() => {
                                     onGlobalAssetsClick()
                                     setIsExpanded(false)
                                 }}
-                                className={`glass-btn-base w-full py-2 px-3 rounded-lg text-left text-sm transition-colors flex items-center justify-start gap-2 ${isGlobalAssetsView
-                                        ? 'glass-btn-tone-info'
-                                        : 'glass-btn-soft text-[var(--glass-text-secondary)]'
+                                className={`w-full py-2 px-3 rounded-lg text-left text-sm transition-all flex items-center justify-start gap-2 ${isGlobalAssetsView
+                                        ? 'bg-gradient-to-r from-[var(--wuhu-neon-purple)]/30 to-[var(--wuhu-neon-pink)]/20 text-white border-l-2 border-[var(--wuhu-neon-pink)] shadow-[0_0_20px_rgba(255,100,200,0.15)]'
+                                        : 'text-white/60 hover:text-white hover:bg-[var(--wuhu-neon-purple)]/15'
                                     }`}
                             >
                                 <AppIcon name="coins" className="w-4 h-4" />
@@ -205,7 +205,7 @@ export default function Sidebar({
                         {/* 剧集列表 */}
                         <div className="flex-1 overflow-y-auto p-3 space-y-1">
                             {episodes.length === 0 ? (
-                                <div className="text-center py-6 text-[var(--glass-text-tertiary)] text-sm">
+                                <div className="text-center py-6 text-white/40 text-sm">
                                     {t('sidebar.empty')}
                                 </div>
                             ) : (
@@ -258,19 +258,19 @@ export default function Sidebar({
                                                     onEpisodeSelect(ep.id)
                                                     setIsExpanded(false)
                                                 }}
-                                                className={`w-full py-2 px-3 rounded-lg text-left text-sm transition-colors flex items-center gap-2 ${currentEpisodeId === ep.id && !isGlobalAssetsView
-                                                        ? 'glass-btn-tone-info'
-                                                        : 'hover:bg-[var(--glass-bg-muted)] text-[var(--glass-text-secondary)]'
+                                                className={`w-full py-2 px-3 rounded-lg text-left text-sm transition-all flex items-center gap-2 ${currentEpisodeId === ep.id && !isGlobalAssetsView
+                                                        ? 'bg-gradient-to-r from-[var(--wuhu-neon-purple)]/30 to-[var(--wuhu-neon-pink)]/20 text-white border-l-2 border-[var(--wuhu-neon-pink)] shadow-[0_0_20px_rgba(255,100,200,0.15)]'
+                                                        : 'text-white/60 hover:text-white hover:bg-[var(--wuhu-neon-purple)]/15'
                                                     }`}
                                             >
-                                                <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${currentEpisodeId === ep.id && !isGlobalAssetsView ? 'bg-[var(--glass-bg-surface)]/25' : 'bg-[var(--glass-bg-muted)]'
+                                                <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${currentEpisodeId === ep.id && !isGlobalAssetsView ? 'bg-[var(--wuhu-neon-pink)] text-white' : 'bg-[var(--wuhu-neon-purple)]/20 text-white/50'
                                                     }`}>
                                                     {ep.episodeNumber}
                                                 </span>
                                                 <span className="truncate flex-1">{ep.name}</span>
 
                                                 {/* 操作按钮 */}
-                                                <div className={`flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity ${currentEpisodeId === ep.id && !isGlobalAssetsView ? 'text-white/80' : 'text-[var(--glass-text-tertiary)]'
+                                                <div className={`flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity ${currentEpisodeId === ep.id && !isGlobalAssetsView ? 'text-white/80' : 'text-white/40'
                                                     }`}>
                                                     <button
                                                         type="button"
@@ -304,7 +304,7 @@ export default function Sidebar({
                         </div>
 
                         {/* 添加剧集 */}
-                        <div className="p-3 border-t border-[var(--glass-stroke-base)] bg-[var(--glass-bg-surface-strong)]">
+                        <div className="p-3 border-t border-white/10 bg-[var(--wuhu-bg-card)]">
                             {isCreating ? (
                                 <div className="space-y-2">
                                     <input
@@ -326,7 +326,7 @@ export default function Sidebar({
                                         <button
                                             onClick={handleCreate}
                                             disabled={!newEpisodeName.trim()}
-                                            className="glass-btn-base glass-btn-primary flex-1 py-1.5 text-sm rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                                            className="flex-1 py-1.5 text-sm rounded-lg bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white font-medium shadow-[0_0_20px_rgba(168,85,247,0.3)] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                                         >
                                             {t('sidebar.create')}
                                         </button>
@@ -335,7 +335,7 @@ export default function Sidebar({
                                                 setIsCreating(false)
                                                 setNewEpisodeName('')
                                             }}
-                                            className="glass-btn-base glass-btn-secondary flex-1 py-1.5 text-sm rounded-lg"
+                                            className="flex-1 py-1.5 text-sm rounded-lg border border-[var(--wuhu-neon-purple)]/50 text-white/70 hover:bg-[var(--wuhu-neon-purple)]/10 hover:text-white transition-all"
                                         >
                                             {t('sidebar.cancel')}
                                         </button>
@@ -344,7 +344,7 @@ export default function Sidebar({
                             ) : (
                                 <button
                                     onClick={() => setIsCreating(true)}
-                                    className="glass-btn-base glass-btn-tone-success w-full py-2 px-3 rounded-lg text-sm transition-colors flex items-center justify-center gap-1"
+                                    className="w-full py-2 px-3 rounded-lg text-sm transition-all flex items-center justify-center gap-1 border border-[var(--wuhu-neon-purple)]/50 text-white/70 hover:bg-[var(--wuhu-neon-purple)]/10 hover:text-white hover:border-[var(--wuhu-neon-purple)]"
                                 >
                                     <span>+</span>
                                     <span>{t('sidebar.addEpisode')}</span>

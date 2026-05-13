@@ -11,8 +11,8 @@ export default function VideoPanelCardFooter({ runtime }: VideoPanelCardFooterPr
   if (!lipSync.showLipSyncPanel) return null
 
   return (
-    <div className="fixed inset-0 glass-overlay flex items-center justify-center z-50" onClick={() => !lipSync.executingLipSync && lipSync.closeLipSyncPanel()}>
-      <div className="glass-surface-modal rounded-xl p-6 max-w-md w-full mx-4" onClick={(event) => event.stopPropagation()}>
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50" onClick={() => !lipSync.executingLipSync && lipSync.closeLipSyncPanel()}>
+      <div className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_50px_rgba(167,87,255,0.3)] rounded-xl p-6 max-w-md w-full mx-4" onClick={(event) => event.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-[var(--glass-text-primary)]">{t('panelCard.lipSyncTitle')}</h3>
           {!lipSync.executingLipSync && (

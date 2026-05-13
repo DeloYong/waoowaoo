@@ -67,33 +67,33 @@ export default function VoiceLineCard({
 
     return (
         <div
-            className={`relative glass-surface-elevated overflow-hidden transition-all hover:shadow-[var(--glass-shadow-md)] hover:-translate-y-0.5 ${line.audioUrl ? 'ring-1 ring-[var(--glass-focus-ring)]/60' : hasVoice ? '' : 'ring-1 ring-[var(--glass-stroke-warning)]/60'
+            className={`relative bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_50px_rgba(167,87,255,0.3)] rounded-xl overflow-hidden transition-all hover:-translate-y-0.5 ${line.audioUrl ? 'ring-1 ring-[var(--wuhu-neon-cyan)]/60' : hasVoice ? '' : 'ring-1 ring-[var(--wuhu-neon-orange)]/60'
                 }`}
         >
             {/* 顶部：播放/生成区域 */}
             <div className={`h-14 flex items-center justify-center gap-3 ${line.audioUrl
-                ? 'bg-[var(--glass-tone-success-bg)]/50'
-                : 'bg-[var(--glass-bg-muted)]/50'
+                ? 'bg-[var(--wuhu-neon-cyan)]/10'
+                : 'bg-white/5'
                 }`}>
                 {line.audioUrl ? (
                     <div className="flex items-center justify-center gap-3">
                         {/* 播放按钮 */}
                         <button
                             onClick={() => onTogglePlay(line.id, line.audioUrl!)}
-                            className="flex items-center justify-center w-9 h-9 bg-[var(--glass-tone-success-fg)] text-white rounded-xl hover:bg-[var(--glass-tone-success-fg)] shadow-[var(--glass-shadow-sm)] transition-all"
+                            className={`flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-[var(--wuhu-neon-cyan)] to-[var(--wuhu-neon-purple)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)] hover:scale-110 transition-all ${isPlaying ? 'animate-pulse shadow-[0_0_25px_rgba(0,255,255,0.6)]' : ''}`}
                             title={isPlaying ? t("lineCard.pause") : t("lineCard.play")}
                         >
                             {isPlaying ? (
                                 <AppIcon name="pauseSolid" className="w-4 h-4" />
                             ) : (
-                                <AppIcon name="play" className="w-4 h-4" />
+                                <AppIcon name="play" className="w-4 h-4 ml-0.5" />
                             )}
                         </button>
                         {/* 重新生成按钮 */}
                         <button
                             onClick={() => onGenerate(line.id)}
                             disabled={!hasVoice || isVoiceTaskRunning}
-                            className="flex items-center justify-center w-8 h-8 text-[var(--glass-text-tertiary)] hover:text-[var(--glass-tone-info-fg)] hover:bg-[var(--glass-tone-info-bg)] rounded-xl transition-all disabled:opacity-50"
+                            className="flex items-center justify-center w-8 h-8 text-white/40 hover:text-white hover:bg-white/10 rounded-xl transition-all disabled:opacity-50"
                             title={t("common.regenerate")}
                         >
                             {isVoiceTaskRunning ? (
@@ -105,7 +105,7 @@ export default function VoiceLineCard({
                         {/* 下载按钮 */}
                         <button
                             onClick={() => onDownload(line.audioUrl!)}
-                            className="flex items-center justify-center w-8 h-8 text-[var(--glass-text-tertiary)] hover:text-[var(--glass-tone-info-fg)] hover:bg-[var(--glass-tone-info-bg)] rounded-xl transition-all"
+                            className="flex items-center justify-center w-8 h-8 text-white/40 hover:text-white hover:bg-white/10 rounded-xl transition-all"
                             title={t("common.download")}
                         >
                             <AppIcon name="download" className="w-4 h-4" />
@@ -114,7 +114,7 @@ export default function VoiceLineCard({
                 ) : isVoiceTaskRunning ? (
                     /* 生成中状态：显示状态指示器 */
                     <div className="flex items-center gap-2">
-                        <div className="flex items-center gap-2 px-5 py-2 bg-[var(--glass-accent-from)] text-white rounded-xl text-sm font-medium shadow-[var(--glass-shadow-sm)]">
+                        <div className="flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white rounded-xl text-sm font-medium shadow-[0_0_15px_rgba(167,87,255,0.4)] animate-pulse">
                             <TaskStatusInline state={inlineStatusState} className="text-white [&>span]:text-white [&_svg]:text-white" />
                         </div>
                     </div>
@@ -123,7 +123,7 @@ export default function VoiceLineCard({
                     <button
                         onClick={() => onGenerate(line.id)}
                         disabled={!hasVoice}
-                        className="flex items-center gap-2 px-5 py-2 bg-[var(--glass-accent-from)] text-white rounded-xl text-sm font-medium hover:bg-[var(--glass-accent-to)] shadow-[var(--glass-shadow-sm)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white rounded-xl text-sm font-medium shadow-[0_0_15px_rgba(167,87,255,0.4)] hover:shadow-[0_0_25px_rgba(167,87,255,0.6)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         <AppIcon name="mic" className="w-4 h-4" />
                         {t("common.generate")}
@@ -132,7 +132,7 @@ export default function VoiceLineCard({
             </div>
 
             {/* 序号标签 */}
-            <div className="absolute top-2 left-2 bg-[var(--glass-overlay)] backdrop-blur-sm text-white px-2 py-0.5 rounded-lg text-xs font-medium">
+            <div className="absolute top-2 left-2 bg-black/50 backdrop-blur-sm text-white px-2 py-0.5 rounded-lg text-xs font-medium border border-[var(--wuhu-neon-purple)]/30">
                 #{line.lineIndex}
             </div>
 
@@ -140,12 +140,12 @@ export default function VoiceLineCard({
             {
                 line.audioUrl && (
                     <div className="absolute top-2 right-2 flex items-center gap-1">
-                        <div className="flex items-center justify-center bg-[var(--glass-tone-success-fg)] text-white px-2 py-0.5 rounded-lg text-xs font-medium shadow-[var(--glass-shadow-sm)]">
+                        <div className="flex items-center justify-center bg-[var(--wuhu-neon-cyan)]/15 text-[var(--wuhu-neon-cyan)] border border-[var(--wuhu-neon-cyan)]/30 px-2 py-0.5 rounded-lg text-xs font-medium">
                             <AppIcon name="checkXs" className="h-3 w-3" />
                         </div>
                         <button
                             onClick={() => onDeleteAudio(line.id)}
-                            className="flex items-center justify-center w-5 h-5 bg-[var(--glass-tone-warning-fg)] text-white rounded-md shadow-[var(--glass-shadow-sm)] hover:bg-[var(--glass-tone-warning-fg)] transition-colors"
+                            className="flex items-center justify-center w-5 h-5 bg-[var(--wuhu-neon-orange)]/20 text-[var(--wuhu-neon-orange)] border border-[var(--wuhu-neon-orange)]/30 rounded-md hover:bg-[var(--wuhu-neon-orange)]/30 transition-colors"
                             title={t("lineCard.deleteAudio")}
                         >
                             <AppIcon name="close" className="w-3 h-3" />
@@ -157,7 +157,7 @@ export default function VoiceLineCard({
             {/* 中间：台词内容 */}
             <div className="px-4 py-3">
                 <div className="group">
-                    <p className="text-sm text-[var(--glass-text-secondary)] line-clamp-3 leading-relaxed" title={line.content}>
+                    <p className="text-sm text-white/70 line-clamp-3 leading-relaxed" title={line.content}>
                         {line.content}
                     </p>
                     {/* 操作按钮组 */}
@@ -165,7 +165,7 @@ export default function VoiceLineCard({
                         {hasPanelBinding && (
                             <button
                                 onClick={() => onLocatePanel?.(line)}
-                                className="px-2 py-1 text-[11px] leading-none text-[var(--glass-text-tertiary)] hover:text-[var(--glass-tone-info-fg)] hover:bg-[var(--glass-tone-info-bg)] border border-[var(--glass-stroke-base)] hover:border-[var(--glass-stroke-focus)] rounded-md transition-colors"
+                                className="px-2 py-1 text-[11px] leading-none text-white/40 hover:text-[var(--wuhu-neon-cyan)] hover:bg-[var(--wuhu-neon-cyan)]/10 border border-white/20 hover:border-[var(--wuhu-neon-cyan)]/50 rounded-md transition-colors"
                                 title={locateTitle}
                             >
                                 <span>{t("lineCard.locateVideo")}</span>
@@ -173,14 +173,14 @@ export default function VoiceLineCard({
                         )}
                         <button
                             onClick={() => onEdit(line)}
-                            className="p-1 text-[var(--glass-text-tertiary)] hover:text-[var(--glass-tone-info-fg)] hover:bg-[var(--glass-tone-info-bg)] rounded transition-colors"
+                            className="p-1 text-white/40 hover:text-[var(--wuhu-neon-cyan)] hover:bg-[var(--wuhu-neon-cyan)]/10 rounded transition-colors"
                             title={t("lineCard.editLine")}
                         >
                             <AppIcon name="editSquare" className="w-3.5 h-3.5" />
                         </button>
                         <button
                             onClick={() => onDelete(line.id)}
-                            className="p-1 text-[var(--glass-text-tertiary)] hover:text-[var(--glass-tone-danger-fg)] hover:bg-[var(--glass-tone-danger-bg)] rounded transition-colors"
+                            className="p-1 text-white/40 hover:text-red-400 hover:bg-red-500/10 rounded transition-colors"
                             title={t("lineCard.deleteLine")}
                         >
                             <AppIcon name="trash" className="w-3.5 h-3.5" />
@@ -195,7 +195,7 @@ export default function VoiceLineCard({
                     <>
                         <button
                             onClick={() => setIsEmotionExpanded(!isEmotionExpanded)}
-                            className="w-full px-4 py-2 text-xs text-[var(--glass-tone-info-fg)] hover:bg-[var(--glass-tone-info-bg)] flex items-center justify-center gap-1.5 font-medium transition-colors"
+                            className="w-full px-4 py-2 text-xs text-[var(--wuhu-neon-purple)] hover:bg-[var(--wuhu-neon-purple)]/10 flex items-center justify-center gap-1.5 font-medium transition-colors"
                         >
                             <AppIcon name="chevronDown" className={`w-3.5 h-3.5 transition-transform ${isEmotionExpanded ? 'rotate-180' : ''}`} />
                             {line.emotionPrompt || (line.emotionStrength !== null && line.emotionStrength !== 0.4)
@@ -218,14 +218,14 @@ export default function VoiceLineCard({
             }
 
             {/* 底部：发言人 */}
-            <div className="px-4 py-2.5 bg-[var(--glass-bg-muted)]/50 border-t border-[var(--glass-stroke-base)]/60 flex items-center justify-between gap-2">
-                <span className="inline-flex items-center px-2.5 py-1 bg-[var(--glass-tone-info-bg)]/80 text-[var(--glass-tone-info-fg)] text-xs rounded-lg truncate max-w-[160px] font-medium" title={line.speaker}>
+            <div className="px-4 py-2.5 bg-white/5 border-t border-white/10 flex items-center justify-between gap-2">
+                <span className="inline-flex items-center px-2.5 py-1 bg-[var(--wuhu-neon-purple)]/15 text-[var(--wuhu-neon-purple)] border border-[var(--wuhu-neon-purple)]/30 text-xs rounded-lg truncate max-w-[160px] font-medium" title={line.speaker}>
                     {line.speaker}
                 </span>
                 {hasVoice ? (
-                    <span className="text-xs text-[var(--glass-tone-success-fg)] font-medium">{t("lineCard.voiceConfigured")}</span>
+                    <span className="text-xs text-[var(--wuhu-neon-cyan)] font-medium">{t("lineCard.voiceConfigured")}</span>
                 ) : (
-                    <span className="text-xs text-[var(--glass-tone-warning-fg)] font-medium">{t("lineCard.needVoice")}</span>
+                    <span className="text-xs text-[var(--wuhu-neon-orange)] font-medium">{t("lineCard.needVoice")}</span>
                 )}
             </div>
         </div >
