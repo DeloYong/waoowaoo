@@ -213,13 +213,14 @@ export const DELETE = apiHandler(async (
     throw new ApiError('INVALID_PARAMS')
   }
 
-  // 获取 storyboard 及其关联的 clip
+  // 获取 storyboard（不使用 include 避免 INNER JOIN 导致数据不一致时返回 null）
   const storyboard = await prisma.novelPromotionStoryboard.findUnique({
-    where: { id: storyboardId },
-    include: {
-      panels: true,
-      clip: true
-    }
+    where: { id: storyboardId }
+  })
+
+  // 单独获取 panels（不影响主查询）
+  const panels = await prisma.novelPromotionPanel.findMany({
+    where: { storyboardId }
   })
 
   if (!storyboard) {
@@ -246,7 +247,7 @@ export const DELETE = apiHandler(async (
     }
   })
 
-  _ulogInfo(`[删除分镜组] storyboardId=${storyboardId}, clipId=${storyboard.clipId}, panelCount=${storyboard.panels.length}`)
+  _ulogInfo(`[删除分镜组] storyboardId=${storyboardId}, clipId=${storyboard.clipId}, panelCount=${panels.length}`)
 
   return NextResponse.json({ success: true })
 })
