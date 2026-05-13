@@ -108,12 +108,6 @@ export function SettingsModal({
                             </div>
                         </div>
                     </div>
-
-                    <div className="bg-[var(--wuhu-bg-surface)]/50 border border-white/5 rounded-2xl p-5 sm:p-6">
-                        <p className="text-sm text-white/50">
-                            模型配置已由管理员统一管理，无需个人设置
-                        </p>
-                    </div>
                 </div>
             </div>
         </div>
