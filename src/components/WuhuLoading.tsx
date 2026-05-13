@@ -14,7 +14,7 @@ export default function WuhuLoading({
       <div className="wuhu-animate-pulse rounded-full p-4">
         <WuhuMascot expression="working" size={size} animated={false} />
       </div>
-      <p className="mt-4 text-[var(--glass-text-secondary)] animate-pulse">
+      <p className="mt-4 text-[rgba(255,255,255,0.7)] animate-pulse">
         {text}
       </p>
     </div>

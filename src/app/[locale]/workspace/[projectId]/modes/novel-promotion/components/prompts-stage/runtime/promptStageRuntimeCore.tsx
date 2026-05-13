@@ -61,9 +61,9 @@ export function usePromptStageActions({
   const isAnyTaskRunning = runningCount > 0 || isBatchSubmitting
 
   const getGenerateButtonToneClass = (shot: NovelPromotionShot) => {
-    if (shot.imageUrl) return 'glass-btn-tone-success'
-    if (isShotTaskRunning(shot)) return 'glass-btn-soft'
-    return 'glass-btn-primary'
+    if (shot.imageUrl) return 'bg-[var(--wuhu-neon-cyan)]/20 text-[var(--wuhu-neon-cyan)]'
+    if (isShotTaskRunning(shot)) return 'bg-white/5 text-white/70'
+    return 'bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_20px_rgba(167,87,255,0.3)]'
   }
 
   const getShotRunningState = useCallback((shot: NovelPromotionShot) => {

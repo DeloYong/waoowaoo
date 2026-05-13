@@ -77,7 +77,7 @@ export default function LocationSection({
         <div className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/20 rounded-xl p-6">
             <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--glass-tone-info-bg)] text-[var(--glass-tone-info-fg)]">
+                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-[rgba(0, 255, 255, 0.1)] text-[var(--wuhu-neon-cyan)]">
                         <AppIcon name="imageLandscape" className="h-5 w-5" />
                     </span>
                     <h3 className="text-lg font-bold text-white">
@@ -91,7 +91,7 @@ export default function LocationSection({
                 </div>
                 <button
                     onClick={onAddLocation}
-                    className="glass-btn-base glass-btn-primary flex items-center gap-2 px-4 py-2 font-medium"
+                    className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_20px_rgba(167,87,255,0.3)] hover:shadow-[0_0_30px_rgba(167,87,255,0.4)] rounded-lg transition-all flex items-center gap-2 px-4 py-2 font-medium"
                 >
                     + {t(`${assetKey}.add`)}
                 </button>

@@ -171,20 +171,20 @@ export default function VoiceDesignDialogBase({
 
   const dialogContent = (
     <>
-      <div className="fixed inset-0 z-[9999] glass-overlay" onClick={handleClose} />
+      <div className="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-sm animate-fadeIn" onClick={handleClose} />
       <div
-        className="fixed z-[10000] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 glass-surface-modal w-full max-w-xl overflow-hidden"
+        className="fixed z-[10000] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_50px_rgba(167,87,255,0.3)] rounded-2xl w-full max-w-xl overflow-hidden"
         onClick={(event) => event.stopPropagation()}
       >
-        <div className="flex items-center justify-between px-5 py-3 border-b border-[var(--glass-stroke-base)] bg-[var(--glass-bg-surface-strong)]">
+        <div className="flex items-center justify-between px-5 py-3 border-b border-white/10 bg-[var(--wuhu-bg-card)]">
           <div className="flex items-center gap-2">
-            <AppIcon name="mic" className="w-5 h-5 text-[var(--glass-tone-info-fg)]" />
-            <h2 className="font-semibold text-[var(--glass-text-primary)]">{tv('designVoiceFor', { speaker })}</h2>
+            <AppIcon name="mic" className="w-5 h-5 text-[var(--wuhu-neon-purple)]" />
+            <h2 className="font-semibold text-white">{tv('designVoiceFor', { speaker })}</h2>
             {hasExistingVoice && (
-              <span className="glass-chip glass-chip-warning text-xs px-1.5 py-0.5">{tv('hasExistingVoice')}</span>
+              <span className="bg-[var(--wuhu-neon-pink)]/20 text-[var(--wuhu-neon-pink)] border border-[var(--wuhu-neon-pink)]/30 text-xs px-1.5 py-0.5">{tv('hasExistingVoice')}</span>
             )}
           </div>
-          <button onClick={handleClose} className="glass-btn-base glass-btn-soft p-1 text-[var(--glass-text-tertiary)]">
+          <button onClick={handleClose} className="p-1 text-white/40 hover:text-white hover:bg-white/10">
             <AppIcon name="close" className="w-5 h-5" />
           </button>
         </div>
@@ -192,12 +192,12 @@ export default function VoiceDesignDialogBase({
         <div className="p-5 space-y-4">
           {showModelSelector && (
             <div>
-              <div className="text-sm text-[var(--glass-text-secondary)] mb-1.5">{tv('selectModel')}</div>
+              <div className="text-sm text-white/70 mb-1.5">{tv('selectModel')}</div>
               <div className="relative">
                 <select
                   value={currentModelKey}
                   onChange={(e) => setSelectedModelKey(e.target.value)}
-                  className="glass-select-base w-full cursor-pointer appearance-none px-3 py-2.5 pr-8 text-sm"
+                  className="bg-[var(--wuhu-bg-surface)] border border-white/20 text-white rounded-lg w-full cursor-pointer appearance-none px-3 py-2.5 pr-8 text-sm"
                 >
                   {voiceDesignModels.map((model) => (
                     <option key={model.modelKey} value={model.modelKey}>
@@ -205,7 +205,7 @@ export default function VoiceDesignDialogBase({
                     </option>
                   ))}
                 </select>
-                <div className="pointer-events-none absolute right-3 top-3 text-[var(--glass-text-tertiary)]">
+                <div className="pointer-events-none absolute right-3 top-3 text-white/40">
                   <AppIcon name="chevronDown" className="w-3 h-3" />
                 </div>
               </div>
@@ -236,14 +236,14 @@ export default function VoiceDesignDialogBase({
                     void handleGenerate()
                   }}
                   disabled={isDesignSubmitting}
-                  className="glass-btn-base glass-btn-secondary flex-1 py-2 rounded-lg text-sm"
+                  className="border border-white/20 text-white/70 hover:border-[var(--wuhu-neon-pink)] hover:text-white hover:bg-white/10 flex-1 py-2 rounded-lg text-sm"
                 >
                   {tv('regenerate')}
                 </button>
                 <button
                   onClick={handleConfirmSelection}
                   disabled={selectedIndex === null}
-                  className="glass-btn-base glass-btn-tone-success flex-1 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+                  className="bg-[var(--wuhu-neon-cyan)]/20 text-[var(--wuhu-neon-cyan)] border border-[var(--wuhu-neon-cyan)]/30 hover:bg-[var(--wuhu-neon-cyan)]/30 flex-1 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
                 >
                   {tv('confirmUse')}
                 </button>
@@ -254,26 +254,26 @@ export default function VoiceDesignDialogBase({
       </div>
 
       {showConfirmDialog && (
-        <div className="fixed inset-0 z-[10001] flex items-center justify-center p-4 glass-overlay">
-          <div className="glass-surface-modal w-full max-w-sm p-5 text-center">
-            <div className="w-12 h-12 mx-auto glass-chip glass-chip-warning rounded-full flex items-center justify-center mb-3 p-0">
-              <AppIcon name="alert" className="w-6 h-6 text-[var(--glass-tone-warning-fg)]" />
+        <div className="fixed inset-0 z-[10001] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_50px_rgba(167,87,255,0.3)] rounded-2xl w-full max-w-sm p-5 text-center">
+            <div className="w-12 h-12 mx-auto bg-[var(--wuhu-neon-pink)]/20 text-[var(--wuhu-neon-pink)] border border-[var(--wuhu-neon-pink)]/30 rounded-full flex items-center justify-center mb-3 p-0">
+              <AppIcon name="alert" className="w-6 h-6 text-[var(--wuhu-neon-pink)]" />
             </div>
-            <h3 className="font-semibold text-[var(--glass-text-primary)] mb-1">{tv('confirmReplace')}</h3>
-            <p className="text-sm text-[var(--glass-text-secondary)] mb-4">
+            <h3 className="font-semibold text-white mb-1">{tv('confirmReplace')}</h3>
+            <p className="text-sm text-white/70 mb-4">
               {tv('replaceWarning')}
-              <span className="font-medium text-[var(--glass-text-primary)]">「{speaker}」</span>
+              <span className="font-medium text-white">「{speaker}」</span>
             </p>
             <div className="flex gap-2">
               <button
                 onClick={() => setShowConfirmDialog(false)}
-                className="glass-btn-base glass-btn-secondary flex-1 py-2 rounded-lg text-sm"
+                className="border border-white/20 text-white/70 hover:border-[var(--wuhu-neon-pink)] hover:text-white hover:bg-white/10 flex-1 py-2 rounded-lg text-sm"
               >
                 {t('cancel')}
               </button>
               <button
                 onClick={() => void doSave()}
-                className="glass-btn-base glass-btn-danger flex-1 py-2 rounded-lg text-sm"
+                className="bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/30 flex-1 py-2 rounded-lg text-sm"
               >
                 {tv('confirmReplaceBtn')}
               </button>

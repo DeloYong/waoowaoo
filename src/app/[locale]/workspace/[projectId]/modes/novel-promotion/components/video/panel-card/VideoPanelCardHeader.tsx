@@ -104,7 +104,7 @@ export default function VideoPanelCardHeader({ runtime }: VideoPanelCardHeaderPr
               <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 z-50 pointer-events-none">
                 <div className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white text-xs rounded-lg px-3 py-1.5 shadow-[0_0_20px_rgba(167,87,255,0.3)] whitespace-nowrap border border-[var(--wuhu-neon-purple)]/30">
                   {layout.isLinked ? t('firstLastFrame.unlinkAction') : t('firstLastFrame.linkToNext')}
-                  <div className="absolute left-1/2 -translate-x-1/2 top-full w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-[var(--glass-bg-surface-strong)]" />
+                  <div className="absolute left-1/2 -translate-x-1/2 top-full w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-[var(--wuhu-bg-surface)]" />
                 </div>
               </div>
             )}

@@ -166,18 +166,18 @@ export function CharacterCreationModal({
 
   return (
     <div
-      className="fixed inset-0 glass-overlay flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm animate-fadeIn flex items-center justify-center z-50 p-4"
       onClick={handleBackdropClick}
     >
-      <div className="glass-surface-modal max-w-lg w-full max-h-[85vh] flex flex-col">
+      <div className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_50px_rgba(167,87,255,0.3)] rounded-2xl max-w-lg w-full max-h-[85vh] flex flex-col">
         <div className="p-6 overflow-y-auto flex-1">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-[var(--glass-text-primary)]">
+            <h3 className="text-lg font-semibold text-white">
               {t('character.title')}
             </h3>
             <button
               onClick={onClose}
-              className="glass-btn-base glass-btn-soft w-8 h-8 rounded-full flex items-center justify-center text-[var(--glass-text-tertiary)]"
+              className="w-8 h-8 rounded-full flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10"
             >
               <XMarkIcon className="w-5 h-5" />
             </button>
@@ -217,10 +217,10 @@ export function CharacterCreationModal({
           />
         </div>
 
-        <div className="flex items-center justify-end gap-2 p-4 border-t border-[var(--glass-stroke-base)] bg-[var(--glass-bg-surface-strong)] rounded-b-xl flex-shrink-0">
+        <div className="flex items-center justify-end gap-2 p-4 border-t border-white/10 bg-[var(--wuhu-bg-card)] rounded-b-2xl flex-shrink-0">
           <button
             onClick={onClose}
-            className="glass-btn-base glass-btn-secondary px-4 py-2 rounded-lg text-sm"
+            className="border border-white/20 text-white/70 hover:border-[var(--wuhu-neon-pink)] hover:text-white hover:bg-white/10 px-4 py-2 rounded-lg text-sm"
             disabled={isSubmitting}
           >
             {t('common.cancel')}
@@ -236,14 +236,14 @@ export function CharacterCreationModal({
               actionDisabled={!name.trim() || referenceImagesBase64.length === 0}
               selectDisabled={isSubmitting}
               ariaLabel={t('character.selectReferenceGenerateCount')}
-              className="glass-btn-base glass-btn-primary flex items-center justify-center gap-1 rounded-lg px-4 py-2 text-sm disabled:opacity-40 disabled:cursor-not-allowed"
+              className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)] hover:shadow-[0_0_25px_rgba(255,100,200,0.5)] flex items-center justify-center gap-1 rounded-lg px-4 py-2 text-sm disabled:opacity-40 disabled:cursor-not-allowed"
               selectClassName="appearance-none bg-transparent border-0 pl-0 pr-3 text-sm font-semibold text-current outline-none cursor-pointer leading-none transition-colors"
             />
           ) : isSubAppearance ? (
             <button
               onClick={() => { void handleSubmit() }}
               disabled={isSubmitting || !selectedCharacterId.trim() || !changeReason.trim() || !description.trim()}
-              className="glass-btn-base glass-btn-primary px-4 py-2 rounded-lg text-sm disabled:opacity-40 disabled:cursor-not-allowed"
+              className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_20px_rgba(167,87,255,0.3)] hover:shadow-[0_0_30px_rgba(167,87,255,0.4)] rounded-lg transition-all px-4 py-2 rounded-lg text-sm disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {isSubmitting ? t('common.adding') : t('common.add')}
             </button>
@@ -252,7 +252,7 @@ export function CharacterCreationModal({
               <button
                 onClick={() => { void handleSubmit() }}
                 disabled={isSubmitting || !name.trim() || !description.trim()}
-                className="glass-btn-base glass-btn-secondary px-4 py-2 rounded-lg text-sm disabled:opacity-40 disabled:cursor-not-allowed"
+                className="border border-white/20 text-white/70 hover:border-[var(--wuhu-neon-pink)] hover:text-white hover:bg-white/10 px-4 py-2 rounded-lg text-sm disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? t('common.adding') : (mode === 'asset-hub' ? t('common.addOnlyToAssetHub') : t('common.addOnly'))}
               </button>
@@ -266,7 +266,7 @@ export function CharacterCreationModal({
                 actionDisabled={!name.trim() || !description.trim()}
                 selectDisabled={isSubmitting}
                 ariaLabel={t('common.selectGenerateCount')}
-                className="glass-btn-base glass-btn-primary flex items-center justify-center gap-1 rounded-lg px-4 py-2 text-sm disabled:opacity-40 disabled:cursor-not-allowed"
+                className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)] hover:shadow-[0_0_25px_rgba(255,100,200,0.5)] flex items-center justify-center gap-1 rounded-lg px-4 py-2 text-sm disabled:opacity-40 disabled:cursor-not-allowed"
                 selectClassName="appearance-none bg-transparent border-0 pl-0 pr-3 text-sm font-semibold text-current outline-none cursor-pointer leading-none transition-colors"
               />
             </>

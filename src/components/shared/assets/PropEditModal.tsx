@@ -83,51 +83,51 @@ export function PropEditModal({
   }
 
   return (
-    <div className="fixed inset-0 glass-overlay flex items-center justify-center z-50 p-4">
-      <div className="glass-surface-modal max-w-2xl w-full max-h-[80vh] flex flex-col">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm animate-fadeIn flex items-center justify-center z-50 p-4">
+      <div className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_50px_rgba(167,87,255,0.3)] rounded-2xl max-w-2xl w-full max-h-[80vh] flex flex-col">
         <div className="p-6 space-y-4 overflow-y-auto flex-1">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-[var(--glass-text-primary)]">
+            <h3 className="text-lg font-semibold text-white">
               {t('modal.editProp')} - {propName}
             </h3>
             <button
               onClick={onClose}
-              className="glass-btn-base glass-btn-soft w-9 h-9 rounded-full text-[var(--glass-text-tertiary)]"
+              className="w-9 h-9 rounded-full text-white/40 hover:text-white hover:bg-white/10"
             >
               <AppIcon name="close" className="w-6 h-6" />
             </button>
           </div>
 
           <div className="space-y-2">
-            <label className="glass-field-label block">
+            <label className="text-white/70 block">
               {t('prop.name')}
             </label>
             <input
               type="text"
               value={editingName}
               onChange={(event) => setEditingName(event.target.value)}
-              className="glass-input-base w-full px-3 py-2"
+              className="bg-[var(--wuhu-bg-surface)] border border-white/20 text-white placeholder:text-white/40 rounded-lg focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(255,100,200,0.3)] w-full px-3 py-2"
               placeholder={t('modal.namePlaceholder')}
             />
           </div>
 
           <div className="space-y-2">
-            <label className="glass-field-label block">
+            <label className="text-white/70 block">
               {t('prop.summary')}
             </label>
             <textarea
               value={editingSummary}
               onChange={(event) => setEditingSummary(event.target.value)}
-              className="glass-textarea-base w-full h-48 px-3 py-2 resize-none"
+              className="bg-[var(--wuhu-bg-surface)] border border-white/20 text-white placeholder:text-white/40 rounded-lg focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(255,100,200,0.3)] w-full h-48 px-3 py-2 resize-none"
               placeholder={t('prop.summaryPlaceholder')}
             />
           </div>
         </div>
 
-        <div className="flex gap-3 justify-end p-4 border-t border-[var(--glass-stroke-base)] bg-[var(--glass-bg-surface-strong)] rounded-b-lg flex-shrink-0">
+        <div className="flex gap-3 justify-end p-4 border-t border-white/10 bg-[var(--wuhu-bg-card)] rounded-b-2xl flex-shrink-0">
           <button
             onClick={onClose}
-            className="glass-btn-base glass-btn-secondary px-4 py-2 rounded-lg"
+            className="border border-white/20 text-white/70 hover:border-[var(--wuhu-neon-pink)] hover:text-white hover:bg-white/10 px-4 py-2 rounded-lg"
             disabled={isSaving}
           >
             {t('common.cancel')}
@@ -135,7 +135,7 @@ export function PropEditModal({
           <button
             onClick={() => void handleSaveOnly()}
             disabled={isSaving || !editingName.trim() || !editingSummary.trim()}
-            className="glass-btn-base glass-btn-tone-info px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)] hover:shadow-[0_0_25px_rgba(255,100,200,0.5)] px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
             {isSaving ? (
               <TaskStatusInline state={savingState} className="text-white [&>span]:text-white [&_svg]:text-white" />
@@ -146,7 +146,7 @@ export function PropEditModal({
           <button
             onClick={() => void handleSaveAndGenerate()}
             disabled={isSaving || !editingName.trim() || !editingSummary.trim()}
-            className="glass-btn-base glass-btn-primary px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)] hover:shadow-[0_0_25px_rgba(255,100,200,0.5)] px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {t('modal.saveAndGenerate')}
           </button>

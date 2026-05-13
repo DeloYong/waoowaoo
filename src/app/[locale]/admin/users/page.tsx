@@ -142,12 +142,12 @@ export default function UsersPage() {
   }
 
   if (loading) {
-    return <div className="text-[var(--glass-text-secondary)]">加载中...</div>
+    return <div className="text-[rgba(255,255,255,0.7)]">加载中...</div>
   }
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-[var(--glass-text-primary)] mb-6">
+      <h2 className="text-2xl font-bold text-[white] mb-6">
         用户管理
       </h2>
 
@@ -158,7 +158,7 @@ export default function UsersPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="搜索用户名或邮箱..."
-          className="flex-1 px-4 py-2 border border-[var(--glass-stroke-base)] rounded bg-[var(--glass-bg-canvas)]"
+          className="flex-1 px-4 py-2 border border-[rgba(167, 87, 255, 0.2)] rounded bg-[var(--wuhu-bg-canvas)]"
           onKeyDown={(e) => e.key === 'Enter' && fetchUsers()}
         />
         <button
@@ -170,33 +170,33 @@ export default function UsersPage() {
       </div>
 
       {/* 用户列表 */}
-      <div className="bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)] overflow-hidden">
+      <div className="bg-[var(--wuhu-bg-surface)] rounded-lg border border-[rgba(167, 87, 255, 0.2)] overflow-hidden">
         <table className="w-full">
-          <thead className="bg-[var(--glass-bg-canvas)]">
+          <thead className="bg-[var(--wuhu-bg-canvas)]">
             <tr>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-[var(--glass-text-secondary)]">
+              <th className="px-4 py-3 text-left text-sm font-semibold text-[rgba(255,255,255,0.7)]">
                 用户
               </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-[var(--glass-text-secondary)]">
+              <th className="px-4 py-3 text-left text-sm font-semibold text-[rgba(255,255,255,0.7)]">
                 订阅状态
               </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-[var(--glass-text-secondary)]">
+              <th className="px-4 py-3 text-left text-sm font-semibold text-[rgba(255,255,255,0.7)]">
                 积分余额
               </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-[var(--glass-text-secondary)]">
+              <th className="px-4 py-3 text-left text-sm font-semibold text-[rgba(255,255,255,0.7)]">
                 操作
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[var(--glass-stroke-soft)]">
+          <tbody className="divide-y divide-[rgba(167, 87, 255, 0.2)]">
             {users.map((user) => (
-              <tr key={user.id} className="hover:bg-[var(--glass-bg-canvas)]">
+              <tr key={user.id} className="hover:bg-[var(--wuhu-bg-canvas)]">
                 <td className="px-4 py-3">
                   <div>
-                    <div className="font-medium text-[var(--glass-text-primary)]">
+                    <div className="font-medium text-[white]">
                       {user.name || '未命名'}
                     </div>
-                    <div className="text-sm text-[var(--glass-text-tertiary)]">
+                    <div className="text-sm text-[rgba(255,255,255,0.5)]">
                       {user.email || '无邮箱'}
                     </div>
                   </div>
@@ -207,12 +207,12 @@ export default function UsersPage() {
                       <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-sm">
                         {user.subscription.planId}
                       </span>
-                      <div className="text-xs text-[var(--glass-text-tertiary)] mt-1">
+                      <div className="text-xs text-[rgba(255,255,255,0.5)] mt-1">
                         状态: {user.subscription.status}
                       </div>
                     </div>
                   ) : (
-                    <span className="text-[var(--glass-text-tertiary)]">无订阅</span>
+                    <span className="text-[rgba(255,255,255,0.5)]">无订阅</span>
                   )}
                 </td>
                 <td className="px-4 py-3">
@@ -225,7 +225,7 @@ export default function UsersPage() {
                       )}
                     </div>
                   ) : (
-                    <span className="text-[var(--glass-text-tertiary)]">0</span>
+                    <span className="text-[rgba(255,255,255,0.5)]">0</span>
                   )}
                 </td>
                 <td className="px-4 py-3">
@@ -255,17 +255,17 @@ export default function UsersPage() {
         <button
           onClick={() => setPage((p) => Math.max(1, p - 1))}
           disabled={page === 1}
-          className="px-4 py-2 bg-[var(--glass-bg-surface)] border border-[var(--glass-stroke-soft)] rounded disabled:opacity-50"
+          className="px-4 py-2 bg-[var(--wuhu-bg-surface)] border border-[rgba(167, 87, 255, 0.2)] rounded disabled:opacity-50"
         >
           上一页
         </button>
-        <span className="px-4 py-2 text-[var(--glass-text-secondary)]">
+        <span className="px-4 py-2 text-[rgba(255,255,255,0.7)]">
           第 {page} 页 / 共 {Math.ceil(total / 20)} 页
         </span>
         <button
           onClick={() => setPage((p) => p + 1)}
           disabled={page >= Math.ceil(total / 20)}
-          className="px-4 py-2 bg-[var(--glass-bg-surface)] border border-[var(--glass-stroke-soft)] rounded disabled:opacity-50"
+          className="px-4 py-2 bg-[var(--wuhu-bg-surface)] border border-[rgba(167, 87, 255, 0.2)] rounded disabled:opacity-50"
         >
           下一页
         </button>
@@ -274,25 +274,25 @@ export default function UsersPage() {
       {/* 充值弹窗 */}
       {showGrantModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-[var(--glass-bg-surface)] rounded-lg p-6 w-full max-w-md">
-            <h3 className="text-lg font-bold text-[var(--glass-text-primary)] mb-4">
+          <div className="bg-[var(--wuhu-bg-surface)] rounded-lg p-6 w-full max-w-md">
+            <h3 className="text-lg font-bold text-[white] mb-4">
               手动充值积分
             </h3>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm text-[var(--glass-text-secondary)] mb-2">
+                <label className="block text-sm text-[rgba(255,255,255,0.7)] mb-2">
                   积分数量
                 </label>
                 <input
                   type="number"
                   value={grantCredits}
                   onChange={(e) => setGrantCredits(Number(e.target.value))}
-                  className="w-full px-4 py-2 border border-[var(--glass-stroke-base)] rounded"
+                  className="w-full px-4 py-2 border border-[rgba(167, 87, 255, 0.2)] rounded"
                   min="0"
                 />
               </div>
               <div>
-                <label className="block text-sm text-[var(--glass-text-secondary)] mb-2">
+                <label className="block text-sm text-[rgba(255,255,255,0.7)] mb-2">
                   原因
                 </label>
                 <input
@@ -300,7 +300,7 @@ export default function UsersPage() {
                   value={grantReason}
                   onChange={(e) => setGrantReason(e.target.value)}
                   placeholder="管理员手动充值"
-                  className="w-full px-4 py-2 border border-[var(--glass-stroke-base)] rounded"
+                  className="w-full px-4 py-2 border border-[rgba(167, 87, 255, 0.2)] rounded"
                 />
               </div>
               <label className="flex items-center gap-2">
@@ -309,7 +309,7 @@ export default function UsersPage() {
                   checked={isPermanent}
                   onChange={(e) => setIsPermanent(e.target.checked)}
                 />
-                <span className="text-sm text-[var(--glass-text-secondary)]">永久积分</span>
+                <span className="text-sm text-[rgba(255,255,255,0.7)]">永久积分</span>
               </label>
             </div>
             <div className="flex gap-2 mt-6">
@@ -334,19 +334,19 @@ export default function UsersPage() {
       {/* 分配套餐弹窗 */}
       {showPlanModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-[var(--glass-bg-surface)] rounded-lg p-6 w-full max-w-md">
-            <h3 className="text-lg font-bold text-[var(--glass-text-primary)] mb-4">
+          <div className="bg-[var(--wuhu-bg-surface)] rounded-lg p-6 w-full max-w-md">
+            <h3 className="text-lg font-bold text-[white] mb-4">
               分配订阅套餐
             </h3>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm text-[var(--glass-text-secondary)] mb-2">
+                <label className="block text-sm text-[rgba(255,255,255,0.7)] mb-2">
                   套餐
                 </label>
                 <select
                   value={assignPlanId}
                   onChange={(e) => setAssignPlanId(e.target.value)}
-                  className="w-full px-4 py-2 border border-[var(--glass-stroke-base)] rounded"
+                  className="w-full px-4 py-2 border border-[rgba(167, 87, 255, 0.2)] rounded"
                 >
                   <option value="">选择套餐...</option>
                   {plans.map((plan) => (
@@ -357,13 +357,13 @@ export default function UsersPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm text-[var(--glass-text-secondary)] mb-2">
+                <label className="block text-sm text-[rgba(255,255,255,0.7)] mb-2">
                   计费周期
                 </label>
                 <select
                   value={assignBillingCycle}
                   onChange={(e) => setAssignBillingCycle(e.target.value)}
-                  className="w-full px-4 py-2 border border-[var(--glass-stroke-base)] rounded"
+                  className="w-full px-4 py-2 border border-[rgba(167, 87, 255, 0.2)] rounded"
                 >
                   <option value="monthly">月付</option>
                   <option value="yearly">年付</option>

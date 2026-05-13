@@ -251,7 +251,7 @@ export default function ReportsPage() {
               className="w-full bg-blue-500 rounded-t-md transition-all duration-300 hover:bg-blue-600"
               style={{ height: `${(item.value / maxValue) * height}px` }}
             />
-            <div className="text-xs text-[var(--glass-text-tertiary)] mt-2 transform -rotate-45 origin-top-left">
+            <div className="text-xs text-[rgba(255,255,255,0.5)] mt-2 transform -rotate-45 origin-top-left">
               {item.date}
             </div>
           </div>
@@ -261,44 +261,44 @@ export default function ReportsPage() {
   }
 
   if (loading) {
-    return <div className="text-[var(--glass-text-secondary)]">加载中...</div>
+    return <div className="text-[rgba(255,255,255,0.7)]">加载中...</div>
   }
 
   if (!reportData) {
-    return <div className="text-[var(--glass-text-secondary)]">暂无数据</div>
+    return <div className="text-[rgba(255,255,255,0.7)]">暂无数据</div>
   }
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-[var(--glass-text-primary)] mb-6">
+      <h2 className="text-2xl font-bold text-[white] mb-6">
         数据报表
       </h2>
 
       {/* 筛选条件 */}
-      <div className="bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)] p-4 mb-6">
+      <div className="bg-[var(--wuhu-bg-surface)] rounded-lg border border-[rgba(167, 87, 255, 0.2)] p-4 mb-6">
         <div className="flex flex-wrap gap-4 items-center">
           <div className="flex gap-2">
             <button
               onClick={() => handleTimeRangeChange('day')}
-              className={`px-4 py-2 rounded ${timeRange === 'day' ? 'bg-blue-500 text-white' : 'bg-[var(--glass-bg-canvas)] text-[var(--glass-text-secondary)]'}`}
+              className={`px-4 py-2 rounded ${timeRange === 'day' ? 'bg-blue-500 text-white' : 'bg-[var(--wuhu-bg-canvas)] text-[rgba(255,255,255,0.7)]'}`}
             >
               按日
             </button>
             <button
               onClick={() => handleTimeRangeChange('week')}
-              className={`px-4 py-2 rounded ${timeRange === 'week' ? 'bg-blue-500 text-white' : 'bg-[var(--glass-bg-canvas)] text-[var(--glass-text-secondary)]'}`}
+              className={`px-4 py-2 rounded ${timeRange === 'week' ? 'bg-blue-500 text-white' : 'bg-[var(--wuhu-bg-canvas)] text-[rgba(255,255,255,0.7)]'}`}
             >
               按周
             </button>
             <button
               onClick={() => handleTimeRangeChange('month')}
-              className={`px-4 py-2 rounded ${timeRange === 'month' ? 'bg-blue-500 text-white' : 'bg-[var(--glass-bg-canvas)] text-[var(--glass-text-secondary)]'}`}
+              className={`px-4 py-2 rounded ${timeRange === 'month' ? 'bg-blue-500 text-white' : 'bg-[var(--wuhu-bg-canvas)] text-[rgba(255,255,255,0.7)]'}`}
             >
               按月
             </button>
             <button
               onClick={() => handleTimeRangeChange('custom')}
-              className={`px-4 py-2 rounded ${timeRange === 'custom' ? 'bg-blue-500 text-white' : 'bg-[var(--glass-bg-canvas)] text-[var(--glass-text-secondary)]'}`}
+              className={`px-4 py-2 rounded ${timeRange === 'custom' ? 'bg-blue-500 text-white' : 'bg-[var(--wuhu-bg-canvas)] text-[rgba(255,255,255,0.7)]'}`}
             >
               自定义
             </button>
@@ -310,14 +310,14 @@ export default function ReportsPage() {
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="px-3 py-2 border border-[var(--glass-stroke-base)] rounded bg-[var(--glass-bg-canvas)]"
+                className="px-3 py-2 border border-[rgba(167, 87, 255, 0.2)] rounded bg-[var(--wuhu-bg-canvas)]"
               />
-              <span className="text-[var(--glass-text-secondary)]">至</span>
+              <span className="text-[rgba(255,255,255,0.7)]">至</span>
               <input
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="px-3 py-2 border border-[var(--glass-stroke-base)] rounded bg-[var(--glass-bg-canvas)]"
+                className="px-3 py-2 border border-[rgba(167, 87, 255, 0.2)] rounded bg-[var(--wuhu-bg-canvas)]"
               />
               <button
                 onClick={fetchReportData}
@@ -331,28 +331,28 @@ export default function ReportsPage() {
       </div>
 
       {/* Tab 切换 */}
-      <div className="flex gap-2 mb-6 border-b border-[var(--glass-stroke-soft)]">
+      <div className="flex gap-2 mb-6 border-b border-[rgba(167, 87, 255, 0.2)]">
         <button
           onClick={() => setActiveTab('users')}
-          className={`px-6 py-3 font-medium border-b-2 transition-colors ${activeTab === 'users' ? 'border-blue-500 text-blue-500' : 'border-transparent text-[var(--glass-text-secondary)] hover:text-[var(--glass-text-primary)]'}`}
+          className={`px-6 py-3 font-medium border-b-2 transition-colors ${activeTab === 'users' ? 'border-blue-500 text-blue-500' : 'border-transparent text-[rgba(255,255,255,0.7)] hover:text-[white]'}`}
         >
           用户统计
         </button>
         <button
           onClick={() => setActiveTab('tasks')}
-          className={`px-6 py-3 font-medium border-b-2 transition-colors ${activeTab === 'tasks' ? 'border-blue-500 text-blue-500' : 'border-transparent text-[var(--glass-text-secondary)] hover:text-[var(--glass-text-primary)]'}`}
+          className={`px-6 py-3 font-medium border-b-2 transition-colors ${activeTab === 'tasks' ? 'border-blue-500 text-blue-500' : 'border-transparent text-[rgba(255,255,255,0.7)] hover:text-[white]'}`}
         >
           任务统计
         </button>
         <button
           onClick={() => setActiveTab('finance')}
-          className={`px-6 py-3 font-medium border-b-2 transition-colors ${activeTab === 'finance' ? 'border-blue-500 text-blue-500' : 'border-transparent text-[var(--glass-text-secondary)] hover:text-[var(--glass-text-primary)]'}`}
+          className={`px-6 py-3 font-medium border-b-2 transition-colors ${activeTab === 'finance' ? 'border-blue-500 text-blue-500' : 'border-transparent text-[rgba(255,255,255,0.7)] hover:text-[white]'}`}
         >
           财务统计
         </button>
         <button
           onClick={() => setActiveTab('subscription')}
-          className={`px-6 py-3 font-medium border-b-2 transition-colors ${activeTab === 'subscription' ? 'border-blue-500 text-blue-500' : 'border-transparent text-[var(--glass-text-secondary)] hover:text-[var(--glass-text-primary)]'}`}
+          className={`px-6 py-3 font-medium border-b-2 transition-colors ${activeTab === 'subscription' ? 'border-blue-500 text-blue-500' : 'border-transparent text-[rgba(255,255,255,0.7)] hover:text-[white]'}`}
         >
           订阅统计
         </button>
@@ -363,26 +363,26 @@ export default function ReportsPage() {
         <div className="space-y-6">
           {/* 数据卡片 */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)] p-6">
-              <div className="text-sm text-[var(--glass-text-secondary)] mb-2">总用户数</div>
-              <div className="text-3xl font-bold text-[var(--glass-text-primary)]">
+            <div className="bg-[var(--wuhu-bg-surface)] rounded-lg border border-[rgba(167, 87, 255, 0.2)] p-6">
+              <div className="text-sm text-[rgba(255,255,255,0.7)] mb-2">总用户数</div>
+              <div className="text-3xl font-bold text-[white]">
                 {reportData.userStats.totalUsers.toLocaleString()}
               </div>
             </div>
-            <div className="bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)] p-6">
-              <div className="text-sm text-[var(--glass-text-secondary)] mb-2">新增用户</div>
+            <div className="bg-[var(--wuhu-bg-surface)] rounded-lg border border-[rgba(167, 87, 255, 0.2)] p-6">
+              <div className="text-sm text-[rgba(255,255,255,0.7)] mb-2">新增用户</div>
               <div className="text-3xl font-bold text-green-600">
                 {reportData.userStats.newUsers.toLocaleString()}
               </div>
             </div>
-            <div className="bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)] p-6">
-              <div className="text-sm text-[var(--glass-text-secondary)] mb-2">活跃用户</div>
+            <div className="bg-[var(--wuhu-bg-surface)] rounded-lg border border-[rgba(167, 87, 255, 0.2)] p-6">
+              <div className="text-sm text-[rgba(255,255,255,0.7)] mb-2">活跃用户</div>
               <div className="text-3xl font-bold text-blue-600">
                 {reportData.userStats.activeUsers.toLocaleString()}
               </div>
             </div>
-            <div className="bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)] p-6">
-              <div className="text-sm text-[var(--glass-text-secondary)] mb-2">7日留存率</div>
+            <div className="bg-[var(--wuhu-bg-surface)] rounded-lg border border-[rgba(167, 87, 255, 0.2)] p-6">
+              <div className="text-sm text-[rgba(255,255,255,0.7)] mb-2">7日留存率</div>
               <div className="text-3xl font-bold text-purple-600">
                 {reportData.userStats.retentionRate}%
               </div>
@@ -390,9 +390,9 @@ export default function ReportsPage() {
           </div>
 
           {/* 图表 */}
-          <div className="bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)] p-6">
+          <div className="bg-[var(--wuhu-bg-surface)] rounded-lg border border-[rgba(167, 87, 255, 0.2)] p-6">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-[var(--glass-text-primary)]">用户增长趋势</h3>
+              <h3 className="text-lg font-semibold text-[white]">用户增长趋势</h3>
               <button
                 onClick={() => exportCSV('users')}
                 className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 text-sm"
@@ -404,28 +404,28 @@ export default function ReportsPage() {
           </div>
 
           {/* 数据表格 */}
-          <div className="bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)] overflow-hidden">
+          <div className="bg-[var(--wuhu-bg-surface)] rounded-lg border border-[rgba(167, 87, 255, 0.2)] overflow-hidden">
             <table className="w-full">
-              <thead className="bg-[var(--glass-bg-canvas)]">
+              <thead className="bg-[var(--wuhu-bg-canvas)]">
                 <tr>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-[var(--glass-text-secondary)]">
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-[rgba(255,255,255,0.7)]">
                     日期
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-[var(--glass-text-secondary)]">
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-[rgba(255,255,255,0.7)]">
                     新增用户
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-[var(--glass-text-secondary)]">
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-[rgba(255,255,255,0.7)]">
                     活跃用户
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-[var(--glass-text-secondary)]">
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-[rgba(255,255,255,0.7)]">
                     留存率
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[var(--glass-stroke-soft)]">
+              <tbody className="divide-y divide-[rgba(167, 87, 255, 0.2)]">
                 {reportData.userStats.table.map((item, index) => (
-                  <tr key={index} className="hover:bg-[var(--glass-bg-canvas)]">
-                    <td className="px-4 py-3 text-[var(--glass-text-primary)]">
+                  <tr key={index} className="hover:bg-[var(--wuhu-bg-canvas)]">
+                    <td className="px-4 py-3 text-[white]">
                       {item.date}
                     </td>
                     <td className="px-4 py-3 text-green-600">
@@ -450,26 +450,26 @@ export default function ReportsPage() {
         <div className="space-y-6">
           {/* 数据卡片 */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)] p-6">
-              <div className="text-sm text-[var(--glass-text-secondary)] mb-2">总任务数</div>
-              <div className="text-3xl font-bold text-[var(--glass-text-primary)]">
+            <div className="bg-[var(--wuhu-bg-surface)] rounded-lg border border-[rgba(167, 87, 255, 0.2)] p-6">
+              <div className="text-sm text-[rgba(255,255,255,0.7)] mb-2">总任务数</div>
+              <div className="text-3xl font-bold text-[white]">
                 {reportData.taskStats.totalTasks.toLocaleString()}
               </div>
             </div>
-            <div className="bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)] p-6">
-              <div className="text-sm text-[var(--glass-text-secondary)] mb-2">完成任务</div>
+            <div className="bg-[var(--wuhu-bg-surface)] rounded-lg border border-[rgba(167, 87, 255, 0.2)] p-6">
+              <div className="text-sm text-[rgba(255,255,255,0.7)] mb-2">完成任务</div>
               <div className="text-3xl font-bold text-green-600">
                 {reportData.taskStats.completedTasks.toLocaleString()}
               </div>
             </div>
-            <div className="bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)] p-6">
-              <div className="text-sm text-[var(--glass-text-secondary)] mb-2">失败任务</div>
+            <div className="bg-[var(--wuhu-bg-surface)] rounded-lg border border-[rgba(167, 87, 255, 0.2)] p-6">
+              <div className="text-sm text-[rgba(255,255,255,0.7)] mb-2">失败任务</div>
               <div className="text-3xl font-bold text-red-600">
                 {reportData.taskStats.failedTasks.toLocaleString()}
               </div>
             </div>
-            <div className="bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)] p-6">
-              <div className="text-sm text-[var(--glass-text-secondary)] mb-2">平均耗时</div>
+            <div className="bg-[var(--wuhu-bg-surface)] rounded-lg border border-[rgba(167, 87, 255, 0.2)] p-6">
+              <div className="text-sm text-[rgba(255,255,255,0.7)] mb-2">平均耗时</div>
               <div className="text-3xl font-bold text-orange-600">
                 {reportData.taskStats.avgDuration}s
               </div>
@@ -477,9 +477,9 @@ export default function ReportsPage() {
           </div>
 
           {/* 图表 */}
-          <div className="bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)] p-6">
+          <div className="bg-[var(--wuhu-bg-surface)] rounded-lg border border-[rgba(167, 87, 255, 0.2)] p-6">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-[var(--glass-text-primary)]">任务量趋势</h3>
+              <h3 className="text-lg font-semibold text-[white]">任务量趋势</h3>
               <button
                 onClick={() => exportCSV('tasks')}
                 className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 text-sm"
@@ -491,34 +491,34 @@ export default function ReportsPage() {
           </div>
 
           {/* 数据表格 */}
-          <div className="bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)] overflow-hidden">
+          <div className="bg-[var(--wuhu-bg-surface)] rounded-lg border border-[rgba(167, 87, 255, 0.2)] overflow-hidden">
             <table className="w-full">
-              <thead className="bg-[var(--glass-bg-canvas)]">
+              <thead className="bg-[var(--wuhu-bg-canvas)]">
                 <tr>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-[var(--glass-text-secondary)]">
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-[rgba(255,255,255,0.7)]">
                     日期
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-[var(--glass-text-secondary)]">
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-[rgba(255,255,255,0.7)]">
                     总任务数
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-[var(--glass-text-secondary)]">
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-[rgba(255,255,255,0.7)]">
                     完成任务
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-[var(--glass-text-secondary)]">
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-[rgba(255,255,255,0.7)]">
                     失败任务
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-[var(--glass-text-secondary)]">
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-[rgba(255,255,255,0.7)]">
                     成功率
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[var(--glass-stroke-soft)]">
+              <tbody className="divide-y divide-[rgba(167, 87, 255, 0.2)]">
                 {reportData.taskStats.table.map((item, index) => (
-                  <tr key={index} className="hover:bg-[var(--glass-bg-canvas)]">
-                    <td className="px-4 py-3 text-[var(--glass-text-primary)]">
+                  <tr key={index} className="hover:bg-[var(--wuhu-bg-canvas)]">
+                    <td className="px-4 py-3 text-[white]">
                       {item.date}
                     </td>
-                    <td className="px-4 py-3 text-[var(--glass-text-primary)]">
+                    <td className="px-4 py-3 text-[white]">
                       {item.totalTasks}
                     </td>
                     <td className="px-4 py-3 text-green-600">
@@ -543,26 +543,26 @@ export default function ReportsPage() {
         <div className="space-y-6">
           {/* 数据卡片 */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)] p-6">
-              <div className="text-sm text-[var(--glass-text-secondary)] mb-2">总收入</div>
+            <div className="bg-[var(--wuhu-bg-surface)] rounded-lg border border-[rgba(167, 87, 255, 0.2)] p-6">
+              <div className="text-sm text-[rgba(255,255,255,0.7)] mb-2">总收入</div>
               <div className="text-3xl font-bold text-green-600">
                 ¥{reportData.financeStats.totalRevenue.toLocaleString()}
               </div>
             </div>
-            <div className="bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)] p-6">
-              <div className="text-sm text-[var(--glass-text-secondary)] mb-2">积分消耗</div>
+            <div className="bg-[var(--wuhu-bg-surface)] rounded-lg border border-[rgba(167, 87, 255, 0.2)] p-6">
+              <div className="text-sm text-[rgba(255,255,255,0.7)] mb-2">积分消耗</div>
               <div className="text-3xl font-bold text-blue-600">
                 {reportData.financeStats.creditConsumed.toLocaleString()}
               </div>
             </div>
-            <div className="bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)] p-6">
-              <div className="text-sm text-[var(--glass-text-secondary)] mb-2">平均客单价</div>
+            <div className="bg-[var(--wuhu-bg-surface)] rounded-lg border border-[rgba(167, 87, 255, 0.2)] p-6">
+              <div className="text-sm text-[rgba(255,255,255,0.7)] mb-2">平均客单价</div>
               <div className="text-3xl font-bold text-purple-600">
                 ¥{reportData.financeStats.avgOrderValue.toLocaleString()}
               </div>
             </div>
-            <div className="bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)] p-6">
-              <div className="text-sm text-[var(--glass-text-secondary)] mb-2">退款金额</div>
+            <div className="bg-[var(--wuhu-bg-surface)] rounded-lg border border-[rgba(167, 87, 255, 0.2)] p-6">
+              <div className="text-sm text-[rgba(255,255,255,0.7)] mb-2">退款金额</div>
               <div className="text-3xl font-bold text-red-600">
                 ¥{reportData.financeStats.refundAmount.toLocaleString()}
               </div>
@@ -570,9 +570,9 @@ export default function ReportsPage() {
           </div>
 
           {/* 图表 */}
-          <div className="bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)] p-6">
+          <div className="bg-[var(--wuhu-bg-surface)] rounded-lg border border-[rgba(167, 87, 255, 0.2)] p-6">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-[var(--glass-text-primary)]">收入趋势</h3>
+              <h3 className="text-lg font-semibold text-[white]">收入趋势</h3>
               <button
                 onClick={() => exportCSV('finance')}
                 className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 text-sm"
@@ -584,31 +584,31 @@ export default function ReportsPage() {
           </div>
 
           {/* 数据表格 */}
-          <div className="bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)] overflow-hidden">
+          <div className="bg-[var(--wuhu-bg-surface)] rounded-lg border border-[rgba(167, 87, 255, 0.2)] overflow-hidden">
             <table className="w-full">
-              <thead className="bg-[var(--glass-bg-canvas)]">
+              <thead className="bg-[var(--wuhu-bg-canvas)]">
                 <tr>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-[var(--glass-text-secondary)]">
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-[rgba(255,255,255,0.7)]">
                     日期
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-[var(--glass-text-secondary)]">
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-[rgba(255,255,255,0.7)]">
                     收入
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-[var(--glass-text-secondary)]">
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-[rgba(255,255,255,0.7)]">
                     积分消耗
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-[var(--glass-text-secondary)]">
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-[rgba(255,255,255,0.7)]">
                     订单数
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-[var(--glass-text-secondary)]">
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-[rgba(255,255,255,0.7)]">
                     退款金额
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[var(--glass-stroke-soft)]">
+              <tbody className="divide-y divide-[rgba(167, 87, 255, 0.2)]">
                 {reportData.financeStats.table.map((item, index) => (
-                  <tr key={index} className="hover:bg-[var(--glass-bg-canvas)]">
-                    <td className="px-4 py-3 text-[var(--glass-text-primary)]">
+                  <tr key={index} className="hover:bg-[var(--wuhu-bg-canvas)]">
+                    <td className="px-4 py-3 text-[white]">
                       {item.date}
                     </td>
                     <td className="px-4 py-3 text-green-600">
@@ -617,7 +617,7 @@ export default function ReportsPage() {
                     <td className="px-4 py-3 text-blue-600">
                       {item.creditConsumed}
                     </td>
-                    <td className="px-4 py-3 text-[var(--glass-text-primary)]">
+                    <td className="px-4 py-3 text-[white]">
                       {item.orderCount}
                     </td>
                     <td className="px-4 py-3 text-red-600">
@@ -636,26 +636,26 @@ export default function ReportsPage() {
         <div className="space-y-6">
           {/* 数据卡片 */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)] p-6">
-              <div className="text-sm text-[var(--glass-text-secondary)] mb-2">总订阅数</div>
-              <div className="text-3xl font-bold text-[var(--glass-text-primary)]">
+            <div className="bg-[var(--wuhu-bg-surface)] rounded-lg border border-[rgba(167, 87, 255, 0.2)] p-6">
+              <div className="text-sm text-[rgba(255,255,255,0.7)] mb-2">总订阅数</div>
+              <div className="text-3xl font-bold text-[white]">
                 {reportData.subscriptionStats.totalSubscriptions.toLocaleString()}
               </div>
             </div>
-            <div className="bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)] p-6">
-              <div className="text-sm text-[var(--glass-text-secondary)] mb-2">新增订阅</div>
+            <div className="bg-[var(--wuhu-bg-surface)] rounded-lg border border-[rgba(167, 87, 255, 0.2)] p-6">
+              <div className="text-sm text-[rgba(255,255,255,0.7)] mb-2">新增订阅</div>
               <div className="text-3xl font-bold text-green-600">
                 {reportData.subscriptionStats.newSubscriptions.toLocaleString()}
               </div>
             </div>
-            <div className="bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)] p-6">
-              <div className="text-sm text-[var(--glass-text-secondary)] mb-2">月收入 (MRR)</div>
+            <div className="bg-[var(--wuhu-bg-surface)] rounded-lg border border-[rgba(167, 87, 255, 0.2)] p-6">
+              <div className="text-sm text-[rgba(255,255,255,0.7)] mb-2">月收入 (MRR)</div>
               <div className="text-3xl font-bold text-blue-600">
                 ¥{reportData.subscriptionStats.mrr.toLocaleString()}
               </div>
             </div>
-            <div className="bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)] p-6">
-              <div className="text-sm text-[var(--glass-text-secondary)] mb-2">流失率</div>
+            <div className="bg-[var(--wuhu-bg-surface)] rounded-lg border border-[rgba(167, 87, 255, 0.2)] p-6">
+              <div className="text-sm text-[rgba(255,255,255,0.7)] mb-2">流失率</div>
               <div className="text-3xl font-bold text-red-600">
                 {reportData.subscriptionStats.churnRate}%
               </div>
@@ -663,9 +663,9 @@ export default function ReportsPage() {
           </div>
 
           {/* 图表 */}
-          <div className="bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)] p-6">
+          <div className="bg-[var(--wuhu-bg-surface)] rounded-lg border border-[rgba(167, 87, 255, 0.2)] p-6">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-[var(--glass-text-primary)]">订阅增长趋势</h3>
+              <h3 className="text-lg font-semibold text-[white]">订阅增长趋势</h3>
               <button
                 onClick={() => exportCSV('subscription')}
                 className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 text-sm"
@@ -677,31 +677,31 @@ export default function ReportsPage() {
           </div>
 
           {/* 数据表格 */}
-          <div className="bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)] overflow-hidden">
+          <div className="bg-[var(--wuhu-bg-surface)] rounded-lg border border-[rgba(167, 87, 255, 0.2)] overflow-hidden">
             <table className="w-full">
-              <thead className="bg-[var(--glass-bg-canvas)]">
+              <thead className="bg-[var(--wuhu-bg-canvas)]">
                 <tr>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-[var(--glass-text-secondary)]">
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-[rgba(255,255,255,0.7)]">
                     日期
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-[var(--glass-text-secondary)]">
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-[rgba(255,255,255,0.7)]">
                     新增订阅
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-[var(--glass-text-secondary)]">
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-[rgba(255,255,255,0.7)]">
                     流失订阅
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-[var(--glass-text-secondary)]">
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-[rgba(255,255,255,0.7)]">
                     月收入
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-[var(--glass-text-secondary)]">
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-[rgba(255,255,255,0.7)]">
                     流失率
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[var(--glass-stroke-soft)]">
+              <tbody className="divide-y divide-[rgba(167, 87, 255, 0.2)]">
                 {reportData.subscriptionStats.table.map((item, index) => (
-                  <tr key={index} className="hover:bg-[var(--glass-bg-canvas)]">
-                    <td className="px-4 py-3 text-[var(--glass-text-primary)]">
+                  <tr key={index} className="hover:bg-[var(--wuhu-bg-canvas)]">
+                    <td className="px-4 py-3 text-[white]">
                       {item.date}
                     </td>
                     <td className="px-4 py-3 text-green-600">

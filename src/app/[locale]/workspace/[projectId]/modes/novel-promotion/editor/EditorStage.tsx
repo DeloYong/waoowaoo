@@ -130,12 +130,12 @@ export default function EditorStage({
         <div className="flex items-center gap-3">
           <button
             onClick={onBack}
-            className="glass-btn-base glass-btn-secondary flex items-center gap-2 px-4 py-2 text-sm font-medium border border-(--glass-stroke-base)"
+            className="bg-[var(--wuhu-bg-surface)] border border-white/20 hover:bg-white/5 rounded-lg text-white/70 hover:text-white transition-all flex items-center gap-2 px-4 py-2 text-sm font-medium border border-rgba(167, 87, 255, 0.2)"
           >
             <AppIcon name="chevronLeft" className="w-4 h-4" />
             {t('buttons.back')}
           </button>
-          <h1 className="text-2xl font-bold text-(--glass-text-primary)">
+          <h1 className="text-2xl font-bold text-rgba(255,255,255,0.9)">
             {t('title')}
           </h1>
         </div>
@@ -144,8 +144,8 @@ export default function EditorStage({
       <div className="grid grid-cols-12 gap-6">
         {/* Left: Video clips list */}
         <div className="col-span-3">
-          <div className="glass-surface p-4 h-[calc(100vh-200px)] overflow-y-auto">
-            <h3 className="text-sm font-semibold mb-4 text-(--glass-text-primary)">
+          <div className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_40px_rgba(167,87,255,0.2)] rounded-xl p-4 h-[calc(100vh-200px)] overflow-y-auto">
+            <h3 className="text-sm font-semibold mb-4 text-rgba(255,255,255,0.9)">
               {t('clips.title')} ({clips.length})
             </h3>
             <div className="space-y-3">
@@ -155,8 +155,8 @@ export default function EditorStage({
                   className={`
                     rounded-lg p-2 cursor-pointer transition-all
                     ${selectedClip?.id === clip.id
-                      ? 'bg-(--glass-active) border border-(--glass-border-active)'
-                      : 'hover:bg-(--glass-hover) border border-transparent'
+                      ? 'bg-[rgba(0,255,255,0.1)] border border-[var(--wuhu-neon-cyan)]'
+                      : 'hover:bg-white/5 border border-transparent'
                     }
                   `}
                   onClick={() => setSelectedClip(clip)}
@@ -169,15 +169,15 @@ export default function EditorStage({
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full bg-(--glass-bg-secondary) flex items-center justify-center">
-                        <AppIcon name="video" className="w-6 h-6 text-(--glass-text-tertiary)" />
+                      <div className="w-full h-full bg-var(--wuhu-bg-surface) flex items-center justify-center">
+                        <AppIcon name="video" className="w-6 h-6 text-rgba(255,255,255,0.4)" />
                       </div>
                     )}
                     <div className="absolute bottom-1 right-1 bg-black/70 text-white text-xs px-1.5 py-0.5 rounded">
                       {Math.round(clip.duration)}s
                     </div>
                   </div>
-                  <p className="text-sm text-(--glass-text-primary) truncate">{clip.name}</p>
+                  <p className="text-sm text-rgba(255,255,255,0.9) truncate">{clip.name}</p>
                 </div>
               ))}
             </div>
@@ -186,8 +186,8 @@ export default function EditorStage({
 
         {/* Middle: Video player */}
         <div className="col-span-6">
-          <div className="glass-surface p-4 h-[calc(100vh-200px)] flex flex-col">
-            <h3 className="text-sm font-semibold mb-4 text-(--glass-text-primary)">
+          <div className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_40px_rgba(167,87,255,0.2)] rounded-xl p-4 h-[calc(100vh-200px)] flex flex-col">
+            <h3 className="text-sm font-semibold mb-4 text-rgba(255,255,255,0.9)">
               {selectedClip ? selectedClip.name : t('player.noVideoSelected')}
             </h3>
             <div className="flex-1 rounded-lg overflow-hidden bg-black flex items-center justify-center">
@@ -200,8 +200,8 @@ export default function EditorStage({
                 />
               ) : (
                 <div className="text-center">
-                  <AppIcon name="video" className="w-12 h-12 text-(--glass-text-tertiary) mb-3 mx-auto" />
-                  <p className="text-(--glass-text-secondary)">{t('player.selectClipToPreview')}</p>
+                  <AppIcon name="video" className="w-12 h-12 text-rgba(255,255,255,0.4) mb-3 mx-auto" />
+                  <p className="text-rgba(255,255,255,0.5)">{t('player.selectClipToPreview')}</p>
                 </div>
               )}
             </div>
@@ -210,8 +210,8 @@ export default function EditorStage({
 
         {/* Right: Actions panel */}
         <div className="col-span-3">
-          <div className="glass-surface p-6 h-[calc(100vh-200px)] flex flex-col">
-            <h3 className="text-lg font-semibold mb-6 text-(--glass-text-primary)">
+          <div className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_40px_rgba(167,87,255,0.2)] rounded-xl p-6 h-[calc(100vh-200px)] flex flex-col">
+            <h3 className="text-lg font-semibold mb-6 text-rgba(255,255,255,0.9)">
               {t('actions.title')}
             </h3>
 
@@ -220,7 +220,7 @@ export default function EditorStage({
                 <button
                   onClick={handleGenerate}
                   disabled={clips.length === 0}
-                  className="glass-btn-base glass-btn-primary flex items-center justify-center gap-2 px-6 py-8 text-lg font-medium w-full disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_20px_rgba(167,87,255,0.3)] hover:shadow-[0_0_30px_rgba(167,87,255,0.4)] rounded-lg transition-all flex items-center justify-center gap-2 px-6 py-8 text-lg font-medium w-full disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <AppIcon name="wandOff" className="w-5 h-5" />
                   {t('buttons.generateFullVideo')}
@@ -230,16 +230,16 @@ export default function EditorStage({
               {generationStatus === 'generating' && (
                 <div className="w-full space-y-4">
                   <div className="text-center mb-2">
-                    <AppIcon name="refresh" className="w-8 h-8 text-[var(--glass-tone-info-fg)] animate-spin mx-auto" />
-                    <p className="mt-3 text-(--glass-text-primary) font-medium">{statusMessage}</p>
+                    <AppIcon name="refresh" className="w-8 h-8 text-[var(--wuhu-neon-cyan)] animate-spin mx-auto" />
+                    <p className="mt-3 text-rgba(255,255,255,0.9) font-medium">{statusMessage}</p>
                   </div>
-                  <div className="w-full h-2 bg-(--glass-bg-secondary) rounded-full overflow-hidden">
+                  <div className="w-full h-2 bg-var(--wuhu-bg-surface) rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-(--glass-tone-info) transition-all duration-300 ease-out"
+                      className="h-full bg-var(--wuhu-neon-cyan) transition-all duration-300 ease-out"
                       style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
                     />
                   </div>
-                  <p className="text-center text-sm text-(--glass-text-secondary)">{progress}%</p>
+                  <p className="text-center text-sm text-rgba(255,255,255,0.5)">{progress}%</p>
                 </div>
               )}
 
@@ -252,7 +252,7 @@ export default function EditorStage({
 
                   <button
                     onClick={handlePreviewGeneratedVideo}
-                    className="glass-btn-base glass-btn-primary flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium w-full mb-3"
+                    className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_20px_rgba(167,87,255,0.3)] hover:shadow-[0_0_30px_rgba(167,87,255,0.4)] rounded-lg transition-all flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium w-full mb-3"
                   >
                     <AppIcon name="play" className="w-4 h-4" />
                     {t('buttons.previewFullVideo')}
@@ -260,7 +260,7 @@ export default function EditorStage({
 
                   <button
                     onClick={handleDownload}
-                    className="glass-btn-base glass-btn-secondary flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium w-full border border-(--glass-stroke-base) mb-3"
+                    className="bg-[var(--wuhu-bg-surface)] border border-white/20 hover:bg-white/5 rounded-lg text-white/70 hover:text-white transition-all flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium w-full border border-rgba(167, 87, 255, 0.2) mb-3"
                   >
                     <AppIcon name="download" className="w-4 h-4" />
                     {t('buttons.downloadVideo')}
@@ -268,7 +268,7 @@ export default function EditorStage({
 
                   <button
                     onClick={handleGenerate}
-                    className="glass-btn-base glass-btn-secondary flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium w-full border border-(--glass-stroke-base)"
+                    className="bg-[var(--wuhu-bg-surface)] border border-white/20 hover:bg-white/5 rounded-lg text-white/70 hover:text-white transition-all flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium w-full border border-rgba(167, 87, 255, 0.2)"
                   >
                     {t('buttons.regenerate')}
                   </button>
@@ -284,7 +284,7 @@ export default function EditorStage({
 
                   <button
                     onClick={handleGenerate}
-                    className="glass-btn-base glass-btn-primary flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium w-full"
+                    className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_20px_rgba(167,87,255,0.3)] hover:shadow-[0_0_30px_rgba(167,87,255,0.4)] rounded-lg transition-all flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium w-full"
                   >
                     <AppIcon name="refresh" className="w-4 h-4" />
                     {t('buttons.retry')}
@@ -294,7 +294,7 @@ export default function EditorStage({
             </div>
 
             {clips.length === 0 && (
-              <div className="mt-auto pt-4 text-center text-sm text-(--glass-text-tertiary)">
+              <div className="mt-auto pt-4 text-center text-sm text-rgba(255,255,255,0.4)">
                 <AppIcon name="info" className="w-4 h-4 inline mr-1 mb-1" />
                 {t('actions.noClipsAvailable')}
               </div>

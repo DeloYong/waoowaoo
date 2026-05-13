@@ -22,7 +22,7 @@ export default function WuhuEmptyState({
       </h3>
 
       {description && (
-        <p className="mt-2 text-[var(--glass-text-secondary)] max-w-md">
+        <p className="mt-2 text-[rgba(255,255,255,0.7)] max-w-md">
           {description}
         </p>
       )}

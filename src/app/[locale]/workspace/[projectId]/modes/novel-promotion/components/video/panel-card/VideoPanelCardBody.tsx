@@ -100,7 +100,7 @@ export default function VideoPanelCardBody({ runtime }: VideoPanelCardBodyProps)
                   value={promptEditor.editingPrompt}
                   onChange={(event) => promptEditor.setEditingPrompt(event.target.value)}
                   autoFocus
-                  className="w-full text-xs p-2 pr-16 border border-[var(--wuhu-neon-purple)]/40 rounded-lg bg-[var(--wuhu-bg-surface)] text-white/70 focus:outline-none focus:ring-1 focus:ring-[var(--glass-tone-info-fg)] resize-none"
+                  className="w-full text-xs p-2 pr-16 border border-[var(--wuhu-neon-purple)]/40 rounded-lg bg-[var(--wuhu-bg-surface)] text-white/70 focus:outline-none focus:ring-1 focus:ring-[var(--wuhu-neon-cyan)] resize-none"
                   rows={3}
                   placeholder={t('promptModal.placeholder')}
                 />
@@ -219,14 +219,14 @@ export default function VideoPanelCardBody({ runtime }: VideoPanelCardBodyProps)
                       </button>
 
                       {(taskStatus.isLipSyncTaskRunning || panel.lipSyncVideoUrl) && voiceManager.hasMatchedAudio && (
-                        <button onClick={lipSync.handleStartLipSync} disabled={lipSync.executingLipSync} className="flex-shrink-0 px-3 py-1.5 text-xs rounded-lg bg-[var(--glass-tone-warning-fg)] text-white">
+                        <button onClick={lipSync.handleStartLipSync} disabled={lipSync.executingLipSync} className="flex-shrink-0 px-3 py-1.5 text-xs rounded-lg bg-[var(--wuhu-neon-pink)] text-white">
                           {t('panelCard.redo')}
                         </button>
                       )}
                     </div>
 
                     {voiceManager.audioGenerateError && (
-                      <div className="mt-1 p-1.5 bg-[var(--glass-tone-danger-bg)] border border-[var(--glass-stroke-danger)] rounded text-[10px] text-[var(--glass-tone-danger-fg)]">
+                      <div className="mt-1 p-1.5 bg-[rgba(255, 100, 200, 0.1)] border border-[var(--wuhu-neon-pink)] rounded text-[10px] text-[var(--wuhu-neon-pink)]">
                         {voiceManager.audioGenerateError}
                       </div>
                     )}

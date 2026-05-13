@@ -39,11 +39,11 @@ export function ProviderSelector({ type, value, onChange, className = '' }: Prov
 
   return (
     <div className={className}>
-      <label className="block text-sm font-medium text-gray-700 mb-2">语音提供商</label>
+      <label className="block text-sm font-medium text-white/70 mb-2">语音提供商</label>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="w-full px-3 py-2 bg-[var(--wuhu-bg-surface)] border border-white/20 text-white rounded-lg focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(255,100,200,0.3)]"
       >
         {availableProviders.map((p) => (
           <option key={p} value={p}>

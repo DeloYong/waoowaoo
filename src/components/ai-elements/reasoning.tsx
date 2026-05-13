@@ -89,7 +89,7 @@ export const ReasoningTrigger = ({
     <button
       type="button"
       className={joinClassName(
-        "inline-flex items-center gap-1 text-left text-xs text-[var(--glass-text-secondary)]",
+        "inline-flex items-center gap-1 text-left text-xs text-[rgba(255,255,255,0.7)]",
         className,
       )}
       onClick={() => setIsOpen(!isOpen)}

@@ -158,7 +158,7 @@ export default function Sidebar({
                 <>
                     {/* 背景遮罩 */}
                     <div
-                        className="fixed inset-0 glass-overlay z-40"
+                        className="fixed inset-0 bg-black/60 z-40"
                         onClick={() => setIsExpanded(false)}
                     />
 
@@ -218,7 +218,7 @@ export default function Sidebar({
                                                     type="text"
                                                     value={editingName}
                                                     onChange={(e) => setEditingName(e.target.value)}
-                                                    className="glass-input-base flex-1 px-2 py-1.5 text-sm"
+                                                    className="bg-[var(--wuhu-bg-surface)] border border-white/20 rounded-lg flex-1 px-2 py-1.5 text-sm text-white focus:border-[var(--wuhu-neon-pink)] focus:outline-none transition-all"
                                                     autoFocus
                                                     onKeyDown={(e) => {
                                                         if (e.key === 'Enter') handleRename(ep.id)
@@ -227,25 +227,25 @@ export default function Sidebar({
                                                 />
                                                 <button
                                                     onClick={() => handleRename(ep.id)}
-                                                    className="glass-btn-base glass-btn-tone-info px-2 py-1 text-xs rounded"
+                                                    className="bg-[var(--wuhu-neon-purple)]/20 text-[var(--wuhu-neon-purple)] hover:bg-[var(--wuhu-neon-purple)]/30 px-2 py-1 text-xs rounded transition-all"
                                                 >
                                                     {t('sidebar.save')}
                                                 </button>
                                             </div>
                                         ) : deleteConfirmId === ep.id ? (
                                             // 删除确认
-                                            <div className="bg-[var(--glass-tone-danger-bg)] p-2 rounded-lg">
-                                                <p className="text-xs text-[var(--glass-tone-danger-fg)] mb-2">{t('sidebar.deleteConfirm', { name: ep.name })}</p>
+                                            <div className="bg-[var(--wuhu-neon-pink)]/10 p-2 rounded-lg">
+                                                <p className="text-xs text-[var(--wuhu-neon-pink)] mb-2">{t('sidebar.deleteConfirm', { name: ep.name })}</p>
                                                 <div className="flex gap-1">
                                                     <button
                                                         onClick={() => handleDelete(ep.id)}
-                                                        className="glass-btn-base glass-btn-tone-danger flex-1 py-1 text-xs rounded"
+                                                        className="bg-[var(--wuhu-neon-pink)]/20 text-[var(--wuhu-neon-pink)] hover:bg-[var(--wuhu-neon-pink)]/30 flex-1 py-1 text-xs rounded transition-all"
                                                     >
                                                         {t('sidebar.delete')}
                                                     </button>
                                                     <button
                                                         onClick={() => setDeleteConfirmId(null)}
-                                                        className="glass-btn-base glass-btn-secondary flex-1 py-1 text-xs rounded"
+                                                        className="bg-[var(--wuhu-bg-surface)] border border-white/20 hover:bg-white/5 text-white/70 hover:text-white flex-1 py-1 text-xs rounded transition-all"
                                                     >
                                                         {t('sidebar.cancel')}
                                                     </button>
@@ -274,7 +274,7 @@ export default function Sidebar({
                                                     }`}>
                                                     <button
                                                         type="button"
-                                                        className="glass-btn-base glass-btn-ghost w-6 h-6 rounded-md p-0 hover:scale-110 transition-transform"
+                                                        className="w-6 h-6 rounded-md p-0 hover:scale-110 hover:bg-white/10 transition-all"
                                                         onClick={(e) => {
                                                             e.stopPropagation()
                                                             setEditingId(ep.id)
@@ -286,7 +286,7 @@ export default function Sidebar({
                                                     </button>
                                                     <button
                                                         type="button"
-                                                        className="glass-btn-base glass-btn-ghost w-6 h-6 rounded-md p-0 hover:scale-110 transition-transform"
+                                                        className="w-6 h-6 rounded-md p-0 hover:scale-110 hover:bg-white/10 transition-all"
                                                         onClick={(e) => {
                                                             e.stopPropagation()
                                                             setDeleteConfirmId(ep.id)
@@ -312,7 +312,7 @@ export default function Sidebar({
                                         value={newEpisodeName}
                                         onChange={(e) => setNewEpisodeName(e.target.value)}
                                         placeholder={t('sidebar.newEpisodePlaceholder')}
-                                        className="glass-input-base w-full px-3 py-2 text-sm rounded-lg"
+                                        className="bg-[var(--wuhu-bg-surface)] border border-white/20 rounded-lg w-full px-3 py-2 text-sm text-white focus:border-[var(--wuhu-neon-pink)] focus:outline-none transition-all"
                                         autoFocus
                                         onKeyDown={(e) => {
                                             if (e.key === 'Enter') handleCreate()

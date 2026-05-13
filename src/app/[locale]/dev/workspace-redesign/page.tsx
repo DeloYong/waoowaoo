@@ -34,17 +34,17 @@ export default function WorkspaceRedesignPage() {
   }
 
   return (
-    <div className="glass-page min-h-screen">
+    <div className="min-h-screen">
       {/* 排版切换器 */}
-      <div className="sticky top-16 z-40 border-b border-[var(--glass-stroke-base)] bg-[var(--glass-bg-canvas)]">
+      <div className="sticky top-16 z-40 border-b border-[rgba(167, 87, 255, 0.2)] bg-[var(--wuhu-bg-canvas)]">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-3">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3 min-w-0">
-              <h1 className="text-sm font-bold text-[var(--glass-text-primary)] flex-shrink-0">
+              <h1 className="text-sm font-bold text-[white] flex-shrink-0">
                 {t('pageTitle')}
               </h1>
               {currentInfo && (
-                <span className="glass-chip glass-chip-info text-[10px] hidden sm:inline-flex">
+                <span className="bg-[var(--wuhu-neon-purple)]/20 text-[var(--wuhu-neon-purple)] rounded-lg text-[10px] hidden sm:inline-flex">
                   {t(currentInfo.nameKey)} — {t(currentInfo.descKey)}
                 </span>
               )}
@@ -56,10 +56,10 @@ export default function WorkspaceRedesignPage() {
                   key={l.key}
                   onClick={() => setCurrentLayout(l.key)}
                   title={`${t(l.nameKey)}: ${t(l.descKey)}`}
-                  className={`glass-btn-base px-2.5 py-1.5 text-[11px] transition-all duration-200 whitespace-nowrap ${
+                  className={`bg-[var(--wuhu-bg-surface)] border border-white/20 hover:bg-white/5 rounded-lg transition-all px-2.5 py-1.5 text-[11px] transition-all duration-200 whitespace-nowrap ${
                     currentLayout === l.key
-                      ? 'glass-btn-primary'
-                      : 'glass-btn-ghost hover:bg-[var(--glass-bg-muted)]'
+                      ? 'bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_20px_rgba(167,87,255,0.3)]'
+                      : 'text-white/70 hover:text-white'
                   }`}
                 >
                   {t(l.nameKey)}
@@ -83,11 +83,11 @@ export default function WorkspaceRedesignPage() {
             if (idx > 0) setCurrentLayout(LAYOUTS[idx - 1].key)
           }}
           disabled={currentLayout === 'v1'}
-          className="glass-btn-base glass-btn-secondary p-2 disabled:opacity-30"
+          className="bg-[var(--wuhu-bg-surface)] border border-white/20 hover:bg-white/5 rounded-lg text-white/70 hover:text-white transition-all p-2 disabled:opacity-30"
         >
           <AppIcon name="chevronLeft" className="w-4 h-4" />
         </button>
-        <span className="text-xs font-medium text-[var(--glass-text-tertiary)]">
+        <span className="text-xs font-medium text-[rgba(255,255,255,0.5)]">
           {LAYOUTS.findIndex((l) => l.key === currentLayout) + 1}/{LAYOUTS.length}
         </span>
         <button
@@ -96,7 +96,7 @@ export default function WorkspaceRedesignPage() {
             if (idx < LAYOUTS.length - 1) setCurrentLayout(LAYOUTS[idx + 1].key)
           }}
           disabled={currentLayout === 'v5'}
-          className="glass-btn-base glass-btn-secondary p-2 disabled:opacity-30"
+          className="bg-[var(--wuhu-bg-surface)] border border-white/20 hover:bg-white/5 rounded-lg text-white/70 hover:text-white transition-all p-2 disabled:opacity-30"
         >
           <AppIcon name="chevronRight" className="w-4 h-4" />
         </button>

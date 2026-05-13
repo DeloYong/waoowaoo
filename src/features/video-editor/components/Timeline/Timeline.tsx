@@ -75,9 +75,9 @@ export const Timeline: React.FC<TimelineProps> = ({
             flexDirection: 'column',
             gap: '8px',
             padding: '12px',
-            background: 'var(--glass-bg-surface)',
+            background: 'var(--wuhu-bg-surface)',
             borderRadius: '12px',
-            border: '1px solid var(--glass-stroke-base)',
+            border: '1px solid rgba(167, 87, 255, 0.2)',
             height: '100%'
         }}>
             {/* 缩放控制 */}
@@ -86,7 +86,7 @@ export const Timeline: React.FC<TimelineProps> = ({
                 alignItems: 'center',
                 gap: '8px'
             }}>
-                <span style={{ fontSize: '12px', color: 'var(--glass-text-secondary)' }}>{t('editor.timeline.zoomLabel')}</span>
+                <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.7)' }}>{t('editor.timeline.zoomLabel')}</span>
                 <input
                     type="range"
                     min="0.5"
@@ -96,7 +96,7 @@ export const Timeline: React.FC<TimelineProps> = ({
                     onChange={(e) => onZoomChange(parseFloat(e.target.value))}
                     style={{ width: '100px' }}
                 />
-                <span style={{ fontSize: '12px', color: 'var(--glass-text-tertiary)' }}>
+                <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)' }}>
                     {Math.round(timelineState.zoom * 100)}%
                 </span>
             </div>
@@ -106,8 +106,8 @@ export const Timeline: React.FC<TimelineProps> = ({
                 style={{
                     position: 'relative',
                     height: '24px',
-                    background: 'var(--glass-bg-muted)',
-                    border: '1px solid var(--glass-stroke-base)',
+                    background: 'rgba(255,255,255,0.05)',
+                    border: '1px solid rgba(167, 87, 255, 0.2)',
                     borderRadius: '4px',
                     cursor: 'pointer',
                     marginLeft: '70px'  // 与轨道标签对齐
@@ -128,7 +128,7 @@ export const Timeline: React.FC<TimelineProps> = ({
                     top: 0,
                     height: '100%',
                     width: `${playheadPosition}%`,
-                    background: 'linear-gradient(90deg, var(--glass-accent-from) 0%, var(--glass-accent-to) 100%)',
+                    background: 'linear-gradient(90deg, var(--wuhu-neon-purple) 0%, var(--wuhu-neon-pink) 100%)',
                     borderRadius: '4px 0 0 4px',
                     transition: timelineState.playing ? 'none' : 'width 0.1s'
                 }} />
@@ -139,9 +139,9 @@ export const Timeline: React.FC<TimelineProps> = ({
                     top: '-4px',
                     bottom: '-4px',
                     width: '3px',
-                    background: 'var(--glass-accent-to)',
+                    background: 'var(--wuhu-neon-pink)',
                     borderRadius: '2px',
-                    boxShadow: '0 0 8px var(--glass-accent-shadow-strong)',
+                    boxShadow: '0 0 8px rgba(255, 100, 200, 0.5)',
                     transform: 'translateX(-50%)',
                     transition: timelineState.playing ? 'none' : 'left 0.1s'
                 }} />
@@ -152,7 +152,7 @@ export const Timeline: React.FC<TimelineProps> = ({
                     top: '50%',
                     transform: 'translateY(-50%)',
                     fontSize: '10px',
-                    color: 'var(--glass-text-tertiary)'
+                    color: 'rgba(255,255,255,0.5)'
                 }}>
                     {framesToTime(timelineState.currentFrame, config.fps)} / {framesToTime(totalDuration, config.fps)}
                 </div>
@@ -163,14 +163,14 @@ export const Timeline: React.FC<TimelineProps> = ({
                 display: 'flex',
                 alignItems: 'center',
                 height: '56px',
-                background: 'var(--glass-bg-surface-strong)',
-                border: '1px solid var(--glass-stroke-base)',
+                background: 'var(--wuhu-bg-surface)',
+                border: '1px solid rgba(167, 87, 255, 0.2)',
                 borderRadius: '6px',
                 padding: '0 12px'
             }}>
                 <span style={{
                     fontSize: '12px',
-                    color: 'var(--glass-text-secondary)',
+                    color: 'rgba(255,255,255,0.7)',
                     width: '70px',
                     flexShrink: 0
                 }}>
@@ -205,7 +205,7 @@ export const Timeline: React.FC<TimelineProps> = ({
                                 />
                             ))}
                             {clips.length === 0 && (
-                                <span style={{ fontSize: '12px', color: 'var(--glass-text-tertiary)' }}>
+                                <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)' }}>
                                     {t('editor.timeline.emptyHint')}
                                 </span>
                             )}
@@ -219,14 +219,14 @@ export const Timeline: React.FC<TimelineProps> = ({
                 display: 'flex',
                 alignItems: 'center',
                 height: '40px',
-                background: 'var(--glass-bg-surface-strong)',
-                border: '1px solid var(--glass-stroke-base)',
+                background: 'var(--wuhu-bg-surface)',
+                border: '1px solid rgba(167, 87, 255, 0.2)',
                 borderRadius: '6px',
                 padding: '0 12px'
             }}>
                 <span style={{
                     fontSize: '12px',
-                    color: 'var(--glass-text-secondary)',
+                    color: 'rgba(255,255,255,0.7)',
                     width: '70px',
                     flexShrink: 0
                 }}>
@@ -239,10 +239,10 @@ export const Timeline: React.FC<TimelineProps> = ({
                             style={{
                                 width: `${clip.durationInFrames * timelineState.zoom * 2}px`,
                                 height: '28px',
-                                background: 'var(--glass-tone-success-bg)',
+                                background: 'rgba(167, 87, 255, 0.2)',
                                 borderRadius: '4px',
                                 fontSize: '10px',
-                                color: 'var(--glass-tone-success-fg)',
+                                color: 'var(--wuhu-neon-purple)',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
@@ -260,14 +260,14 @@ export const Timeline: React.FC<TimelineProps> = ({
                 display: 'flex',
                 alignItems: 'center',
                 height: '40px',
-                background: 'var(--glass-bg-surface-strong)',
-                border: '1px solid var(--glass-stroke-base)',
+                background: 'var(--wuhu-bg-surface)',
+                border: '1px solid rgba(167, 87, 255, 0.2)',
                 borderRadius: '6px',
                 padding: '0 12px'
             }}>
                 <span style={{
                     fontSize: '12px',
-                    color: 'var(--glass-text-secondary)',
+                    color: 'rgba(255,255,255,0.7)',
                     width: '70px',
                     flexShrink: 0
                 }}>
@@ -314,19 +314,19 @@ const SortableClip: React.FC<SortableClipProps> = ({
         minWidth: '60px',
         height: '40px',
         background: isSelected
-            ? 'var(--glass-accent-from)'
+            ? 'var(--wuhu-neon-purple)'
             : isDragging
-                ? 'var(--glass-bg-muted)'
-                : 'var(--glass-bg-surface)',
+                ? 'rgba(255,255,255,0.05)'
+                : 'var(--wuhu-bg-surface)',
         borderRadius: '4px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         fontSize: '11px',
-        color: isSelected ? 'var(--glass-text-on-accent)' : 'var(--glass-text-primary)',
+        color: isSelected ? 'white' : 'white',
         cursor: isDragging ? 'grabbing' : 'grab',
         flexShrink: 0,
-        border: isSelected ? '2px solid var(--glass-stroke-focus)' : '1px solid var(--glass-stroke-base)',
+        border: isSelected ? '2px solid var(--wuhu-neon-cyan)' : '1px solid rgba(167, 87, 255, 0.2)',
         opacity: isDragging ? 0.8 : 1,
         zIndex: isDragging ? 100 : 1,
         position: 'relative'
@@ -345,7 +345,7 @@ const SortableClip: React.FC<SortableClipProps> = ({
                 position: 'absolute',
                 bottom: '2px',
                 fontSize: '9px',
-                color: isSelected ? 'rgba(255, 255, 255, 0.8)' : 'var(--glass-text-tertiary)'
+                color: isSelected ? 'rgba(255, 255, 255, 0.8)' : 'rgba(255,255,255,0.5)'
             }}>
                 {framesToTime(clip.durationInFrames, fps)}
             </span>
@@ -359,10 +359,10 @@ const SortableClip: React.FC<SortableClipProps> = ({
                     transform: 'translateY(-50%)',
                     width: '12px',
                     height: '12px',
-                    background: 'var(--glass-tone-warning-fg)',
+                    background: 'var(--wuhu-neon-pink)',
                     borderRadius: '50%',
                     fontSize: '8px',
-                    color: 'var(--glass-text-on-accent)',
+                    color: 'white',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',

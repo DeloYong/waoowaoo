@@ -310,7 +310,7 @@ export function LocationCard({ location, assetType = 'location', onImageClick, o
                         </div>
                       ) : (
                         <div className="flex flex-col items-center justify-center gap-2 px-3 py-6 text-white/50">
-                          <div className="h-12 w-12 animate-pulse rounded-xl bg-[var(--glass-bg-surface-strong)]" />
+                          <div className="h-12 w-12 animate-pulse rounded-xl bg-[var(--wuhu-bg-surface)]" />
                           <span className="text-xs">{tAssets('image.generatingPlaceholder')}</span>
                         </div>
                       )}
@@ -333,7 +333,7 @@ export function LocationCard({ location, assetType = 'location', onImageClick, o
                     handleSelectImage(isThisSelected ? null : img.imageIndex)
                   }}
                   disabled={!img.imageUrl || phase === 'generating' || phase === 'regenerating'}
-                  className={`absolute top-2 right-2 bg-[var(--wuhu-neon-purple)]/20 hover:bg-[var(--wuhu-neon-purple)]/30 transition-allh-7 w-7 rounded-full ${isThisSelected ? 'glass-btn-tone-success' : 'glass-btn-secondary'} disabled:opacity-50`}
+                  className={`absolute top-2 right-2 bg-[var(--wuhu-neon-purple)]/20 hover:bg-[var(--wuhu-neon-purple)]/30 transition-allh-7 w-7 rounded-full ${isThisSelected ? 'bg-[var(--wuhu-neon-cyan)]/20 text-[var(--wuhu-neon-cyan)]' : 'bg-[var(--wuhu-bg-surface)] border border-white/20 text-white/70'} disabled:opacity-50`}
                 >
                   <AppIcon name="check" className="w-4 h-4" />
                 </button>
@@ -394,9 +394,9 @@ export function LocationCard({ location, assetType = 'location', onImageClick, o
             {!isTaskRunning && (
               <div className="absolute top-2 left-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button onClick={() => fileInputRef.current?.click()} disabled={uploadImage.isPending} className="border border-[var(--wuhu-neon-purple)]/40 text-white/80 hover:bg-[var(--wuhu-neon-purple)]/20 transition-all h-7 w-7 rounded-full">
-                  <AppIcon name="upload" className="w-4 h-4 text-[var(--glass-tone-success-fg)]" />
+                  <AppIcon name="upload" className="w-4 h-4 text-[var(--wuhu-neon-purple)]" />
                 </button>
-                      <button onClick={() => onImageEdit?.('location', location.id, location.name, currentImageIndex)} className="bg-[var(--wuhu-neon-purple)]/20 hover:bg-[var(--wuhu-neon-purple)]/30 transition-allglass-btn-tone-info h-7 w-7 rounded-full">
+                      <button onClick={() => onImageEdit?.('location', location.id, location.name, currentImageIndex)} className="bg-[var(--wuhu-neon-purple)]/20 hover:bg-[var(--wuhu-neon-purple)]/30 transition-allbg-[var(--wuhu-neon-purple)]/20 text-[var(--wuhu-neon-purple)] h-7 w-7 rounded-full">
                         <AppIcon name="edit" className="w-4 h-4" />
                       </button>
                 <button onClick={() => handleGenerate()} className="border border-[var(--wuhu-neon-purple)]/40 text-white/80 hover:bg-[var(--wuhu-neon-purple)]/20 transition-all h-7 w-7 rounded-full">
@@ -421,7 +421,7 @@ export function LocationCard({ location, assetType = 'location', onImageClick, o
               onValueChange={setGenerationCount}
               onClick={() => handleGenerate(generationCount)}
               ariaLabel={tAssets('image.selectCount')}
-              className="bg-[var(--wuhu-neon-purple)]/20 hover:bg-[var(--wuhu-neon-purple)]/30 transition-allglass-btn-primary flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg"
+              className="bg-[var(--wuhu-neon-purple)]/20 hover:bg-[var(--wuhu-neon-purple)]/30 transition-allbg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_20px_rgba(167,87,255,0.3)] flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg"
               selectClassName="appearance-none bg-transparent border-0 pl-0 pr-3 text-sm font-semibold text-current outline-none cursor-pointer leading-none transition-colors"
             />
           </div>

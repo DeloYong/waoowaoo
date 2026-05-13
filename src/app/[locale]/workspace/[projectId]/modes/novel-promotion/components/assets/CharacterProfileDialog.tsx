@@ -220,7 +220,7 @@ export default function CharacterProfileDialog({
                     {/* 辨识标志 */}
                     <div>
                         <label className="block text-sm font-medium text-white/70 mb-2">
-                            {t('characterProfile.primaryMarker')} <span className="text-xs text-[var(--glass-text-tertiary)]">{t('characterProfile.markerNote')}</span>
+                            {t('characterProfile.primaryMarker')} <span className="text-xs text-[rgba(255,255,255,0.5)]">{t('characterProfile.markerNote')}</span>
                         </label>
                         <input
                             type="text"

@@ -260,19 +260,19 @@ export function LocationCreationModal({
 
     return (
         <div
-            className="fixed inset-0 glass-overlay flex items-center justify-center z-50 p-4"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm animate-fadeIn flex items-center justify-center z-50 p-4"
             onClick={handleBackdropClick}
         >
-            <div className="glass-surface-modal max-w-2xl w-full max-h-[85vh] flex flex-col">
+            <div className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_50px_rgba(167,87,255,0.3)] rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col">
                 <div className="p-6 overflow-y-auto flex-1">
                     {/* 标题 */}
                     <div className="flex items-center justify-between mb-6">
-                        <h3 className="text-lg font-semibold text-[var(--glass-text-primary)]">
+                        <h3 className="text-lg font-semibold text-white">
                             {t('location.title')}
                         </h3>
                         <button
                             onClick={onClose}
-                            className="glass-btn-base glass-btn-soft w-8 h-8 rounded-full flex items-center justify-center text-[var(--glass-text-tertiary)]"
+                            className="w-8 h-8 rounded-full flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10"
                         >
                             <XMarkIcon className="w-5 h-5" />
                         </button>
@@ -281,21 +281,21 @@ export function LocationCreationModal({
                     <div className="space-y-5">
                         {/* 场景名称 */}
                         <div className="space-y-2">
-                            <label className="glass-field-label block">
-                                {t('location.name')} <span className="text-[var(--glass-tone-danger-fg)]">*</span>
+                            <label className="text-white/70 block">
+                                {t('location.name')} <span className="text-red-400">*</span>
                             </label>
                             <input
                                 type="text"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 placeholder={t('location.namePlaceholder')}
-                                className="glass-input-base w-full px-3 py-2 text-sm"
+                                className="bg-[var(--wuhu-bg-surface)] border border-white/20 text-white placeholder:text-white/40 rounded-lg focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(255,100,200,0.3)] w-full px-3 py-2 text-sm"
                             />
                         </div>
 
                         {mode === 'asset-hub' && (
                             <div className="space-y-2">
-                                <label className="glass-field-label block">
+                                <label className="text-white/70 block">
                                     {t('artStyle.title')}
                                 </label>
                                 <div className="grid grid-cols-2 gap-2">
@@ -304,9 +304,9 @@ export function LocationCreationModal({
                                             key={style.value}
                                             type="button"
                                             onClick={() => setArtStyle(style.value)}
-                                            className={`glass-btn-base px-3 py-2 rounded-lg text-sm border transition-all justify-start ${artStyle === style.value
-                                                ? 'glass-btn-tone-info border-[var(--glass-stroke-focus)]'
-                                                : 'glass-btn-soft border-[var(--glass-stroke-base)] text-[var(--glass-text-secondary)]'
+                                            className={`px-3 py-2 rounded-lg text-sm border transition-all justify-start ${artStyle === style.value
+                                                ? 'bg-[var(--wuhu-neon-purple)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)] border-[var(--wuhu-neon-pink)]'
+                                                : 'border-white/20 text-white/70 hover:border-[var(--wuhu-neon-pink)] hover:text-white hover:bg-white/10'
                                                 }`}
                                         >
                                             <span>{style.label}</span>
@@ -317,8 +317,8 @@ export function LocationCreationModal({
                         )}
 
                         {/* AI 设计区域 */}
-                        <div className="glass-surface-soft rounded-xl p-4 space-y-3 border border-[var(--glass-stroke-base)]">
-                            <div className="flex items-center gap-2 text-sm font-medium text-[var(--glass-tone-info-fg)]">
+                        <div className="bg-[var(--wuhu-bg-surface)] rounded-xl p-4 space-y-3 border border-white/20">
+                            <div className="flex items-center gap-2 text-sm font-medium text-[var(--wuhu-neon-purple)]">
                                 <SparklesIcon className="w-4 h-4" />
                                 <span>{t('aiDesign.title')} {t('common.optional')}</span>
                             </div>
@@ -328,7 +328,7 @@ export function LocationCreationModal({
                                     value={aiInstruction}
                                     onChange={(e) => setAiInstruction(e.target.value)}
                                     placeholder={t('aiDesign.placeholderLocation')}
-                                    className="glass-input-base flex-1 px-3 py-2 text-sm"
+                                    className="bg-[var(--wuhu-bg-surface)] border border-white/20 text-white placeholder:text-white/40 rounded-lg focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(255,100,200,0.3)] flex-1 px-3 py-2 text-sm"
                                     disabled={isAiDesigning}
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter' && !e.shiftKey) {
@@ -340,7 +340,7 @@ export function LocationCreationModal({
                                 <button
                                     onClick={handleAiDesign}
                                     disabled={isAiDesigning || !aiInstruction.trim()}
-                                    className="glass-btn-base glass-btn-tone-info px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-sm whitespace-nowrap"
+                                    className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)] hover:shadow-[0_0_25px_rgba(255,100,200,0.5)] px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-sm whitespace-nowrap"
                                 >
                                     {isAiDesigning ? (
                                         <TaskStatusInline state={aiDesigningState} className="text-white [&>span]:text-white [&_svg]:text-white" />
@@ -352,21 +352,21 @@ export function LocationCreationModal({
                                     )}
                                 </button>
                             </div>
-                            <p className="glass-field-hint">
+                            <p className="text-white/40 text-sm">
                                 {t('aiDesign.tip')}
                             </p>
                         </div>
 
                         {/* 场景描述 */}
                         <div className="space-y-2">
-                            <label className="glass-field-label block">
-                                {t('location.description')} <span className="text-[var(--glass-tone-danger-fg)]">*</span>
+                            <label className="text-white/70 block">
+                                {t('location.description')} <span className="text-red-400">*</span>
                             </label>
                             <textarea
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                                 placeholder={t('location.descPlaceholder')}
-                                className="glass-textarea-base w-full h-36 px-3 py-2 text-sm resize-none"
+                                className="bg-[var(--wuhu-bg-surface)] border border-white/20 text-white placeholder:text-white/40 rounded-lg focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(255,100,200,0.3)] w-full h-36 px-3 py-2 text-sm resize-none"
                                 disabled={isAiDesigning}
                             />
                         </div>
@@ -374,10 +374,10 @@ export function LocationCreationModal({
                 </div>
 
                 {/* 固定底部按钮区 */}
-                <div className="flex gap-3 justify-end p-4 border-t border-[var(--glass-stroke-base)] bg-[var(--glass-bg-surface-strong)] rounded-b-xl flex-shrink-0">
+                <div className="flex gap-3 justify-end p-4 border-t border-white/10 bg-[var(--wuhu-bg-card)] rounded-b-2xl flex-shrink-0">
                     <button
                         onClick={onClose}
-                        className="glass-btn-base glass-btn-secondary px-4 py-2 rounded-lg text-sm"
+                        className="border border-white/20 text-white/70 hover:border-[var(--wuhu-neon-pink)] hover:text-white hover:bg-white/10 px-4 py-2 rounded-lg text-sm"
                         disabled={isSubmitting}
                     >
                         {t('common.cancel')}
@@ -385,7 +385,7 @@ export function LocationCreationModal({
                     <button
                         onClick={handleSubmit}
                         disabled={isSubmitting || !name.trim() || !description.trim()}
-                        className="glass-btn-base glass-btn-secondary px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center gap-2"
+                        className="border border-white/20 text-white/70 hover:border-[var(--wuhu-neon-pink)] hover:text-white hover:bg-white/10 px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center gap-2"
                     >
                         {isSubmitting ? (
                             <TaskStatusInline state={submittingState} className="text-white [&>span]:text-white [&_svg]:text-white" />
@@ -403,7 +403,7 @@ export function LocationCreationModal({
                         actionDisabled={!name.trim() || !description.trim()}
                         selectDisabled={isSubmitting}
                         ariaLabel={t('common.selectGenerateCount')}
-                        className="glass-btn-base glass-btn-primary flex items-center justify-center gap-1 rounded-lg px-4 py-2 text-sm disabled:opacity-40 disabled:cursor-not-allowed"
+                        className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)] hover:shadow-[0_0_25px_rgba(255,100,200,0.5)] flex items-center justify-center gap-1 rounded-lg px-4 py-2 text-sm disabled:opacity-40 disabled:cursor-not-allowed"
                         selectClassName="appearance-none bg-transparent border-0 pl-0 pr-3 text-sm font-semibold text-current outline-none cursor-pointer leading-none transition-colors"
                     />
                 </div>

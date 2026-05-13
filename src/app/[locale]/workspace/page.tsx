@@ -405,7 +405,7 @@ export default function WorkspacePage() {
                           className="[&>span]:sr-only"
                         />
                       ) : (
-                        <AppIcon name="trash" className="w-4 h-4 text-[var(--glass-tone-danger-fg)]" />
+                        <AppIcon name="trash" className="w-4 h-4 text-[var(--wuhu-neon-pink)]" />
                       )}
                     </button>
                   </div>
@@ -466,7 +466,7 @@ export default function WorkspacePage() {
                       {formatDate(project.updatedAt)}
                     </div>
                     {project.totalCost !== undefined && project.totalCost > 0 && (
-                      <span className="text-[11px] font-mono font-medium text-[var(--glass-text-secondary)]">
+                      <span className="text-[11px] font-mono font-medium text-[rgba(255,255,255,0.7)]">
                         {formatProjectCost(project.totalCost)}
                       </span>
                     )}

@@ -220,13 +220,13 @@ export default function CharacterCard({
         <ImageGenerationInlineCountButton
           prefix={isGroupTaskRunning ? (
             <>
-              <TaskStatusInline state={displayTaskPresentation} className="[&_span]:sr-only [&_svg]:text-[var(--glass-tone-info-fg)]" />
-              <span className="text-[10px] font-medium text-[var(--glass-tone-info-fg)] ml-0.5">{t('image.regenCountPrefix')}</span>
+              <TaskStatusInline state={displayTaskPresentation} className="[&_span]:sr-only [&_svg]:text-[var(--wuhu-neon-cyan)]" />
+              <span className="text-[10px] font-medium text-[var(--wuhu-neon-cyan)] ml-0.5">{t('image.regenCountPrefix')}</span>
             </>
           ) : (
             <>
-              <AppIcon name="refresh" className="w-4 h-4 text-[var(--glass-tone-info-fg)]" />
-              <span className="text-[10px] font-medium text-[var(--glass-tone-info-fg)] ml-0.5">{t('image.regenCountPrefix')}</span>
+              <AppIcon name="refresh" className="w-4 h-4 text-[var(--wuhu-neon-cyan)]" />
+              <span className="text-[10px] font-medium text-[var(--wuhu-neon-cyan)] ml-0.5">{t('image.regenCountPrefix')}</span>
             </>
           )}
           value={generationCount}
@@ -236,25 +236,25 @@ export default function CharacterCard({
           disabled={isAppearanceTaskRunning || isAnyTaskRunning || uploadImage.isPending}
           showCountControl={false}
           ariaLabel={t('image.regenCountPrefix')}
-          className="inline-flex h-6 items-center justify-center rounded-md px-1.5 hover:bg-[var(--glass-tone-info-bg)] transition-colors disabled:opacity-50"
+          className="inline-flex h-6 items-center justify-center rounded-md px-1.5 hover:bg-[rgba(0, 255, 255, 0.1)] transition-colors disabled:opacity-50"
         />
         {onUndo && (appearance.previousImageUrl || appearance.previousImageUrls.length > 0) && (
           <button
             onClick={onUndo}
             disabled={isAppearanceTaskRunning || isAnyTaskRunning}
-            className="w-6 h-6 rounded hover:bg-[var(--glass-tone-warning-bg)] flex items-center justify-center transition-colors disabled:opacity-50"
+            className="w-6 h-6 rounded hover:bg-[rgba(255, 100, 200, 0.1)] flex items-center justify-center transition-colors disabled:opacity-50"
             title={t('image.undo')}
           >
-            <AppIcon name="undo" className="w-4 h-4 text-[var(--glass-tone-warning-fg)]" />
+            <AppIcon name="undo" className="w-4 h-4 text-[var(--wuhu-neon-pink)]" />
           </button>
         )}
         {showDeleteButton && (
           <button
             onClick={onDelete}
-            className="w-6 h-6 rounded hover:bg-[var(--glass-tone-danger-bg)] flex items-center justify-center transition-colors"
+            className="w-6 h-6 rounded hover:bg-[rgba(255, 100, 200, 0.1)] flex items-center justify-center transition-colors"
             title={t('character.delete')}
           >
-            <AppIcon name="trash" className="w-4 h-4 text-[var(--glass-tone-danger-fg)]" />
+            <AppIcon name="trash" className="w-4 h-4 text-[var(--wuhu-neon-pink)]" />
           </button>
         )}
       </>
@@ -328,13 +328,13 @@ export default function CharacterCard({
         <button
           onClick={() => triggerUpload(selectedIndex !== null ? selectedIndex : 0)}
           disabled={uploadImage.isPending || isAppearanceTaskRunning || isAnyTaskRunning}
-          className="w-7 h-7 rounded-full bg-[var(--glass-bg-surface-strong)] hover:bg-[var(--glass-tone-success-fg)] hover:text-white flex items-center justify-center transition-all shadow-sm disabled:opacity-50"
+          className="w-7 h-7 rounded-full bg-[var(--wuhu-bg-surface)] hover:bg-[var(--wuhu-neon-purple)] hover:text-white flex items-center justify-center transition-all shadow-sm disabled:opacity-50"
           title={currentImageUrl ? t('image.uploadReplace') : t('image.upload')}
         >
           {uploadImage.isPending ? (
             <TaskStatusInline state={uploadPendingState} className="[&_span]:sr-only [&_svg]:text-current" />
           ) : (
-            <AppIcon name="upload" className="w-4 h-4 text-[var(--glass-tone-success-fg)]" />
+            <AppIcon name="upload" className="w-4 h-4 text-[var(--wuhu-neon-purple)]" />
           )}
         </button>
       )}
@@ -351,25 +351,25 @@ export default function CharacterCard({
         onClick={() => onRegenerate()}
         disabled={uploadImage.isPending || isAppearanceTaskRunning}
         className={`w-7 h-7 rounded-full flex items-center justify-center transition-all shadow-sm active:scale-90 ${(isAppearanceTaskRunning || isAnyTaskRunning)
-          ? 'bg-[var(--glass-tone-success-fg)] hover:bg-[var(--glass-tone-success-fg)]'
-          : 'bg-[var(--glass-bg-surface-strong)] hover:bg-[var(--glass-bg-surface)]'
+          ? 'bg-[var(--wuhu-neon-purple)] hover:bg-[var(--wuhu-neon-purple)]'
+          : 'bg-[var(--wuhu-bg-surface)] hover:bg-[var(--wuhu-bg-surface)]'
           }`}
         title={(isAppearanceTaskRunning || isAnyTaskRunning) ? t('image.regenerateStuck') : t('location.regenerateImage')}
       >
         {isGroupTaskRunning ? (
           <TaskStatusInline state={displayTaskPresentation} className="[&_span]:sr-only [&_svg]:text-white" />
         ) : (
-          <AppIcon name="refresh" className={`w-4 h-4 ${(isAppearanceTaskRunning || isAnyTaskRunning) ? 'text-white' : 'text-[var(--glass-text-secondary)]'}`} />
+          <AppIcon name="refresh" className={`w-4 h-4 ${(isAppearanceTaskRunning || isAnyTaskRunning) ? 'text-white' : 'text-[rgba(255,255,255,0.7)]'}`} />
         )}
       </button>
       {!isAppearanceTaskRunning && !isAnyTaskRunning && currentImageUrl && onUndo && (appearance.previousImageUrl || appearance.previousImageUrls.length > 0) && (
         <button
           onClick={onUndo}
           disabled={isAppearanceTaskRunning || isAnyTaskRunning}
-          className="w-7 h-7 rounded-full bg-[var(--glass-bg-surface-strong)] hover:bg-[var(--glass-tone-warning-fg)] hover:text-white flex items-center justify-center transition-all shadow-sm disabled:opacity-50"
+          className="w-7 h-7 rounded-full bg-[var(--wuhu-bg-surface)] hover:bg-[var(--wuhu-neon-pink)] hover:text-white flex items-center justify-center transition-all shadow-sm disabled:opacity-50"
           title={t('image.undo')}
         >
-          <AppIcon name="undo" className="w-4 h-4 text-[var(--glass-tone-warning-fg)] hover:text-white" />
+          <AppIcon name="undo" className="w-4 h-4 text-[var(--wuhu-neon-pink)] hover:text-white" />
         </button>
       )}
     </>
@@ -379,19 +379,19 @@ export default function CharacterCard({
     <>
       <button
         onClick={onEdit}
-        className="flex-shrink-0 w-5 h-5 rounded hover:bg-[var(--glass-bg-muted)] flex items-center justify-center transition-colors"
+        className="flex-shrink-0 w-5 h-5 rounded hover:bg-[rgba(255,255,255,0.05)] flex items-center justify-center transition-colors"
         title={t('video.panelCard.editPrompt')}
       >
-        <AppIcon name="edit" className="w-3.5 h-3.5 text-[var(--glass-text-secondary)]" />
+        <AppIcon name="edit" className="w-3.5 h-3.5 text-[rgba(255,255,255,0.7)]" />
       </button>
       {showDeleteButton && (
         <div className="relative">
           <button
             onClick={handleDeleteClick}
-            className="flex-shrink-0 w-5 h-5 rounded hover:bg-[var(--glass-tone-danger-bg)] flex items-center justify-center transition-colors"
+            className="flex-shrink-0 w-5 h-5 rounded hover:bg-[rgba(255, 100, 200, 0.1)] flex items-center justify-center transition-colors"
             title={appearanceCount <= 1 ? t('character.delete') : t('character.deleteOptions')}
           >
-            <AppIcon name="trash" className="w-3.5 h-3.5 text-[var(--glass-tone-danger-fg)]" />
+            <AppIcon name="trash" className="w-3.5 h-3.5 text-[var(--wuhu-neon-pink)]" />
           </button>
 
           {showDeleteMenu && appearanceCount > 1 && (
@@ -400,13 +400,13 @@ export default function CharacterCard({
                 className="fixed inset-0 z-10"
                 onClick={() => setShowDeleteMenu(false)}
               />
-              <div className="absolute right-0 top-full mt-1 z-20 bg-[var(--glass-bg-surface)] border border-[var(--glass-stroke-base)] rounded-lg shadow-lg py-1 min-w-[100px]">
+              <div className="absolute right-0 top-full mt-1 z-20 bg-[var(--wuhu-bg-surface)] border border-[rgba(167, 87, 255, 0.2)] rounded-lg shadow-lg py-1 min-w-[100px]">
                 <button
                   onClick={() => {
                     setShowDeleteMenu(false)
                     onDeleteAppearance?.()
                   }}
-                  className="w-full px-3 py-1.5 text-left text-xs text-[var(--glass-text-secondary)] hover:bg-[var(--glass-bg-muted)] whitespace-nowrap"
+                  className="w-full px-3 py-1.5 text-left text-xs text-[rgba(255,255,255,0.7)] hover:bg-[rgba(255,255,255,0.05)] whitespace-nowrap"
                 >
                   {t('image.deleteThis')}
                 </button>
@@ -415,7 +415,7 @@ export default function CharacterCard({
                     setShowDeleteMenu(false)
                     onDelete()
                   }}
-                  className="w-full px-3 py-1.5 text-left text-xs text-[var(--glass-tone-danger-fg)] hover:bg-[var(--glass-tone-danger-bg)] whitespace-nowrap"
+                  className="w-full px-3 py-1.5 text-left text-xs text-[var(--wuhu-neon-pink)] hover:bg-[rgba(255, 100, 200, 0.1)] whitespace-nowrap"
                 >
                   {t('character.deleteWhole')}
                 </button>

@@ -60,16 +60,16 @@ export function ProviderSection({
     }
 
     return (
-        <div className="glass-surface mb-5 rounded-2xl p-5">
+        <div className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 mb-5 rounded-2xl p-5">
             <div className="flex items-center justify-between mb-4">
-                <h3 className="flex items-center gap-2 text-sm font-semibold text-[var(--glass-text-primary)]">
+                <h3 className="flex items-center gap-2 text-sm font-semibold text-white">
                     {icon}
                     {title}
                 </h3>
                 {showAddButton && (
                     <button
                         onClick={() => setShowAddForm(!showAddForm)}
-                        className="glass-btn-base glass-btn-tone-info cursor-pointer px-2 py-1 text-xs font-medium"
+                        className="rounded-lg transition-all font-medium bg-[var(--wuhu-neon-purple)]/20 text-[var(--wuhu-neon-cyan)] hover:bg-[var(--wuhu-neon-purple)]/30 cursor-pointer px-2 py-1 text-xs font-medium"
                     >
                         {t('addProvider')}
                     </button>
@@ -78,13 +78,13 @@ export function ProviderSection({
 
             {/* 添加表单 */}
             {showAddForm && (
-                <div className="glass-surface-soft mb-4 flex items-center gap-2 rounded-xl p-3">
+                <div className="bg-white/5 mb-4 flex items-center gap-2 rounded-xl p-3">
                     <input
                         type="text"
                         value={newProvider.name}
                         onChange={e => setNewProvider({ ...newProvider, name: e.target.value })}
                         placeholder={t('name')}
-                        className="glass-input-base w-24 px-2 py-1.5 text-sm"
+                        className="bg-[var(--wuhu-bg-surface)] border border-white/20 rounded-lg text-white focus:border-[var(--wuhu-neon-pink)] focus:outline-none w-24 px-2 py-1.5 text-sm"
                     />
                     {showBaseUrl && (
                         <input
@@ -92,7 +92,7 @@ export function ProviderSection({
                             value={newProvider.baseUrl}
                             onChange={e => setNewProvider({ ...newProvider, baseUrl: e.target.value })}
                             placeholder="Base URL"
-                            className="glass-input-base flex-1 px-2 py-1.5 text-sm font-mono"
+                            className="bg-[var(--wuhu-bg-surface)] border border-white/20 rounded-lg text-white focus:border-[var(--wuhu-neon-pink)] focus:outline-none flex-1 px-2 py-1.5 text-sm font-mono"
                         />
                     )}
                     <input
@@ -100,12 +100,12 @@ export function ProviderSection({
                         value={newProvider.apiKey}
                         onChange={e => setNewProvider({ ...newProvider, apiKey: e.target.value })}
                         placeholder="API Key"
-                        className="glass-input-base w-40 px-2 py-1.5 text-sm"
+                        className="bg-[var(--wuhu-bg-surface)] border border-white/20 rounded-lg text-white focus:border-[var(--wuhu-neon-pink)] focus:outline-none transition-all w-40 px-2 py-1.5 text-sm"
                     />
-                    <button onClick={handleAdd} className="glass-btn-base glass-btn-primary rounded-lg px-3 py-1.5 text-sm">
+                    <button onClick={handleAdd} className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] rounded-lg px-3 py-1.5 text-sm text-white shadow-[0_0_20px_rgba(167,87,255,0.3)] hover:shadow-[0_0_30px_rgba(167,87,255,0.4)] transition-all">
                         {t('add')}
                     </button>
-                    <button onClick={() => setShowAddForm(false)} className="glass-btn-base glass-btn-secondary px-2 py-1.5 text-sm">
+                    <button onClick={() => setShowAddForm(false)} className="bg-[var(--wuhu-bg-surface)] border border-white/20 rounded-lg px-3 py-1.5 text-sm text-white/70 hover:bg-white/5 hover:text-white transition-all">
                         {tc('cancel')}
                     </button>
                 </div>
@@ -119,41 +119,41 @@ export function ProviderSection({
 
                     if (isEditing && showBaseUrl) {
                         return (
-                            <div key={provider.id} className="glass-surface-soft flex items-center gap-3 rounded-xl px-3 py-2.5">
+                            <div key={provider.id} className="bg-[var(--wuhu-bg-surface)] flex items-center gap-3 rounded-xl px-3 py-2.5">
                                 <input
                                     type="text"
                                     value={editData.name}
                                     onChange={e => setEditData({ ...editData, name: e.target.value })}
-                                    className="glass-input-base w-28 px-2 py-1.5 text-sm"
+                                    className="bg-[var(--wuhu-bg-surface)] border border-white/20 rounded-lg w-28 px-2 py-1.5 text-sm text-white focus:border-[var(--wuhu-neon-pink)] focus:outline-none transition-all"
                                 />
                                 <input
                                     type="text"
                                     value={editData.baseUrl}
                                     onChange={e => setEditData({ ...editData, baseUrl: e.target.value })}
-                                    className="glass-input-base flex-1 px-2 py-1.5 text-sm font-mono"
+                                    className="bg-[var(--wuhu-bg-surface)] border border-white/20 rounded-lg flex-1 px-2 py-1.5 text-sm text-white focus:border-[var(--wuhu-neon-pink)] focus:outline-none transition-all font-mono"
                                 />
-                                <button onClick={() => handleSaveEdit(provider)} className="glass-btn-base glass-btn-primary rounded-lg px-3 py-1 text-sm">{t('save')}</button>
-                                <button onClick={() => setEditingId(null)} className="glass-btn-base glass-btn-secondary rounded-lg px-2 py-1 text-sm">{tc('cancel')}</button>
+                                <button onClick={() => handleSaveEdit(provider)} className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] rounded-lg px-3 py-1.5 text-sm text-white shadow-[0_0_20px_rgba(167,87,255,0.3)] hover:shadow-[0_0_30px_rgba(167,87,255,0.4)] transition-all">{t('save')}</button>
+                                <button onClick={() => setEditingId(null)} className="bg-[var(--wuhu-bg-surface)] border border-white/20 rounded-lg px-3 py-1.5 text-sm text-white/70 hover:bg-white/5 hover:text-white transition-all">{tc('cancel')}</button>
                             </div>
                         )
                     }
 
                     return (
-                        <div key={provider.id} className="glass-surface-soft group flex items-center gap-3 rounded-xl px-3 py-2.5">
+                        <div key={provider.id} className="bg-[var(--wuhu-bg-surface)] group flex items-center gap-3 rounded-xl px-3 py-2.5">
                             {showBaseUrl && (
                                 <button
                                     onClick={() => {
                                         setEditingId(provider.id)
                                         setEditData({ name: provider.name, baseUrl: provider.baseUrl || '' })
                                     }}
-                                    className="glass-btn-base glass-btn-tone-info cursor-pointer rounded-lg p-1.5"
+                                    className="bg-[var(--wuhu-bg-surface)] border border-white/20 hover:bg-white/5 cursor-pointer rounded-lg p-1.5 text-white/70 hover:text-white transition-all"
                                 >
                                     <AppIcon name="edit" className="w-4 h-4" />
                                 </button>
                             )}
-                            <span className="w-28 truncate text-sm font-medium text-[var(--glass-text-primary)]">{provider.name}</span>
+                            <span className="w-28 truncate text-sm font-medium text-white">{provider.name}</span>
                             {showBaseUrl && (
-                                <span className="w-64 truncate font-mono text-xs text-[var(--glass-text-tertiary)]">{provider.baseUrl}</span>
+                                <span className="w-64 truncate font-mono text-xs text-white/50">{provider.baseUrl}</span>
                             )}
                             <div className="relative flex-1">
                                 <input
@@ -161,11 +161,11 @@ export function ProviderSection({
                                     value={provider.apiKey || ''}
                                     onChange={e => onUpdateApiKey(provider.id, e.target.value)}
                                     placeholder="API Key"
-                                    className="glass-input-base w-full px-3 py-1.5 pr-9 text-sm"
+                                    className="bg-[var(--wuhu-bg-surface)] border border-white/20 rounded-lg w-full px-3 py-1.5 pr-9 text-sm text-white focus:border-[var(--wuhu-neon-pink)] focus:outline-none transition-all"
                                 />
                                 <button
                                     onClick={() => setShowApiKeys({ ...showApiKeys, [provider.id]: !isVisible })}
-                                    className="glass-btn-base glass-btn-soft absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer p-1"
+                                    className="bg-transparent hover:bg-white/10 absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer p-1 rounded-lg text-white/50 hover:text-white transition-all"
                                 >
                                     {isVisible ? (
                                         <AppIcon name="eye" className="w-4 h-4" />
@@ -175,14 +175,14 @@ export function ProviderSection({
                                 </button>
                             </div>
                             {provider.apiKey && (
-                                <span className="glass-chip glass-chip-success px-1.5 py-0.5">
+                                <span className="bg-[var(--wuhu-neon-purple)]/20 text-[var(--wuhu-neon-cyan)] rounded-lg px-1.5 py-0.5 text-xs">
                                     <AppIcon name="checkDot" className="h-3 w-3" />
                                 </span>
                             )}
                             {!isPreset(provider.id) && onDelete && (
                                 <button
                                     onClick={() => onDelete(provider.id)}
-                                    className="glass-btn-base glass-btn-tone-danger cursor-pointer rounded-lg p-1.5"
+                                    className="bg-[var(--wuhu-neon-pink)]/20 hover:bg-[var(--wuhu-neon-pink)]/30 text-[var(--wuhu-neon-pink)] cursor-pointer rounded-lg p-1.5 transition-all"
                                 >
                                     <AppIcon name="trash" className="w-4 h-4" />
                                 </button>

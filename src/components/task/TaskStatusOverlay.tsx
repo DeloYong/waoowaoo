@@ -19,12 +19,12 @@ export default function TaskStatusOverlay({ state, className }: TaskStatusOverla
     <div
       className={[
         'absolute inset-0 flex flex-col items-center justify-center',
-        'bg-[var(--glass-overlay)]',
+        'bg-[var(--bg-black/60 backdrop-blur-sm)]',
         className || '',
       ].join(' ').trim()}
     >
       {state.isError ? (
-        <AppIcon name="alertSolid" className="h-7 w-7 text-[var(--glass-tone-danger-fg)]" />
+        <AppIcon name="alertSolid" className="h-7 w-7 text-[var(--wuhu-neon-pink)]" />
       ) : (
         <AppIcon name="loader" className="h-7 w-7 animate-spin text-white" />
       )}

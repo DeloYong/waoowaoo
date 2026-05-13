@@ -66,7 +66,7 @@ export default function VoiceDesignGeneratorSection({
   return (
     <>
       <div>
-        <div className="text-sm text-[var(--glass-text-secondary)] mb-2">{tv('selectStyle')}</div>
+        <div className="text-sm text-white/70 mb-2">{tv('selectStyle')}</div>
         <div className="flex flex-wrap gap-1.5">
           {VOICE_PRESET_KEYS.map((presetKey) => {
             const prompt = tv(`presetsPrompts.${presetKey}` as `presetsPrompts.${VoicePresetKey}`)
@@ -74,10 +74,10 @@ export default function VoiceDesignGeneratorSection({
               <button
                 key={presetKey}
                 onClick={() => onVoicePromptChange(prompt)}
-                className={`glass-btn-base px-2.5 py-1 text-xs rounded-md border transition-all ${
+                className={`px-2.5 py-1 text-xs rounded-md border transition-all border-white/20 hover:border-[var(--wuhu-neon-pink)] ${
                   voicePrompt === prompt
-                    ? 'glass-btn-tone-info border-[var(--glass-stroke-focus)]'
-                    : 'glass-btn-soft text-[var(--glass-text-secondary)] border-[var(--glass-stroke-base)] hover:border-[var(--glass-stroke-focus)]'
+                    ? 'bg-[var(--wuhu-neon-purple)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)] border-[var(--wuhu-neon-pink)]'
+                    : 'text-white/70 border-white/20 hover:border-[var(--wuhu-neon-pink)]'
                 }`}
               >
                 {tv(`presets.${presetKey}` as `presets.${VoicePresetKey}`)}
@@ -88,18 +88,18 @@ export default function VoiceDesignGeneratorSection({
       </div>
 
       <div>
-        <div className="text-sm text-[var(--glass-text-secondary)] mb-1">{tv('orCustomDescription')}</div>
+        <div className="text-sm text-white/70 mb-1">{tv('orCustomDescription')}</div>
         <textarea
           value={voicePrompt}
           onChange={(event) => onVoicePromptChange(event.target.value)}
           placeholder={tv('describePlaceholder')}
-          className="glass-textarea-base w-full px-3 py-2 text-sm resize-none"
+          className="bg-[var(--wuhu-bg-surface)] border border-white/20 text-white placeholder:text-white/40 rounded-lg focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(255,100,200,0.3)] w-full px-3 py-2 text-sm resize-none"
           rows={2}
         />
       </div>
 
       <details className="text-sm">
-        <summary className="text-[var(--glass-text-secondary)] cursor-pointer hover:text-[var(--glass-text-primary)]">
+        <summary className="text-white/70 cursor-pointer hover:text-white">
           {tv('editPreviewText')}
         </summary>
         <input
@@ -107,7 +107,7 @@ export default function VoiceDesignGeneratorSection({
           value={previewText}
           onChange={(event) => onPreviewTextChange(event.target.value)}
           placeholder={tv('defaultPreviewText')}
-          className="glass-input-base w-full mt-2 px-3 py-2 text-sm"
+          className="bg-[var(--wuhu-bg-surface)] border border-white/20 text-white placeholder:text-white/40 rounded-lg focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(255,100,200,0.3)] w-full mt-2 px-3 py-2 text-sm"
         />
       </details>
 
@@ -127,7 +127,7 @@ export default function VoiceDesignGeneratorSection({
               onGenerate()
             }
           }}
-          className={`glass-btn-base glass-btn-primary w-full py-2.5 rounded-lg text-sm font-medium transition-opacity ${
+          className={`bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)] hover:shadow-[0_0_25px_rgba(255,100,200,0.5)] w-full py-2.5 rounded-lg text-sm font-medium transition-opacity ${
             !voicePrompt.trim() ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
           }`}
         >
@@ -166,14 +166,14 @@ export default function VoiceDesignGeneratorSection({
         <div className="py-6">
           <TaskStatusInline
             state={submittingState}
-            className="justify-center text-[var(--glass-text-secondary)] [&>span]:text-[var(--glass-text-secondary)]"
+            className="justify-center text-white/70 [&>span]:text-white/70"
           />
         </div>
       )}
 
       {generatedVoices.length > 0 && (
         <div className="space-y-3">
-          <div className="text-sm text-[var(--glass-text-secondary)]">{tv('selectScheme')}</div>
+          <div className="text-sm text-white/70">{tv('selectScheme')}</div>
           <div className="grid grid-cols-3 gap-2">
             {generatedVoices.map((voice, index) => (
               <div
@@ -181,25 +181,25 @@ export default function VoiceDesignGeneratorSection({
                 onClick={() => onSelectIndex(index)}
                 className={`relative p-3 rounded-lg border-2 cursor-pointer transition-all text-center ${
                   selectedIndex === index
-                    ? 'border-[var(--glass-stroke-focus)] bg-[var(--glass-tone-info-bg)]'
-                    : 'border-[var(--glass-stroke-base)] hover:border-[var(--glass-stroke-focus)]'
+                    ? 'border-[var(--wuhu-neon-pink)] bg-[var(--wuhu-neon-purple)]/10'
+                    : 'border-white/20 hover:border-[var(--wuhu-neon-pink)]'
                 }`}
               >
                 {selectedIndex === index && (
-                  <div className="absolute -top-1.5 -right-1.5 w-5 h-5 glass-chip glass-chip-info rounded-full flex items-center justify-center p-0">
+                  <div className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-[var(--wuhu-neon-purple)]/20 text-[var(--wuhu-neon-purple)] border border-[var(--wuhu-neon-purple)]/30 rounded-full flex items-center justify-center p-0">
                     <AppIcon name="checkSolid" className="w-3 h-3 text-white" />
                   </div>
                 )}
-                <div className="text-sm font-medium text-[var(--glass-text-primary)] mb-2">{tv('schemeN', { n: index + 1 })}</div>
+                <div className="text-sm font-medium text-white mb-2">{tv('schemeN', { n: index + 1 })}</div>
                 <button
                   onClick={(event) => {
                     event.stopPropagation()
                     onPlayVoice(index)
                   }}
-                  className={`w-10 h-10 mx-auto rounded-full glass-btn-base flex items-center justify-center transition-all ${
+                  className={`w-10 h-10 mx-auto rounded-full flex items-center justify-center transition-all ${
                     playingIndex === index
-                      ? 'glass-btn-tone-info animate-pulse'
-                      : 'glass-btn-secondary text-[var(--glass-text-secondary)]'
+                      ? 'bg-[var(--wuhu-neon-purple)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)] animate-pulse'
+                      : 'border border-white/20 text-white/70 hover:border-[var(--wuhu-neon-pink)] hover:text-white'
                   }`}
                 >
                   {playingIndex === index ? (
@@ -216,7 +216,7 @@ export default function VoiceDesignGeneratorSection({
       )}
 
       {error && (
-        <div className="text-sm text-[var(--glass-tone-danger-fg)] bg-[var(--glass-tone-danger-bg)] px-3 py-2 rounded-lg">
+        <div className="text-sm text-red-400 bg-red-500/10 px-3 py-2 rounded-lg">
           {error}
         </div>
       )}

@@ -86,8 +86,8 @@ export default function LocationImageList(props: LocationImageListProps) {
                   }
                 }}
                 className={`rounded-lg overflow-hidden border-2 transition-all relative ${img.imageUrl ? 'cursor-pointer' : 'cursor-default'} ${isThisSelected
-                  ? 'border-[var(--glass-stroke-success)] ring-2 ring-[var(--glass-focus-ring)]'
-                  : 'border-[var(--glass-stroke-base)] hover:border-[var(--glass-stroke-focus)]'
+                  ? 'border-[var(--wuhu-neon-purple)] ring-2 ring-[var(--wuhu-neon-purple)]'
+                  : 'border-[rgba(167, 87, 255, 0.2)] hover:border-[var(--wuhu-neon-cyan)]'
                   }`}
               >
                 {img.imageUrl ? (
@@ -98,15 +98,15 @@ export default function LocationImageList(props: LocationImageListProps) {
                     className="w-full h-auto object-contain"
                   />
                 ) : (
-                  <div className="flex min-h-[88px] items-center justify-center bg-[var(--glass-bg-muted)]">
+                  <div className="flex min-h-[88px] items-center justify-center bg-[rgba(255,255,255,0.05)]">
                     {imageError && phase !== 'generating' && phase !== 'regenerating' ? (
                       <div className="flex flex-col items-center justify-center px-3 py-6 text-center">
-                        <AppIcon name="alert" className="mb-2 h-6 w-6 text-[var(--glass-tone-danger-fg)]" />
-                        <span className="text-xs font-medium text-[var(--glass-tone-danger-fg)]">{t('common.generateFailed')}</span>
+                        <AppIcon name="alert" className="mb-2 h-6 w-6 text-[var(--wuhu-neon-pink)]" />
+                        <span className="text-xs font-medium text-[var(--wuhu-neon-pink)]">{t('common.generateFailed')}</span>
                       </div>
                     ) : (
-                      <div className="flex flex-col items-center justify-center gap-2 px-3 py-6 text-[var(--glass-text-tertiary)]">
-                        <div className="h-12 w-12 animate-pulse rounded-xl bg-[var(--glass-bg-surface-strong)]" />
+                      <div className="flex flex-col items-center justify-center gap-2 px-3 py-6 text-[rgba(255,255,255,0.5)]">
+                        <div className="h-12 w-12 animate-pulse rounded-xl bg-[var(--wuhu-bg-surface)]" />
                         <span className="text-xs">{t('image.generatingPlaceholder')}</span>
                       </div>
                     )}
@@ -122,7 +122,7 @@ export default function LocationImageList(props: LocationImageListProps) {
                 )}
 
                 <div
-                  className={`absolute bottom-2 left-2 flex items-center gap-1 text-white text-xs px-2 py-0.5 rounded ${isThisSelected ? 'bg-[var(--glass-tone-success-fg)]' : 'bg-[var(--glass-overlay)]'
+                  className={`absolute bottom-2 left-2 flex items-center gap-1 text-white text-xs px-2 py-0.5 rounded ${isThisSelected ? 'bg-[var(--wuhu-neon-purple)]' : 'bg-[var(--bg-black/60 backdrop-blur-sm)]'
                     }`}
                 >
                   <span>{t('image.optionNumber', { number: img.imageIndex + 1 })}</span>
@@ -140,8 +140,8 @@ export default function LocationImageList(props: LocationImageListProps) {
                   }}
                   disabled={phase === 'generating' || phase === 'regenerating' || !img.imageUrl}
                   className={`absolute top-2 right-2 w-7 h-7 rounded-full flex items-center justify-center transition-all shadow-sm ${isThisSelected
-                    ? 'bg-[var(--glass-tone-success-fg)] text-white'
-                    : 'bg-[var(--glass-bg-surface-strong)] hover:bg-[var(--glass-accent-from)] hover:text-white'
+                    ? 'bg-[var(--wuhu-neon-purple)] text-white'
+                    : 'bg-[var(--wuhu-bg-surface)] hover:bg-[var(--wuhu-neon-purple)] hover:text-white'
                     } disabled:opacity-50`}
                   title={isThisSelected ? t('image.cancelSelection') : t('image.useThis')}
                 >
@@ -161,7 +161,7 @@ export default function LocationImageList(props: LocationImageListProps) {
   })
 
   return (
-    <div className="rounded-lg overflow-hidden border-2 border-[var(--glass-stroke-base)] relative">
+    <div className="rounded-lg overflow-hidden border-2 border-[rgba(167, 87, 255, 0.2)] relative">
       {props.currentImageUrl ? (
         <div className="relative w-full">
           <MediaImageWithLoading
@@ -172,21 +172,21 @@ export default function LocationImageList(props: LocationImageListProps) {
             onClick={() => props.onImageClick(props.currentImageUrl!)}
           />
           {props.selectedIndex !== null && props.hasMultipleImages && (
-            <div className="absolute bottom-2 left-2 bg-[var(--glass-tone-success-fg)] text-white text-xs px-2 py-0.5 rounded">
+            <div className="absolute bottom-2 left-2 bg-[var(--wuhu-neon-purple)] text-white text-xs px-2 py-0.5 rounded">
               {t('image.optionNumber', { number: props.selectedIndex + 1 })}
             </div>
           )}
         </div>
       ) : (
-        <div className="w-full h-full bg-[var(--glass-bg-muted)] flex items-center justify-center">
+        <div className="w-full h-full bg-[rgba(255,255,255,0.05)] flex items-center justify-center">
           {locationErrorDisplay && !props.isTaskRunning ? (
             <div className="flex flex-col items-center justify-center py-8 px-4 text-center">
-              <AppIcon name="alert" className="w-8 h-8 text-[var(--glass-tone-danger-fg)] mb-2" />
-              <div className="text-[var(--glass-tone-danger-fg)] text-xs font-medium mb-1">{t('common.generateFailed')}</div>
-              <div className="text-[var(--glass-tone-danger-fg)] text-xs max-w-full break-words">{locationErrorDisplay.message}</div>
+              <AppIcon name="alert" className="w-8 h-8 text-[var(--wuhu-neon-pink)] mb-2" />
+              <div className="text-[var(--wuhu-neon-pink)] text-xs font-medium mb-1">{t('common.generateFailed')}</div>
+              <div className="text-[var(--wuhu-neon-pink)] text-xs max-w-full break-words">{locationErrorDisplay.message}</div>
             </div>
           ) : (
-            <AppIcon name="globe2" className="w-8 h-8 text-[var(--glass-text-tertiary)]" />
+            <AppIcon name="globe2" className="w-8 h-8 text-[rgba(255,255,255,0.5)]" />
           )}
         </div>
       )}

@@ -32,11 +32,11 @@ export default function ImageEditModalAssetPicker({
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 glass-overlay z-[60] flex items-center justify-center p-4">
-      <div className="glass-surface-modal w-full max-w-lg max-h-[80vh] overflow-hidden">
-        <div className="p-4 border-b flex items-center justify-between">
-          <h4 className="font-bold text-[var(--glass-text-primary)]">{t('imageEdit.selectAsset')}</h4>
-          <button onClick={onClose} className="text-[var(--glass-text-tertiary)] hover:text-[var(--glass-text-secondary)]">
+    <div className="fixed inset-0 bg-black/60 z-[60] flex items-center justify-center p-4">
+      <div className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_40px_rgba(167,87,255,0.2)] w-full max-w-lg max-h-[80vh] overflow-hidden rounded-xl">
+        <div className="p-4 border-b border-white/10 flex items-center justify-between">
+          <h4 className="font-bold text-white">{t('imageEdit.selectAsset')}</h4>
+          <button onClick={onClose} className="text-white/50 hover:text-white/70 transition-all">
             <AppIcon name="close" className="w-5 h-5" />
           </button>
         </div>
@@ -44,8 +44,8 @@ export default function ImageEditModalAssetPicker({
         <div className="p-4 overflow-y-auto max-h-[60vh]">
           {characters.length > 0 && (
             <div className="mb-4">
-              <h5 className="text-sm font-medium text-[var(--glass-text-secondary)] mb-2 flex items-center gap-1.5">
-                <AppIcon name="user" className="h-4 w-4 text-[var(--glass-text-tertiary)]" />
+              <h5 className="text-sm font-medium text-white/70 mb-2 flex items-center gap-1.5">
+                <AppIcon name="user" className="h-4 w-4 text-white/50" />
                 <span>{t('prompts.character')}</span>
               </h5>
 
@@ -82,7 +82,7 @@ export default function ImageEditModalAssetPicker({
                             })
                           }
                         }}
-                        className={`relative aspect-square rounded-lg overflow-hidden border-2 ${isSelected ? 'border-[var(--glass-stroke-focus)]' : 'border-transparent'}`}
+                        className={`relative aspect-square rounded-lg overflow-hidden border-2 ${isSelected ? 'border-[var(--wuhu-neon-pink)]' : 'border-transparent'} transition-all`}
                       >
                         {displayImageUrl ? (
                           <MediaImageWithLoading
@@ -96,15 +96,15 @@ export default function ImageEditModalAssetPicker({
                             }}
                           />
                         ) : (
-                          <div className="w-full h-full bg-[var(--glass-bg-muted)] flex items-center justify-center text-[var(--glass-text-tertiary)]">
+                          <div className="w-full h-full bg-[var(--wuhu-bg-surface)] flex items-center justify-center text-white/50">
                             <AppIcon name="user" className="h-7 w-7" />
                           </div>
                         )}
-                        <div className="absolute bottom-0 left-0 right-0 bg-[var(--glass-overlay)] text-white text-xs p-1 truncate" title={displayName}>
+                        <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-xs p-1 truncate" title={displayName}>
                           {displayName}
                         </div>
                         {isSelected && (
-                          <div className="absolute top-1 right-1 w-5 h-5 bg-[var(--glass-accent-from)] text-white rounded-full flex items-center justify-center">
+                          <div className="absolute top-1 right-1 w-5 h-5 bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white rounded-full flex items-center justify-center">
                             <AppIcon name="checkXs" className="h-3 w-3" />
                           </div>
                         )}
@@ -118,8 +118,8 @@ export default function ImageEditModalAssetPicker({
 
           {locations.length > 0 && (
             <div>
-              <h5 className="text-sm font-medium text-[var(--glass-text-secondary)] mb-2 flex items-center gap-1.5">
-                <AppIcon name="imageAlt" className="h-4 w-4 text-[var(--glass-text-tertiary)]" />
+              <h5 className="text-sm font-medium text-white/70 mb-2 flex items-center gap-1.5">
+                <AppIcon name="imageAlt" className="h-4 w-4 text-white/50" />
                 <span>{t('prompts.location')}</span>
               </h5>
 
@@ -147,7 +147,7 @@ export default function ImageEditModalAssetPicker({
                           })
                         }
                       }}
-                      className={`relative aspect-[3/2] rounded-lg overflow-hidden border-2 ${isSelected ? 'border-[var(--glass-stroke-focus)]' : 'border-transparent'}`}
+                      className={`relative aspect-[3/2] rounded-lg overflow-hidden border-2 ${isSelected ? 'border-[var(--wuhu-neon-pink)]' : 'border-transparent'} transition-all`}
                     >
                       {displayImageUrl ? (
                         <MediaImageWithLoading
@@ -161,15 +161,15 @@ export default function ImageEditModalAssetPicker({
                           }}
                         />
                       ) : (
-                        <div className="w-full h-full bg-[var(--glass-bg-muted)] flex items-center justify-center text-[var(--glass-text-tertiary)]">
+                        <div className="w-full h-full bg-[var(--wuhu-bg-surface)] flex items-center justify-center text-white/50">
                           <AppIcon name="imageAlt" className="h-7 w-7" />
                         </div>
                       )}
-                      <div className="absolute bottom-0 left-0 right-0 bg-[var(--glass-overlay)] text-white text-xs p-1 truncate">
+                      <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-xs p-1 truncate">
                         {location.name}
                       </div>
                       {isSelected && (
-                        <div className="absolute top-1 right-1 w-5 h-5 bg-[var(--glass-accent-from)] text-white rounded-full flex items-center justify-center">
+                        <div className="absolute top-1 right-1 w-5 h-5 bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white rounded-full flex items-center justify-center">
                           <AppIcon name="checkXs" className="h-3 w-3" />
                         </div>
                       )}
@@ -181,10 +181,10 @@ export default function ImageEditModalAssetPicker({
           )}
         </div>
 
-        <div className="p-4 border-t flex justify-end">
+        <div className="p-4 border-t border-white/10 flex justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-[var(--glass-accent-from)] text-white rounded-lg hover:bg-[var(--glass-accent-to)]"
+            className="px-4 py-2 bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white rounded-lg shadow-[0_0_20px_rgba(167,87,255,0.3)] hover:shadow-[0_0_30px_rgba(167,87,255,0.4)] transition-all"
           >
             {t('common.confirm')}
           </button>

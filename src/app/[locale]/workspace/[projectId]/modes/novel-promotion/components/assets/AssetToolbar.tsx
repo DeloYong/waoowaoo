@@ -251,7 +251,7 @@ export default function AssetToolbar({
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                     <span className="text-sm font-semibold text-white/70 inline-flex items-center gap-2">
-                        <AppIcon name="diamond" className="w-4 h-4 text-[var(--glass-tone-info-fg)]" />
+                        <AppIcon name="diamond" className="w-4 h-4 text-[var(--wuhu-neon-cyan)]" />
                         {t("toolbar.assetManagement")}
                     </span>
                     {/* 剧集筛选 chip */}
@@ -270,7 +270,7 @@ export default function AssetToolbar({
                         <button
                             onClick={onGlobalAnalyze}
                             disabled={isGlobalAnalyzing || isBatchSubmitting || isAnalyzingAssets}
-                            className="glass-btn-base glass-btn-primary flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_20px_rgba(167,87,255,0.3)] hover:shadow-[0_0_30px_rgba(167,87,255,0.4)] rounded-lg transition-all flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                             title={t("toolbar.globalAnalyzeHint")}
                         >
                             <AppIcon name="idea" className="w-3.5 h-3.5" />
@@ -284,7 +284,7 @@ export default function AssetToolbar({
                         onClick={handleDownloadAll}
                         disabled={isDownloading || totalAssets === 0}
                         title={t("toolbar.downloadAll")}
-                        className="glass-btn-base glass-btn-secondary flex items-center justify-center w-9 h-9 disabled:opacity-50 disabled:cursor-not-allowed border border-[var(--glass-stroke-base)]"
+                        className="bg-[var(--wuhu-bg-surface)] border border-white/20 hover:bg-white/5 rounded-lg text-white/70 hover:text-white transition-all flex items-center justify-center w-9 h-9 disabled:opacity-50 disabled:cursor-not-allowed border border-[rgba(167, 87, 255, 0.2)]"
                     >
                         <AppIcon
                             name={isDownloading ? 'refresh' : 'download'}

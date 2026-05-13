@@ -121,8 +121,8 @@ export default function VoiceSettings({
 
     // 紧凑模式样式
     const containerClass = compact
-        ? 'border border-[var(--glass-stroke-base)] rounded-xl p-3 bg-[var(--glass-bg-surface-strong)]'
-        : 'mt-4 border border-[var(--glass-stroke-base)] rounded-xl p-4 bg-[var(--glass-bg-surface-strong)]'
+        ? 'border border-[rgba(167, 87, 255, 0.2)] rounded-xl p-3 bg-[var(--wuhu-bg-surface)]'
+        : 'mt-4 border border-[rgba(167, 87, 255, 0.2)] rounded-xl p-4 bg-[var(--wuhu-bg-surface)]'
 
 
     const iconSize = compact ? 'w-5 h-5' : 'w-6 h-6'
@@ -139,23 +139,23 @@ export default function VoiceSettings({
                 className="w-full flex items-center justify-between cursor-pointer"
             >
                 <div className="flex items-center gap-2">
-                    <div className={`${iconSize} rounded-full flex items-center justify-center ${hasCustomVoice ? 'bg-[var(--glass-bg-muted)]' : 'bg-[var(--glass-tone-warning-bg)]'}`}>
-                        <AppIcon name="mic" className={`${innerIconSize} ${hasCustomVoice ? 'text-[var(--glass-text-secondary)]' : 'text-[var(--glass-tone-warning-fg)]'}`} />
+                    <div className={`${iconSize} rounded-full flex items-center justify-center ${hasCustomVoice ? 'bg-[rgba(255,255,255,0.05)]' : 'bg-[rgba(255, 100, 200, 0.1)]'}`}>
+                        <AppIcon name="mic" className={`${innerIconSize} ${hasCustomVoice ? 'text-[rgba(255,255,255,0.7)]' : 'text-[var(--wuhu-neon-pink)]'}`} />
                     </div>
-                    <span className={`text-${compact ? 'xs' : 'sm'} font-medium text-[var(--glass-text-secondary)]`}>
+                    <span className={`text-${compact ? 'xs' : 'sm'} font-medium text-[rgba(255,255,255,0.7)]`}>
                         {t('tts.title')}
                     </span>
-                    <span className={`w-2 h-2 rounded-full ${hasCustomVoice ? 'bg-[var(--glass-tone-success-fg)]' : 'bg-[var(--glass-tone-warning-fg)]'}`} />
+                    <span className={`w-2 h-2 rounded-full ${hasCustomVoice ? 'bg-[var(--wuhu-neon-purple)]' : 'bg-[var(--wuhu-neon-pink)]'}`} />
                 </div>
                 <AppIcon
                     name="chevronDown"
-                    className={`w-4 h-4 text-[var(--glass-text-tertiary)] transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+                    className={`w-4 h-4 text-[rgba(255,255,255,0.5)] transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
                 />
             </button>
 
             {/* 展开内容 */}
             {isExpanded && (
-                <div className="mt-3 pt-3 border-t border-[var(--glass-stroke-base)]">
+                <div className="mt-3 pt-3 border-t border-[rgba(167, 87, 255, 0.2)]">
                     {/* 隐藏的音频文件输入 */}
                     <input
                         ref={voiceFileInputRef}
@@ -172,10 +172,10 @@ export default function VoiceSettings({
                                 voiceFileInputRef.current?.click()
                             }}
                             disabled={uploadVoice.isPending}
-                            className="flex-1 min-w-[80px] px-2 py-1.5 bg-[var(--glass-bg-surface)] border border-[var(--glass-stroke-base)] rounded-lg text-xs text-[var(--glass-text-secondary)] font-medium hover:border-[var(--glass-stroke-success)] hover:bg-[var(--glass-tone-success-bg)] hover:text-[var(--glass-tone-success-fg)] transition-all relative group whitespace-nowrap"
+                            className="flex-1 min-w-[80px] px-2 py-1.5 bg-[var(--wuhu-bg-surface)] border border-[rgba(167, 87, 255, 0.2)] rounded-lg text-xs text-[rgba(255,255,255,0.7)] font-medium hover:border-[var(--wuhu-neon-purple)] hover:bg-[rgba(167, 87, 255, 0.2)] hover:text-[var(--wuhu-neon-purple)] transition-all relative group whitespace-nowrap"
                         >
                             <div className="flex items-center justify-center gap-1">
-                                {hasCustomVoice && <div className="w-1.5 h-1.5 bg-[var(--glass-tone-success-fg)] rounded-full flex-shrink-0"></div>}
+                                {hasCustomVoice && <div className="w-1.5 h-1.5 bg-[var(--wuhu-neon-purple)] rounded-full flex-shrink-0"></div>}
                                 <span>{uploadVoice.isPending ? t('tts.uploading') : hasCustomVoice ? t('tts.uploaded') : t('tts.uploadAudio')}</span>
                             </div>
                         </button>
@@ -184,7 +184,7 @@ export default function VoiceSettings({
                         {onSelectFromHub && (
                             <button
                                 onClick={() => onSelectFromHub(characterId)}
-                                className="flex-1 min-w-[80px] px-2 py-1.5 bg-[var(--glass-bg-surface)] border border-[var(--glass-stroke-focus)] rounded-lg text-xs text-[var(--glass-tone-info-fg)] font-medium hover:border-[var(--glass-stroke-focus)] hover:bg-[var(--glass-tone-info-bg)] transition-all whitespace-nowrap"
+                                className="flex-1 min-w-[80px] px-2 py-1.5 bg-[var(--wuhu-bg-surface)] border border-[var(--wuhu-neon-cyan)] rounded-lg text-xs text-[var(--wuhu-neon-cyan)] font-medium hover:border-[var(--wuhu-neon-cyan)] hover:bg-[rgba(0, 255, 255, 0.1)] transition-all whitespace-nowrap"
                             >
                                 <div className="flex items-center justify-center gap-1">
                                     <AppIcon name="copy" className="w-3.5 h-3.5 flex-shrink-0" />
@@ -197,7 +197,7 @@ export default function VoiceSettings({
                         {onVoiceDesign && (
                             <button
                                 onClick={() => onVoiceDesign(characterId, characterName)}
-                                className="glass-btn-base glass-btn-primary flex-1 min-w-[80px] px-2 py-1.5 text-xs font-medium whitespace-nowrap"
+                                className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_20px_rgba(167,87,255,0.3)] hover:shadow-[0_0_30px_rgba(167,87,255,0.4)] rounded-lg transition-all flex-1 min-w-[80px] px-2 py-1.5 text-xs font-medium whitespace-nowrap"
                             >
                                 <div className="flex items-center justify-center gap-1">
                                     <AppIcon name="bolt" className="w-3.5 h-3.5 flex-shrink-0" />
@@ -212,8 +212,8 @@ export default function VoiceSettings({
                         <button
                             onClick={handlePreviewVoice}
                             className={`w-full mt-2 px-3 py-2 border rounded-lg text-sm font-medium transition-all ${isPreviewingVoice
-                                ? 'bg-[var(--glass-accent-from)] border-[var(--glass-stroke-focus)] text-white hover:bg-[var(--glass-accent-to)]'
-                                : 'bg-[var(--glass-tone-info-bg)] border-[var(--glass-stroke-focus)] text-[var(--glass-tone-info-fg)] hover:bg-[var(--glass-tone-info-bg)]'
+                                ? 'bg-[var(--wuhu-neon-purple)] border-[var(--wuhu-neon-cyan)] text-white hover:bg-[var(--wuhu-neon-pink)]'
+                                : 'bg-[rgba(0, 255, 255, 0.1)] border-[var(--wuhu-neon-cyan)] text-[var(--wuhu-neon-cyan)] hover:bg-[rgba(0, 255, 255, 0.1)]'
                                 }`}
                         >
                             <div className="flex items-center justify-center gap-2">

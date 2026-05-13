@@ -73,20 +73,20 @@ function evaluateStrength(password: string): StrengthResult {
 
 const LEVEL_STYLES: Record<StrengthLevel, { color: string; bgActive: string }> = {
     weak: {
-        color: 'var(--glass-tone-danger-fg)',
-        bgActive: 'var(--glass-tone-danger-fg)',
+        color: 'var(--wuhu-neon-pink)',
+        bgActive: 'var(--wuhu-neon-pink)',
     },
     fair: {
-        color: 'var(--glass-tone-warning-fg)',
-        bgActive: 'var(--glass-tone-warning-fg)',
+        color: 'var(--wuhu-neon-pink)',
+        bgActive: 'var(--wuhu-neon-pink)',
     },
     good: {
-        color: 'var(--glass-tone-info-fg)',
-        bgActive: 'var(--glass-tone-info-fg)',
+        color: 'var(--wuhu-neon-cyan)',
+        bgActive: 'var(--wuhu-neon-cyan)',
     },
     strong: {
-        color: 'var(--glass-tone-success-fg)',
-        bgActive: 'var(--glass-tone-success-fg)',
+        color: 'var(--wuhu-neon-purple)',
+        bgActive: 'var(--wuhu-neon-purple)',
     },
 }
 
@@ -109,7 +109,7 @@ export default function PasswordStrengthIndicator({ password }: PasswordStrength
                         style={{
                             backgroundColor: segment <= score
                                 ? styles.bgActive
-                                : 'color-mix(in srgb, var(--glass-text-tertiary) 30%, transparent)',
+                                : 'color-mix(in srgb, rgba(255,255,255,0.5) 30%, transparent)',
                         }}
                     />
                 ))}

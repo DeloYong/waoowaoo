@@ -139,7 +139,7 @@ export default function VideoRenderPanel({
                 else panelRefs.current.delete(panelKey)
               }}
               className={`transition-all duration-500 ${highlightedPanelKey === panelKey
-                ? 'ring-4 ring-[var(--glass-stroke-focus)] ring-offset-2 ring-offset-[var(--glass-bg-canvas)] rounded-2xl scale-[1.02]'
+                ? 'ring-4 ring-[var(--wuhu-neon-cyan)] ring-offset-2 ring-offset-[var(--wuhu-bg-canvas)] rounded-2xl scale-[1.02]'
                 : ''
               }`}
             >

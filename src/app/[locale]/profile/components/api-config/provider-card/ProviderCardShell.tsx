@@ -61,10 +61,10 @@ export function ProviderCardShell({
     : (hideProviderLabel || t('hideProvider'))
 
   return (
-    <div className="glass-surface overflow-hidden rounded-2xl">
+    <div className="bg-[var(--wuhu-bg-card)] border border-white/10 rounded-xl transition-all duration-300 hover:border-[var(--wuhu-neon-purple)]/40 hover:shadow-[0_0_25px_rgba(167,87,255,0.2)] overflow-hidden">
 
       {/* ── 头部：logo + 名称 + 心电图 + 右侧操作 ── */}
-      <div className="flex items-center justify-between px-3.5 py-2.5">
+      <div className={`flex items-center justify-between px-3.5 py-2.5 ${provider.hasApiKey ? 'border-b border-[var(--wuhu-neon-cyan)]/20' : ''}`}>
         <div className="flex items-center gap-2">
           {dragHandle}
           {onToggleProviderHidden && (
@@ -83,14 +83,14 @@ export function ProviderCardShell({
                   }
                 }
               }}
-              className="inline-flex h-6 w-6 items-center justify-center rounded-md text-[var(--glass-text-tertiary)] transition-colors hover:text-[var(--glass-text-secondary)]"
+              className="inline-flex h-6 w-6 items-center justify-center rounded-md text-white/40 transition-colors hover:text-white/70"
             >
               <AppIcon name={isHidden ? 'plus' : 'minus'} className="h-3.5 w-3.5" />
             </button>
           )}
-          <h3 className="text-[15px] font-bold text-[var(--glass-text-primary)]">{provider.name}</h3>
+          <h3 className="text-[15px] font-bold text-white">{provider.name}</h3>
           {compatibilityLayerLabel && (
-            <span className="rounded-full border border-[var(--glass-stroke-base)] bg-[var(--glass-bg-muted)] px-2 py-0.5 text-[10px] font-semibold text-[var(--glass-text-secondary)]">
+            <span className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] font-semibold text-white/60">
               {compatibilityLayerLabel}
             </span>
           )}
@@ -108,8 +108,8 @@ export function ProviderCardShell({
               className={[
                 'flex items-center gap-1 rounded-lg border px-2 py-1 text-[11px] font-medium transition-all',
                 canTest
-                  ? 'border-[var(--glass-stroke-base)] text-[var(--glass-text-secondary)] hover:border-[var(--glass-stroke-strong)] hover:bg-[var(--glass-bg-muted)] hover:text-[var(--glass-text-primary)] cursor-pointer'
-                  : 'border-[var(--glass-stroke-base)] cursor-not-allowed text-[var(--glass-text-tertiary)] opacity-40',
+                  ? 'border-white/20 text-white/60 hover:border-[var(--wuhu-neon-purple)] hover:bg-[var(--wuhu-neon-purple)]/10 hover:text-white cursor-pointer'
+                  : 'border-white/10 cursor-not-allowed text-white/30 opacity-40',
               ].join(' ')}
             >
               <AppIcon name="refresh" className="h-3 w-3" />
@@ -119,7 +119,7 @@ export function ProviderCardShell({
           {!state.isPresetProvider && onDeleteProvider && (
             <button
               onClick={() => onDeleteProvider(provider.id)}
-              className="rounded p-1 text-[var(--glass-text-tertiary)] transition-colors hover:bg-[var(--glass-bg-muted)] hover:text-[var(--glass-tone-danger-fg)]"
+              className="rounded p-1 text-white/40 transition-colors hover:bg-white/10 hover:text-red-400"
               title={t('delete')}
             >
               <AppIcon name="trash" className="w-3.5 h-3.5" />
@@ -128,7 +128,7 @@ export function ProviderCardShell({
           {state.tutorial && (
             <button
               onClick={() => state.setShowTutorial(true)}
-              className="glass-btn-base cursor-pointer flex items-center gap-1 rounded-lg border border-[var(--glass-stroke-base)] bg-transparent px-2 py-1 text-[12px] font-medium text-[var(--glass-text-primary)] hover:border-[var(--glass-stroke-strong)] hover:bg-[var(--glass-bg-muted)] hover:text-[var(--glass-text-primary)]"
+              className="cursor-pointer flex items-center gap-1 rounded-lg border border-white/20 bg-transparent px-2 py-1 text-[12px] font-medium text-white hover:border-[var(--wuhu-neon-purple)] hover:bg-[var(--wuhu-neon-purple)]/10 transition-all"
             >
               <AppIcon name="bookOpen" className="h-3 w-3" />
               {t('tutorial.button')}
@@ -141,28 +141,28 @@ export function ProviderCardShell({
       {state.showTutorial && state.tutorial && typeof document !== 'undefined'
         ? createPortal(
           <div
-            className="fixed inset-0 z-50 flex items-center justify-center glass-overlay"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-fadeIn"
             onClick={() => state.setShowTutorial(false)}
           >
             <div
-              className="glass-surface-modal mx-4 w-full max-w-lg overflow-hidden rounded-xl"
+              className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_50px_rgba(167,87,255,0.3)] mx-4 w-full max-w-lg overflow-hidden rounded-2xl"
               onClick={(event) => event.stopPropagation()}
             >
-              <div className="flex items-center justify-between border-b border-[var(--glass-stroke-base)] px-5 py-4">
+              <div className="flex items-center justify-between border-b border-[var(--wuhu-neon-purple)]/20 px-5 py-4">
                 <div className="flex items-center gap-3">
-                  <div className="glass-btn-base glass-btn-primary flex h-8 w-8 items-center justify-center rounded-lg text-white">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)]">
                     <AppIcon name="bookOpen" className="w-4 h-4" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-[var(--glass-text-primary)]">
+                    <h3 className="text-sm font-semibold text-white">
                       {provider.name} {t('tutorial.title')}
                     </h3>
-                    <p className="text-xs text-[var(--glass-text-secondary)]">{t('tutorial.subtitle')}</p>
+                    <p className="text-xs text-white/60">{t('tutorial.subtitle')}</p>
                   </div>
                 </div>
                 <button
                   onClick={() => state.setShowTutorial(false)}
-                  className="glass-btn-base glass-btn-soft rounded-lg p-1.5"
+                  className="rounded-lg p-1.5 text-white/60 hover:text-white hover:bg-white/10 transition-colors"
                 >
                   <AppIcon name="close" className="w-5 h-5" />
                 </button>
@@ -170,11 +170,11 @@ export function ProviderCardShell({
               <div className="space-y-4 p-5">
                 {state.tutorial.steps.map((step, index) => (
                   <div key={index} className="flex gap-3">
-                    <div className="glass-surface-soft flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-[var(--glass-stroke-base)] text-xs font-bold text-[var(--glass-text-secondary)]">
+                    <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-[var(--wuhu-neon-purple)]/40 text-xs font-bold text-white/70 bg-[var(--wuhu-neon-purple)]/10">
                       {index + 1}
                     </div>
                     <div className="flex-1 pt-0.5">
-                      <p className="text-sm leading-relaxed text-[var(--glass-text-secondary)]">
+                      <p className="text-sm leading-relaxed text-white/70">
                         {t(`tutorial.steps.${step.text}`)}
                       </p>
                       {step.url && (
@@ -182,7 +182,7 @@ export function ProviderCardShell({
                           href={step.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="mt-2 inline-flex items-center gap-1 text-xs text-[var(--glass-text-secondary)] hover:text-[var(--glass-text-primary)] hover:underline"
+                          className="mt-2 inline-flex items-center gap-1 text-xs text-white/50 hover:text-[var(--wuhu-neon-cyan)] hover:underline transition-colors"
                         >
                           <AppIcon name="externalLink" className="w-3 h-3" />
                           {t('tutorial.openLink')}
@@ -192,10 +192,10 @@ export function ProviderCardShell({
                   </div>
                 ))}
               </div>
-              <div className="flex justify-end border-t border-[var(--glass-stroke-base)] px-5 py-3">
+              <div className="flex justify-end border-t border-[var(--wuhu-neon-purple)]/20 px-5 py-3">
                 <button
                   onClick={() => state.setShowTutorial(false)}
-                  className="glass-btn-base glass-btn-secondary rounded-lg px-4 py-2 text-sm font-medium"
+                  className="border border-white/20 hover:border-[var(--wuhu-neon-pink)] text-white/70 hover:text-white rounded-lg px-4 py-2 text-sm font-medium transition-all"
                 >
                   {t('tutorial.close')}
                 </button>

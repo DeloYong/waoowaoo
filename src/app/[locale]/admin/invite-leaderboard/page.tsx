@@ -41,12 +41,12 @@ export default function InviteLeaderboardPage() {
   }
 
   if (loading) {
-    return <div className="text-[var(--glass-text-secondary)]">加载中...</div>
+    return <div className="text-[rgba(255,255,255,0.7)]">加载中...</div>
   }
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-[var(--glass-text-primary)] mb-6">
+      <h2 className="text-2xl font-bold text-[white] mb-6">
         邀请榜单
       </h2>
 
@@ -57,7 +57,7 @@ export default function InviteLeaderboardPage() {
           className={`px-6 py-2 rounded ${
             period === 'month'
               ? 'bg-blue-500 text-white'
-              : 'bg-[var(--glass-bg-surface)] text-[var(--glass-text-secondary)] border border-[var(--glass-stroke-soft)]'
+              : 'bg-[var(--wuhu-bg-surface)] text-[rgba(255,255,255,0.7)] border border-[rgba(167, 87, 255, 0.2)]'
           }`}
         >
           本月
@@ -67,7 +67,7 @@ export default function InviteLeaderboardPage() {
           className={`px-6 py-2 rounded ${
             period === 'all'
               ? 'bg-blue-500 text-white'
-              : 'bg-[var(--glass-bg-surface)] text-[var(--glass-text-secondary)] border border-[var(--glass-stroke-soft)]'
+              : 'bg-[var(--wuhu-bg-surface)] text-[rgba(255,255,255,0.7)] border border-[rgba(167, 87, 255, 0.2)]'
           }`}
         >
           全部时间
@@ -75,29 +75,29 @@ export default function InviteLeaderboardPage() {
       </div>
 
       {/* 榜单 */}
-      <div className="bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)] overflow-hidden">
+      <div className="bg-[var(--wuhu-bg-surface)] rounded-lg border border-[rgba(167, 87, 255, 0.2)] overflow-hidden">
         <table className="w-full">
-          <thead className="bg-[var(--glass-bg-canvas)]">
+          <thead className="bg-[var(--wuhu-bg-canvas)]">
             <tr>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-[var(--glass-text-secondary)]">
+              <th className="px-4 py-3 text-left text-sm font-semibold text-[rgba(255,255,255,0.7)]">
                 排名
               </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-[var(--glass-text-secondary)]">
+              <th className="px-4 py-3 text-left text-sm font-semibold text-[rgba(255,255,255,0.7)]">
                 用户
               </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-[var(--glass-text-secondary)]">
+              <th className="px-4 py-3 text-left text-sm font-semibold text-[rgba(255,255,255,0.7)]">
                 邀请码
               </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-[var(--glass-text-secondary)]">
+              <th className="px-4 py-3 text-left text-sm font-semibold text-[rgba(255,255,255,0.7)]">
                 邀请人数
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[var(--glass-stroke-soft)]">
+          <tbody className="divide-y divide-[rgba(167, 87, 255, 0.2)]">
             {leaderboard.map((entry) => (
               <tr
                 key={entry.userId}
-                className="hover:bg-[var(--glass-bg-canvas)]"
+                className="hover:bg-[var(--wuhu-bg-canvas)]"
               >
                 <td className="px-4 py-3">
                   <span
@@ -108,7 +108,7 @@ export default function InviteLeaderboardPage() {
                         ? 'bg-gray-300 text-gray-700'
                         : entry.rank === 3
                         ? 'bg-orange-400 text-orange-900'
-                        : 'bg-[var(--glass-bg-canvas)] text-[var(--glass-text-secondary)]'
+                        : 'bg-[var(--wuhu-bg-canvas)] text-[rgba(255,255,255,0.7)]'
                     }`}
                   >
                     {entry.rank}
@@ -116,16 +116,16 @@ export default function InviteLeaderboardPage() {
                 </td>
                 <td className="px-4 py-3">
                   <div>
-                    <div className="font-medium text-[var(--glass-text-primary)]">
+                    <div className="font-medium text-[white]">
                       {entry.user?.name || '未命名'}
                     </div>
-                    <div className="text-sm text-[var(--glass-text-tertiary)]">
+                    <div className="text-sm text-[rgba(255,255,255,0.5)]">
                       {entry.user?.email || '无邮箱'}
                     </div>
                   </div>
                 </td>
                 <td className="px-4 py-3">
-                  <code className="px-2 py-1 bg-[var(--glass-bg-canvas)] rounded text-sm">
+                  <code className="px-2 py-1 bg-[var(--wuhu-bg-canvas)] rounded text-sm">
                     {entry.user?.inviteCode || '-'}
                   </code>
                 </td>
@@ -140,7 +140,7 @@ export default function InviteLeaderboardPage() {
         </table>
 
         {leaderboard.length === 0 && (
-          <div className="text-center py-12 text-[var(--glass-text-tertiary)]">
+          <div className="text-center py-12 text-[rgba(255,255,255,0.5)]">
             暂无邀请数据
           </div>
         )}

@@ -26,7 +26,7 @@ function RatioShape({ ratio, selected, size = 26 }: { ratio: string; selected: b
   return (
     <div
       className={`rounded-md border-2 transition-colors ${
-        selected ? 'border-[var(--glass-accent-from)]' : 'border-[var(--glass-stroke-strong)]'
+        selected ? 'border-[var(--wuhu-neon-pink)]' : 'border-white/30'
       }`}
       style={{
         width: Math.min(size, size * (w / max)),
@@ -57,20 +57,20 @@ export function RatioSelector({ value, onChange, options }: RatioSelectorProps) 
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="glass-input-base h-11 px-3 flex items-center justify-between gap-2 cursor-pointer transition-colors"
+        className="bg-[var(--wuhu-bg-surface)] border border-white/20 rounded-xl h-11 px-3 flex items-center justify-between gap-2 cursor-pointer transition-all hover:border-white/30"
       >
         <div className="flex items-center gap-2.5">
           <RatioShape ratio={value} size={18} selected />
-          <span className="text-sm text-[var(--glass-text-primary)] font-medium">
+          <span className="text-sm text-white font-medium">
             {selectedOption?.label || value}
           </span>
         </div>
-        <AppIcon name="chevronDown" className={`w-4 h-4 text-[var(--glass-text-tertiary)] transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <AppIcon name="chevronDown" className={`w-4 h-4 text-white/50 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
         <div
-          className="glass-surface-modal absolute z-50 mt-1 left-0 right-0 p-3 max-h-60 overflow-y-auto custom-scrollbar"
+          className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_40px_rgba(167,87,255,0.3)] absolute z-50 mt-1 left-0 right-0 p-3 max-h-60 overflow-y-auto custom-scrollbar rounded-xl"
           style={{ minWidth: '300px' }}
         >
           <div className="grid grid-cols-5 gap-2">
@@ -86,12 +86,12 @@ export function RatioSelector({ value, onChange, options }: RatioSelectorProps) 
                   }}
                   className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${
                     isSelected
-                      ? 'border-[var(--glass-accent-from)] bg-[var(--glass-accent-from)]/5 shadow-sm'
-                      : 'border-[var(--glass-stroke-soft)] hover:border-[var(--glass-stroke-strong)]'
+                      ? 'border-[var(--wuhu-neon-pink)] bg-[var(--wuhu-neon-pink)]/10 shadow-sm'
+                      : 'border-white/20 hover:border-white/40'
                   }`}
                 >
                   <RatioShape ratio={option.value} size={28} selected={isSelected} />
-                  <span className={`text-xs ${isSelected ? 'font-semibold text-[var(--glass-accent-from)]' : 'text-[var(--glass-text-secondary)]'}`}>
+                  <span className={`text-xs ${isSelected ? 'font-semibold text-[var(--wuhu-neon-pink)]' : 'text-white/70'}`}>
                     {option.label}
                   </span>
                 </button>
@@ -125,14 +125,14 @@ export function StyleSelector({ value, onChange, options }: StyleSelectorProps) 
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="glass-input-base h-11 px-3 flex items-center justify-between gap-2 cursor-pointer transition-colors"
+        className="bg-[var(--wuhu-bg-surface)] border border-white/20 rounded-xl h-11 px-3 flex items-center justify-between gap-2 cursor-pointer transition-all hover:border-white/30"
       >
-        <span className="text-sm text-[var(--glass-text-primary)] font-medium">{selectedOption.label}</span>
-        <AppIcon name="chevronDown" className={`w-4 h-4 text-[var(--glass-text-tertiary)] transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <span className="text-sm text-white font-medium">{selectedOption.label}</span>
+        <AppIcon name="chevronDown" className={`w-4 h-4 text-white/50 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
-        <div className="glass-surface-modal absolute z-50 mt-1 left-0 p-3" style={{ minWidth: '320px' }}>
+        <div className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_40px_rgba(167,87,255,0.3)] absolute z-50 mt-1 left-0 p-3 rounded-xl" style={{ minWidth: '320px' }}>
           <div className="grid grid-cols-2 gap-2">
             {options.map((option) => {
               const isSelected = value === option.value
@@ -146,11 +146,11 @@ export function StyleSelector({ value, onChange, options }: StyleSelectorProps) 
                   }}
                   className={`flex items-center p-3 rounded-xl border text-left transition-all ${
                     isSelected
-                      ? 'border-[var(--glass-accent-from)] bg-[var(--glass-accent-from)]/5 shadow-sm'
-                      : 'border-[var(--glass-stroke-soft)] hover:border-[var(--glass-stroke-strong)]'
+                      ? 'border-[var(--wuhu-neon-pink)] bg-[var(--wuhu-neon-pink)]/10 shadow-sm'
+                      : 'border-white/20 hover:border-white/40'
                   }`}
                 >
-                  <span className={`text-sm whitespace-nowrap ${isSelected ? 'font-semibold text-[var(--glass-accent-from)]' : 'text-[var(--glass-text-secondary)]'}`}>
+                  <span className={`text-sm whitespace-nowrap ${isSelected ? 'font-semibold text-[var(--wuhu-neon-pink)]' : 'text-white/70'}`}>
                     {option.label}
                   </span>
                 </button>

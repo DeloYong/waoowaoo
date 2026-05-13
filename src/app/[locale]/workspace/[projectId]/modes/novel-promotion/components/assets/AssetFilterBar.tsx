@@ -37,7 +37,7 @@ export default function AssetFilterBar({
     ]
 
     return (
-        <div className="px-4 py-3 glass-surface rounded-xl">
+        <div className="px-4 py-3 bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_40px_rgba(167,87,255,0.2)] rounded-xl rounded-xl">
             <div className="overflow-x-auto">
                 <SegmentedControl
                     options={segmentOptions}

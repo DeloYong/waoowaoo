@@ -242,7 +242,7 @@ export function ApiConfigTabContainer(externalConfig?: Partial<UseProvidersRetur
 
   if (loading) {
     return (
-      <div className="flex h-full items-center justify-center p-6 text-[var(--glass-text-tertiary)]">
+      <div className="flex h-full items-center justify-center p-6 text-white/50">
         {tc('loading')}
       </div>
     )
@@ -324,14 +324,14 @@ export function ApiConfigTabContainer(externalConfig?: Partial<UseProvidersRetur
           <div className="flex justify-end gap-2">
             <button
               onClick={handleCancelAddGeminiProvider}
-              className="glass-btn-base glass-btn-secondary px-3 py-1.5 text-sm"
+              className="bg-[var(--wuhu-bg-surface)] border border-white/20 hover:bg-white/5 rounded-lg px-3 py-1.5 text-sm text-white/70 hover:text-white transition-all"
             >
               {tc('cancel')}
             </button>
             {testStatus === 'failed' && (
               <button
                 onClick={handleForceAdd}
-                className="glass-btn-base glass-btn-secondary px-3 py-1.5 text-sm"
+                className="bg-[var(--wuhu-bg-surface)] border border-white/20 hover:bg-white/5 rounded-lg px-3 py-1.5 text-sm text-white/70 hover:text-white transition-all"
               >
                 {t('addAnyway')}
               </button>
@@ -339,7 +339,7 @@ export function ApiConfigTabContainer(externalConfig?: Partial<UseProvidersRetur
             {testStatus === 'failed' ? (
               <button
                 onClick={handleAddGeminiProvider}
-                className="glass-btn-base glass-btn-primary px-3 py-1.5 text-sm"
+                className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] shadow-[0_0_20px_rgba(167,87,255,0.3)] hover:shadow-[0_0_30px_rgba(167,87,255,0.4)] rounded-lg px-3 py-1.5 text-sm text-white transition-all"
               >
                 {t('testRetry')}
               </button>
@@ -347,7 +347,7 @@ export function ApiConfigTabContainer(externalConfig?: Partial<UseProvidersRetur
               <button
                 onClick={handleAddGeminiProvider}
                 disabled={testStatus === 'testing'}
-                className="glass-btn-base glass-btn-primary px-3 py-1.5 text-sm disabled:opacity-50"
+                className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] shadow-[0_0_20px_rgba(167,87,255,0.3)] hover:shadow-[0_0_30px_rgba(167,87,255,0.4)] rounded-lg px-3 py-1.5 text-sm text-white transition-all disabled:opacity-50"
               >
                 {testStatus === 'testing' ? t('testing') : tp('add')}
               </button>
@@ -361,7 +361,7 @@ export function ApiConfigTabContainer(externalConfig?: Partial<UseProvidersRetur
             <span className="text-[12px] leading-relaxed">{t('customProviderTip')}</span>
           </div>
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-[var(--glass-text-primary)]">
+            <label className="mb-1.5 block text-xs font-medium text-white">
               {t('apiType')}
             </label>
             <div className="relative">
@@ -374,19 +374,19 @@ export function ApiConfigTabContainer(externalConfig?: Partial<UseProvidersRetur
                   })
                 }
                 disabled={testStatus === 'testing'}
-                className="glass-select-base w-full cursor-pointer appearance-none px-3 py-2.5 pr-8 text-sm"
+                className="bg-[var(--wuhu-bg-surface)] border border-white/20 rounded-lg w-full cursor-pointer appearance-none px-3 py-2.5 pr-8 text-sm text-white focus:border-[var(--wuhu-neon-pink)] focus:outline-none transition-all"
               >
                 <option value="gemini-compatible">{t('apiTypeGeminiCompatible')}</option>
                 <option value="openai-compatible">{t('apiTypeOpenAICompatible')}</option>
               </select>
-              <div className="pointer-events-none absolute right-3 top-3 text-[var(--glass-text-tertiary)]">
+              <div className="pointer-events-none absolute right-3 top-3 text-white/50">
                 <Icons.chevronDown />
               </div>
             </div>
           </div>
 
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-[var(--glass-text-primary)]">
+            <label className="mb-1.5 block text-xs font-medium text-white">
               {tp('name')}
             </label>
             <input
@@ -400,12 +400,12 @@ export function ApiConfigTabContainer(externalConfig?: Partial<UseProvidersRetur
               }
               disabled={testStatus === 'testing'}
               placeholder={tp('name')}
-              className="glass-input-base w-full px-3 py-2.5 text-sm"
+              className="bg-[var(--wuhu-bg-surface)] border border-white/20 rounded-lg w-full px-3 py-2.5 text-sm text-white focus:border-[var(--wuhu-neon-pink)] focus:outline-none transition-all"
             />
           </div>
 
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-[var(--glass-text-primary)]">
+            <label className="mb-1.5 block text-xs font-medium text-white">
               {t('baseUrl')}
             </label>
             <input
@@ -419,12 +419,12 @@ export function ApiConfigTabContainer(externalConfig?: Partial<UseProvidersRetur
               }
               disabled={testStatus === 'testing'}
               placeholder={t('baseUrl')}
-              className="glass-input-base w-full px-3 py-2.5 text-sm font-mono"
+              className="bg-[var(--wuhu-bg-surface)] border border-white/20 rounded-lg w-full px-3 py-2.5 text-sm text-white focus:border-[var(--wuhu-neon-pink)] focus:outline-none transition-all font-mono"
             />
           </div>
 
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-[var(--glass-text-primary)]">
+            <label className="mb-1.5 block text-xs font-medium text-white">
               {t('apiKeyLabel')}
             </label>
             <input
@@ -438,20 +438,20 @@ export function ApiConfigTabContainer(externalConfig?: Partial<UseProvidersRetur
               }
               disabled={testStatus === 'testing'}
               placeholder={t('apiKeyLabel')}
-              className="glass-input-base w-full px-3 py-2.5 text-sm"
+              className="bg-[var(--wuhu-bg-surface)] border border-white/20 rounded-lg w-full px-3 py-2.5 text-sm text-white focus:border-[var(--wuhu-neon-pink)] focus:outline-none transition-all"
             />
           </div>
 
           {/* Test Results */}
           {testStatus !== 'idle' && (
-            <div className="space-y-2 rounded-xl border border-[var(--glass-border)] p-3">
-              <div className="flex items-center gap-2 text-xs font-semibold text-[var(--glass-text-primary)]">
+            <div className="space-y-2 rounded-xl border border-white/20 p-3">
+              <div className="flex items-center gap-2 text-xs font-semibold text-white">
                 <AppIcon name="settingsHex" className="h-3.5 w-3.5" />
                 {t('testConnection')}
               </div>
 
               {testStatus === 'testing' && testSteps.length === 0 && (
-                <div className="flex items-center gap-2 text-xs text-[var(--glass-text-secondary)]">
+                <div className="flex items-center gap-2 text-xs text-white/70">
                   <span className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
                   {t('testing')}
                 </div>
@@ -473,22 +473,22 @@ export function ApiConfigTabContainer(externalConfig?: Partial<UseProvidersRetur
                         </span>
                       )}
                       {step.status === 'skip' && (
-                        <span className="text-[var(--glass-text-tertiary)]">–</span>
+                        <span className="text-white/50">–</span>
                       )}
-                      <span className="font-medium text-[var(--glass-text-primary)]">
+                      <span className="font-medium text-white">
                         {stepLabel}
                       </span>
                       {step.model && (
-                        <span className="rounded bg-[var(--glass-bg-surface)] px-1.5 py-0.5 font-mono text-[10px] text-[var(--glass-text-secondary)]">
+                        <span className="rounded bg-[var(--wuhu-bg-surface)] px-1.5 py-0.5 font-mono text-[10px] text-white/70">
                           {step.model}
                         </span>
                       )}
                     </div>
-                    <p className={`pl-5 text-[11px] ${step.status === 'fail' ? 'text-red-400' : 'text-[var(--glass-text-secondary)]'}`}>
+                    <p className={`pl-5 text-[11px] ${step.status === 'fail' ? 'text-red-400' : 'text-white/70'}`}>
                       {step.message}
                     </p>
                     {step.detail && (
-                      <p className="pl-5 text-[10px] text-[var(--glass-text-tertiary)] break-all line-clamp-3">
+                      <p className="pl-5 text-[10px] text-white/50 break-all line-clamp-3">
                         {step.detail}
                       </p>
                     )}

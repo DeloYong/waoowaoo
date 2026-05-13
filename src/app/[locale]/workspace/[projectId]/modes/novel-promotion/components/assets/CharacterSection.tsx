@@ -194,12 +194,12 @@ export default function CharacterSection({
         <div className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/20 rounded-xl p-6">
             <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 text-[var(--glass-text-secondary)]">
+                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 text-[rgba(255,255,255,0.7)]">
                         <AppIcon name="user" className="h-5 w-5" />
                     </span>
                     <h3 className="text-lg font-bold text-white">{t("stage.characterAssets")}</h3>
                     {isAnalyzingAssets && (
-                        <span className="px-2 py-1 text-xs bg-[var(--glass-tone-info-bg)] text-[var(--glass-tone-info-fg)] rounded-lg flex items-center gap-1">
+                        <span className="px-2 py-1 text-xs bg-[rgba(0, 255, 255, 0.1)] text-[var(--wuhu-neon-cyan)] rounded-lg flex items-center gap-1">
                             <TaskStatusInline state={analyzingAssetsState} />
                         </span>
                     )}
@@ -209,7 +209,7 @@ export default function CharacterSection({
                 </div>
                 <button
                     onClick={onAddCharacter}
-                    className="glass-btn-base glass-btn-primary flex items-center gap-2 px-4 py-2 font-medium"
+                    className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_20px_rgba(167,87,255,0.3)] hover:shadow-[0_0_30px_rgba(167,87,255,0.4)] rounded-lg transition-all flex items-center gap-2 px-4 py-2 font-medium"
                 >
                     + {t("character.add")}
                 </button>
@@ -221,8 +221,8 @@ export default function CharacterSection({
                     {/* 引导横幅 */}
                     <div className="flex items-center justify-between mb-3 px-1">
                         <div className="flex items-center gap-2">
-                            <span className="inline-flex h-5 w-5 items-center justify-center rounded-md bg-[var(--glass-tone-info-bg)]">
-                                <AppIcon name="sparkles" className="h-3 w-3 text-[var(--glass-tone-info-fg)]" />
+                            <span className="inline-flex h-5 w-5 items-center justify-center rounded-md bg-[rgba(0, 255, 255, 0.1)]">
+                                <AppIcon name="sparkles" className="h-3 w-3 text-[var(--wuhu-neon-cyan)]" />
                             </span>
                             <span className="text-sm font-semibold text-white">{t('stage.pendingProfilesBanner')}</span>
                             <span className="text-xs text-white/40">{t('stage.pendingProfilesHint')}</span>
@@ -230,7 +230,7 @@ export default function CharacterSection({
                         <button
                             onClick={onBatchConfirm}
                             disabled={batchConfirming}
-                            className="glass-btn-base glass-btn-primary px-3 py-1.5 text-sm disabled:opacity-50 flex items-center gap-1.5"
+                            className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_20px_rgba(167,87,255,0.3)] hover:shadow-[0_0_30px_rgba(167,87,255,0.4)] rounded-lg transition-all px-3 py-1.5 text-sm disabled:opacity-50 flex items-center gap-1.5"
                         >
                             {batchConfirming ? (
                                 <TaskStatusInline state={batchConfirmingState} className="text-white [&>span]:text-white [&_svg]:text-white" />
@@ -293,7 +293,7 @@ export default function CharacterSection({
                                     {/* 保存到资产中心按钮 */}
                                     <button
                                         onClick={() => onSaveToGlobal(character.id)}
-                                        className="text-xs text-[var(--glass-tone-success-fg)] hover:text-[var(--glass-tone-success-fg)] flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-[var(--glass-tone-success-bg)] transition-colors"
+                                        className="text-xs text-[var(--wuhu-neon-purple)] hover:text-[var(--wuhu-neon-purple)] flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-[rgba(167, 87, 255, 0.2)] transition-colors"
                                     >
                                         <AppIcon name="upload" className="w-4 h-4" />
                                         {t("character.saveToGlobal")}
@@ -301,14 +301,14 @@ export default function CharacterSection({
                                     {/* 从资产中心复制按钮 */}
                                     <button
                                         onClick={() => onCopyFromGlobal(character.id)}
-                                        className="text-xs text-[var(--glass-tone-info-fg)] hover:text-[var(--glass-tone-info-fg)] flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-[var(--glass-tone-info-bg)] transition-colors"
+                                        className="text-xs text-[var(--wuhu-neon-cyan)] hover:text-[var(--wuhu-neon-cyan)] flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-[rgba(0, 255, 255, 0.1)] transition-colors"
                                     >
                                         <AppIcon name="copy" className="w-4 h-4" />
                                         {t("character.copyFromGlobal")}
                                     </button>
                                     <button
                                         onClick={() => onDeleteCharacter(character.id)}
-                                        className="text-xs text-[var(--glass-tone-danger-fg)] hover:text-[var(--glass-tone-danger-fg)] flex items-center gap-1"
+                                        className="text-xs text-[var(--wuhu-neon-pink)] hover:text-[var(--wuhu-neon-pink)] flex items-center gap-1"
                                     >
                                         <AppIcon name="trash" className="w-4 h-4" />
                                         {t("character.delete")}

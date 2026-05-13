@@ -111,27 +111,27 @@ export default function AssetLibrary({
 
   return (
     <>
-      {/* 触发按钮 - 现代玻璃态风格 */}
+      {/* 触发按钮 - Wuhu 风格 */}
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="fixed top-20 right-4 z-40 flex items-center gap-2 px-5 py-2.5 glass-btn-base glass-btn-secondary text-[var(--glass-text-secondary)] font-medium"
+        className="fixed top-20 right-4 z-40 flex items-center gap-2 px-5 py-2.5 bg-[var(--wuhu-bg-surface)] border border-white/20 hover:bg-white/5 rounded-xl text-white/70 hover:text-white transition-all font-medium"
       >
         <AppIcon name="folderCards" className="w-5 h-5" />
         {t('assetLibrary.button')}
       </button>
 
-      {/* 全屏弹窗 - 现代玻璃态风格 */}
+      {/* 全屏弹窗 - Wuhu 风格 */}
       {isOpen && (
-        <div className="fixed inset-0 glass-overlay z-50 flex items-center justify-center p-6">
-          <div className="glass-surface-modal w-full h-full max-w-[95vw] max-h-[95vh] flex flex-col overflow-hidden">
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-6">
+          <div className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_40px_rgba(167,87,255,0.2)] w-full h-full max-w-[95vw] max-h-[95vh] flex flex-col overflow-hidden rounded-2xl">
             {/* 头部 */}
-            <div className="flex items-center justify-between px-8 py-5 border-b border-[var(--glass-stroke-base)]">
+            <div className="flex items-center justify-between px-8 py-5 border-b border-white/10">
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 bg-[var(--glass-accent-from)] rounded-2xl flex items-center justify-center shadow-[var(--glass-shadow-md)]">
+                <div className="w-10 h-10 bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] rounded-2xl flex items-center justify-center shadow-[0_0_20px_rgba(167,87,255,0.3)]">
                   <AppIcon name="folderCards" className="w-5 h-5 text-white" />
                 </div>
-                <h2 className="text-2xl font-bold text-[var(--glass-text-primary)]">{t('assetLibrary.title')}</h2>
+                <h2 className="text-2xl font-bold text-white">{t('assetLibrary.title')}</h2>
 
                 {/* 下载按钮 - 紧贴标题 */}
                 <button
@@ -139,7 +139,7 @@ export default function AssetLibrary({
                   onClick={handleDownloadAll}
                   disabled={isDownloading}
                   title={t('common.download')}
-                  className="w-9 h-9 glass-btn-base glass-btn-secondary flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-9 h-9 bg-[var(--wuhu-bg-surface)] border border-white/20 hover:bg-white/5 rounded-xl flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed transition-all text-white/70 hover:text-white"
                 >
                   <AppIcon
                     name={isDownloading ? 'refresh' : 'download'}
@@ -150,9 +150,9 @@ export default function AssetLibrary({
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="w-10 h-10 glass-btn-base glass-btn-secondary flex items-center justify-center"
+                className="w-10 h-10 bg-[var(--wuhu-bg-surface)] border border-white/20 hover:bg-white/5 rounded-xl flex items-center justify-center transition-all"
               >
-                <AppIcon name="close" className="w-5 h-5 text-[var(--glass-text-tertiary)]" />
+                <AppIcon name="close" className="w-5 h-5 text-white/50" />
               </button>
             </div>
 

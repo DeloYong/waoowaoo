@@ -93,7 +93,7 @@ export default function PanelCardV2({
           ) : failedError ? (
             <div className="flex h-full flex-col items-center justify-center gap-2 p-4 text-center">
               <GlassChip tone="danger">{t('image.failed')}</GlassChip>
-              <p className="text-xs text-[var(--glass-text-secondary)]">{failedError}</p>
+              <p className="text-xs text-white/60">{failedError}</p>
               <GlassButton size="sm" variant="ghost" onClick={onClearError}>{t('common.cancel')}</GlassButton>
             </div>
           ) : selectedCandidate ? (

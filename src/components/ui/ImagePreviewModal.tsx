@@ -39,7 +39,7 @@ export default function ImagePreviewModal({ imageUrl, onClose }: ImagePreviewMod
 
   return (
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-[var(--glass-overlay)] backdrop-blur-sm"
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm animate-fadeIn"
       onClick={onClose}
       style={{ margin: 0, padding: 0 }}
     >
@@ -47,7 +47,7 @@ export default function ImagePreviewModal({ imageUrl, onClose }: ImagePreviewMod
         {/* 关闭按钮 */}
         <button
           onClick={onClose}
-          className="absolute top-6 right-6 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-[var(--glass-overlay)] hover:bg-[var(--glass-overlay)] text-white transition-colors"
+          className="absolute top-6 right-6 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-[var(--wuhu-bg-card)]/80 backdrop-blur border border-[var(--wuhu-neon-purple)]/30 hover:border-[var(--wuhu-neon-pink)] text-white transition-all shadow-[0_0_20px_rgba(167,87,255,0.2)]"
         >
           <AppIcon name="close" className="w-6 h-6" />
         </button>
@@ -57,7 +57,7 @@ export default function ImagePreviewModal({ imageUrl, onClose }: ImagePreviewMod
             target="_blank"
             rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()}
-            className="absolute top-6 right-20 z-10 px-3 h-10 inline-flex items-center rounded-full bg-[var(--glass-overlay)] hover:bg-[var(--glass-overlay)] text-white text-sm transition-colors"
+            className="absolute top-6 right-20 z-10 px-3 h-10 inline-flex items-center rounded-full bg-[var(--wuhu-bg-card)]/80 backdrop-blur border border-[var(--wuhu-neon-purple)]/30 hover:border-[var(--wuhu-neon-cyan)] text-white text-sm transition-all shadow-[0_0_20px_rgba(167,87,255,0.2)]"
           >
             {t('viewOriginal')}
           </a>
@@ -68,7 +68,7 @@ export default function ImagePreviewModal({ imageUrl, onClose }: ImagePreviewMod
           src={displayImageUrl}
           alt={t('preview')}
           containerClassName="max-w-full max-h-[90vh]"
-          className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl"
+          className="max-w-full max-h-[90vh] object-contain rounded-xl shadow-[0_0_50px_rgba(167,87,255,0.3)] border border-[var(--wuhu-neon-purple)]/20"
           onClick={(e) => e.stopPropagation()}
         />
       </div>

@@ -126,7 +126,7 @@ export default function StoryboardCanvas({
   const t = useTranslations('storyboard')
   if (sortedStoryboards.length === 0) {
     return (
-      <div className="text-center py-12 text-[var(--glass-text-tertiary)]">
+      <div className="text-center py-12 text-[rgba(255,255,255,0.5)]">
         <p>{t('canvas.emptyTitle')}</p>
         <p className="text-sm mt-2">{t('canvas.emptyDescription')}</p>
       </div>

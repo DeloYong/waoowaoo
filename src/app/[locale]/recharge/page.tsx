@@ -193,8 +193,8 @@ export default function RechargePage() {
 
   if (sessionStatus === 'loading' || !session) {
     return (
-      <div className="glass-page flex min-h-screen items-center justify-center">
-        <div className="text-[var(--glass-text-secondary)]">加载中...</div>
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-[rgba(255,255,255,0.7)]">加载中...</div>
       </div>
     )
   }

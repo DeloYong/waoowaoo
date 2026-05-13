@@ -34,7 +34,7 @@ interface AIDataModalFormPaneProps {
 }
 
 function FL({ children }: { children: string }) {
-  return <p className="mb-1 text-[10.5px] font-semibold text-[var(--glass-text-tertiary)]">{children}</p>
+  return <p className="mb-1 text-[10.5px] font-semibold text-white/50">{children}</p>
 }
 
 function AutoGrowTextarea({
@@ -62,7 +62,7 @@ function AutoGrowTextarea({
   }, [value])
 
   return (
-    <GlassTextarea
+    <textarea
       ref={ref}
       rows={rows}
       value={value}
@@ -73,8 +73,10 @@ function AutoGrowTextarea({
         el.style.height = `${el.scrollHeight}px`
       }}
       placeholder={placeholder}
-      density={density}
-      className={['overflow-hidden', className].filter(Boolean).join(' ')}
+      className={[
+        'overflow-hidden w-full px-3 py-2 text-sm bg-[var(--wuhu-bg-surface)] border border-[var(--wuhu-neon-purple)]/30 rounded-xl text-white placeholder:text-white/30 focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(255,100,200,0.3)] outline-none transition-all resize-none',
+        className,
+      ].filter(Boolean).join(' ')}
     />
   )
 }
@@ -82,8 +84,8 @@ function AutoGrowTextarea({
 function SectionLabel({ children }: { children: string }) {
   return (
     <div className="flex items-center gap-2 mb-2.5">
-      <AppIcon name="sparkles" className="h-3.5 w-3.5 text-[var(--glass-tone-info-fg)] flex-shrink-0" />
-      <span className="text-[11px] font-semibold text-[var(--glass-text-primary)]">{children}</span>
+      <AppIcon name="sparkles" className="h-3.5 w-3.5 text-[var(--wuhu-neon-purple)] flex-shrink-0" />
+      <span className="text-[11px] font-semibold text-white">{children}</span>
     </div>
   )
 }
@@ -99,28 +101,28 @@ function CollapseSection({
 }) {
   const [open, setOpen] = useState(false)
   return (
-    <div className="border border-[var(--glass-stroke-base)] rounded-[var(--glass-radius-xs)] overflow-hidden">
+    <div className="border border-[var(--wuhu-neon-purple)]/30 rounded-xl overflow-hidden">
       <button
         type="button"
         onClick={() => setOpen(v => !v)}
-        className="w-full flex items-center justify-between px-3.5 py-2.5 bg-[var(--glass-bg-muted)] hover:bg-[var(--glass-bg-surface)] transition-colors"
+        className="w-full flex items-center justify-between px-3.5 py-2.5 bg-[var(--wuhu-bg-surface)] hover:bg-[var(--wuhu-neon-purple)]/10 transition-colors"
       >
         <div className="flex items-center gap-2">
           {iconName ? (
             <AppIcon
               name={iconName}
-              className="h-3.5 w-3.5 text-[var(--glass-tone-info-fg)] flex-shrink-0"
+              className="h-3.5 w-3.5 text-[var(--wuhu-neon-purple)] flex-shrink-0"
             />
           ) : null}
-          <span className="text-[11px] font-semibold text-[var(--glass-text-secondary)]">{label}</span>
+          <span className="text-[11px] font-semibold text-white/70">{label}</span>
         </div>
         <AppIcon
           name={open ? 'chevronUp' : 'chevronDown'}
-          className="h-3.5 w-3.5 text-[var(--glass-text-tertiary)] flex-shrink-0"
+          className="h-3.5 w-3.5 text-white/40 flex-shrink-0"
         />
       </button>
       {open && (
-        <div className="px-3.5 py-3 space-y-3 bg-[var(--glass-bg-surface)]">
+        <div className="px-3.5 py-3 space-y-3 bg-[var(--wuhu-bg-card)]">
           {children}
         </div>
       )}
@@ -154,13 +156,13 @@ export default function AIDataModalFormPane({
   const actingChar = actingCharIdx >= 0 ? actingNotes[actingCharIdx] : null
 
   return (
-    <div className="w-[55%] border-r border-[var(--glass-stroke-base)] overflow-y-auto p-5 space-y-5">
+    <div className="w-[55%] border-r border-white/10 overflow-y-auto p-5 space-y-5">
 
       {/* ① 视觉描述 — 最高优先 */}
       <section>
         <div className="flex items-center gap-2 mb-2.5">
-          <AppIcon name="fileText" className="h-3.5 w-3.5 text-[var(--glass-tone-info-fg)] flex-shrink-0" />
-          <span className="text-[11px] font-semibold text-[var(--glass-text-primary)]">
+          <AppIcon name="fileText" className="h-3.5 w-3.5 text-[var(--wuhu-neon-purple)] flex-shrink-0" />
+          <span className="text-[11px] font-semibold text-white">
             {t('aiData.visualDescription')}
           </span>
         </div>
@@ -179,36 +181,34 @@ export default function AIDataModalFormPane({
           <div>
             <FL>{t('aiData.shotType')}</FL>
             <div className="relative">
-              <AppIcon name="clapperboard" className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[var(--glass-text-tertiary)]" />
-              <GlassInput
-                density="compact"
+              <AppIcon name="clapperboard" className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-white/40" />
+              <input
                 value={shotType}
                 onChange={e => onShotTypeChange(e.target.value)}
                 placeholder={t('aiData.shotTypePlaceholder')}
-                className="pl-9"
+                className="w-full pl-9 pr-3 py-2 text-sm bg-[var(--wuhu-bg-surface)] border border-[var(--wuhu-neon-purple)]/30 rounded-xl text-white placeholder:text-white/30 focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(255,100,200,0.3)] outline-none transition-all"
               />
             </div>
           </div>
           <div>
             <FL>{t('aiData.cameraMove')}</FL>
             <div className="relative">
-              <AppIcon name="video" className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[var(--glass-text-tertiary)]" />
-              <GlassInput
-                density="compact"
+              <AppIcon name="video" className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-white/40" />
+              <input
                 value={cameraMove}
                 onChange={e => onCameraMoveChange(e.target.value)}
                 placeholder={t('aiData.cameraMovePlaceholder')}
-                className="pl-9"
+                className="w-full pl-9 pr-3 py-2 text-sm bg-[var(--wuhu-bg-surface)] border border-[var(--wuhu-neon-purple)]/30 rounded-xl text-white placeholder:text-white/30 focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(255,100,200,0.3)] outline-none transition-all"
               />
             </div>
           </div>
         </div>
         {/* 场景 + 比例 — 只读文字，不用 input 避免视觉干扰 */}
         {location && (
-          <div className="flex items-center gap-2 text-[11.5px] text-[var(--glass-text-tertiary)]">
-            <AppIcon name="imageAlt" className="h-3.5 w-3.5 text-[var(--glass-tone-info-fg)] flex-shrink-0" />
+          <div className="flex items-center gap-2 text-[11.5px] text-white/50">
+            <AppIcon name="imageAlt" className="h-3.5 w-3.5 text-[var(--wuhu-neon-purple)] flex-shrink-0" />
             <span>
-              {t('aiData.scene').replace('（只读）', '')}：<span className="text-[var(--glass-text-secondary)] font-medium">{location}</span>
+              {t('aiData.scene').replace('（只读）', '')}：<span className="text-white/70 font-medium">{location}</span>
             </span>
           </div>
         )}
@@ -227,21 +227,21 @@ export default function AIDataModalFormPane({
                 type="button"
                 onClick={() => onActiveCharIdxChange(i)}
                 className={[
-                  'flex items-center gap-2 px-3 py-1.5 rounded-[var(--glass-radius-xs)] border text-xs font-semibold transition-all',
+                  'flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all',
                   activeCharIdx === i
-                    ? 'border-[var(--glass-stroke-focus)] bg-[var(--glass-tone-info-bg)] text-[var(--glass-tone-info-fg)]'
-                    : 'border-[var(--glass-stroke-base)] bg-[var(--glass-bg-muted)] text-[var(--glass-text-tertiary)] hover:text-[var(--glass-text-secondary)]',
+                    ? 'border-[var(--wuhu-neon-pink)] bg-[var(--wuhu-neon-pink)]/10 text-[var(--wuhu-neon-pink)] shadow-[0_0_15px_rgba(255,100,200,0.3)]'
+                    : 'border-[var(--wuhu-neon-purple)]/30 bg-[var(--wuhu-bg-surface)] text-white/50 hover:text-white/70 hover:border-[var(--wuhu-neon-purple)]/50',
                 ].join(' ')}
               >
                 <div className={[
                   'h-5 w-5 rounded-full flex items-center justify-center flex-shrink-0',
-                  activeCharIdx === i ? 'bg-[var(--glass-tone-info-bg)] text-[var(--glass-tone-info-fg)]' : 'bg-[var(--glass-bg-surface)] text-[var(--glass-text-tertiary)]',
+                  activeCharIdx === i ? 'bg-[var(--wuhu-neon-pink)]/20 text-[var(--wuhu-neon-pink)]' : 'bg-[var(--wuhu-bg-card)] text-white/40',
                 ].join(' ')}>
                   <AppIcon name="user" className="h-3 w-3" />
                 </div>
                 {char.name}
                 {char.slot && (
-                  <span className="glass-chip glass-chip-neutral text-[9.5px] inline-flex items-center gap-1">
+                  <span className="bg-white/10 text-white/70 text-[9.5px] inline-flex items-center gap-1 px-2 py-0.5 rounded-full">
                     <AppIcon name="badgeCheck" className="h-3 w-3" />
                     {char.slot}
                   </span>
@@ -252,26 +252,26 @@ export default function AIDataModalFormPane({
 
           {/* 当前角色详情卡 */}
           {activeChar && (
-            <div className="rounded-[var(--glass-radius-sm)] border border-[var(--glass-stroke-focus)] overflow-hidden">
+            <div className="rounded-xl border border-[var(--wuhu-neon-purple)]/50 overflow-hidden">
               {/* slot 行 */}
-              <div className="flex items-center gap-2 px-3.5 py-2 bg-[var(--glass-bg-muted)] border-b border-[var(--glass-stroke-base)] flex-wrap">
-                <AppIcon name="badgeCheck" className="h-3.5 w-3.5 text-[var(--glass-tone-info-fg)] flex-shrink-0" />
-                <span className="text-[10.5px] font-semibold text-[var(--glass-text-tertiary)]">
+              <div className="flex items-center gap-2 px-3.5 py-2 bg-[var(--wuhu-bg-surface)] border-b border-white/10 flex-wrap">
+                <AppIcon name="badgeCheck" className="h-3.5 w-3.5 text-[var(--wuhu-neon-purple)] flex-shrink-0" />
+                <span className="text-[10.5px] font-semibold text-white/50">
                   {t('aiData.slot')}：
                 </span>
-                <span className="glass-chip glass-chip-info text-[10.5px]">
+                <span className="bg-[var(--wuhu-neon-purple)]/20 text-[var(--wuhu-neon-purple)] text-[10.5px] px-2 py-0.5 rounded-full">
                   {activeChar.slot ?? t('aiData.slotUnset')}
                 </span>
               </div>
 
-              <div className="px-3.5 py-3 space-y-3 bg-[var(--glass-bg-surface)]">
+              <div className="px-3.5 py-3 space-y-3 bg-[var(--wuhu-bg-card)]">
                 {/* 外貌 — 只读 */}
                 {activeChar.appearance && (
                   <div>
                     <FL>{t('aiData.appearanceReadonly')}</FL>
-                    <div className="flex items-start gap-2 rounded-[var(--glass-radius-xs)] bg-[var(--glass-bg-muted)] px-3 py-2">
-                      <AppIcon name="sparkles" className="mt-0.5 h-3.5 w-3.5 text-[var(--glass-tone-warning-fg)] flex-shrink-0" />
-                      <p className="text-[12px] text-[var(--glass-text-secondary)] leading-relaxed">
+                    <div className="flex items-start gap-2 rounded-xl bg-[var(--wuhu-bg-surface)] px-3 py-2">
+                      <AppIcon name="sparkles" className="mt-0.5 h-3.5 w-3.5 text-[var(--wuhu-neon-purple)] flex-shrink-0" />
+                      <p className="text-[12px] text-white/70 leading-relaxed">
                         {activeChar.appearance}
                       </p>
                     </div>
@@ -284,37 +284,37 @@ export default function AIDataModalFormPane({
                     <FL>{t('aiData.framePosition')}</FL>
                     <div className="space-y-2">
                       <div>
-                        <p className="text-[10px] text-[var(--glass-text-tertiary)] mb-1">{t('aiData.screenPosition')}</p>
-                        <GlassInput
-                          density="compact"
+                        <p className="text-[10px] text-white/50 mb-1">{t('aiData.screenPosition')}</p>
+                        <input
                           value={photoChar.screen_position}
                           onChange={e => {
                             const idx = photographyRules!.characters.findIndex(c => c.name === activeChar.name)
                             if (idx >= 0) onPhotographyCharacterChange(idx, 'screen_position', e.target.value)
                           }}
+                          className="w-full px-3 py-2 text-sm bg-[var(--wuhu-bg-surface)] border border-[var(--wuhu-neon-purple)]/30 rounded-xl text-white focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(255,100,200,0.3)] outline-none transition-all"
                         />
                       </div>
                       <div className="grid grid-cols-2 gap-2">
                         <div>
-                          <p className="text-[10px] text-[var(--glass-text-tertiary)] mb-1">{t('aiData.posture')}</p>
-                          <GlassInput
-                            density="compact"
+                          <p className="text-[10px] text-white/50 mb-1">{t('aiData.posture')}</p>
+                          <input
                             value={photoChar.posture}
                             onChange={e => {
                               const idx = photographyRules!.characters.findIndex(c => c.name === activeChar.name)
                               if (idx >= 0) onPhotographyCharacterChange(idx, 'posture', e.target.value)
                             }}
+                            className="w-full px-3 py-2 text-sm bg-[var(--wuhu-bg-surface)] border border-[var(--wuhu-neon-purple)]/30 rounded-xl text-white focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(255,100,200,0.3)] outline-none transition-all"
                           />
                         </div>
                         <div>
-                          <p className="text-[10px] text-[var(--glass-text-tertiary)] mb-1">{t('aiData.facing')}</p>
-                          <GlassInput
-                            density="compact"
+                          <p className="text-[10px] text-white/50 mb-1">{t('aiData.facing')}</p>
+                          <input
                             value={photoChar.facing}
                             onChange={e => {
                               const idx = photographyRules!.characters.findIndex(c => c.name === activeChar.name)
                               if (idx >= 0) onPhotographyCharacterChange(idx, 'facing', e.target.value)
                             }}
+                            className="w-full px-3 py-2 text-sm bg-[var(--wuhu-bg-surface)] border border-[var(--wuhu-neon-purple)]/30 rounded-xl text-white focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(255,100,200,0.3)] outline-none transition-all"
                           />
                         </div>
                       </div>
@@ -326,11 +326,11 @@ export default function AIDataModalFormPane({
                 {actingChar && (
                   <div>
                     <FL>{t('aiData.actingGuide')}</FL>
-                    <AutoGrowTextarea
-                      density="compact"
+                    <textarea
                       rows={2}
                       value={actingChar.acting}
                       onChange={e => onActingCharacterChange(actingCharIdx, 'acting', e.target.value)}
+                      className="w-full px-3 py-2 text-sm bg-[var(--wuhu-bg-surface)] border border-[var(--wuhu-neon-purple)]/30 rounded-xl text-white placeholder:text-white/30 focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(255,100,200,0.3)] outline-none transition-all resize-none"
                     />
                   </div>
                 )}
@@ -347,7 +347,7 @@ export default function AIDataModalFormPane({
           value={videoPrompt}
           onChange={e => onVideoPromptChange(e.target.value)}
           placeholder={t('panel.videoPromptPlaceholder')}
-          className="bg-[var(--glass-tone-warning-bg)]"
+          className="bg-[var(--wuhu-neon-purple)]/10"
         />
       </CollapseSection>
 
@@ -356,45 +356,45 @@ export default function AIDataModalFormPane({
         <CollapseSection label={t('aiData.photoEnv')} iconName="film">
           <div>
             <FL>{t('aiData.summary')}</FL>
-            <GlassInput
-              density="compact"
+            <input
               value={photographyRules.scene_summary}
               onChange={e => onPhotographyFieldChange('scene_summary', e.target.value)}
+              className="w-full px-3 py-2 text-sm bg-[var(--wuhu-bg-surface)] border border-[var(--wuhu-neon-purple)]/30 rounded-xl text-white focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(255,100,200,0.3)] outline-none transition-all"
             />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <FL>{t('aiData.lightingDirection')}</FL>
-              <GlassInput
-                density="compact"
+              <input
                 value={photographyRules.lighting?.direction ?? ''}
                 onChange={e => onPhotographyFieldChange('lighting.direction', e.target.value)}
+                className="w-full px-3 py-2 text-sm bg-[var(--wuhu-bg-surface)] border border-[var(--wuhu-neon-purple)]/30 rounded-xl text-white focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(255,100,200,0.3)] outline-none transition-all"
               />
             </div>
             <div>
               <FL>{t('aiData.lightingQuality')}</FL>
-              <GlassInput
-                density="compact"
+              <input
                 value={photographyRules.lighting?.quality ?? ''}
                 onChange={e => onPhotographyFieldChange('lighting.quality', e.target.value)}
+                className="w-full px-3 py-2 text-sm bg-[var(--wuhu-bg-surface)] border border-[var(--wuhu-neon-purple)]/30 rounded-xl text-white focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(255,100,200,0.3)] outline-none transition-all"
               />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <FL>{t('aiData.depthOfField')}</FL>
-              <GlassInput
-                density="compact"
+              <input
                 value={photographyRules.depth_of_field}
                 onChange={e => onPhotographyFieldChange('depth_of_field', e.target.value)}
+                className="w-full px-3 py-2 text-sm bg-[var(--wuhu-bg-surface)] border border-[var(--wuhu-neon-purple)]/30 rounded-xl text-white focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(255,100,200,0.3)] outline-none transition-all"
               />
             </div>
             <div>
               <FL>{t('aiData.colorTone')}</FL>
-              <GlassInput
-                density="compact"
+              <input
                 value={photographyRules.color_tone}
                 onChange={e => onPhotographyFieldChange('color_tone', e.target.value)}
+                className="w-full px-3 py-2 text-sm bg-[var(--wuhu-bg-surface)] border border-[var(--wuhu-neon-purple)]/30 rounded-xl text-white focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(255,100,200,0.3)] outline-none transition-all"
               />
             </div>
           </div>

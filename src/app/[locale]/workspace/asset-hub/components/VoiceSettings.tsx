@@ -101,8 +101,8 @@ export default function VoiceSettings({
 
     // 紧凑模式样式
     const containerClass = compact
-        ? 'glass-surface-soft border border-[var(--glass-stroke-base)] rounded-xl p-3'
-        : 'mt-4 glass-surface-soft border border-[var(--glass-stroke-base)] rounded-xl p-4'
+        ? 'bg-[var(--wuhu-bg-surface)] border border-white/20 rounded-xl p-3'
+        : 'mt-4 bg-[var(--wuhu-bg-surface)] border border-white/20 rounded-xl p-4'
 
     const headerClass = compact
         ? 'flex items-center gap-2 mb-2 pb-2 border-b'
@@ -113,12 +113,12 @@ export default function VoiceSettings({
 
     return (
         <div className={containerClass}>
-            <div className={`${headerClass} ${hasCustomVoice ? 'border-[var(--glass-stroke-base)]' : 'border-[var(--glass-stroke-warning)]'}`}>
-                <div className={`${iconSize} rounded-full flex items-center justify-center ${hasCustomVoice ? 'glass-chip glass-chip-neutral p-0' : 'glass-chip glass-chip-warning p-0'}`}>
-                    <AppIcon name="mic" className={`${innerIconSize} ${hasCustomVoice ? 'text-[var(--glass-text-secondary)]' : 'text-[var(--glass-tone-warning-fg)]'}`} />
+            <div className={`${headerClass} ${hasCustomVoice ? 'border-white/20' : 'border-[var(--wuhu-neon-pink)]'}`}>
+                <div className={`${iconSize} rounded-full flex items-center justify-center ${hasCustomVoice ? 'bg-white/10 text-white/70' : 'bg-[var(--wuhu-neon-pink)]/20 text-[var(--wuhu-neon-pink)]'} p-0`}>
+                    <AppIcon name="mic" className={`${innerIconSize}`} />
                 </div>
-                <span className={`text-${compact ? 'xs' : 'sm'} font-medium ${hasCustomVoice ? 'text-[var(--glass-text-secondary)]' : 'text-[var(--glass-tone-warning-fg)]'}`}>
-                    {t('voiceSettings.title')}{!hasCustomVoice && <span className="text-[var(--glass-tone-warning-fg)]">({t('voiceSettings.noVoice')})</span>}
+                <span className={`text-${compact ? 'xs' : 'sm'} font-medium ${hasCustomVoice ? 'text-white/70' : 'text-[var(--wuhu-neon-pink)]'}`}>
+                    {t('voiceSettings.title')}{!hasCustomVoice && <span className="text-[var(--wuhu-neon-pink)]">({t('voiceSettings.noVoice')})</span>}
                 </span>
             </div>
 
@@ -135,10 +135,10 @@ export default function VoiceSettings({
                 <button
                     onClick={() => voiceFileInputRef.current?.click()}
                     disabled={uploadVoice.isPending}
-                    className="glass-btn-base glass-btn-secondary flex-1 min-w-[70px] px-2 py-1.5 rounded-lg text-xs font-medium transition-all relative group whitespace-nowrap"
+                    className="border border-white/20 text-white/70 hover:border-[var(--wuhu-neon-pink)] hover:text-white hover:bg-white/10 flex-1 min-w-[70px] px-2 py-1.5 rounded-lg text-xs font-medium transition-all relative group whitespace-nowrap"
                 >
                     <div className="flex items-center justify-center gap-1">
-                        {hasCustomVoice && <div className="w-1.5 h-1.5 bg-[var(--glass-tone-success-fg)] rounded-full flex-shrink-0"></div>}
+                        {hasCustomVoice && <div className="w-1.5 h-1.5 bg-[var(--wuhu-neon-cyan)] rounded-full flex-shrink-0"></div>}
                         <span>{uploadVoice.isPending ? t('voiceSettings.uploading') : hasCustomVoice ? t('voiceSettings.uploaded') : t('voiceSettings.uploadAudio')}</span>
                     </div>
                 </button>
@@ -146,7 +146,7 @@ export default function VoiceSettings({
                 {onVoiceDesign && (
                     <button
                         onClick={() => onVoiceDesign(characterId, characterName)}
-                        className="glass-btn-base glass-btn-tone-info flex-1 min-w-[70px] px-2 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap"
+                        className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)] hover:shadow-[0_0_25px_rgba(255,100,200,0.5)] flex-1 min-w-[70px] px-2 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap"
                     >
                         <div className="flex items-center justify-center gap-1">
                             <AppIcon name="bolt" className="w-3.5 h-3.5 flex-shrink-0" />
@@ -158,7 +158,7 @@ export default function VoiceSettings({
                 {onVoiceSelect && (
                     <button
                         onClick={() => onVoiceSelect(characterId)}
-                        className="glass-btn-base glass-btn-secondary flex-1 min-w-[70px] px-2 py-1.5 rounded-lg text-xs text-[var(--glass-tone-info-fg)] font-medium transition-all whitespace-nowrap"
+                        className="border border-white/20 text-[var(--wuhu-neon-purple)] hover:border-[var(--wuhu-neon-pink)] hover:text-white hover:bg-white/10 flex-1 min-w-[70px] px-2 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap"
                     >
                         <div className="flex items-center justify-center gap-1">
                             <AppIcon name="folderCards" className="w-3.5 h-3.5 flex-shrink-0" />
@@ -172,9 +172,9 @@ export default function VoiceSettings({
             {hasCustomVoice && (
                 <button
                     onClick={handlePreviewVoice}
-                    className={`glass-btn-base w-full mt-2 px-3 py-2 border rounded-lg text-sm font-medium transition-all ${isPreviewingVoice
-                        ? 'glass-btn-tone-info border-[var(--glass-stroke-focus)]'
-                        : 'glass-btn-secondary text-[var(--glass-tone-info-fg)] border-[var(--glass-stroke-base)]'
+                    className={`w-full mt-2 px-3 py-2 border rounded-lg text-sm font-medium transition-all ${isPreviewingVoice
+                        ? 'bg-[var(--wuhu-neon-purple)] text-white border-[var(--wuhu-neon-pink)] shadow-[0_0_15px_rgba(167,87,255,0.4)]'
+                        : 'border-white/20 text-[var(--wuhu-neon-purple)] hover:border-[var(--wuhu-neon-pink)] hover:text-white hover:bg-white/10'
                         }`}
                 >
                     <div className="flex items-center justify-center gap-2">

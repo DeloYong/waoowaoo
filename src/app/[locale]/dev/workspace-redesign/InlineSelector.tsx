@@ -42,24 +42,24 @@ export function InlineSelector({
         onClick={() => setOpen(!open)}
         className={`inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-1.5 rounded-lg border transition-all duration-200 cursor-pointer ${
           open
-            ? 'border-[var(--glass-stroke-focus)] bg-[var(--glass-bg-muted)] text-[var(--glass-text-primary)]'
-            : 'border-[var(--glass-stroke-base)] text-[var(--glass-text-secondary)] hover:border-[var(--glass-stroke-strong)]'
+            ? 'border-[var(--wuhu-neon-cyan)] bg-[rgba(255,255,255,0.05)] text-[white]'
+            : 'border-[rgba(167, 87, 255, 0.2)] text-[rgba(255,255,255,0.7)] hover:border-[rgba(167, 87, 255, 0.4)]'
         }`}
       >
-        <span className="text-[9px] text-[var(--glass-text-tertiary)] font-semibold">{label}:</span>
+        <span className="text-[9px] text-[rgba(255,255,255,0.5)] font-semibold">{label}:</span>
         <span>{selected ? renderLabel(selected) : ''}</span>
-        <AppIcon name="chevronDown" className={`w-2.5 h-2.5 text-[var(--glass-text-tertiary)] transition-transform duration-150 ${open ? 'rotate-180' : ''}`} />
+        <AppIcon name="chevronDown" className={`w-2.5 h-2.5 text-[rgba(255,255,255,0.5)] transition-transform duration-150 ${open ? 'rotate-180' : ''}`} />
       </button>
       {open && (
-        <div className="absolute bottom-full left-0 mb-1.5 z-50 glass-surface-modal p-1 min-w-[130px] animate-scale-in shadow-lg">
+        <div className="absolute bottom-full left-0 mb-1.5 z-50 bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_40px_rgba(167,87,255,0.2)] rounded-xl p-1 min-w-[130px] animate-scale-in shadow-lg">
           {options.map((opt) => (
             <button
               key={opt.id}
               onClick={() => { onSelect(opt.id); setOpen(false) }}
               className={`w-full text-left px-2.5 py-1.5 rounded-md text-[11px] font-medium transition-all cursor-pointer ${
                 selectedId === opt.id
-                  ? 'bg-[var(--glass-tone-info-bg)] text-[var(--glass-tone-info-fg)]'
-                  : 'text-[var(--glass-text-secondary)] hover:bg-[var(--glass-bg-muted)]'
+                  ? 'bg-[rgba(0, 255, 255, 0.1)] text-[var(--wuhu-neon-cyan)]'
+                  : 'text-[rgba(255,255,255,0.7)] hover:bg-[rgba(255,255,255,0.05)]'
               }`}
             >
               {renderLabel(opt)}

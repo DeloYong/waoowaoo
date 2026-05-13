@@ -20,13 +20,13 @@ export default function InsertPanelButton({ onClick, disabled }: InsertPanelButt
             disabled={disabled}
             className={`
                 group relative h-7 w-7 rounded-full
-                glass-btn-base border border-[var(--glass-stroke-base)]
-                bg-[var(--glass-bg-surface)] text-[var(--glass-text-secondary)]
-                shadow-[var(--glass-shadow-sm)] transition-all duration-200 ease-out
+                bg-[var(--wuhu-bg-surface)] border border-white/20 hover:bg-white/5 rounded-lg transition-all border border-[rgba(167, 87, 255, 0.2)]
+                bg-[var(--wuhu-bg-surface)] text-[rgba(255,255,255,0.7)]
+                shadow-[0_2px_8px_rgba(0,0,0,0.15)] transition-all duration-200 ease-out
                 flex items-center justify-center
                 ${disabled
-                    ? 'bg-[var(--glass-bg-muted)] text-[var(--glass-text-tertiary)] cursor-not-allowed'
-                    : 'hover:-translate-y-0.5 hover:shadow-[var(--glass-shadow-md)] hover:border-[var(--glass-stroke-focus)] hover:bg-[var(--glass-tone-info-bg)]'
+                    ? 'bg-[rgba(255,255,255,0.05)] text-[rgba(255,255,255,0.5)] cursor-not-allowed'
+                    : 'hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(0,0,0,0.2)] hover:border-[var(--wuhu-neon-cyan)] hover:bg-[rgba(0, 255, 255, 0.1)]'
                 }
             `}
             title={t('panelActions.insertHere')}
@@ -36,7 +36,7 @@ export default function InsertPanelButton({ onClick, disabled }: InsertPanelButt
             {/* Hover 时显示提示 */}
             <span className={`
                 absolute -top-8 left-1/2 -translate-x-1/2
-                px-2 py-1 text-xs text-white bg-[var(--glass-overlay)] rounded
+                px-2 py-1 text-xs text-white bg-[var(--bg-black/60 backdrop-blur-sm)] rounded
                 opacity-0 group-hover:opacity-100
                 transition-opacity duration-200
                 whitespace-nowrap pointer-events-none

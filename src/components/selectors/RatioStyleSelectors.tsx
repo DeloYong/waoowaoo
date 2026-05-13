@@ -10,8 +10,8 @@ import { createPortal } from 'react-dom'
 import { useState, useRef, useEffect, useLayoutEffect, useCallback, type CSSProperties } from 'react'
 import { AppIcon } from '@/components/ui/icons'
 
-const TRIGGER_CLASSNAME = 'glass-input-base flex h-10 w-full items-center justify-between gap-2 px-2.5 transition-colors'
-const TRIGGER_TEXT_CLASSNAME = 'text-[13px] font-medium text-[var(--glass-text-primary)]'
+const TRIGGER_CLASSNAME = 'bg-[var(--wuhu-bg-surface)] border border-white/20 rounded-lg text-white focus:border-[var(--wuhu-neon-pink)] focus:outline-none transition-all flex h-10 w-full items-center justify-between gap-2 px-2.5 transition-colors'
+const TRIGGER_TEXT_CLASSNAME = 'text-[13px] font-medium text-[white]'
 
 const VIEWPORT_EDGE_GAP = 8
 const DEFAULT_MAX_HEIGHT = 280
@@ -87,7 +87,7 @@ function RatioShape({ ratio, selected, size = 26 }: { ratio: string; selected: b
   return (
     <div
       className={`rounded-md border-2 transition-colors ${
-        selected ? 'border-[var(--glass-accent-from)]' : 'border-[var(--glass-stroke-strong)]'
+        selected ? 'border-[var(--wuhu-neon-purple)]' : 'border-[rgba(167, 87, 255, 0.4)]'
       }`}
       style={{
         width: Math.min(size, size * (w / max)),
@@ -138,13 +138,13 @@ export function RatioSelector({
           <RatioShape ratio={value} size={18} selected />
           <span className={`${TRIGGER_TEXT_CLASSNAME} truncate`}>{selectedOption?.label || value}</span>
         </div>
-        <AppIcon name="chevronDown" className={`w-4 h-4 text-[var(--glass-text-tertiary)] transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <AppIcon name="chevronDown" className={`w-4 h-4 text-[rgba(255,255,255,0.5)] transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && typeof document !== 'undefined' && createPortal(
         <div
           ref={panelRef}
-          className="glass-surface-modal z-[9999] p-3 overflow-y-auto custom-scrollbar"
+          className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_40px_rgba(167,87,255,0.2)] rounded-xl z-[9999] p-3 overflow-y-auto custom-scrollbar"
           style={panelStyle}
         >
           <div className="grid grid-cols-5 gap-2">
@@ -161,13 +161,13 @@ export function RatioSelector({
                   }}
                   className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${
                     isSelected
-                      ? 'border-[var(--glass-accent-from)] bg-[var(--glass-accent-from)]/5 shadow-sm'
-                      : 'border-[var(--glass-stroke-soft)] hover:border-[var(--glass-stroke-strong)]'
+                      ? 'border-[var(--wuhu-neon-purple)] bg-[var(--wuhu-neon-purple)]/5 shadow-sm'
+                      : 'border-[rgba(167, 87, 255, 0.2)] hover:border-[rgba(167, 87, 255, 0.4)]'
                   }`}
                   title={usageTag || undefined}
                 >
                   <RatioShape ratio={option.value} size={28} selected={isSelected} />
-                  <span className={`text-xs ${isSelected ? 'font-semibold text-[var(--glass-accent-from)]' : 'text-[var(--glass-text-secondary)]'}`}>
+                  <span className={`text-xs ${isSelected ? 'font-semibold text-[var(--wuhu-neon-purple)]' : 'text-[rgba(255,255,255,0.7)]'}`}>
                     {option.label}
                   </span>
                 </button>
@@ -217,16 +217,16 @@ export function StyleSelector({
         className={`${TRIGGER_CLASSNAME} cursor-pointer`}
       >
         <div className="flex min-w-0 items-center gap-2">
-          <AppIcon name="sparklesAlt" className="h-4 w-4 text-[var(--glass-accent-from)]" />
+          <AppIcon name="sparklesAlt" className="h-4 w-4 text-[var(--wuhu-neon-purple)]" />
           <span className={`${TRIGGER_TEXT_CLASSNAME} truncate`}>{selectedOption.label}</span>
         </div>
-        <AppIcon name="chevronDown" className={`w-4 h-4 text-[var(--glass-text-tertiary)] transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <AppIcon name="chevronDown" className={`w-4 h-4 text-[rgba(255,255,255,0.5)] transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && typeof document !== 'undefined' && createPortal(
         <div
           ref={panelRef}
-          className="glass-surface-modal z-[9999] p-3"
+          className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_40px_rgba(167,87,255,0.2)] rounded-xl z-[9999] p-3"
           style={panelStyle}
         >
           <div className="grid grid-cols-2 gap-2">
@@ -242,11 +242,11 @@ export function StyleSelector({
                   }}
                   className={`flex items-center p-3 rounded-xl border text-left transition-all ${
                     isSelected
-                      ? 'border-[var(--glass-accent-from)] bg-[var(--glass-accent-from)]/5 shadow-sm'
-                      : 'border-[var(--glass-stroke-soft)] hover:border-[var(--glass-stroke-strong)]'
+                      ? 'border-[var(--wuhu-neon-purple)] bg-[var(--wuhu-neon-purple)]/5 shadow-sm'
+                      : 'border-[rgba(167, 87, 255, 0.2)] hover:border-[rgba(167, 87, 255, 0.4)]'
                   }`}
                 >
-                  <span className={`text-sm whitespace-nowrap ${isSelected ? 'font-semibold text-[var(--glass-accent-from)]' : 'text-[var(--glass-text-secondary)]'}`}>
+                  <span className={`text-sm whitespace-nowrap ${isSelected ? 'font-semibold text-[var(--wuhu-neon-purple)]' : 'text-[rgba(255,255,255,0.7)]'}`}>
                     {option.label}
                   </span>
                 </button>
@@ -297,18 +297,18 @@ export function StylePresetSelector({
         title={selectedOption.label}
       >
         <div className="flex min-w-0 items-center gap-2">
-          <AppIcon name="clapperboard" className="h-4 w-4 shrink-0 text-[var(--glass-accent-from)]" />
+          <AppIcon name="clapperboard" className="h-4 w-4 shrink-0 text-[var(--wuhu-neon-purple)]" />
           <span className={`${TRIGGER_TEXT_CLASSNAME} min-w-0 flex-1 truncate`}>
             {selectedOption.label}
           </span>
         </div>
-        <AppIcon name="chevronDown" className={`h-4 w-4 text-[var(--glass-text-tertiary)] transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <AppIcon name="chevronDown" className={`h-4 w-4 text-[rgba(255,255,255,0.5)] transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && typeof document !== 'undefined' && createPortal(
         <div
           ref={panelRef}
-          className="glass-surface-modal z-[9999] p-2.5"
+          className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_40px_rgba(167,87,255,0.2)] rounded-xl z-[9999] p-2.5"
           style={panelStyle}
         >
           <div className="flex flex-col gap-2">
@@ -324,20 +324,20 @@ export function StylePresetSelector({
                   }}
                   className={`flex items-center justify-between gap-3 rounded-xl border px-3 py-2.5 text-left transition-all ${
                     isSelected
-                      ? 'border-[var(--glass-accent-from)] bg-[var(--glass-accent-from)]/5 shadow-sm'
-                      : 'border-[var(--glass-stroke-soft)] hover:border-[var(--glass-stroke-strong)]'
+                      ? 'border-[var(--wuhu-neon-purple)] bg-[var(--wuhu-neon-purple)]/5 shadow-sm'
+                      : 'border-[rgba(167, 87, 255, 0.2)] hover:border-[rgba(167, 87, 255, 0.4)]'
                   }`}
                 >
                   <div className="min-w-0">
-                    <div className={`text-sm ${isSelected ? 'font-semibold text-[var(--glass-accent-from)]' : 'font-medium text-[var(--glass-text-primary)]'}`}>
+                    <div className={`text-sm ${isSelected ? 'font-semibold text-[var(--wuhu-neon-purple)]' : 'font-medium text-[white]'}`}>
                       {option.label}
                     </div>
-                    <div className="text-xs text-[var(--glass-text-tertiary)]">
+                    <div className="text-xs text-[rgba(255,255,255,0.5)]">
                       {option.description}
                     </div>
                   </div>
                   {isSelected && (
-                    <AppIcon name="check" className="h-4 w-4 shrink-0 text-[var(--glass-accent-from)]" />
+                    <AppIcon name="check" className="h-4 w-4 shrink-0 text-[var(--wuhu-neon-purple)]" />
                   )}
                 </button>
               )
@@ -358,18 +358,18 @@ export function StylePresetBadge({
   description: string
 }) {
   return (
-    <div className="glass-input-base relative flex h-10 w-full items-center gap-2 overflow-hidden px-2.5">
+    <div className="bg-[var(--wuhu-bg-surface)] border border-white/20 rounded-lg text-white focus:border-[var(--wuhu-neon-pink)] focus:outline-none transition-all relative flex h-10 w-full items-center gap-2 overflow-hidden px-2.5">
       <div
         className="pointer-events-none absolute inset-0"
         style={{
           background: 'linear-gradient(135deg, rgba(59,130,246,0.08), rgba(99,102,241,0.1))',
         }}
       />
-      <AppIcon name="clapperboard" className="relative h-4 w-4 shrink-0 text-[var(--glass-accent-from)]" />
-      <span className="relative min-w-0 flex-1 truncate text-[13px] font-semibold text-[var(--glass-text-primary)]">
+      <AppIcon name="clapperboard" className="relative h-4 w-4 shrink-0 text-[var(--wuhu-neon-purple)]" />
+      <span className="relative min-w-0 flex-1 truncate text-[13px] font-semibold text-[white]">
         {label}
       </span>
-      <span className="relative shrink-0 rounded-full bg-[var(--glass-tone-info-bg)] px-1.5 py-0.5 text-[10px] font-semibold text-[var(--glass-tone-info-fg)]">
+      <span className="relative shrink-0 rounded-full bg-[rgba(0, 255, 255, 0.1)] px-1.5 py-0.5 text-[10px] font-semibold text-[var(--wuhu-neon-cyan)]">
         {description}
       </span>
     </div>

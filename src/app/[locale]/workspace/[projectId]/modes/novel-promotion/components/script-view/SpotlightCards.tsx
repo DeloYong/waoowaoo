@@ -154,9 +154,9 @@ export function SpotlightCharCard({
           ) : isPlaying ? (
             <>
               <span className="flex gap-0.5">
-                <span className="w-0.5 h-3 bg-[var(--glass-bg-surface)] rounded-full animate-pulse" />
-                <span className="w-0.5 h-3 bg-[var(--glass-bg-surface)] rounded-full animate-pulse" style={{ animationDelay: '0.1s' }} />
-                <span className="w-0.5 h-3 bg-[var(--glass-bg-surface)] rounded-full animate-pulse" style={{ animationDelay: '0.2s' }} />
+                <span className="w-0.5 h-3 bg-[var(--wuhu-bg-surface)] rounded-full animate-pulse" />
+                <span className="w-0.5 h-3 bg-[var(--wuhu-bg-surface)] rounded-full animate-pulse" style={{ animationDelay: '0.1s' }} />
+                <span className="w-0.5 h-3 bg-[var(--wuhu-bg-surface)] rounded-full animate-pulse" style={{ animationDelay: '0.2s' }} />
               </span>
               <span>{tScript('asset.playing')}</span>
             </>

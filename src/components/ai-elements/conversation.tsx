@@ -136,8 +136,8 @@ export const ConversationScrollButton = ({
     <button
       type="button"
       className={joinClassName(
-        "absolute bottom-3 left-1/2 z-10 -translate-x-1/2 rounded-full border border-[var(--glass-stroke-base)] bg-[var(--glass-bg-surface)] px-3 py-1 text-xs text-[var(--glass-text-secondary)] shadow-sm backdrop-blur",
-        "hover:bg-[var(--glass-bg-soft)]",
+        "absolute bottom-3 left-1/2 z-10 -translate-x-1/2 rounded-full border border-[rgba(167, 87, 255, 0.2)] bg-[var(--wuhu-bg-surface)] px-3 py-1 text-xs text-[rgba(255,255,255,0.7)] shadow-sm backdrop-blur",
+        "hover:bg-white/5",
         className,
       )}
       onClick={(event) => {

@@ -71,14 +71,14 @@ export default function TypewriterHero({ title, subtitle }: TypewriterHeroProps)
 
       {/* 标题 — 带对焦动画 */}
       <h1
-        className="text-3xl font-bold text-[var(--glass-text-primary)] tracking-[0.08em] mb-2"
+        className="text-3xl font-bold text-[white] tracking-[0.08em] mb-2"
         style={{ animation: 'twh-focus-pull 8s ease-in-out infinite' }}
       >
         {title}
       </h1>
 
       {/* 终端打字机副标题 */}
-      <p className="font-mono text-sm h-6 flex items-center justify-center" style={{ color: 'var(--glass-text-tertiary)' }}>
+      <p className="font-mono text-sm h-6 flex items-center justify-center" style={{ color: 'rgba(255,255,255,0.5)' }}>
         <span className="mr-1.5 opacity-50">&gt;_</span>
         {text.split('').map((char, i) => (
           <span
@@ -97,7 +97,7 @@ export default function TypewriterHero({ title, subtitle }: TypewriterHeroProps)
           </span>
         ))}
         <span
-          className="inline-block w-2 h-4 ml-0.5 bg-[var(--glass-text-tertiary)] align-middle rounded-[1px]"
+          className="inline-block w-2 h-4 ml-0.5 bg-[rgba(255,255,255,0.5)] align-middle rounded-[1px]"
           style={{ animation: 'twh-blink 1s step-end infinite' }}
         />
       </p>

@@ -84,10 +84,10 @@ export default function VariantClearBreath({ children }: { children?: React.Reac
 
       <div className="flex flex-col items-center pt-[18vh] pb-12 px-4 max-w-3xl mx-auto w-full">
         <div className="mb-6 text-center">
-          <h1 className="text-3xl font-bold text-[var(--glass-text-primary)] mb-2">
+          <h1 className="text-3xl font-bold text-[white] mb-2">
             ✨ {t('quickActions.title')}
           </h1>
-          <p className="text-sm text-[var(--glass-text-tertiary)]">{t('inputPlaceholder')}</p>
+          <p className="text-sm text-[rgba(255,255,255,0.5)]">{t('inputPlaceholder')}</p>
         </div>
 
         {/* 呼吸光晕容器 */}
@@ -117,13 +117,13 @@ export default function VariantClearBreath({ children }: { children?: React.Reac
             }}
           />
 
-          <div className="relative w-full glass-surface-elevated rounded-2xl overflow-hidden">
+          <div className="relative w-full bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_60px_rgba(167,87,255,0.3)] rounded-xl rounded-2xl overflow-hidden">
             <textarea
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               placeholder={t('inputPlaceholder')}
               rows={4}
-              className="w-full bg-transparent border-none outline-none text-[var(--glass-text-primary)] placeholder:text-[var(--glass-text-tertiary)] text-base resize-none p-5 pb-2"
+              className="w-full bg-transparent border-none outline-none text-[white] placeholder:text-[rgba(255,255,255,0.5)] text-base resize-none p-5 pb-2"
             />
             <div className="flex items-center justify-between gap-2 px-5 pb-4">
               <div className="flex items-center gap-2">
@@ -131,7 +131,7 @@ export default function VariantClearBreath({ children }: { children?: React.Reac
                 <InlineSelector label={t('ratio')} selectedId={selectedRatio} options={RATIO_OPTIONS} onSelect={setSelectedRatio} renderLabel={(o) => t(o.labelKey)} />
                 <InlineSelector label={t('quality')} selectedId={selectedQuality} options={QUALITY_OPTIONS} onSelect={setSelectedQuality} renderLabel={(o) => t(o.labelKey)} />
               </div>
-              <button className="glass-btn-base glass-btn-primary px-5 py-2 text-sm flex-shrink-0">
+              <button className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_20px_rgba(167,87,255,0.3)] hover:shadow-[0_0_30px_rgba(167,87,255,0.4)] rounded-lg transition-all px-5 py-2 text-sm flex-shrink-0">
                 {t('startCreation')}
                 <AppIcon name="arrowRight" className="w-4 h-4" />
               </button>

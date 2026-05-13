@@ -29,25 +29,25 @@ export default function PromptListTableView({ runtime }: PromptListTableViewProp
   return (
     <div className="card-base overflow-hidden">
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-[var(--glass-stroke-soft)]">
-          <thead className="bg-[var(--glass-bg-muted)]">
+        <table className="min-w-full divide-y divide-[rgba(167, 87, 255, 0.2)]">
+          <thead className="bg-[rgba(255,255,255,0.05)]">
             <tr>
-              <th className="px-4 py-3 text-left text-xs font-medium text-[var(--glass-text-tertiary)] uppercase tracking-wider">{t('panel.shot')}</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-[var(--glass-text-tertiary)] uppercase tracking-wider">{t('common.preview')}</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-[var(--glass-text-tertiary)] uppercase tracking-wider">SRT</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-[var(--glass-text-tertiary)] uppercase tracking-wider">{t('common.actions')}</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-[rgba(255,255,255,0.5)] uppercase tracking-wider">{t('panel.shot')}</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-[rgba(255,255,255,0.5)] uppercase tracking-wider">{t('common.preview')}</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-[rgba(255,255,255,0.5)] uppercase tracking-wider">SRT</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-[rgba(255,255,255,0.5)] uppercase tracking-wider">{t('common.actions')}</th>
             </tr>
           </thead>
-          <tbody className="bg-[var(--glass-bg-surface)] divide-y divide-[var(--glass-stroke-soft)]">
+          <tbody className="bg-[var(--wuhu-bg-surface)] divide-y divide-[rgba(167, 87, 255, 0.2)]">
             {shots.map((shot) => {
               const { content } = parseImagePrompt(shot.imagePrompt)
               const shotRunningState = getShotRunningState(shot)
 
               return (
-                <tr key={shot.id} className="hover:bg-[var(--glass-bg-muted)]">
-                  <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-[var(--glass-text-primary)]">#{shot.shotId}</td>
+                <tr key={shot.id} className="hover:bg-[rgba(255,255,255,0.05)]">
+                  <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-[white]">#{shot.shotId}</td>
                   <td className="px-4 py-3 whitespace-nowrap">
-                    <div className="w-20 h-12 bg-[var(--glass-bg-muted)] rounded overflow-hidden">
+                    <div className="w-20 h-12 bg-[rgba(255,255,255,0.05)] rounded overflow-hidden">
                       {shot.imageUrl && (
                         <MediaImageWithLoading
                           src={shot.imageUrl}
@@ -59,9 +59,9 @@ export default function PromptListTableView({ runtime }: PromptListTableViewProp
                       )}
                     </div>
                   </td>
-                  <td className="px-4 py-3 whitespace-nowrap text-sm text-[var(--glass-text-secondary)]">
+                  <td className="px-4 py-3 whitespace-nowrap text-sm text-[rgba(255,255,255,0.7)]">
                     {shot.srtStart}-{shot.srtEnd}
-                    <div className="text-xs text-[var(--glass-text-tertiary)]">{shot.srtDuration?.toFixed(1)}s</div>
+                    <div className="text-xs text-[rgba(255,255,255,0.5)]">{shot.srtDuration?.toFixed(1)}s</div>
                     <div className="text-xs mt-1 line-clamp-2">{content}</div>
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap text-sm">
@@ -69,13 +69,13 @@ export default function PromptListTableView({ runtime }: PromptListTableViewProp
                       <button
                         onClick={() => onGenerateImage(shot.id, shotExtraAssets[shot.id])}
                         disabled={isShotTaskRunning(shot) || isBatchSubmitting}
-                        className={`glass-btn-base px-3 py-1 text-xs disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-1 ${getGenerateButtonToneClass(shot)}`}
+                        className={`bg-[var(--wuhu-bg-surface)] border border-white/20 hover:bg-white/5 rounded-lg transition-all px-3 py-1 text-xs disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-1 ${getGenerateButtonToneClass(shot)}`}
                       >
                         {isShotTaskRunning(shot) ? <TaskStatusInline state={shotRunningState} /> : <span>{t('common.generate')}</span>}
                       </button>
                       <button
                         onClick={() => handleStartEdit(shot.id, 'imagePrompt', shot.imagePrompt || '')}
-                        className="text-[var(--glass-tone-info-fg)] hover:text-[var(--glass-text-primary)] p-1"
+                        className="text-[var(--wuhu-neon-cyan)] hover:text-[white] p-1"
                         title={t('prompts.imagePrompt')}
                       >
                         <AppIcon name="edit" className="w-3.5 h-3.5" />

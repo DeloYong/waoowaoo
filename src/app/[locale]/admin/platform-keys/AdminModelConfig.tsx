@@ -192,10 +192,10 @@ export default function AdminModelConfig({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-[var(--glass-text-primary)]">
+          <h3 className="text-lg font-semibold text-[white]">
             平台模型配置
           </h3>
-          <p className="text-sm text-[var(--glass-text-tertiary)] mt-1">
+          <p className="text-sm text-[rgba(255,255,255,0.5)] mt-1">
             配置各Provider的API Key，并选择启用的模型
           </p>
         </div>
@@ -221,11 +221,11 @@ export default function AdminModelConfig({
         return (
           <div
             key={provider.id}
-            className="bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)]"
+            className="bg-[var(--wuhu-bg-surface)] rounded-lg border border-[rgba(167, 87, 255, 0.2)]"
           >
             {/* Provider Header */}
             <div
-              className="flex items-center justify-between p-4 cursor-pointer hover:bg-[var(--glass-bg-hover)] transition-colors"
+              className="flex items-center justify-between p-4 cursor-pointer hover:bg-white/5 transition-colors"
               onClick={() => toggleProvider(provider.id)}
             >
               <div className="flex items-center gap-3">
@@ -233,10 +233,10 @@ export default function AdminModelConfig({
                   {isExpanded ? '▼' : '▶'}
                 </span>
                 <div>
-                  <h4 className="font-medium text-[var(--glass-text-primary)]">
+                  <h4 className="font-medium text-[white]">
                     {provider.name}
                   </h4>
-                  <p className="text-xs text-[var(--glass-text-tertiary)]">
+                  <p className="text-xs text-[rgba(255,255,255,0.5)]">
                     {providerModels.length} 个模型 · 已启用 {enabledCount} 个
                   </p>
                 </div>
@@ -260,10 +260,10 @@ export default function AdminModelConfig({
 
             {/* Provider Content */}
             {isExpanded && (
-              <div className="border-t border-[var(--glass-stroke-soft)] p-4 space-y-4">
+              <div className="border-t border-[rgba(167, 87, 255, 0.2)] p-4 space-y-4">
                 {/* API Key Input */}
                 <div>
-                  <label className="block text-sm font-medium text-[var(--glass-text-primary)] mb-2">
+                  <label className="block text-sm font-medium text-[white] mb-2">
                     API Key
                   </label>
                   <div className="flex gap-2">
@@ -275,7 +275,7 @@ export default function AdminModelConfig({
                         [provider.id]: e.target.value,
                       }))}
                       placeholder={`输入 ${provider.name} 的 API Key`}
-                      className="flex-1 px-3 py-2 border border-[var(--glass-stroke-base)] rounded bg-[var(--glass-bg-canvas)] text-[var(--glass-text-primary)] text-sm"
+                      className="flex-1 px-3 py-2 border border-[rgba(167, 87, 255, 0.2)] rounded bg-[var(--wuhu-bg-canvas)] text-[white] text-sm"
                     />
                     <button
                       onClick={() => handleSaveApiKey(provider.id)}
@@ -290,7 +290,7 @@ export default function AdminModelConfig({
                 {/* Test Results */}
                 {testResult && testResult.length > 0 && (
                   <div className="p-3 rounded-lg bg-gray-50 border border-gray-200">
-                    <p className="text-sm font-medium text-[var(--glass-text-primary)] mb-2">
+                    <p className="text-sm font-medium text-[white] mb-2">
                       测试结果
                     </p>
                     {testResult.map((step, index) => (
@@ -302,7 +302,7 @@ export default function AdminModelConfig({
                         }>
                           {step.status === 'pass' ? '✓' : step.status === 'fail' ? '✗' : '–'}
                         </span>
-                        <span className="text-[var(--glass-text-secondary)]">
+                        <span className="text-[rgba(255,255,255,0.7)]">
                           {step.name}: {step.message}
                         </span>
                       </div>
@@ -313,7 +313,7 @@ export default function AdminModelConfig({
                 {/* Model List */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <label className="block text-sm font-medium text-[var(--glass-text-primary)]">
+                    <label className="block text-sm font-medium text-[white]">
                       预设模型 ({enabledCount}/{providerModels.length} 已启用)
                     </label>
                     <div className="flex gap-2">
@@ -340,7 +340,7 @@ export default function AdminModelConfig({
                       return (
                         <label
                           key={model.modelId}
-                          className="flex items-center gap-3 p-2 rounded hover:bg-[var(--glass-bg-hover)] cursor-pointer"
+                          className="flex items-center gap-3 p-2 rounded hover:bg-white/5 cursor-pointer"
                         >
                           <input
                             type="checkbox"
@@ -349,14 +349,14 @@ export default function AdminModelConfig({
                             className="w-4 h-4 text-blue-600 rounded"
                           />
                           <div className="flex-1">
-                            <span className="text-sm text-[var(--glass-text-primary)]">
+                            <span className="text-sm text-[white]">
                               {model.name}
                             </span>
-                            <span className="ml-2 text-xs text-[var(--glass-text-tertiary)] font-mono">
+                            <span className="ml-2 text-xs text-[rgba(255,255,255,0.5)] font-mono">
                               {model.modelId}
                             </span>
                           </div>
-                          <span className="text-xs text-[var(--glass-text-tertiary)] px-2 py-0.5 bg-gray-100 rounded">
+                          <span className="text-xs text-[rgba(255,255,255,0.5)] px-2 py-0.5 bg-gray-100 rounded">
                             {model.type}
                           </span>
                         </label>

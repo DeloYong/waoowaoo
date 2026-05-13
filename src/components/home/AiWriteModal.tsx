@@ -41,7 +41,7 @@ export default function AiWriteModal({
 
   return (
     <div
-      className="fixed inset-0 glass-overlay flex items-center justify-center z-50 backdrop-blur-sm"
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 backdrop-blur-sm"
       onClick={handleClose}
     >
       <div
@@ -49,7 +49,7 @@ export default function AiWriteModal({
         onClick={(e) => e.stopPropagation()}
       >
         {/* 模态框容器 */}
-        <div className="glass-surface-modal rounded-2xl p-6 space-y-5">
+        <div className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_40px_rgba(167,87,255,0.2)] rounded-xl rounded-2xl p-6 space-y-5">
           {/* 头部 */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -60,17 +60,17 @@ export default function AiWriteModal({
                 <AppIcon name="sparkles" className="w-5 h-5 text-[#7c3aed]" />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-[var(--glass-text-primary)]">
+                <h3 className="text-lg font-bold text-[white]">
                   {t('modalTitle')}
                 </h3>
-                <p className="text-xs text-[var(--glass-text-tertiary)]">
+                <p className="text-xs text-[rgba(255,255,255,0.5)]">
                   {t('modalSubtitle')}
                 </p>
               </div>
             </div>
             <button
               onClick={handleClose}
-              className="glass-icon-btn-sm"
+              className="bg-[var(--wuhu-bg-surface)] border border-white/20 hover:bg-white/5 rounded-lg text-white/70 hover:text-white transition-all p-1.5 disabled:opacity-30"
               disabled={loading}
             >
               <AppIcon name="close" className="w-4 h-4" />
@@ -79,14 +79,14 @@ export default function AiWriteModal({
 
           {/* 输入区域 */}
           <div>
-            <label className="text-sm font-medium text-[var(--glass-text-secondary)] mb-2 block">
+            <label className="text-sm font-medium text-[rgba(255,255,255,0.7)] mb-2 block">
               {t('inputLabel')}
             </label>
             <textarea
               value={promptText}
               onChange={(e) => setPromptText(e.target.value)}
               placeholder={t('placeholder')}
-              className="glass-textarea-base custom-scrollbar h-36 px-4 py-3 text-sm resize-none placeholder:text-[var(--glass-text-tertiary)]"
+              className="bg-[var(--wuhu-bg-surface)] border border-white/20 rounded-lg text-white focus:border-[var(--wuhu-neon-pink)] focus:outline-none transition-all custom-scrollbar h-36 px-4 py-3 text-sm resize-none placeholder:text-[rgba(255,255,255,0.5)]"
               disabled={loading}
               autoFocus
             />
@@ -94,7 +94,7 @@ export default function AiWriteModal({
 
           {/* 提示文案 */}
           <div
-            className="px-3 py-2 rounded-lg text-xs text-[var(--glass-text-tertiary)] leading-relaxed"
+            className="px-3 py-2 rounded-lg text-xs text-[rgba(255,255,255,0.5)] leading-relaxed"
             style={{ background: 'linear-gradient(135deg, rgba(59,130,246,0.06), rgba(139,92,246,0.06))' }}
           >
             {t('hint')}
@@ -105,7 +105,7 @@ export default function AiWriteModal({
             <button
               onClick={handleClose}
               disabled={loading}
-              className="flex-1 py-2.5 text-sm text-[var(--glass-text-tertiary)] hover:text-[var(--glass-text-secondary)] transition-colors rounded-xl"
+              className="flex-1 py-2.5 text-sm text-[rgba(255,255,255,0.5)] hover:text-[rgba(255,255,255,0.7)] transition-colors rounded-xl"
             >
               {t('cancel')}
             </button>

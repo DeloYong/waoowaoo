@@ -92,9 +92,9 @@ export default function CharacterProfileCard({
                             <span
                                 className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-black text-white tracking-wide"
                                 style={{
-                                    background: tierStyle?.gradient ?? 'var(--glass-bg-muted)',
+                                    background: tierStyle?.gradient ?? 'rgba(255,255,255,0.05)',
                                     boxShadow: tierStyle?.glow ?? 'none',
-                                    ...(!tierStyle ? { color: 'var(--glass-text-primary)' } : {}),
+                                    ...(!tierStyle ? { color: 'white' } : {}),
                                 }}
                             >
                                 {roleLevelLabel}
@@ -107,7 +107,7 @@ export default function CharacterProfileCard({
                         <button
                             onClick={onDelete}
                             disabled={isConfirming || isDeleting}
-                            className="w-8 h-8 rounded-lg flex items-center justify-center text-white/40 hover:text-[var(--glass-tone-danger-fg)] hover:bg-red-500/20 transition-colors disabled:opacity-50 shrink-0"
+                            className="w-8 h-8 rounded-lg flex items-center justify-center text-white/40 hover:text-[var(--wuhu-neon-pink)] hover:bg-red-500/20 transition-colors disabled:opacity-50 shrink-0"
                             title={t('characterProfile.delete')}
                         >
                             {isDeleting ? (
@@ -162,7 +162,7 @@ export default function CharacterProfileCard({
                     {profileData.primary_identifier && (
                         <div className="flex items-center gap-2 text-sm">
                             <span className="text-white/40 w-[2.5rem] shrink-0 text-xs">{t('characterProfile.summary.identifier')}</span>
-                            <span className="font-medium" style={{ color: tierStyle?.accent ?? 'var(--glass-tone-warning-fg)' }}>{profileData.primary_identifier}</span>
+                            <span className="font-medium" style={{ color: tierStyle?.accent ?? 'var(--wuhu-neon-pink)' }}>{profileData.primary_identifier}</span>
                         </div>
                     )}
                 </div>
@@ -172,7 +172,7 @@ export default function CharacterProfileCard({
                     <button
                         onClick={onEdit}
                         disabled={isConfirming}
-                        className="glass-btn-base glass-btn-secondary flex-1 px-3 py-1.5 text-sm rounded-lg disabled:opacity-50"
+                        className="bg-[var(--wuhu-bg-surface)] border border-white/20 hover:bg-white/5 rounded-lg text-white/70 hover:text-white transition-all flex-1 px-3 py-1.5 text-sm rounded-lg disabled:opacity-50"
                     >
                         {t('characterProfile.editProfile')}
                     </button>
@@ -180,7 +180,7 @@ export default function CharacterProfileCard({
                         <button
                             onClick={onUseExisting}
                             disabled={isConfirming}
-                            className="glass-btn-base glass-btn-tone-info flex-1 px-3 py-1.5 text-sm rounded-lg disabled:opacity-50"
+                            className="bg-[var(--wuhu-neon-purple)]/20 text-[var(--wuhu-neon-purple)] hover:bg-[var(--wuhu-neon-purple)]/30 rounded-lg transition-all flex-1 px-3 py-1.5 text-sm rounded-lg disabled:opacity-50"
                         >
                             {t('characterProfile.useExisting')}
                         </button>
@@ -188,7 +188,7 @@ export default function CharacterProfileCard({
                     <button
                         onClick={onConfirm}
                         disabled={isConfirming}
-                        className="glass-btn-base glass-btn-primary flex-1 px-3 py-1.5 text-sm rounded-lg disabled:opacity-50"
+                        className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_20px_rgba(167,87,255,0.3)] hover:shadow-[0_0_30px_rgba(167,87,255,0.4)] rounded-lg transition-all flex-1 px-3 py-1.5 text-sm rounded-lg disabled:opacity-50"
                     >
                         {isConfirming ? (
                             <TaskStatusInline state={confirmingState} className="text-white [&>span]:text-white [&_svg]:text-white" />

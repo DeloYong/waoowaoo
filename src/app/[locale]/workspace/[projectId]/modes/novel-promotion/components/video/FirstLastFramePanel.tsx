@@ -99,7 +99,7 @@ export default function FirstLastFramePanel({
           <span className="text-[var(--wuhu-neon-purple)]">{t("firstLastFrame.range", { from: panelIndex + 1, to: panelIndex + 2 })}</span>
           <button
             onClick={() => onToggleLink(panelKey, panel.storyboardId, panel.panelIndex)}
-            className="ml-auto text-[var(--wuhu-neon-purple)] hover:text-[var(--glass-text-primary)] underline"
+            className="ml-auto text-[var(--wuhu-neon-purple)] hover:text-white underline"
           >
             {t("firstLastFrame.unlinkAction")}
           </button>
@@ -132,7 +132,7 @@ export default function FirstLastFramePanel({
                 }}
               />
             )}
-            <span className="absolute bottom-1 left-1 bg-[var(--glass-tone-warning-fg)] text-white text-[10px] px-1 rounded">{t("firstLastFrame.lastFrame")}</span>
+            <span className="absolute bottom-1 left-1 bg-[var(--wuhu-neon-pink)] text-white text-[10px] px-1 rounded">{t("firstLastFrame.lastFrame")}</span>
           </div>
         </div>
         {/* 首尾帧提示词编辑 */}
@@ -151,7 +151,7 @@ export default function FirstLastFramePanel({
           <textarea
             value={currentPrompt}
             onChange={(e) => onCustomPromptChange(panelKey, e.target.value)}
-            className="w-full text-xs p-2 border border-[var(--wuhu-neon-purple)]/40 rounded bg-[var(--glass-bg-surface)] text-white/70 focus:outline-none focus:ring-1 focus:ring-[var(--glass-tone-info-fg)] resize-none"
+            className="w-full text-xs p-2 border border-[var(--wuhu-neon-purple)]/40 rounded bg-[var(--wuhu-bg-surface)] text-white/70 focus:outline-none focus:border-[var(--wuhu-neon-pink)] focus:ring-1 focus:ring-[var(--wuhu-neon-pink)] resize-none transition-all"
             rows={3}
             placeholder={t("firstLastFrame.promptPlaceholder")}
           />
@@ -161,11 +161,11 @@ export default function FirstLastFramePanel({
         <button
           onClick={() => onGenerate(panel.storyboardId, panel.panelIndex, nextPanel.storyboardId, nextPanel.panelIndex, panelKey, flGenerationOptions, panel.panelId)}
           disabled={isVideoTaskRunning || !panel.imageUrl || !nextPanel.imageUrl || !flModel || hasMissingCapabilities}
-          className={`glass-btn-base flex-1 py-2 text-sm font-medium disabled:opacity-50 ${isFirstLastFrameGenerated
-            ? 'bg-[var(--glass-tone-success-fg)] text-white'
+          className={`flex-1 py-2 text-sm font-medium disabled:opacity-50 rounded-lg transition-all ${isFirstLastFrameGenerated
+            ? 'bg-[var(--wuhu-neon-purple)] text-white'
             : isVideoTaskRunning
               ? 'bg-[var(--wuhu-bg-surface)] text-white/50'
-              : 'bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white hover:bg-[var(--glass-accent-to)]'
+              : 'bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_20px_rgba(167,87,255,0.3)] hover:shadow-[0_0_30px_rgba(167,87,255,0.4)]'
             }`}
         >
           {isFirstLastFrameGenerated ? t("firstLastFrame.generated") : isVideoTaskRunning ? (

@@ -52,34 +52,34 @@ export default function ScreenplayDisplay({ screenplay, originalContent }: Scree
             <div className="flex items-center gap-2">
                 <button
                     onClick={() => setActiveTab('screenplay')}
-                    className={`glass-btn-base rounded-xl px-3 py-1.5 text-sm ${activeTab === 'screenplay'
-                        ? 'glass-btn-secondary text-[var(--glass-text-secondary)]'
-                        : 'glass-btn-soft'
+                    className={`rounded-xl px-3 py-1.5 text-sm transition-all ${activeTab === 'screenplay'
+                        ? 'bg-[var(--wuhu-bg-surface)] border border-white/20 text-white/70'
+                        : 'bg-transparent text-white/50 hover:bg-white/5'
                         }`}
                 >
                     {t('screenplay.tabs.formatted')}
                 </button>
                 <button
                     onClick={() => setActiveTab('original')}
-                    className={`glass-btn-base rounded-xl px-3 py-1.5 text-sm ${activeTab === 'original'
-                        ? 'glass-btn-secondary text-[var(--glass-text-secondary)]'
-                        : 'glass-btn-soft'
+                    className={`rounded-xl px-3 py-1.5 text-sm transition-all ${activeTab === 'original'
+                        ? 'bg-[var(--wuhu-bg-surface)] border border-white/20 text-white/70'
+                        : 'bg-transparent text-white/50 hover:bg-white/5'
                         }`}
                 >
                     {t('screenplay.tabs.original')}
                 </button>
             </div>
 
-            <div className="glass-surface-soft p-4 max-h-96 overflow-y-auto">
+            <div className="bg-[var(--wuhu-bg-surface)] rounded-xl p-4 max-h-96 overflow-y-auto">
                 {activeTab === 'screenplay' && parsedScreenplay ? (
                     <div className="space-y-3">
                         {parsedScreenplay.scenes.map((scene, sceneIndex) => (
-                            <div key={sceneIndex} className="border-l-2 border-[var(--glass-stroke-focus)] pl-3 space-y-2">
+                            <div key={sceneIndex} className="border-l-2 border-[var(--wuhu-neon-purple)] pl-3 space-y-2">
                                 <div className="flex items-center gap-2 text-xs flex-wrap">
-                                    <span className="font-bold text-[var(--glass-tone-info-fg)] bg-[var(--glass-tone-info-bg)] px-2 py-0.5 rounded">
+                                    <span className="font-bold text-[var(--wuhu-neon-purple)] bg-[var(--wuhu-neon-purple)]/20 px-2 py-0.5 rounded">
                                         {t('screenplay.scene', { number: scene.scene_number })}
                                     </span>
-                                    <span className="text-[var(--glass-text-tertiary)]">
+                                    <span className="text-white/50">
                                         {typeof scene.heading === 'string'
                                             ? scene.heading
                                             : `${scene.heading.int_ext} · ${scene.heading.location} · ${scene.heading.time}`}
@@ -87,16 +87,16 @@ export default function ScreenplayDisplay({ screenplay, originalContent }: Scree
                                 </div>
 
                                 {scene.description && (
-                                    <div className="text-xs text-[var(--glass-text-tertiary)] italic bg-[var(--glass-bg-muted)]/70 px-2 py-1 rounded">
+                                    <div className="text-xs text-white/50 italic bg-white/5 px-2 py-1 rounded">
                                         {scene.description}
                                     </div>
                                 )}
 
                                 {scene.characters && scene.characters.length > 0 && (
                                     <div className="flex gap-1 flex-wrap items-center">
-                                        <span className="text-[10px] text-[var(--glass-text-tertiary)]">{t('screenplay.characters')}</span>
+                                        <span className="text-[10px] text-white/50">{t('screenplay.characters')}</span>
                                         {scene.characters.map((name, index) => (
-                                            <span key={`${name}-${index}`} className="text-[10px] text-[var(--glass-text-secondary)] bg-[var(--glass-bg-muted)] px-1.5 py-0.5 rounded">
+                                            <span key={`${name}-${index}`} className="text-[10px] text-white/70 bg-white/5 px-1.5 py-0.5 rounded">
                                                 {name}
                                             </span>
                                         ))}
@@ -107,27 +107,27 @@ export default function ScreenplayDisplay({ screenplay, originalContent }: Scree
                                     {scene.content.map((item, itemIndex) => (
                                         <div key={itemIndex}>
                                             {item.type === 'action' && (
-                                                <p className="text-sm text-[var(--glass-text-secondary)] leading-relaxed">{item.text}</p>
+                                                <p className="text-sm text-white/70 leading-relaxed">{item.text}</p>
                                             )}
                                             {item.type === 'dialogue' && (
-                                                <div className="bg-[var(--glass-tone-warning-bg)]/60 border-l-2 border-[var(--glass-stroke-warning)] pl-2 py-1">
+                                                <div className="bg-[var(--wuhu-neon-pink)]/10 border-l-2 border-[var(--wuhu-neon-pink)] pl-2 py-1">
                                                     <div>
-                                                        <span className="text-xs font-medium text-[var(--glass-tone-warning-fg)]">{item.character}</span>
+                                                        <span className="text-xs font-medium text-[var(--wuhu-neon-pink)]">{item.character}</span>
                                                         {item.parenthetical && (
-                                                            <span className="text-[var(--glass-tone-warning-fg)] ml-1">({item.parenthetical})</span>
+                                                            <span className="text-[var(--wuhu-neon-pink)] ml-1">({item.parenthetical})</span>
                                                         )}
                                                     </div>
-                                                    <p className="text-sm text-[var(--glass-text-secondary)]">
-                                                        <span className="select-none text-[var(--glass-text-tertiary)]">&quot;</span>
+                                                    <p className="text-sm text-white/70">
+                                                        <span className="select-none text-white/50">&quot;</span>
                                                         {item.lines}
-                                                        <span className="select-none text-[var(--glass-text-tertiary)]">&quot;</span>
+                                                        <span className="select-none text-white/50">&quot;</span>
                                                     </p>
                                                 </div>
                                             )}
                                             {item.type === 'voiceover' && (
-                                                <div className="bg-[var(--glass-tone-info-bg)]/60 border-l-2 border-[var(--glass-stroke-focus)] pl-2 py-1">
-                                                    <span className="text-xs text-[var(--glass-tone-info-fg)]">{t('screenplay.voiceover')}</span>
-                                                    <p className="text-sm text-[var(--glass-text-secondary)] italic">{item.text}</p>
+                                                <div className="bg-[var(--wuhu-neon-purple)]/10 border-l-2 border-[var(--wuhu-neon-purple)] pl-2 py-1">
+                                                    <span className="text-xs text-[var(--wuhu-neon-purple)]">{t('screenplay.voiceover')}</span>
+                                                    <p className="text-sm text-white/70 italic">{item.text}</p>
                                                 </div>
                                             )}
                                         </div>
@@ -137,12 +137,12 @@ export default function ScreenplayDisplay({ screenplay, originalContent }: Scree
                         ))}
                     </div>
                 ) : activeTab === 'screenplay' && !parsedScreenplay ? (
-                    <div className="text-center text-[var(--glass-text-tertiary)] py-8">
+                    <div className="text-center text-white/50 py-8">
                         <p>{t('screenplay.parseFailedTitle')}</p>
                         <p className="text-xs mt-1">{t('screenplay.parseFailedDescription')}</p>
                     </div>
                 ) : (
-                    <div className="text-sm text-[var(--glass-text-secondary)] whitespace-pre-wrap leading-relaxed">{originalContent}</div>
+                    <div className="text-sm text-white/70 whitespace-pre-wrap leading-relaxed">{originalContent}</div>
                 )}
             </div>
         </div>

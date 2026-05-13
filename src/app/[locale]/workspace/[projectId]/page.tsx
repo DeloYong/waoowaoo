@@ -319,7 +319,7 @@ export default function ProjectDetailPage() {
           {isGlobalAssetsView && project.novelPromotionData ? (
             // 全局资产视图（确保数据准备好）
             <div key={refreshKey}>
-              <h1 className="text-2xl font-bold text-[var(--glass-text-primary)] mb-6">{t('globalAssets')}</h1>
+              <h1 className="text-2xl font-bold text-[white] mb-6">{t('globalAssets')}</h1>
               <NovelPromotionWorkspace
                 project={project}
                 projectId={projectId}

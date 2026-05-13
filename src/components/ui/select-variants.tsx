@@ -101,28 +101,28 @@ export function SelectVariantCard({
                 type="button"
                 disabled={disabled}
                 onClick={() => setIsOpen(!isOpen)}
-                className={`glass-input-base w-full flex items-center justify-between px-3 py-2.5 transition-all text-left ${isOpen ? 'ring-1 ring-[var(--glass-stroke-active)]' : ''
-                    } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-[var(--glass-bg-hover)]'} ${className}`}
+                className={`bg-[var(--wuhu-bg-surface)] border border-white/20 w-full flex items-center justify-between px-3 py-2.5 transition-all text-left rounded-lg ${isOpen ? 'border-[var(--wuhu-neon-pink)] shadow-[0_0_15px_rgba(255,100,200,0.3)]' : ''
+                    } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-white/5'} ${className}`}
             >
                 <div className="flex-1 min-w-0 pr-2">
                     {selectedOption ? (
                         <div className="flex flex-col">
-                            <span className="text-sm font-medium text-[var(--glass-text-primary)] truncate">
+                            <span className="text-sm font-medium text-white truncate">
                                 {selectedOption.label}
                             </span>
                             {selectedOption.description && (
-                                <span className="text-[11px] text-[var(--glass-text-tertiary)] truncate mt-0.5">
+                                <span className="text-[11px] text-white/50 truncate mt-0.5">
                                     {selectedOption.description}
                                 </span>
                             )}
                         </div>
                     ) : (
-                        <span className="text-sm text-[var(--glass-text-tertiary)]">{placeholder}</span>
+                        <span className="text-sm text-white/40">{placeholder}</span>
                     )}
                 </div>
                 <AppIcon
                     name="chevronDown"
-                    className={`w-4 h-4 text-[var(--glass-text-tertiary)] shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''
+                    className={`w-4 h-4 text-white/50 shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''
                         }`}
                 />
             </button>
@@ -131,7 +131,7 @@ export function SelectVariantCard({
                 createPortal(
                     <div
                         ref={panelRef}
-                        className="glass-surface-modal z-[9999] overflow-hidden flex flex-col rounded-xl shadow-xl border border-[var(--glass-stroke-base)] py-1"
+                        className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_40px_rgba(167,87,255,0.3)] z-[9999] overflow-hidden flex flex-col rounded-xl py-1"
                         style={panelStyle}
                     >
                         <div className="overflow-y-auto custom-scrollbar px-1 py-1 max-h-full">
@@ -148,10 +148,10 @@ export function SelectVariantCard({
                                             setIsOpen(false)
                                         }}
                                         className={`flex items-center w-full px-3 py-2 my-0.5 rounded-lg text-left transition-all ${isSelected
-                                                ? 'bg-[var(--glass-tone-info-bg)] text-[var(--glass-tone-info-fg)] shadow-[0_0_0_1px_rgba(79,128,255,0.35)]'
+                                                ? 'bg-gradient-to-r from-[var(--wuhu-neon-purple)]/30 to-[var(--wuhu-neon-pink)]/20 text-white border-l-2 border-[var(--wuhu-neon-pink)]'
                                                 : opt.disabled
-                                                    ? 'text-[var(--glass-text-tertiary)] opacity-60 cursor-not-allowed'
-                                                    : 'hover:bg-[var(--glass-bg-muted)] text-[var(--glass-text-secondary)]'
+                                                    ? 'text-white/40 opacity-60 cursor-not-allowed'
+                                                    : 'hover:bg-white/10 text-white/70'
                                             }`}
                                     >
                                         <div className="flex-1 min-w-0">
@@ -159,7 +159,7 @@ export function SelectVariantCard({
                                                 {opt.label}
                                             </div>
                                             {opt.description && (
-                                                <div className={`text-[11px] mt-0.5 ${isSelected ? 'text-[var(--glass-tone-info-fg)] opacity-80' : 'text-[var(--glass-text-tertiary)]'}`}>
+                                                <div className={`text-[11px] mt-0.5 ${isSelected ? 'text-white/80' : 'text-white/50'}`}>
                                                     {opt.description}
                                                 </div>
                                             )}
@@ -253,21 +253,21 @@ export function SelectVariantMinimal({
                 type="button"
                 disabled={disabled}
                 onClick={() => setIsOpen(!isOpen)}
-                className={`group flex items-center justify-between w-full py-2 px-1 text-left transition-all border-b border-[var(--glass-stroke-base)] ${isOpen ? 'border-[var(--glass-text-primary)]' : 'hover:border-[var(--glass-text-secondary)]'
-                    } ${disabled ? 'opacity-50 cursor-not-allowed border-[var(--glass-stroke-subtle)]' : 'cursor-pointer'} ${className}`}
+                className={`group flex items-center justify-between w-full py-2 px-1 text-left transition-all border-b border-white/20 ${isOpen ? 'border-[var(--wuhu-neon-pink)]' : 'hover:border-white/40'
+                    } ${disabled ? 'opacity-50 cursor-not-allowed border-white/10' : 'cursor-pointer'} ${className}`}
             >
                 <div className="flex-1 min-w-0">
                     {selectedOption ? (
-                        <span className="text-sm font-medium text-[var(--glass-text-primary)] truncate">
+                        <span className="text-sm font-medium text-white truncate">
                             {selectedOption.label}
                         </span>
                     ) : (
-                        <span className="text-sm text-[var(--glass-text-tertiary)]">{placeholder}</span>
+                        <span className="text-sm text-white/40">{placeholder}</span>
                     )}
                 </div>
                 <AppIcon
                     name="chevronDown"
-                    className={`w-4 h-4 text-[var(--glass-text-tertiary)] shrink-0 transition-all ${isOpen ? 'rotate-180 text-[var(--glass-text-primary)]' : 'group-hover:text-[var(--glass-text-secondary)]'
+                    className={`w-4 h-4 text-white/40 shrink-0 transition-all ${isOpen ? 'rotate-180 text-white' : 'group-hover:text-white/60'
                         }`}
                 />
             </button>
@@ -276,7 +276,7 @@ export function SelectVariantMinimal({
                 createPortal(
                     <div
                         ref={panelRef}
-                        className="glass-surface-modal z-[9999] overflow-hidden flex flex-col rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.12)] border border-[var(--glass-stroke-subtle)] py-1 bg-gradient-to-b from-[var(--glass-bg-surface-strong)] to-[var(--glass-bg-surface)] backdrop-blur-md"
+                        className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_40px_rgba(167,87,255,0.3)] z-[9999] overflow-hidden flex flex-col rounded-xl py-1"
                         style={panelStyle}
                     >
                         <div className="overflow-y-auto custom-scrollbar px-1 py-1 max-h-full">
@@ -293,10 +293,10 @@ export function SelectVariantMinimal({
                                             setIsOpen(false)
                                         }}
                                         className={`flex items-center w-full px-4 py-2.5 my-0.5 rounded-md text-left transition-all ${isSelected
-                                                ? 'bg-[var(--glass-text-primary)] text-white dark:text-black dark:bg-[var(--glass-text-primary)] shadow-sm'
+                                                ? 'bg-gradient-to-r from-[var(--wuhu-neon-purple)]/30 to-[var(--wuhu-neon-pink)]/20 text-white border-l-2 border-[var(--wuhu-neon-pink)]'
                                                 : opt.disabled
-                                                    ? 'text-[var(--glass-text-tertiary)] opacity-60 cursor-not-allowed'
-                                                    : 'hover:bg-[var(--glass-bg-muted)] text-[var(--glass-text-secondary)] hover:text-[var(--glass-text-primary)]'
+                                                    ? 'text-white/40 opacity-60 cursor-not-allowed'
+                                                    : 'hover:bg-white/10 text-white/70 hover:text-white'
                                             }`}
                                     >
                                         <span className={`flex-1 min-w-0 text-sm ${isSelected ? 'font-semibold' : 'font-medium'}`}>
@@ -391,15 +391,15 @@ export function SelectVariantGhost({
                 type="button"
                 disabled={disabled}
                 onClick={() => setIsOpen(!isOpen)}
-                className={`inline-flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-lg transition-colors text-left ${isOpen ? 'bg-[var(--glass-bg-hover)]' : 'hover:bg-[var(--glass-bg-surface-strong)]'
+                className={`inline-flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-lg transition-all text-left ${isOpen ? 'bg-white/10' : 'hover:bg-white/5'
                     } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'} ${className}`}
             >
-                <span className={`text-[13px] whitespace-nowrap overflow-hidden text-ellipsis ${selectedOption ? 'font-medium text-[var(--glass-text-secondary)]' : 'text-[var(--glass-text-tertiary)]'}`}>
+                <span className={`text-[13px] whitespace-nowrap overflow-hidden text-ellipsis ${selectedOption ? 'font-medium text-white/70' : 'text-white/50'}`}>
                     {selectedOption ? selectedOption.label : placeholder}
                 </span>
                 <AppIcon
                     name="chevronDown"
-                    className={`w-3.5 h-3.5 mt-0.5 text-[var(--glass-text-tertiary)] shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''
+                    className={`w-3.5 h-3.5 mt-0.5 text-white/50 shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''
                         }`}
                 />
             </button>
@@ -408,7 +408,7 @@ export function SelectVariantGhost({
                 createPortal(
                     <div
                         ref={panelRef}
-                        className="glass-surface-modal z-[9999] overflow-hidden flex flex-col rounded-xl shadow-lg border border-[var(--glass-stroke-subtle)] py-1"
+                        className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_40px_rgba(167,87,255,0.3)] z-[9999] overflow-hidden flex flex-col rounded-xl py-1"
                         style={panelStyle}
                     >
                         <div className="overflow-y-auto custom-scrollbar p-1 max-h-full space-y-0.5">
@@ -424,18 +424,18 @@ export function SelectVariantGhost({
                                             onChange(opt.value)
                                             setIsOpen(false)
                                         }}
-                                        className={`flex items-center w-full px-2.5 py-1.5 rounded-md text-left transition-colors ${isSelected
-                                                ? 'bg-[var(--glass-bg-active)] text-[var(--glass-text-primary)]'
+                                        className={`flex items-center w-full px-2.5 py-1.5 rounded-md text-left transition-all ${isSelected
+                                                ? 'bg-gradient-to-r from-[var(--wuhu-neon-purple)]/30 to-[var(--wuhu-neon-pink)]/20 text-white border-l-2 border-[var(--wuhu-neon-pink)]'
                                                 : opt.disabled
-                                                    ? 'text-[var(--glass-text-tertiary)] opacity-60 cursor-not-allowed'
-                                                    : 'hover:bg-[var(--glass-bg-hover)] text-[var(--glass-text-secondary)]'
+                                                    ? 'text-white/40 opacity-60 cursor-not-allowed'
+                                                    : 'hover:bg-white/10 text-white/70'
                                             }`}
                                     >
                                         <span className={`flex-1 min-w-0 text-[13px] ${isSelected ? 'font-medium' : ''}`}>
                                             {opt.label}
                                         </span>
                                         {isSelected && (
-                                            <AppIcon name="check" className="w-3.5 h-3.5 shrink-0 overflow-visible ml-2 text-[var(--glass-text-primary)]" />
+                                            <AppIcon name="check" className="w-3.5 h-3.5 shrink-0 overflow-visible ml-2" />
                                         )}
                                     </button>
                                 )

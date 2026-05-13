@@ -37,10 +37,10 @@ export default function AssetsStageStatusOverlays({
           <div
             className={`flex items-center gap-2 px-4 py-3 rounded-xl shadow-lg ${
               toast.type === 'success'
-                ? 'bg-[var(--glass-tone-success-fg)] text-white'
+                ? 'bg-[var(--wuhu-neon-purple)] text-white'
                 : toast.type === 'warning'
-                  ? 'bg-[var(--glass-tone-warning-fg)] text-white'
-                  : 'bg-[var(--glass-tone-danger-fg)] text-white'
+                  ? 'bg-[var(--wuhu-neon-pink)] text-white'
+                  : 'bg-[var(--wuhu-neon-pink)] text-white'
             }`}
           >
             <span className="text-sm font-medium">{toast.message}</span>
@@ -52,25 +52,25 @@ export default function AssetsStageStatusOverlays({
       )}
 
       {isGlobalAnalyzing && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center glass-overlay">
-          <div className="glass-surface-modal p-8 max-w-md mx-4 animate-in zoom-in-95 duration-300">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_40px_rgba(167,87,255,0.2)] rounded-xl p-8 max-w-md mx-4 animate-in zoom-in-95 duration-300">
             <div className="flex flex-col items-center text-center">
               <div className="relative mb-6">
-                <div className="w-20 h-20 rounded-full bg-[var(--glass-accent-from)] flex items-center justify-center">
+                <div className="w-20 h-20 rounded-full bg-[var(--wuhu-neon-purple)] flex items-center justify-center">
                   <AppIcon name="ideaAlt" className="w-10 h-10 text-white" />
                 </div>
               </div>
 
-              <h3 className="text-xl font-bold text-[var(--glass-text-primary)] mb-2">
+              <h3 className="text-xl font-bold text-[white] mb-2">
                 {globalAnalyzingTitle}
               </h3>
-              <p className="text-[var(--glass-text-tertiary)] text-sm mb-4">{globalAnalyzingHint}</p>
+              <p className="text-[rgba(255,255,255,0.5)] text-sm mb-4">{globalAnalyzingHint}</p>
               <TaskStatusInline state={globalAnalyzingState} />
 
-              <div className="w-full h-2 bg-[var(--glass-bg-muted)] rounded-full overflow-hidden">
-                <div className="h-full bg-[var(--glass-accent-from)] rounded-full animate-pulse" style={{ width: '100%' }} />
+              <div className="w-full h-2 bg-[rgba(255,255,255,0.05)] rounded-full overflow-hidden">
+                <div className="h-full bg-[var(--wuhu-neon-purple)] rounded-full animate-pulse" style={{ width: '100%' }} />
               </div>
-              <p className="text-xs text-[var(--glass-text-tertiary)] mt-2">{globalAnalyzingTip}</p>
+              <p className="text-xs text-[rgba(255,255,255,0.5)] mt-2">{globalAnalyzingTip}</p>
             </div>
           </div>
         </div>

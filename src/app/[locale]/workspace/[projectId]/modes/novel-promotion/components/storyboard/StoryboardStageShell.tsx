@@ -28,7 +28,7 @@ export default function StoryboardStageShell({
       <button
         onClick={onNext}
         disabled={isNextDisabled}
-        className="glass-btn-base glass-btn-primary fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-2xl px-6 py-3 text-white shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+        className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-2xl px-6 py-3 text-white shadow-[0_0_40px_rgba(167,87,255,0.4)] hover:shadow-[0_0_60px_rgba(167,87,255,0.5)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isTransitioning ? (
           <TaskStatusInline state={transitioningState} className="text-white [&>span]:text-white [&_svg]:text-white" />

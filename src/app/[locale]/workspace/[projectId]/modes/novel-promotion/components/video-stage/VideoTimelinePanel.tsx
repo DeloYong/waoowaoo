@@ -30,7 +30,7 @@ export default function VideoTimelinePanel({
   const tVoice = useTranslations('voice')
 
   return (
-    <div className="glass-surface-elevated overflow-hidden">
+    <div className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_40px_rgba(167,87,255,0.2)] rounded-xl overflow-hidden">
       <div
         role="button"
         tabIndex={0}
@@ -41,21 +41,21 @@ export default function VideoTimelinePanel({
             onToggleExpanded()
           }
         }}
-        className="w-full px-6 py-4 flex items-center justify-between hover:bg-[var(--glass-bg-muted)]/50 transition-colors cursor-pointer"
+        className="w-full px-6 py-4 flex items-center justify-between hover:bg-white/5 transition-colors cursor-pointer"
       >
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-[var(--glass-accent-from)] rounded-xl flex items-center justify-center shadow-[var(--glass-shadow-md)]">
+          <div className="w-10 h-10 bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(167,87,255,0.3)]">
             <AppIcon name="micOutline" className="w-5 h-5 text-white" />
           </div>
           <div className="text-left">
-            <h3 className="font-bold text-[var(--glass-text-primary)]">{tVoice('title')}</h3>
-            <p className="text-sm text-[var(--glass-text-tertiary)]">
+            <h3 className="font-bold text-white">{tVoice('title')}</h3>
+            <p className="text-sm text-white/50">
               {tVoice('linesCount', { count: allVoiceLines.length })}
               {tVoice('audioGeneratedCount', { count: allVoiceLines.filter((line) => line.audioUrl).length })}
             </p>
           </div>
         </div>
-        <AppIcon name="chevronDown" className={`w-5 h-5 text-[var(--glass-text-tertiary)] transition-transform ${expanded ? 'rotate-180' : ''}`} />
+        <AppIcon name="chevronDown" className={`w-5 h-5 text-white/50 transition-transform ${expanded ? 'rotate-180' : ''}`} />
       </div>
 
       {expanded && (

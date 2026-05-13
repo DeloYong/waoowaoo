@@ -104,30 +104,30 @@ export default function CharacterCreationForm({
       </div>
 
       {mode === 'project' && availableCharacters.length > 0 && (
-        <div className="flex items-start gap-3 p-3 glass-surface-soft rounded-lg border border-[var(--glass-stroke-base)]">
+        <div className="flex items-start gap-3 p-3 bg-[var(--wuhu-bg-surface)] rounded-lg border border-white/20">
           <input
             type="checkbox"
             id="isSubAppearance"
             checked={isSubAppearance}
             onChange={(e) => setIsSubAppearance(e.target.checked)}
-            className="mt-0.5 w-4 h-4 rounded border-[var(--glass-stroke-base)] text-[var(--glass-tone-info-fg)]"
+            className="mt-0.5 w-4 h-4 rounded border-white/20 text-[var(--wuhu-neon-purple)]"
           />
           <label htmlFor="isSubAppearance" className="flex-1 text-sm cursor-pointer">
-            <span className="font-medium text-[var(--glass-text-primary)]">{t('character.isSubAppearance')}</span>
-            <p className="text-xs text-[var(--glass-text-secondary)] mt-0.5">{t('character.isSubAppearanceHint')}</p>
+            <span className="font-medium text-white">{t('character.isSubAppearance')}</span>
+            <p className="text-xs text-white/70 mt-0.5">{t('character.isSubAppearanceHint')}</p>
           </label>
         </div>
       )}
 
       {isSubAppearance && (
         <div className="space-y-2">
-          <label className="glass-field-label block">
-            {t('character.selectMainCharacter')} <span className="text-[var(--glass-tone-danger-fg)]">*</span>
+          <label className="text-white/70 block">
+            {t('character.selectMainCharacter')} <span className="text-red-400">*</span>
           </label>
           <select
             value={selectedCharacterId}
             onChange={(e) => setSelectedCharacterId(e.target.value)}
-            className="glass-select-base w-full px-3 py-2 text-sm"
+            className="bg-[var(--wuhu-bg-surface)] border border-white/20 text-white rounded-lg w-full px-3 py-2 text-sm focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(255,100,200,0.3)]"
           >
             <option value="">{t('character.selectCharacterPlaceholder')}</option>
             {availableCharacters.map((char) => (
@@ -141,37 +141,37 @@ export default function CharacterCreationForm({
 
       {isSubAppearance && (
         <div className="space-y-2">
-          <label className="glass-field-label block">
-            {t('character.changeReason')} <span className="text-[var(--glass-tone-danger-fg)]">*</span>
+          <label className="text-white/70 block">
+            {t('character.changeReason')} <span className="text-red-400">*</span>
           </label>
           <input
             type="text"
             value={changeReason}
             onChange={(e) => setChangeReason(e.target.value)}
             placeholder={t('character.changeReasonPlaceholder')}
-            className="glass-input-base w-full px-3 py-2 text-sm"
+            className="bg-[var(--wuhu-bg-surface)] border border-white/20 text-white placeholder:text-white/40 rounded-lg focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(255,100,200,0.3)] w-full px-3 py-2 text-sm"
           />
         </div>
       )}
 
       {!isSubAppearance && (
         <div className="space-y-2">
-          <label className="glass-field-label block">
-            {t('character.name')} <span className="text-[var(--glass-tone-danger-fg)]">*</span>
+          <label className="text-white/70 block">
+            {t('character.name')} <span className="text-red-400">*</span>
           </label>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder={t('character.namePlaceholder')}
-            className="glass-input-base w-full px-3 py-2 text-sm"
+            className="bg-[var(--wuhu-bg-surface)] border border-white/20 text-white placeholder:text-white/40 rounded-lg focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(255,100,200,0.3)] w-full px-3 py-2 text-sm"
           />
         </div>
       )}
 
       {mode === 'asset-hub' && !isSubAppearance && (
         <div className="space-y-2">
-          <label className="glass-field-label block">
+          <label className="text-white/70 block">
             {t('artStyle.title')}
           </label>
           <div className="grid grid-cols-2 gap-2">
@@ -180,9 +180,9 @@ export default function CharacterCreationForm({
                 key={style.value}
                 type="button"
                 onClick={() => setArtStyle(style.value)}
-                className={`glass-btn-base px-3 py-2 rounded-lg text-sm border transition-all justify-start ${artStyle === style.value
-                  ? 'glass-btn-tone-info border-[var(--glass-stroke-focus)]'
-                  : 'glass-btn-soft border-[var(--glass-stroke-base)] text-[var(--glass-text-secondary)]'
+                className={`px-3 py-2 rounded-lg text-sm border transition-all justify-start ${artStyle === style.value
+                  ? 'bg-[var(--wuhu-neon-purple)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)] border-[var(--wuhu-neon-pink)]'
+                  : 'border-white/20 text-white/70 hover:border-[var(--wuhu-neon-pink)] hover:text-white hover:bg-white/10'
                   }`}
               >
                 <span>{style.label}</span>
@@ -193,17 +193,17 @@ export default function CharacterCreationForm({
       )}
 
       {createMode === 'reference' && (
-        <div className="glass-surface-soft rounded-xl p-4 space-y-3 border border-[var(--glass-stroke-base)]">
+        <div className="bg-[var(--wuhu-bg-surface)] rounded-xl p-4 space-y-3 border border-white/20">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-sm font-medium text-[var(--glass-tone-info-fg)]">
+            <div className="flex items-center gap-2 text-sm font-medium text-[var(--wuhu-neon-purple)]">
               <PhotoIcon className="w-4 h-4" />
               <span>{t('character.uploadReference')}</span>
             </div>
-            <span className="text-xs text-[var(--glass-text-tertiary)]">{t('character.pasteHint')}</span>
+            <span className="text-xs text-white/40">{t('character.pasteHint')}</span>
           </div>
 
-          <div className="glass-surface flex items-center gap-2 p-2 rounded-lg">
-            <span className="text-xs text-[var(--glass-text-secondary)] shrink-0">{t('character.generationMode')}：</span>
+          <div className="bg-[var(--wuhu-bg-surface)] flex items-center gap-2 p-2 rounded-lg">
+            <span className="text-xs text-white/70 shrink-0">{t('character.generationMode')}：</span>
             <SegmentedControl
               className="flex-1"
               options={[
@@ -219,7 +219,7 @@ export default function CharacterCreationForm({
             <button
               onClick={handleExtractDescription}
               disabled={isExtracting || referenceImagesBase64.length === 0}
-              className="glass-btn-base glass-btn-tone-info w-full px-3 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+              className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)] hover:shadow-[0_0_25px_rgba(255,100,200,0.5)] w-full px-3 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed text-sm"
             >
               {isExtracting ? t('aiDesign.generating') : t('character.extractFirst')}
             </button>
@@ -239,8 +239,8 @@ export default function CharacterCreationForm({
       {createMode === 'description' && (
         <>
           <div className="space-y-2">
-            <label className="glass-field-label block">
-              {isSubAppearance ? t('character.modifyDescription') : t('character.description')} <span className="text-[var(--glass-tone-danger-fg)]">*</span>
+            <label className="text-white/70 block">
+              {isSubAppearance ? t('character.modifyDescription') : t('character.description')} <span className="text-red-400">*</span>
             </label>
             <textarea
               value={description}
@@ -249,13 +249,13 @@ export default function CharacterCreationForm({
               placeholder={isSubAppearance
                 ? t('character.modifyDescriptionPlaceholder')
                 : t('character.descPlaceholder')}
-              className="glass-textarea-base w-full px-3 py-2 text-sm resize-none"
+              className="bg-[var(--wuhu-bg-surface)] border border-white/20 text-white placeholder:text-white/40 rounded-lg focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(255,100,200,0.3)] w-full px-3 py-2 text-sm resize-none"
             />
           </div>
 
           {!isSubAppearance && (
-            <div className="glass-surface-soft rounded-xl p-4 space-y-3 border border-[var(--glass-stroke-base)]">
-              <div className="flex items-center gap-2 text-sm font-medium text-[var(--glass-tone-info-fg)]">
+            <div className="bg-[var(--wuhu-bg-surface)] rounded-xl p-4 space-y-3 border border-white/20">
+              <div className="flex items-center gap-2 text-sm font-medium text-[var(--wuhu-neon-purple)]">
                 <SparklesIcon className="w-4 h-4" />
                 <span>{t('aiDesign.title')}</span>
               </div>
@@ -265,7 +265,7 @@ export default function CharacterCreationForm({
                   value={aiInstruction}
                   onChange={(e) => setAiInstruction(e.target.value)}
                   placeholder={t('aiDesign.placeholder')}
-                  className="glass-input-base flex-1 px-3 py-2 text-sm"
+                  className="bg-[var(--wuhu-bg-surface)] border border-white/20 text-white placeholder:text-white/40 rounded-lg focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(255,100,200,0.3)] flex-1 px-3 py-2 text-sm"
                   disabled={isAiDesigning}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
@@ -277,7 +277,7 @@ export default function CharacterCreationForm({
                 <button
                   onClick={handleAiDesign}
                   disabled={isAiDesigning || !aiInstruction.trim()}
-                  className="glass-btn-base glass-btn-tone-info px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed text-sm whitespace-nowrap"
+                  className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)] hover:shadow-[0_0_25px_rgba(255,100,200,0.5)] px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed text-sm whitespace-nowrap"
                 >
                   {isAiDesigning ? t('aiDesign.generating') : t('aiDesign.generate')}
                 </button>

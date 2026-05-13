@@ -49,57 +49,59 @@ export function WorldContextModal({ isOpen, onClose, text, onChange }: WorldCont
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center glass-overlay animate-fadeIn"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm animate-fadeIn"
       onClick={(event) => {
         if (event.target === event.currentTarget) onClose()
       }}
     >
-      <div className="glass-surface-modal p-7 w-full max-w-3xl transform transition-all scale-100 h-[80vh] flex flex-col">
+      <div className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_50px_rgba(167,87,255,0.3)] rounded-2xl p-7 w-full max-w-3xl transform transition-all scale-100 h-[80vh] flex flex-col">
         <div className="flex justify-between items-center mb-6 flex-shrink-0">
           <div className="flex items-center gap-3">
             <div>
-              <h2 className="text-2xl font-bold text-[var(--glass-text-primary)]">{t('title')}</h2>
-              <p className="text-[var(--glass-text-tertiary)] text-sm">{t('description')}</p>
+              <h2 className="text-2xl font-bold text-white">{t('title')}</h2>
+              <p className="text-white/50 text-sm">{t('description')}</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <div
-              className={`glass-chip text-xs transition-all duration-300 ${
-                saveStatus === 'saved' ? 'glass-chip-success' : 'glass-chip-neutral'
+              className={`text-xs px-3 py-1.5 rounded-full transition-all duration-300 ${
+                saveStatus === 'saved'
+                  ? 'bg-[var(--wuhu-neon-cyan)]/20 text-[var(--wuhu-neon-cyan)] border border-[var(--wuhu-neon-cyan)]/30'
+                  : 'bg-white/10 text-white/70'
               }`}
             >
               {saveStatus === 'saved' ? (
-                <>
+                <span className="flex items-center gap-1.5">
                   <AppIcon name="check" className="w-3.5 h-3.5" />
                   {tc('saved')}
-                </>
+                </span>
               ) : (
-                <>
-                  <span className="w-1.5 h-1.5 bg-[var(--glass-tone-success-fg)] rounded-full"></span>
+                <span className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 bg-[var(--wuhu-neon-cyan)] rounded-full"></span>
                   {tc('autoSave')}
-                </>
+                </span>
               )}
             </div>
             <button
               onClick={onClose}
-              className="glass-btn-base glass-btn-soft rounded-full p-2 text-[var(--glass-text-tertiary)] hover:text-[var(--glass-text-secondary)]"
+              className="text-white/40 hover:text-white hover:bg-white/10 rounded-full p-2"
             >
               <AppIcon name="close" className="w-6 h-6" />
             </button>
           </div>
         </div>
 
-        <div className="flex-1 glass-surface-soft p-4 overflow-hidden flex flex-col">
+        <div className="flex-1 bg-[var(--wuhu-bg-surface)] rounded-xl p-4 overflow-hidden flex flex-col">
           <textarea
             value={text}
             onChange={(event) => handleTextChange(event.target.value)}
             placeholder={t('placeholder')}
-            className="glass-textarea-base flex-1 text-base resize-none leading-relaxed placeholder:text-[var(--glass-text-tertiary)]/70 custom-scrollbar p-4"
+            className="flex-1 text-base resize-none leading-relaxed text-white placeholder:text-white/30 custom-scrollbar p-4 bg-transparent outline-none"
           />
         </div>
 
         <div className="mt-6 pt-0 flex justify-start items-center flex-shrink-0">
-          <span className="text-xs text-[var(--glass-text-tertiary)]">{t('hint')}</span>
+          <span className="text-xs text-white/50">{t('hint')}</span>
         </div>
       </div>
     </div>

@@ -48,7 +48,7 @@ export default function LongTextDetectionPrompt({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[120] flex items-center justify-center glass-overlay p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-[120] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 backdrop-blur-sm"
       role="dialog"
       aria-modal="true"
       onMouseDown={(event) => {
@@ -57,7 +57,7 @@ export default function LongTextDetectionPrompt({
         }
       }}
     >
-      <div className="glass-surface-modal w-full max-w-lg rounded-2xl border border-[var(--glass-stroke-base)] p-6 shadow-[0_20px_80px_-32px_rgba(15,23,42,0.45)]">
+      <div className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_40px_rgba(167,87,255,0.2)] rounded-xl w-full max-w-lg rounded-2xl border border-[rgba(167, 87, 255, 0.2)] p-6 shadow-[0_20px_80px_-32px_rgba(15,23,42,0.45)]">
         <div className="space-y-5">
           <div className="flex items-center gap-3">
             <div
@@ -66,12 +66,12 @@ export default function LongTextDetectionPrompt({
             >
               <AppIcon name="sparkles" className="h-5 w-5 text-[#7c3aed]" />
             </div>
-            <h3 className="text-lg font-bold text-[var(--glass-text-primary)]">
+            <h3 className="text-lg font-bold text-[white]">
               {copy.title}
             </h3>
           </div>
 
-          <p className="text-sm leading-relaxed text-[var(--glass-text-secondary)]">
+          <p className="text-sm leading-relaxed text-[rgba(255,255,255,0.7)]">
             {copy.description}
           </p>
 
@@ -108,7 +108,7 @@ export default function LongTextDetectionPrompt({
             <button
               type="button"
               onClick={onContinue}
-              className="w-full py-2.5 text-sm text-[var(--glass-text-tertiary)] transition-colors hover:text-[var(--glass-text-secondary)]"
+              className="w-full py-2.5 text-sm text-[rgba(255,255,255,0.5)] transition-colors hover:text-[rgba(255,255,255,0.7)]"
             >
               {copy.continueLabel}
               <span className="ml-1 text-xs opacity-60">

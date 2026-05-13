@@ -126,18 +126,18 @@ export function ApiConfigProviderList({
       <div className="space-y-4">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2.5">
-            <span className="glass-surface-soft inline-flex h-7 w-7 items-center justify-center rounded-lg text-[var(--glass-text-secondary)]">
+            <span className="bg-white/10 inline-flex h-7 w-7 items-center justify-center rounded-lg text-white/70">
               <AppIcon name="cube" className="w-4 h-4" />
             </span>
             <div>
-              <h2 className="text-xl font-bold text-[var(--glass-text-primary)]">{labels.providerPool}</h2>
-              <p className="text-[13px] text-[var(--glass-text-secondary)]">{labels.providerPoolDesc}</p>
-              <p className="text-[12px] text-[var(--glass-text-tertiary)]">{labels.dragToSortHint}</p>
+              <h2 className="text-xl font-bold text-white">{labels.providerPool}</h2>
+              <p className="text-[13px] text-white/60">{labels.providerPoolDesc}</p>
+              <p className="text-[12px] text-white/40">{labels.dragToSortHint}</p>
             </div>
           </div>
           <button
             onClick={onAddGeminiProvider}
-            className="glass-btn-base glass-btn-primary cursor-pointer px-3 py-1.5 text-sm font-semibold"
+            className="cursor-pointer px-3 py-1.5 text-sm font-semibold rounded-lg bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(167,87,255,0.3)] hover:shadow-[0_0_20px_rgba(167,87,255,0.4)] transition-all"
           >
             {labels.addGeminiProvider}
           </button>
@@ -177,21 +177,21 @@ export function ApiConfigProviderList({
             <button
               type="button"
               onClick={() => setShowHiddenProviders((prev) => !prev)}
-              className="glass-btn-base glass-btn-secondary flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left"
+              className="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left border border-white/10 bg-white/5 hover:border-white/20 transition-all"
             >
               <div className="min-w-0">
-                <p className="truncate text-sm font-medium text-[var(--glass-text-primary)]">
+                <p className="truncate text-sm font-medium text-white">
                   {showHiddenProviders
                     ? labels.hideHiddenProviders
                     : `${labels.showHiddenProviders} (${hiddenProviders.length})`}
                 </p>
-                <p className="truncate text-xs text-[var(--glass-text-tertiary)]">
+                <p className="truncate text-xs text-white/40">
                   {labels.hiddenProvidersPrefix}: {hiddenProviderNames}
                 </p>
               </div>
               <AppIcon
                 name={showHiddenProviders ? 'chevronUp' : 'chevronDown'}
-                className="h-4 w-4 shrink-0 text-[var(--glass-text-secondary)]"
+                className="h-4 w-4 shrink-0 text-white/60"
               />
             </button>
             {showHiddenProviders && (
@@ -256,7 +256,7 @@ function SortableProviderCardItem({ providerId, dragLabel, children }: SortableP
             type="button"
             aria-label={dragLabel}
             title={dragLabel}
-            className="inline-flex cursor-grab items-center justify-center rounded-md p-1 text-[var(--glass-text-tertiary)] touch-none transition-colors hover:text-[var(--glass-text-secondary)] active:cursor-grabbing"
+            className="inline-flex cursor-grab items-center justify-center rounded-md p-1 text-[rgba(255,255,255,0.5)] touch-none transition-colors hover:text-[rgba(255,255,255,0.7)] active:cursor-grabbing"
             {...attributes}
             {...listeners}
           >

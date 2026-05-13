@@ -310,7 +310,7 @@ export function CharacterCard({ character, onImageClick, onImageEdit, onVoiceDes
                             <div key={index} className="relative group/thumb">
                                 <div
                                     onClick={() => onImageClick?.(validUrl)}
-                                    className={`rounded-lg overflow-hidden border-2 cursor-zoom-in transition-all ${isSelected ? 'border-[var(--wuhu-neon-pink)] ring-2 ring-[var(--wuhu-neon-pink)]/50' : 'border-[var(--wuhu-neon-purple)]/30 hover:border-[var(--glass-stroke-focus)]'}`}
+                                    className={`rounded-lg overflow-hidden border-2 cursor-zoom-in transition-all ${isSelected ? 'border-[var(--wuhu-neon-pink)] ring-2 ring-[var(--wuhu-neon-pink)]/50' : 'border-[var(--wuhu-neon-purple)]/30 hover:border-[var(--wuhu-neon-cyan)]'}`}
                                 >
                                     <MediaImageWithLoading
                                         src={validUrl}
@@ -324,7 +324,7 @@ export function CharacterCard({ character, onImageClick, onImageEdit, onVoiceDes
                                 </div>
                                 <button
                                     onClick={(e) => { e.stopPropagation(); handleSelectImage(isSelected ? null : index) }}
-                                    className={`absolute top-2 right-2 bg-[var(--wuhu-neon-purple)]/20 hover:bg-[var(--wuhu-neon-purple)]/30 transition-allw-7 h-7 rounded-full flex items-center justify-center ${isSelected ? 'glass-btn-tone-success' : 'glass-btn-secondary'}`}
+                                    className={`absolute top-2 right-2 bg-[var(--wuhu-neon-purple)]/20 hover:bg-[var(--wuhu-neon-purple)]/30 transition-allw-7 h-7 rounded-full flex items-center justify-center ${isSelected ? 'bg-[var(--wuhu-neon-cyan)]/20 text-[var(--wuhu-neon-cyan)]' : 'bg-[var(--wuhu-bg-surface)] border border-white/20 text-white/70'}`}
                                 >
                                     <AppIcon name="check" className="w-4 h-4" />
                                 </button>
@@ -405,9 +405,9 @@ export function CharacterCard({ character, onImageClick, onImageEdit, onVoiceDes
                         {!isAppearanceTaskRunning && (
                             <div className="absolute top-2 left-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                 <button onClick={() => fileInputRef.current?.click()} disabled={uploadImage.isPending} className="border border-[var(--wuhu-neon-purple)]/40 text-white/80 hover:bg-[var(--wuhu-neon-purple)]/20 transition-all h-7 w-7 rounded-full">
-                                    <AppIcon name="upload" className="w-4 h-4 text-[var(--glass-tone-success-fg)]" />
+                                    <AppIcon name="upload" className="w-4 h-4 text-[var(--wuhu-neon-purple)]" />
                                 </button>
-                                <button onClick={() => onImageEdit?.('character', character.id, character.name, effectiveSelectedIndex ?? 0, appearance.appearanceIndex)} className="bg-[var(--wuhu-neon-purple)]/20 hover:bg-[var(--wuhu-neon-purple)]/30 transition-allglass-btn-tone-info h-7 w-7 rounded-full">
+                                <button onClick={() => onImageEdit?.('character', character.id, character.name, effectiveSelectedIndex ?? 0, appearance.appearanceIndex)} className="bg-[var(--wuhu-neon-purple)]/20 hover:bg-[var(--wuhu-neon-purple)]/30 transition-allbg-[var(--wuhu-neon-purple)]/20 text-[var(--wuhu-neon-purple)] h-7 w-7 rounded-full">
                                     <AppIcon name="edit" className="w-4 h-4" />
                                 </button>
                         <button onClick={() => handleGenerate()} className="border border-[var(--wuhu-neon-purple)]/40 text-white/80 hover:bg-[var(--wuhu-neon-purple)]/20 transition-all h-7 w-7 rounded-full">
@@ -432,7 +432,7 @@ export function CharacterCard({ character, onImageClick, onImageEdit, onVoiceDes
                             onValueChange={setGenerationCount}
                             onClick={() => handleGenerate(generationCount)}
                             ariaLabel={tAssets('image.selectCount')}
-                            className="bg-[var(--wuhu-neon-purple)]/20 hover:bg-[var(--wuhu-neon-purple)]/30 transition-allglass-btn-primary flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg"
+                            className="bg-[var(--wuhu-neon-purple)]/20 hover:bg-[var(--wuhu-neon-purple)]/30 transition-allbg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_20px_rgba(167,87,255,0.3)] flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg"
                             selectClassName="appearance-none bg-transparent border-0 pl-0 pr-3 text-sm font-semibold text-current outline-none cursor-pointer leading-none transition-colors"
                         />
                     </div>
@@ -472,7 +472,7 @@ export function CharacterCard({ character, onImageClick, onImageEdit, onVoiceDes
                 {appearanceCount > 1 && (
                     <div className="flex gap-1 mt-2 overflow-x-auto">
                         {character.appearances.map((app, index) => (
-                            <button key={app.id} onClick={() => setActiveAppearance(index)} className={`bg-[var(--wuhu-neon-purple)]/20 hover:bg-[var(--wuhu-neon-purple)]/30 transition-allpx-2 py-0.5 text-xs rounded-full whitespace-nowrap ${index === activeAppearance ? 'glass-btn-primary' : 'glass-btn-soft text-white/70'}`}>
+                            <button key={app.id} onClick={() => setActiveAppearance(index)} className={`bg-[var(--wuhu-neon-purple)]/20 hover:bg-[var(--wuhu-neon-purple)]/30 transition-allpx-2 py-0.5 text-xs rounded-full whitespace-nowrap ${index === activeAppearance ? 'bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_20px_rgba(167,87,255,0.3)]' : 'bg-white/5 text-white/70 text-white/70'}`}>
                                 {app.changeReason || `形象 ${app.appearanceIndex}`}
                             </button>
                         ))}

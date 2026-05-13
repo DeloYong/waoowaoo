@@ -67,7 +67,7 @@ export default function EmbeddedVoiceToolbar({
     return (
         <div className="flex items-center justify-end mb-3 px-4">
             <div className="flex items-center gap-3">
-                <div className="text-xs text-[var(--glass-text-tertiary)]">
+                <div className="text-xs text-[rgba(255,255,255,0.5)]">
                     {t("embedded.linesStats", { total: totalLines, audio: linesWithAudio })}
                 </div>
 
@@ -75,7 +75,7 @@ export default function EmbeddedVoiceToolbar({
                 <button
                     onClick={onAnalyze}
                     disabled={analyzing}
-                    className="glass-btn-base glass-btn-primary flex items-center gap-2 px-4 py-2 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_20px_rgba(167,87,255,0.3)] hover:shadow-[0_0_30px_rgba(167,87,255,0.4)] rounded-lg transition-all flex items-center gap-2 px-4 py-2 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                     title={totalLines > 0 ? t("embedded.reanalyzeHint") : t("embedded.analyzeHint")}
                 >
                     {analyzing ? (
@@ -85,7 +85,7 @@ export default function EmbeddedVoiceToolbar({
 
                 <button
                     onClick={onAddLine}
-                    className="glass-btn-base glass-btn-secondary flex items-center gap-2 px-4 py-2 font-medium border border-[var(--glass-stroke-base)]"
+                    className="bg-[var(--wuhu-bg-surface)] border border-white/20 hover:bg-white/5 rounded-lg text-white/70 hover:text-white transition-all flex items-center gap-2 px-4 py-2 font-medium border border-[rgba(167, 87, 255, 0.2)]"
                 >
                     {t("embedded.addLine")}
                 </button>
@@ -94,7 +94,7 @@ export default function EmbeddedVoiceToolbar({
                 <button
                     onClick={onDownloadAll}
                     disabled={linesWithAudio === 0 || isDownloading}
-                    className="glass-btn-base glass-btn-tone-info flex items-center gap-2 px-4 py-2 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="bg-[var(--wuhu-neon-purple)]/20 text-[var(--wuhu-neon-purple)] hover:bg-[var(--wuhu-neon-purple)]/30 rounded-lg transition-all flex items-center gap-2 px-4 py-2 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                     title={linesWithAudio === 0 ? t("toolbar.noDownload") : t("toolbar.downloadCount", { count: linesWithAudio })}
                 >
                     {isDownloading ? (
@@ -108,7 +108,7 @@ export default function EmbeddedVoiceToolbar({
                 <button
                     onClick={onGenerateAll}
                     disabled={isBatchSubmitting || !allSpeakersHaveVoice || totalLines === 0}
-                    className="glass-btn-base glass-btn-tone-success flex items-center gap-2 px-4 py-2 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="bg-[var(--wuhu-neon-cyan)]/20 text-[var(--wuhu-neon-cyan)] hover:bg-[var(--wuhu-neon-cyan)]/30 rounded-lg transition-all flex items-center gap-2 px-4 py-2 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                     title={getGenerateButtonTitle()}
                 >
                     {isBatchSubmitting ? (

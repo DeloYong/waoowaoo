@@ -90,8 +90,8 @@ export function VideoEditorStage({
             display: 'flex',
             flexDirection: 'column',
             height: '100vh',
-            background: 'var(--glass-bg-canvas)',
-            color: 'var(--glass-text-primary)'
+            background: 'var(--wuhu-bg-canvas)',
+            color: 'white'
         }}>
             {/* Toolbar */}
             <div style={{
@@ -99,32 +99,32 @@ export function VideoEditorStage({
                 alignItems: 'center',
                 gap: '12px',
                 padding: '12px 16px',
-                borderBottom: '1px solid var(--glass-stroke-base)',
-                background: 'var(--glass-bg-surface)'
+                borderBottom: '1px solid rgba(167, 87, 255, 0.2)',
+                background: 'var(--wuhu-bg-surface)'
             }}>
                 <button
                     onClick={onBack}
-                    className="glass-btn-base glass-btn-secondary px-4 py-2"
+                    className="bg-[var(--wuhu-bg-surface)] border border-white/20 hover:bg-white/5 rounded-lg text-white/70 hover:text-white transition-all px-4 py-2"
                 >
                     {t('editor.toolbar.back')}
                 </button>
 
                 <div style={{ flex: 1 }} />
 
-                <span style={{ color: 'var(--glass-text-secondary)', fontSize: '14px' }}>
+                <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '14px' }}>
                     {currentTime} / {totalTime}
                 </span>
 
                 <button
                     onClick={handleSave}
-                    className={`glass-btn-base px-4 py-2 ${isDirty ? 'glass-btn-primary text-white' : 'glass-btn-secondary'}`}
+                    className={`px-4 py-2 rounded-lg transition-all ${isDirty ? 'bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white' : 'bg-[var(--wuhu-bg-surface)] border border-white/20 text-white/70 hover:bg-white/5 hover:text-white'}`}
                 >
                     {isDirty ? t('editor.toolbar.saveDirty') : t('editor.toolbar.saved')}
                 </button>
 
                 <button
                     onClick={handleExport}
-                    className="glass-btn-base glass-btn-tone-success px-4 py-2"
+                    className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] shadow-[0_0_20px_rgba(167,87,255,0.3)] hover:shadow-[0_0_30px_rgba(167,87,255,0.4)] rounded-lg text-white transition-all px-4 py-2"
                 >
                     {t('editor.toolbar.export')}
                 </button>
@@ -139,14 +139,14 @@ export function VideoEditorStage({
                 {/* Left Panel - Media Library */}
                 <div style={{
                     width: '200px',
-                    borderRight: '1px solid var(--glass-stroke-base)',
+                    borderRight: '1px solid rgba(167, 87, 255, 0.2)',
                     padding: '12px',
-                    background: 'var(--glass-bg-surface-strong)'
+                    background: 'var(--wuhu-bg-surface)'
                 }}>
-                    <h3 style={{ margin: '0 0 12px 0', fontSize: '14px', color: 'var(--glass-text-secondary)' }}>
+                    <h3 style={{ margin: '0 0 12px 0', fontSize: '14px', color: 'rgba(255,255,255,0.7)' }}>
                         {t('editor.left.title')}
                     </h3>
-                    <p style={{ fontSize: '12px', color: 'var(--glass-text-tertiary)' }}>
+                    <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)' }}>
                         {t('editor.left.description')}
                     </p>
                 </div>
@@ -159,7 +159,7 @@ export function VideoEditorStage({
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        background: 'var(--glass-bg-muted)',
+                        background: 'rgba(255,255,255,0.05)',
                         padding: '20px'
                     }}>
                         <RemotionPreview
@@ -178,21 +178,21 @@ export function VideoEditorStage({
                         justifyContent: 'center',
                         gap: '16px',
                         padding: '12px',
-                        background: 'var(--glass-bg-surface-strong)',
-                        borderTop: '1px solid var(--glass-stroke-base)'
+                        background: 'var(--wuhu-bg-surface)',
+                        borderTop: '1px solid rgba(167, 87, 255, 0.2)'
                     }}>
                         <button
                             onClick={() => seek(0)}
-                            className="glass-btn-base glass-btn-ghost px-3 py-1.5"
+                            className="bg-transparent hover:bg-white/10 rounded-lg text-white/70 hover:text-white transition-all px-3 py-1.5"
                         >
                             <AppIcon name="chevronLeft" className="w-4 h-4" />
                         </button>
                         <button
                             onClick={() => timelineState.playing ? pause() : play()}
                             style={{
-                                background: 'var(--glass-accent-from)',
+                                background: 'var(--wuhu-neon-purple)',
                                 border: 'none',
-                                color: 'var(--glass-text-on-accent)',
+                                color: 'white',
                                 cursor: 'pointer',
                                 width: '40px',
                                 height: '40px',
@@ -206,7 +206,7 @@ export function VideoEditorStage({
                         </button>
                         <button
                             onClick={() => seek(totalDuration)}
-                            className="glass-btn-base glass-btn-ghost px-3 py-1.5"
+                            className="bg-transparent hover:bg-white/10 rounded-lg text-white/70 hover:text-white transition-all px-3 py-1.5"
                         >
                             <AppIcon name="chevronRight" className="w-4 h-4" />
                         </button>
@@ -216,12 +216,12 @@ export function VideoEditorStage({
                 {/* Right Panel - Properties */}
                 <div style={{
                     width: '280px',
-                    borderLeft: '1px solid var(--glass-stroke-base)',
+                    borderLeft: '1px solid rgba(167, 87, 255, 0.2)',
                     padding: '12px',
-                    background: 'var(--glass-bg-surface-strong)',
+                    background: 'var(--wuhu-bg-surface)',
                     overflowY: 'auto'
                 }}>
-                    <h3 style={{ margin: '0 0 12px 0', fontSize: '14px', color: 'var(--glass-text-secondary)' }}>
+                    <h3 style={{ margin: '0 0 12px 0', fontSize: '14px', color: 'rgba(255,255,255,0.7)' }}>
                         {t('editor.right.title')}
                     </h3>
                     {selectedClip ? (
@@ -229,16 +229,16 @@ export function VideoEditorStage({
                             {/* 基础信息 */}
                             <div style={{ fontSize: '12px' }}>
                                 <p style={{ margin: '0 0 8px 0' }}>
-                                    <span style={{ color: 'var(--glass-text-secondary)' }}>{t('editor.right.clipLabel')}</span> {selectedClip.metadata?.description || t('editor.right.clipFallback', { index: project.timeline.findIndex(c => c.id === selectedClip.id) + 1 })}
+                                    <span style={{ color: 'rgba(255,255,255,0.7)' }}>{t('editor.right.clipLabel')}</span> {selectedClip.metadata?.description || t('editor.right.clipFallback', { index: project.timeline.findIndex(c => c.id === selectedClip.id) + 1 })}
                                 </p>
                                 <p style={{ margin: '0 0 8px 0' }}>
-                                    <span style={{ color: 'var(--glass-text-secondary)' }}>{t('editor.right.durationLabel')}</span> {framesToTime(selectedClip.durationInFrames, project.config.fps)}
+                                    <span style={{ color: 'rgba(255,255,255,0.7)' }}>{t('editor.right.durationLabel')}</span> {framesToTime(selectedClip.durationInFrames, project.config.fps)}
                                 </p>
                             </div>
 
                             {/* 转场设置 */}
                             <div>
-                                <h4 style={{ margin: '0 0 8px 0', fontSize: '13px', color: 'var(--glass-text-secondary)' }}>
+                                <h4 style={{ margin: '0 0 8px 0', fontSize: '13px', color: 'rgba(255,255,255,0.7)' }}>
                                     {t('editor.right.transitionLabel')}
                                 </h4>
                                 <TransitionPicker
@@ -260,13 +260,13 @@ export function VideoEditorStage({
                                         selectClip(null)
                                     }
                                 }}
-                                className="glass-btn-base glass-btn-tone-danger mt-2 px-3 py-2 text-xs"
+                                className="bg-[var(--wuhu-neon-pink)]/20 text-[var(--wuhu-neon-pink)] hover:bg-[var(--wuhu-neon-pink)]/30 rounded-lg transition-all mt-2 px-3 py-2 text-xs"
                             >
                                 {t('editor.right.deleteClip')}
                             </button>
                         </div>
                     ) : (
-                        <p style={{ fontSize: '12px', color: 'var(--glass-text-tertiary)' }}>
+                        <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)' }}>
                             {t('editor.right.selectClipHint')}
                         </p>
                     )}
@@ -276,7 +276,7 @@ export function VideoEditorStage({
             {/* Timeline */}
             <div style={{
                 height: '220px',
-                borderTop: '1px solid var(--glass-stroke-base)'
+                borderTop: '1px solid rgba(167, 87, 255, 0.2)'
             }}>
                 <Timeline
                     clips={project.timeline}

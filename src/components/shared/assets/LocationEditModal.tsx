@@ -221,23 +221,23 @@ export function LocationEditModal({
     }
 
     return (
-        <div className="fixed inset-0 glass-overlay flex items-center justify-center z-50 p-4">
-            <div className="glass-surface-modal max-w-2xl w-full max-h-[80vh] flex flex-col">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm animate-fadeIn flex items-center justify-center z-50 p-4">
+            <div className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_50px_rgba(167,87,255,0.3)] rounded-2xl max-w-2xl w-full max-h-[80vh] flex flex-col">
                 <div className="p-6 space-y-4 overflow-y-auto flex-1">
                     <div className="flex items-center justify-between">
-                        <h3 className="text-lg font-semibold text-[var(--glass-text-primary)]">
+                        <h3 className="text-lg font-semibold text-white">
                             {t('modal.editLocation')} - {locationName}
                         </h3>
                         <button
                             onClick={onClose}
-                            className="glass-btn-base glass-btn-soft w-9 h-9 rounded-full text-[var(--glass-text-tertiary)]"
+                            className="w-9 h-9 rounded-full text-white/40 hover:text-white hover:bg-white/10"
                         >
                             <AppIcon name="close" className="w-6 h-6" />
                         </button>
                     </div>
 
                     <div className="space-y-2">
-                        <label className="glass-field-label block">
+                        <label className="text-white/70 block">
                             {t('location.name')}
                         </label>
                         <div className="flex gap-2">
@@ -245,14 +245,14 @@ export function LocationEditModal({
                                 type="text"
                                 value={editingName}
                                 onChange={(e) => setEditingName(e.target.value)}
-                                className="glass-input-base flex-1 px-3 py-2"
+                                className="bg-[var(--wuhu-bg-surface)] border border-white/20 text-white placeholder:text-white/40 rounded-lg focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(255,100,200,0.3)] flex-1 px-3 py-2"
                                 placeholder={t('modal.namePlaceholder')}
                             />
                             {editingName !== locationName && (
                                 <button
                                     onClick={handleSaveName}
                                     disabled={updateAssetHubName.isPending || updateProjectName.isPending || !editingName.trim()}
-                                    className="glass-btn-base glass-btn-tone-success px-3 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed text-sm whitespace-nowrap"
+                                    className="bg-[var(--wuhu-neon-cyan)]/20 text-[var(--wuhu-neon-cyan)] border border-[var(--wuhu-neon-cyan)]/30 hover:bg-[var(--wuhu-neon-cyan)]/30 px-3 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed text-sm whitespace-nowrap"
                                 >
                                     {(updateAssetHubName.isPending || updateProjectName.isPending)
                                         ? t('smartImport.preview.saving')
@@ -262,8 +262,8 @@ export function LocationEditModal({
                         </div>
                     </div>
 
-                    <div className="space-y-2 glass-surface-soft p-4 rounded-lg border border-[var(--glass-stroke-base)]">
-                        <label className="block text-sm font-medium text-[var(--glass-tone-info-fg)] flex items-center gap-2">
+                    <div className="space-y-2 bg-[var(--wuhu-bg-surface)] p-4 rounded-lg border border-white/20">
+                        <label className="block text-sm font-medium text-[var(--wuhu-neon-purple)] flex items-center gap-2">
                             <AppIcon name="bolt" className="w-4 h-4" />
                             {t('modal.smartModify')}
                         </label>
@@ -273,7 +273,7 @@ export function LocationEditModal({
                                 value={aiModifyInstruction}
                                 onChange={(e) => setAiModifyInstruction(e.target.value)}
                                 placeholder={t('modal.modifyPlaceholder')}
-                                className="glass-input-base flex-1 px-3 py-2"
+                                className="bg-[var(--wuhu-bg-surface)] border border-white/20 text-white placeholder:text-white/40 rounded-lg focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(255,100,200,0.3)] flex-1 px-3 py-2"
                                 disabled={isAiModifying}
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter' && !e.shiftKey) {
@@ -285,7 +285,7 @@ export function LocationEditModal({
                             <button
                                 onClick={handleAiModify}
                                 disabled={isAiModifying || !aiModifyInstruction.trim()}
-                                className="glass-btn-base glass-btn-tone-info px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 whitespace-nowrap"
+                                className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)] hover:shadow-[0_0_25px_rgba(255,100,200,0.5)] px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 whitespace-nowrap"
                             >
                                 {isAiModifying ? (
                                     <TaskStatusInline state={aiModifyingState} className="text-white [&>span]:text-white [&_svg]:text-white" />
@@ -297,29 +297,29 @@ export function LocationEditModal({
                                 )}
                             </button>
                         </div>
-                        <p className="glass-field-hint">
+                        <p className="text-white/40 text-sm">
                             {t('modal.aiLocationTip')}
                         </p>
                     </div>
 
                     <div className="space-y-2">
-                        <label className="glass-field-label block">
+                        <label className="text-white/70 block">
                             {t('location.description')}
                         </label>
                         <textarea
                             value={editingDescription}
                             onChange={(e) => setEditingDescription(e.target.value)}
-                            className="glass-textarea-base w-full h-48 px-3 py-2 resize-none"
+                            className="bg-[var(--wuhu-bg-surface)] border border-white/20 text-white placeholder:text-white/40 rounded-lg focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(255,100,200,0.3)] w-full h-48 px-3 py-2 resize-none"
                             placeholder={t('modal.descPlaceholder')}
                             disabled={isAiModifying}
                         />
                     </div>
                 </div>
 
-                <div className="flex gap-3 justify-end p-4 border-t border-[var(--glass-stroke-base)] bg-[var(--glass-bg-surface-strong)] rounded-b-lg flex-shrink-0">
+                <div className="flex gap-3 justify-end p-4 border-t border-white/10 bg-[var(--wuhu-bg-card)] rounded-b-2xl flex-shrink-0">
                     <button
                         onClick={onClose}
-                        className="glass-btn-base glass-btn-secondary px-4 py-2 rounded-lg"
+                        className="border border-white/20 text-white/70 hover:border-[var(--wuhu-neon-pink)] hover:text-white hover:bg-white/10 px-4 py-2 rounded-lg"
                         disabled={isSaving}
                     >
                         {t('common.cancel')}
@@ -327,7 +327,7 @@ export function LocationEditModal({
                     <button
                         onClick={handleSaveOnly}
                         disabled={isSaving || !editingDescription.trim()}
-                        className="glass-btn-base glass-btn-tone-info px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                        className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)] hover:shadow-[0_0_25px_rgba(255,100,200,0.5)] px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                     >
                         {isSaving ? (
                             <TaskStatusInline state={savingState} className="text-white [&>span]:text-white [&_svg]:text-white" />
@@ -338,7 +338,7 @@ export function LocationEditModal({
                     <button
                         onClick={handleSaveAndGenerate}
                         disabled={isSaving || isTaskRunning || !editingDescription.trim()}
-                        className="glass-btn-base glass-btn-primary px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                        className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)] hover:shadow-[0_0_25px_rgba(255,100,200,0.5)] px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                     >
                         {isTaskRunning ? (
                             <TaskStatusInline state={taskRunningState} className="text-white [&>span]:text-white [&_svg]:text-white" />

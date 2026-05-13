@@ -167,28 +167,36 @@ export function ProviderAdvancedFields({
 
   return useTabbedLayout ? (
     <div className="space-y-2.5 p-3">
-      <SegmentedControl
-        options={visibleTypes.map((type) => ({
-          value: type,
-          label: <><TypeIcon type={type} className="h-3 w-3" /><span>{typeLabel(type, t)}</span></>,
-        }))}
-        value={currentType ?? visibleTypes[0]}
-        onChange={(val) => setActiveType(val as ProviderCardModelType)}
-      />
+      <div className="flex items-center gap-1 p-1 bg-white/5 rounded-lg">
+        {visibleTypes.map((type) => (
+          <button
+            key={type}
+            onClick={() => setActiveType(type)}
+            className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-[12px] font-medium transition-all ${
+              (currentType ?? visibleTypes[0]) === type
+                ? 'bg-[var(--wuhu-neon-purple)] text-white shadow-[0_0_10px_rgba(167,87,255,0.3)]'
+                : 'text-white/60 hover:text-white hover:bg-white/5'
+            }`}
+          >
+            <TypeIcon type={type} className="h-3 w-3" />
+            <span>{typeLabel(type, t)}</span>
+          </button>
+        ))}
+      </div>
 
       {currentType && (
         <div className="flex items-center justify-between px-1">
-          <div className="flex items-center gap-2 text-[12px] font-semibold text-[var(--glass-text-primary)]">
-            <TypeIcon type={currentType} className="h-3 w-3" />
+          <div className="flex items-center gap-2 text-[12px] font-semibold text-white">
+            <TypeIcon type={currentType} className="h-3 w-3 text-white/60" />
             <span>{typeLabel(currentType, t)}</span>
-            <span className="rounded-full bg-[var(--glass-tone-neutral-bg)] px-1.5 py-0.5 text-[11px] font-semibold text-[var(--glass-tone-neutral-fg)]">
+            <span className="rounded-full bg-white/10 px-1.5 py-0.5 text-[11px] font-semibold text-white/60">
               {currentModels.length}
             </span>
           </div>
           {shouldShowAddButton && (
             <button
               onClick={() => state.setShowAddForm(currentType)}
-              className="glass-btn-base glass-btn-soft px-2 py-1 text-[12px] font-medium"
+              className="px-2 py-1 text-[12px] font-medium rounded-lg border border-white/20 hover:border-[var(--wuhu-neon-purple)] hover:bg-[var(--wuhu-neon-purple)]/10 text-white/70 hover:text-white transition-all flex items-center gap-1"
             >
               <AppIcon name="plus" className="h-3.5 w-3.5" />
               {t('add')}
@@ -198,7 +206,7 @@ export function ProviderAdvancedFields({
       )}
 
       {currentType && state.showAddForm === currentType && addableModelTypes.has(currentType) && (
-        <div className="glass-surface-soft rounded-xl p-3">
+        <div className="bg-white/5 rounded-xl p-3 border border-white/10">
           <div className="mb-2.5 flex items-center gap-2">
             <input
               type="text"
@@ -207,10 +215,10 @@ export function ProviderAdvancedFields({
                 state.setNewModel({ ...state.newModel, name: event.target.value })
               }
               placeholder={t('modelDisplayName')}
-              className="glass-input-base px-3 py-1.5 text-[12px]"
+              className="bg-[var(--wuhu-bg-surface)] border border-white/20 focus:border-[var(--wuhu-neon-purple)] focus:shadow-[0_0_10px_rgba(167,87,255,0.2)] rounded-lg px-3 py-1.5 text-[12px] text-white placeholder:text-white/30 outline-none transition-all flex-1"
               autoFocus
             />
-            <button onClick={state.handleCancelAdd} className="glass-icon-btn-sm">
+            <button onClick={state.handleCancelAdd} className="p-1.5 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-colors">
               <AppIcon name="close" className="h-4 w-4" />
             </button>
           </div>
@@ -222,38 +230,39 @@ export function ProviderAdvancedFields({
                 state.setNewModel({ ...state.newModel, modelId: event.target.value })
               }
               placeholder={t('modelActualId')}
-              className={`glass-input-base flex-1 px-3 py-1.5 text-[12px] font-mono ${currentType === 'video' && state.batchMode && provider.id === 'ark' ? 'rounded-r-none' : ''}`}
+              className={`bg-[var(--wuhu-bg-surface)] border border-white/20 focus:border-[var(--wuhu-neon-purple)] focus:shadow-[0_0_10px_rgba(167,87,255,0.2)] rounded-lg flex-1 px-3 py-1.5 text-[12px] font-mono text-white placeholder:text-white/30 outline-none transition-all ${currentType === 'video' && state.batchMode && provider.id === 'ark' ? 'rounded-r-none' : ''}`}
             />
             {currentType === 'video' && state.batchMode && provider.id === 'ark' && (
-              <span className="rounded-r-lg bg-[var(--glass-bg-muted)] px-2 py-1.5 font-mono text-[12px] text-[var(--glass-text-secondary)]">
+              <span className="rounded-r-lg bg-white/10 px-2 py-1.5 font-mono text-[12px] text-white/60">
                 -batch
               </span>
             )}
             <button
               onClick={() => state.handleAddModel(currentType)}
               disabled={state.isModelSavePending}
-              className="glass-btn-base glass-btn-primary px-3 py-1.5 text-[12px] font-medium"
+              className="px-3 py-1.5 text-[12px] font-medium rounded-lg bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(167,87,255,0.3)] hover:shadow-[0_0_20px_rgba(167,87,255,0.4)] transition-all"
             >
               {state.isModelSavePending ? t('saving') : t('save')}
             </button>
           </div>
           {shouldShowVideoHint && (
-            <p className="mt-2 text-xs text-[var(--glass-text-tertiary)]">
+            <p className="mt-2 text-xs text-white/40">
               {t('openaiCompatVideoOnlyHint')}
             </p>
           )}
           {currentType === 'video' && provider.id === 'ark' && (
-            <div className="mt-2.5 flex items-center gap-2 rounded-lg bg-[var(--glass-bg-muted)] px-2 py-2">
+            <div className="mt-2.5 flex items-center gap-2 rounded-lg bg-white/5 px-2 py-2 border border-white/10">
               <button
                 onClick={() => state.setBatchMode(!state.batchMode)}
-                className="glass-check-mini"
-                data-active={state.batchMode}
+                className={`w-4 h-4 rounded flex items-center justify-center transition-all ${
+                  state.batchMode ? 'bg-[var(--wuhu-neon-purple)]' : 'bg-white/20'
+                }`}
               >
                 {state.batchMode && (
                   <AppIcon name="checkSm" className="h-2.5 w-2.5 text-white" />
                 )}
               </button>
-              <span className="text-xs font-medium text-[var(--glass-text-secondary)]">
+              <span className="text-xs font-medium text-white/60">
                 {t('batchModeHalfPrice')}
               </span>
             </div>
@@ -261,9 +270,9 @@ export function ProviderAdvancedFields({
         </div>
       )}
 
-      <div className="glass-surface-soft rounded-xl p-2">
+      <div className="bg-white/5 rounded-xl p-2 border border-white/10">
         <div
-          className="glass-provider-model-scroll h-[280px] overflow-y-auto pr-1"
+          className="h-[280px] overflow-y-auto pr-1"
           style={{ scrollbarGutter: 'stable' }}
         >
           <div className="space-y-2">
@@ -287,11 +296,11 @@ export function ProviderAdvancedFields({
     <div className="p-3">
       {state.showAddForm === null ? (
         <div className="text-center">
-          <p className="mb-3 text-[12px] text-[var(--glass-text-tertiary)]">{t('noModelsForProvider')}</p>
+          <p className="mb-3 text-[12px] text-white/40">{t('noModelsForProvider')}</p>
           <div className="flex items-center justify-center">
             <button
               onClick={() => state.setShowAddForm(defaultAddType)}
-              className="glass-btn-base glass-btn-soft px-3 py-1.5 text-[12px]"
+              className="px-3 py-1.5 text-[12px] rounded-lg border border-white/20 hover:border-[var(--wuhu-neon-purple)] hover:bg-[var(--wuhu-neon-purple)]/10 text-white/70 hover:text-white transition-all flex items-center gap-1"
             >
               <AppIcon name="plus" className="h-3.5 w-3.5" />
               {t('addModel')}
@@ -299,7 +308,7 @@ export function ProviderAdvancedFields({
           </div>
         </div>
       ) : (
-        <div className="glass-surface-soft rounded-xl p-3">
+        <div className="bg-white/5 rounded-xl p-3 border border-white/10">
           <div className="mb-2.5 flex items-center gap-2">
             <input
               type="text"
@@ -308,10 +317,10 @@ export function ProviderAdvancedFields({
                 state.setNewModel({ ...state.newModel, name: event.target.value })
               }
               placeholder={t('modelDisplayName')}
-              className="glass-input-base px-3 py-1.5 text-[12px]"
+              className="bg-[var(--wuhu-bg-surface)] border border-white/20 focus:border-[var(--wuhu-neon-purple)] focus:shadow-[0_0_10px_rgba(167,87,255,0.2)] rounded-lg flex-1 px-3 py-1.5 text-[12px] text-white placeholder:text-white/30 outline-none transition-all"
               autoFocus
             />
-            <button onClick={state.handleCancelAdd} className="glass-icon-btn-sm">
+            <button onClick={state.handleCancelAdd} className="p-1.5 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-colors">
               <AppIcon name="close" className="h-4 w-4" />
             </button>
           </div>
@@ -323,18 +332,18 @@ export function ProviderAdvancedFields({
                 state.setNewModel({ ...state.newModel, modelId: event.target.value })
               }
               placeholder={t('modelActualId')}
-              className="glass-input-base flex-1 px-3 py-1.5 text-[12px] font-mono"
+              className="bg-[var(--wuhu-bg-surface)] border border-white/20 focus:border-[var(--wuhu-neon-purple)] focus:shadow-[0_0_10px_rgba(167,87,255,0.2)] rounded-lg flex-1 px-3 py-1.5 text-[12px] font-mono text-white placeholder:text-white/30 outline-none transition-all"
             />
             <button
               onClick={() => state.showAddForm && state.handleAddModel(state.showAddForm)}
               disabled={state.isModelSavePending}
-              className="glass-btn-base glass-btn-primary px-3 py-1.5 text-[12px] font-medium"
+              className="px-3 py-1.5 text-[12px] font-medium rounded-lg bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(167,87,255,0.3)] hover:shadow-[0_0_20px_rgba(167,87,255,0.4)] transition-all"
             >
               {state.isModelSavePending ? t('saving') : t('save')}
             </button>
           </div>
           {shouldShowOpenAICompatVideoHint(provider.id, state.showAddForm) && (
-            <p className="mt-2 text-xs text-[var(--glass-text-tertiary)]">
+            <p className="mt-2 text-xs text-white/40">
               {t('openaiCompatVideoOnlyHint')}
             </p>
           )}
@@ -371,7 +380,7 @@ function ModelRow({
   const rowDisabledClass = model.enabled ? '' : 'opacity-50'
 
   return (
-    <div className={`group flex items-center justify-between gap-2 rounded-xl bg-[var(--glass-bg-surface)] px-3 py-2 transition-colors hover:bg-[var(--glass-bg-surface-strong)] ${rowDisabledClass}`}>
+    <div className={`group flex items-center justify-between gap-2 rounded-xl bg-[var(--wuhu-bg-surface)] px-3 py-2 transition-colors hover:bg-white/5 border border-white/5 ${rowDisabledClass}`}>
       {state.editingModelId === model.modelKey ? (
         <>
           <div className="flex min-w-0 flex-1 flex-col gap-2">
@@ -381,7 +390,7 @@ function ModelRow({
               onChange={(event) =>
                 state.setEditModel({ ...state.editModel, name: event.target.value })
               }
-              className="glass-input-base w-full px-3 py-1.5 text-[12px]"
+              className="bg-[var(--wuhu-bg-surface)] border border-white/20 focus:border-[var(--wuhu-neon-purple)] focus:shadow-[0_0_10px_rgba(167,87,255,0.2)] rounded-lg w-full px-3 py-1.5 text-[12px] text-white placeholder:text-white/30 outline-none transition-all"
               placeholder={t('modelDisplayName')}
             />
             <input
@@ -390,27 +399,27 @@ function ModelRow({
               onChange={(event) =>
                 state.setEditModel({ ...state.editModel, modelId: event.target.value })
               }
-              className="glass-input-base w-full px-3 py-1.5 text-[12px] font-mono"
+              className="bg-[var(--wuhu-bg-surface)] border border-white/20 focus:border-[var(--wuhu-neon-purple)] focus:shadow-[0_0_10px_rgba(167,87,255,0.2)] rounded-lg w-full px-3 py-1.5 text-[12px] font-mono text-white placeholder:text-white/30 outline-none transition-all"
               placeholder={t('modelActualId')}
             />
             {hasPriceText && (
-              <div className="text-xs text-[var(--glass-text-tertiary)]">{priceText}</div>
+              <div className="text-xs text-white/40">{priceText}</div>
             )}
           </div>
           <div className="flex items-center gap-1.5">
             <button
               onClick={() => state.handleSaveModel(model.modelKey)}
               disabled={state.isModelSavePending}
-              className="glass-icon-btn-sm"
+              className="p-1.5 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-colors disabled:opacity-50"
               title={t('save')}
             >
               {state.isModelSavePending
-                ? <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-[var(--glass-text-secondary)] border-t-transparent" />
+                ? <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-current border-t-transparent" />
                 : <AppIcon name="check" className="h-4 w-4" />}
             </button>
             <button
               onClick={state.handleCancelEditModel}
-              className="glass-icon-btn-sm"
+              className="p-1.5 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-colors"
               title={t('cancel')}
             >
               <AppIcon name="close" className="w-3.5 h-3.5" />
@@ -421,26 +430,26 @@ function ModelRow({
         <>
           <div className="flex min-w-0 flex-1 flex-col gap-0.5">
             <div className="flex flex-wrap items-center gap-2">
-              <span className={`text-[12px] font-semibold ${model.enabled ? 'text-[var(--glass-text-primary)]' : 'text-[var(--glass-text-secondary)]'}`}>
+              <span className={`text-[12px] font-semibold ${model.enabled ? 'text-white' : 'text-white/60'}`}>
                 {model.name}
               </span>
               {state.isDefaultModel(model) && model.enabled && (
-                <span className="shrink-0 rounded-md bg-[var(--glass-text-primary)] px-1.5 py-0.5 text-[10px] leading-none text-white">
+                <span className="shrink-0 rounded-md bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] px-1.5 py-0.5 text-[10px] leading-none text-white">
                   {t('default')}
                 </span>
               )}
               {hasPriceText && (
-                <span className="shrink-0 text-[11px] text-[var(--glass-text-tertiary)]">{priceText}</span>
+                <span className="shrink-0 text-[11px] text-white/40">{priceText}</span>
               )}
             </div>
-            <span className="break-all text-[11px] text-[var(--glass-text-tertiary)]">{model.modelId}</span>
+            <span className="break-all text-[11px] text-white/40">{model.modelId}</span>
           </div>
 
           <div className="flex items-center gap-1.5">
             {!state.isPresetModel(model.modelKey) && onUpdateModel && (
               <button
                 onClick={() => state.handleEditModel(model)}
-                className="glass-icon-btn-sm opacity-0 transition-opacity group-hover:opacity-100"
+                className="p-1.5 rounded-lg text-white/40 hover:text-white hover:bg-white/10 opacity-0 transition-opacity group-hover:opacity-100"
                 title={t('configure')}
               >
                 <AppIcon name="edit" className="h-3.5 w-3.5" />
@@ -448,7 +457,7 @@ function ModelRow({
             )}
             <button
               onClick={() => onDeleteModel(model.modelKey)}
-              className="glass-icon-btn-sm opacity-0 transition-opacity hover:text-[var(--glass-tone-danger-fg)] group-hover:opacity-100"
+              className="p-1.5 rounded-lg text-white/40 hover:text-red-400 hover:bg-white/10 opacity-0 transition-opacity group-hover:opacity-100"
             >
               <AppIcon name="trash" className="h-3.5 w-3.5" />
             </button>
@@ -458,12 +467,11 @@ function ModelRow({
                 if (toggleDisabled) return
                 onToggleModel(model.modelKey)
               }}
-              className={`glass-toggle ${toggleDisabled ? 'cursor-not-allowed opacity-60' : ''}`}
-              data-active={model.enabled}
+              className={`relative h-5 w-9 rounded-full transition-all ${toggleDisabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'} ${model.enabled ? 'bg-[var(--wuhu-neon-purple)] shadow-[0_0_8px_rgba(167,87,255,0.4)]' : 'bg-white/20'}`}
               disabled={toggleDisabled}
               title={isComingSoonModel ? t('comingSoon') : !hasApiKey ? t('configureApiKey') : undefined}
             >
-              <div className="glass-toggle-thumb"></div>
+              <div className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${model.enabled ? 'translate-x-4' : 'translate-x-0'}`}></div>
             </button>
           </div>
         </>

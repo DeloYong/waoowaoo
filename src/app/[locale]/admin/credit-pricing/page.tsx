@@ -71,11 +71,11 @@ function PricingInput({
 }) {
   return (
     <div className="space-y-1">
-      <label className="block text-sm font-medium text-[var(--glass-text-secondary)]">
+      <label className="block text-sm font-medium text-[rgba(255,255,255,0.7)]">
         {label}
       </label>
       {description && (
-        <p className="text-xs text-[var(--glass-text-tertiary)]">{description}</p>
+        <p className="text-xs text-[rgba(255,255,255,0.5)]">{description}</p>
       )}
       <div className="flex items-center gap-2">
         <input
@@ -84,9 +84,9 @@ function PricingInput({
           step={1}
           value={value}
           onChange={(e) => onChange(Number(e.target.value))}
-          className="w-32 px-3 py-2 border border-[var(--glass-stroke-base)] rounded bg-[var(--glass-bg-canvas)] text-[var(--glass-text-primary)] text-sm"
+          className="w-32 px-3 py-2 border border-[rgba(167, 87, 255, 0.2)] rounded bg-[var(--wuhu-bg-canvas)] text-[white] text-sm"
         />
-        <span className="text-xs text-[var(--glass-text-tertiary)]">{unit}</span>
+        <span className="text-xs text-[rgba(255,255,255,0.5)]">{unit}</span>
       </div>
     </div>
   )
@@ -102,9 +102,9 @@ function PricingSection({
   children: React.ReactNode
 }) {
   return (
-    <div className="p-4 rounded-lg border border-[var(--glass-stroke-soft)] bg-[var(--glass-bg-canvas)]/50">
-      <h4 className="text-sm font-semibold text-[var(--glass-text-primary)] mb-1">{title}</h4>
-      <p className="text-xs text-[var(--glass-text-tertiary)] mb-3">{description}</p>
+    <div className="p-4 rounded-lg border border-[rgba(167, 87, 255, 0.2)] bg-[var(--wuhu-bg-canvas)]/50">
+      <h4 className="text-sm font-semibold text-[white] mb-1">{title}</h4>
+      <p className="text-xs text-[rgba(255,255,255,0.5)] mb-3">{description}</p>
       <div className="space-y-3">{children}</div>
     </div>
   )
@@ -157,15 +157,15 @@ function PriceCalculator({
   }
 
   return (
-    <div className="p-4 rounded-lg border border-[var(--glass-stroke-soft)] bg-[var(--glass-bg-canvas)]/50">
-      <h4 className="text-sm font-semibold text-[var(--glass-text-primary)] mb-3">积分消耗试算</h4>
+    <div className="p-4 rounded-lg border border-[rgba(167, 87, 255, 0.2)] bg-[var(--wuhu-bg-canvas)]/50">
+      <h4 className="text-sm font-semibold text-[white] mb-3">积分消耗试算</h4>
       <div className="flex flex-wrap items-end gap-3 mb-4">
         <div>
-          <label className="block text-xs text-[var(--glass-text-tertiary)] mb-1">类型</label>
+          <label className="block text-xs text-[rgba(255,255,255,0.5)] mb-1">类型</label>
           <select
             value={calcType}
             onChange={(e) => { setCalcType(e.target.value); setCalcQuantity(1) }}
-            className="px-3 py-1.5 border border-[var(--glass-stroke-base)] rounded bg-[var(--glass-bg-canvas)] text-[var(--glass-text-primary)] text-sm"
+            className="px-3 py-1.5 border border-[rgba(167, 87, 255, 0.2)] rounded bg-[var(--wuhu-bg-canvas)] text-[white] text-sm"
           >
             {Object.entries(PIPELINE_LABELS).map(([key, label]) => (
               <option key={key} value={key}>{label}</option>
@@ -174,11 +174,11 @@ function PriceCalculator({
         </div>
         {(calcType === 'image' || calcType === 'video') && (
           <div>
-            <label className="block text-xs text-[var(--glass-text-tertiary)] mb-1">档次</label>
+            <label className="block text-xs text-[rgba(255,255,255,0.5)] mb-1">档次</label>
             <select
               value={calcTier}
               onChange={(e) => setCalcTier(e.target.value)}
-              className="px-3 py-1.5 border border-[var(--glass-stroke-base)] rounded bg-[var(--glass-bg-canvas)] text-[var(--glass-text-primary)] text-sm"
+              className="px-3 py-1.5 border border-[rgba(167, 87, 255, 0.2)] rounded bg-[var(--wuhu-bg-canvas)] text-[white] text-sm"
             >
               <option value="basic">基础档</option>
               <option value="advanced">高级档</option>
@@ -186,29 +186,29 @@ function PriceCalculator({
           </div>
         )}
         <div>
-          <label className="block text-xs text-[var(--glass-text-tertiary)] mb-1">数量</label>
+          <label className="block text-xs text-[rgba(255,255,255,0.5)] mb-1">数量</label>
           <input
             type="number"
             min={1}
             value={calcQuantity}
             onChange={(e) => setCalcQuantity(Math.max(1, Number(e.target.value)))}
-            className="w-24 px-3 py-1.5 border border-[var(--glass-stroke-base)] rounded bg-[var(--glass-bg-canvas)] text-[var(--glass-text-primary)] text-sm"
+            className="w-24 px-3 py-1.5 border border-[rgba(167, 87, 255, 0.2)] rounded bg-[var(--wuhu-bg-canvas)] text-[white] text-sm"
           />
         </div>
       </div>
       <div className="flex items-center gap-4 text-sm">
         <div>
-          <span className="text-[var(--glass-text-tertiary)]">单价：</span>
-          <span className="text-[var(--glass-text-primary)] font-medium">{unitPrice}</span>
-          <span className="text-[var(--glass-text-tertiary)]"> 积分/{unit}</span>
+          <span className="text-[rgba(255,255,255,0.5)]">单价：</span>
+          <span className="text-[white] font-medium">{unitPrice}</span>
+          <span className="text-[rgba(255,255,255,0.5)]"> 积分/{unit}</span>
         </div>
-        <div className="text-[var(--glass-text-tertiary)]">x</div>
+        <div className="text-[rgba(255,255,255,0.5)]">x</div>
         <div>
-          <span className="text-[var(--glass-text-tertiary)]">数量：</span>
-          <span className="text-[var(--glass-text-primary)] font-medium">{calcQuantity} {unit}</span>
+          <span className="text-[rgba(255,255,255,0.5)]">数量：</span>
+          <span className="text-[white] font-medium">{calcQuantity} {unit}</span>
         </div>
-        <div className="text-[var(--glass-text-tertiary)]">=</div>
-        <div className="px-3 py-1.5 rounded bg-[var(--glass-tone-info-bg)] text-[var(--glass-tone-info-fg)] font-bold">
+        <div className="text-[rgba(255,255,255,0.5)]">=</div>
+        <div className="px-3 py-1.5 rounded bg-[rgba(0, 255, 255, 0.1)] text-[var(--wuhu-neon-cyan)] font-bold">
           {totalCredits} 积分
         </div>
       </div>
@@ -296,7 +296,7 @@ export default function CreditPricingPage() {
   }
 
   if (loading) {
-    return <div className="text-[var(--glass-text-secondary)]">加载中...</div>
+    return <div className="text-[rgba(255,255,255,0.7)]">加载中...</div>
   }
 
   // 将模型按类型分组
@@ -311,10 +311,10 @@ export default function CreditPricingPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-[var(--glass-text-primary)]">
+          <h2 className="text-2xl font-bold text-[white]">
             积分定价配置
           </h2>
-          <p className="text-sm text-[var(--glass-text-tertiary)] mt-1">
+          <p className="text-sm text-[rgba(255,255,255,0.5)] mt-1">
             管理各类型 AI 服务的积分消耗定价，配置模型档次映射
           </p>
         </div>
@@ -329,11 +329,11 @@ export default function CreditPricingPage() {
 
       <div className="space-y-8">
         {/* 积分定价目录 */}
-        <div className="bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)] p-6">
-          <h3 className="text-lg font-semibold text-[var(--glass-text-primary)] mb-2">
+        <div className="bg-[var(--wuhu-bg-surface)] rounded-lg border border-[rgba(167, 87, 255, 0.2)] p-6">
+          <h3 className="text-lg font-semibold text-[white] mb-2">
             积分定价目录
           </h3>
-          <p className="text-sm text-[var(--glass-text-tertiary)] mb-4">
+          <p className="text-sm text-[rgba(255,255,255,0.5)] mb-4">
             设置各类 AI 服务的积分消耗单价。基础档适用于轻量模型，高级档适用于高质量模型。
           </p>
 
@@ -442,22 +442,22 @@ export default function CreditPricingPage() {
         </div>
 
         {/* 积分试算 */}
-        <div className="bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)] p-6">
-          <h3 className="text-lg font-semibold text-[var(--glass-text-primary)] mb-2">
+        <div className="bg-[var(--wuhu-bg-surface)] rounded-lg border border-[rgba(167, 87, 255, 0.2)] p-6">
+          <h3 className="text-lg font-semibold text-[white] mb-2">
             积分消耗试算
           </h3>
-          <p className="text-sm text-[var(--glass-text-tertiary)] mb-4">
+          <p className="text-sm text-[rgba(255,255,255,0.5)] mb-4">
             根据当前定价配置，试算各类操作的积分消耗
           </p>
           <PriceCalculator pricing={pricing} />
         </div>
 
         {/* 模型档次映射 */}
-        <div className="bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)] p-6">
-          <h3 className="text-lg font-semibold text-[var(--glass-text-primary)] mb-2">
+        <div className="bg-[var(--wuhu-bg-surface)] rounded-lg border border-[rgba(167, 87, 255, 0.2)] p-6">
+          <h3 className="text-lg font-semibold text-[white] mb-2">
             模型档次映射
           </h3>
-          <p className="text-sm text-[var(--glass-text-tertiary)] mb-4">
+          <p className="text-sm text-[rgba(255,255,255,0.5)] mb-4">
             为每个模型指定档次（基础档/高级档），决定使用哪个定价。未映射的模型默认为基础档。
           </p>
 
@@ -465,10 +465,10 @@ export default function CreditPricingPage() {
             {/* 快捷添加：从已有模型中选择 */}
             {Object.keys(modelsByType).length > 0 && (
               <div className="space-y-2">
-                <h5 className="text-xs font-medium text-[var(--glass-text-secondary)] uppercase tracking-wider">从已连接的模型中选择</h5>
+                <h5 className="text-xs font-medium text-[rgba(255,255,255,0.7)] uppercase tracking-wider">从已连接的模型中选择</h5>
                 {Object.entries(modelsByType).map(([type, models]) => (
                   <div key={type} className="space-y-1">
-                    <p className="text-xs text-[var(--glass-text-tertiary)]">{type === 'image' ? '图片模型' : type === 'video' ? '视频模型' : type === 'llm' ? 'LLM 模型' : type === 'audio' ? '音频模型' : type === 'voicedesign' ? '音色设计模型' : type === 'lipsync' ? '口型同步模型' : type}</p>
+                    <p className="text-xs text-[rgba(255,255,255,0.5)]">{type === 'image' ? '图片模型' : type === 'video' ? '视频模型' : type === 'llm' ? 'LLM 模型' : type === 'audio' ? '音频模型' : type === 'voicedesign' ? '音色设计模型' : type === 'lipsync' ? '口型同步模型' : type}</p>
                     <div className="flex flex-wrap gap-1">
                       {models.map((model) => {
                         const modelKey = `${model.provider}::${model.id}`
@@ -489,7 +489,7 @@ export default function CreditPricingPage() {
                             className={`px-2 py-1 text-xs rounded border transition-colors ${
                               isMapped
                                 ? 'bg-blue-100 border-blue-300 text-blue-700'
-                                : 'bg-[var(--glass-bg-canvas)] border-[var(--glass-stroke-base)] text-[var(--glass-text-secondary)] hover:bg-[var(--glass-bg-muted)]'
+                                : 'bg-[var(--wuhu-bg-canvas)] border-[rgba(167, 87, 255, 0.2)] text-[rgba(255,255,255,0.7)] hover:bg-[rgba(255,255,255,0.05)]'
                             }`}
                             title={isMapped ? `已映射为 ${TIER_LABELS[tierMap[modelKey]] || tierMap[modelKey]}，点击移除` : `点击映射为 ${TIER_LABELS[newTier]}`}
                           >
@@ -505,20 +505,20 @@ export default function CreditPricingPage() {
             )}
 
             {/* 手动添加 */}
-            <div className="border-t border-[var(--glass-stroke-soft)] pt-4">
-              <h5 className="text-xs font-medium text-[var(--glass-text-secondary)] uppercase tracking-wider mb-2">手动添加</h5>
+            <div className="border-t border-[rgba(167, 87, 255, 0.2)] pt-4">
+              <h5 className="text-xs font-medium text-[rgba(255,255,255,0.7)] uppercase tracking-wider mb-2">手动添加</h5>
               <div className="flex gap-2">
                 <input
                   type="text"
                   value={newModelKey}
                   onChange={(e) => setNewModelKey(e.target.value)}
                   placeholder="模型 Key (如: ark::doubao-seedream-4-5-251128)"
-                  className="flex-1 px-3 py-2 border border-[var(--glass-stroke-base)] rounded bg-[var(--glass-bg-canvas)] text-[var(--glass-text-primary)] text-sm"
+                  className="flex-1 px-3 py-2 border border-[rgba(167, 87, 255, 0.2)] rounded bg-[var(--wuhu-bg-canvas)] text-[white] text-sm"
                 />
                 <select
                   value={newTier}
                   onChange={(e) => setNewTier(e.target.value)}
-                  className="px-3 py-2 border border-[var(--glass-stroke-base)] rounded bg-[var(--glass-bg-canvas)] text-[var(--glass-text-primary)] text-sm"
+                  className="px-3 py-2 border border-[rgba(167, 87, 255, 0.2)] rounded bg-[var(--wuhu-bg-canvas)] text-[white] text-sm"
                 >
                   <option value="basic">{TIER_LABELS.basic}</option>
                   <option value="advanced">{TIER_LABELS.advanced}</option>
@@ -536,15 +536,15 @@ export default function CreditPricingPage() {
             {/* 已映射列表 */}
             {Object.keys(tierMap).length > 0 && (
               <div className="space-y-2">
-                <h5 className="text-xs font-medium text-[var(--glass-text-secondary)] uppercase tracking-wider">已映射模型</h5>
+                <h5 className="text-xs font-medium text-[rgba(255,255,255,0.7)] uppercase tracking-wider">已映射模型</h5>
                 <div className="space-y-1.5">
                   {Object.entries(tierMap).map(([key, tier]) => (
                     <div
                       key={key}
-                      className="flex items-center justify-between p-2.5 bg-[var(--glass-bg-canvas)] rounded border border-[var(--glass-stroke-soft)]"
+                      className="flex items-center justify-between p-2.5 bg-[var(--wuhu-bg-canvas)] rounded border border-[rgba(167, 87, 255, 0.2)]"
                     >
                       <div className="flex items-center gap-3">
-                        <code className="text-sm text-[var(--glass-text-primary)] font-mono">{key}</code>
+                        <code className="text-sm text-[white] font-mono">{key}</code>
                         <span className={`px-2 py-0.5 rounded text-xs font-medium ${
                           tier === 'advanced'
                             ? 'bg-amber-100 text-amber-700'
@@ -557,7 +557,7 @@ export default function CreditPricingPage() {
                         <select
                           value={tier}
                           onChange={(e) => setTierMap((prev) => ({ ...prev, [key]: e.target.value }))}
-                          className="px-2 py-1 border border-[var(--glass-stroke-base)] rounded bg-[var(--glass-bg-canvas)] text-[var(--glass-text-primary)] text-xs"
+                          className="px-2 py-1 border border-[rgba(167, 87, 255, 0.2)] rounded bg-[var(--wuhu-bg-canvas)] text-[white] text-xs"
                         >
                           <option value="basic">{TIER_LABELS.basic}</option>
                           <option value="advanced">{TIER_LABELS.advanced}</option>
@@ -576,7 +576,7 @@ export default function CreditPricingPage() {
             )}
 
             {Object.keys(tierMap).length === 0 && (
-              <p className="text-sm text-[var(--glass-text-tertiary)] text-center py-4">
+              <p className="text-sm text-[rgba(255,255,255,0.5)] text-center py-4">
                 暂无模型档次映射，未映射的模型将使用基础档定价
               </p>
             )}

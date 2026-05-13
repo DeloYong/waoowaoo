@@ -40,9 +40,9 @@ export default function VideoPromptModal({
           <div className="p-3 bg-[var(--wuhu-bg-surface)] rounded-lg text-sm space-y-1">
             <div className="flex items-center gap-2">
               <span className="text-white/50">{t('promptModal.shotType')}</span>
-              <span className="px-2 py-0.5 bg-[var(--glass-tone-info-bg)] text-[var(--glass-tone-info-fg)] rounded">{panel.textPanel?.shot_type}</span>
+              <span className="px-2 py-0.5 bg-[var(--wuhu-neon-purple)]/20 text-[var(--wuhu-neon-purple)] rounded">{panel.textPanel?.shot_type}</span>
               {panel.textPanel?.camera_move && (
-                <span className="px-2 py-0.5 bg-[var(--glass-tone-warning-bg)] text-[var(--glass-tone-warning-fg)] rounded">{panel.textPanel.camera_move}</span>
+                <span className="px-2 py-0.5 bg-[var(--wuhu-neon-pink)]/20 text-[var(--wuhu-neon-pink)] rounded">{panel.textPanel.camera_move}</span>
               )}
               {panel.textPanel?.duration && (
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-[var(--wuhu-bg-surface)] text-white/70 rounded">
@@ -84,13 +84,13 @@ export default function VideoPromptModal({
           <div className="flex justify-end gap-3 pt-4 border-t">
             <button
               onClick={onCancel}
-              className="glass-btn-base px-4 py-2 bg-[var(--wuhu-bg-surface)] text-white/70 hover:bg-[var(--wuhu-bg-surface)]"
+              className="bg-[var(--wuhu-bg-surface)] border border-white/20 hover:bg-white/5 rounded-lg px-4 py-2 text-white/70 hover:text-white transition-all"
             >
               {t('promptModal.cancel')}
             </button>
             <button
               onClick={onSave}
-              className="glass-btn-base px-4 py-2 bg-[var(--glass-accent-from)] text-white hover:bg-[var(--glass-accent-to)]"
+              className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] rounded-lg px-4 py-2 text-white shadow-[0_0_20px_rgba(167,87,255,0.3)] hover:shadow-[0_0_30px_rgba(167,87,255,0.4)] transition-all"
             >
               {t('promptModal.save')}
             </button>

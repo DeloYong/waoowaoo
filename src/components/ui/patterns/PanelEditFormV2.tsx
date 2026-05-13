@@ -56,7 +56,7 @@ export default function PanelEditFormV2({
             <button
               type="button"
               onClick={onRetrySave}
-              className="glass-btn-base glass-btn-soft px-2 py-1 text-xs"
+              className="bg-[var(--wuhu-bg-surface)] border border-white/20 hover:border-white/40 px-2 py-1 text-xs rounded-lg text-white/70 hover:text-white transition-all"
             >
               {t('common.retrySave')}
             </button>
@@ -119,7 +119,7 @@ export default function PanelEditFormV2({
             <button
               type="button"
               onClick={onOpenLocationPicker}
-              className="inline-flex h-8 w-8 items-center justify-center text-white/70 hover:text-[var(--glass-tone-info-fg)] transition-colors"
+              className="inline-flex h-8 w-8 items-center justify-center text-white/70 hover:text-[var(--wuhu-neon-pink)] transition-colors"
               aria-label={t('panel.editLocation')}
               title={t('panel.editLocation')}
             >
@@ -142,7 +142,7 @@ export default function PanelEditFormV2({
             <button
               type="button"
               onClick={onOpenCharacterPicker}
-              className="inline-flex h-8 w-8 items-center justify-center text-white/70 hover:text-[var(--glass-tone-info-fg)] transition-colors"
+              className="inline-flex h-8 w-8 items-center justify-center text-white/70 hover:text-[var(--wuhu-neon-pink)] transition-colors"
               aria-label={t('panel.editCharacter')}
               title={t('panel.editCharacter')}
             >

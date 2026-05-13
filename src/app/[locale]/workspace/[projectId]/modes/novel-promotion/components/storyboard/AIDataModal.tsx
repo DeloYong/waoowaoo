@@ -93,30 +93,30 @@ export default function AIDataModal({
 
   return createPortal(
     <div className="fixed inset-0 z-[120] flex items-center justify-center p-4">
-      <div className="glass-overlay absolute inset-0" onClick={onClose} />
+      <div className="bg-black/60 backdrop-blur-sm animate-fadeIn absolute inset-0" onClick={onClose} />
 
       <div
-        className="relative z-10 glass-surface-modal w-full max-w-[920px] flex flex-col overflow-hidden"
+        className="relative z-10 bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_50px_rgba(167,87,255,0.3)] rounded-2xl w-full max-w-[920px] flex flex-col overflow-hidden"
         style={{ maxHeight: '92vh' }}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-3.5 border-b border-[var(--glass-stroke-base)] flex-shrink-0">
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/10 flex-shrink-0">
           <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-[var(--glass-radius-xs)] bg-[var(--glass-tone-info-bg)] flex-shrink-0">
-              <AppIcon name="clapperboard" className="h-3.5 w-3.5 text-[var(--glass-tone-info-fg)]" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[var(--wuhu-neon-purple)]/20 flex-shrink-0">
+              <AppIcon name="clapperboard" className="h-3.5 w-3.5 text-[var(--wuhu-neon-purple)]" />
             </div>
             <div>
-              <h2 className="text-sm font-semibold text-[var(--glass-text-primary)] leading-none">
+              <h2 className="text-sm font-semibold text-white leading-none">
                 {t('aiData.title')}
               </h2>
-              <p className="text-[11px] text-[var(--glass-text-tertiary)] mt-0.5">
+              <p className="text-[11px] text-white/50 mt-0.5">
                 {t('aiData.subtitle', { number: panelNumber })} · {videoRatio}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="glass-btn-base glass-btn-ghost h-7 w-7 flex-shrink-0"
+            className="text-white/40 hover:text-white hover:bg-white/10 h-7 w-7 flex-shrink-0 rounded-lg"
             aria-label={t('common.cancel')}
           >
             <AppIcon name="close" className="h-3.5 w-3.5" />
@@ -152,23 +152,25 @@ export default function AIDataModal({
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between border-t border-[var(--glass-stroke-base)] px-5 py-3 flex-shrink-0">
-          <p className="text-[11px] text-[var(--glass-text-tertiary)]">
+        <div className="flex items-center justify-between border-t border-white/10 px-5 py-3 flex-shrink-0">
+          <p className="text-[11px] text-white/50">
             {characters.map(c => c.name).join('、')}
             {location ? ` · ${location}` : ''}
           </p>
           <div className="flex gap-2">
-            <GlassButton variant="secondary" size="sm" onClick={onClose}>
-              {t('common.cancel')}
-            </GlassButton>
-            <GlassButton
-              variant="primary"
-              size="sm"
-              onClick={handleSave}
-              iconLeft={<AppIcon name="check" className="h-3.5 w-3.5" />}
+            <button
+              onClick={onClose}
+              className="border border-white/20 text-white/70 hover:border-[var(--wuhu-neon-pink)] hover:text-white hover:bg-white/10 px-4 py-2 text-sm rounded-xl"
             >
+              {t('common.cancel')}
+            </button>
+            <button
+              onClick={handleSave}
+              className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_15px_rgba(167,87,255,0.4)] hover:shadow-[0_0_25px_rgba(255,100,200,0.5)] px-4 py-2 text-sm rounded-xl flex items-center gap-2"
+            >
+              <AppIcon name="check" className="h-3.5 w-3.5" />
               {t('aiData.save')}
-            </GlassButton>
+            </button>
           </div>
         </div>
       </div>

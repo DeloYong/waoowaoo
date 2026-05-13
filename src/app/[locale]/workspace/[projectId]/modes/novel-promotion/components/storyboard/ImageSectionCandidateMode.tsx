@@ -61,7 +61,7 @@ export default function ImageSectionCandidateMode({
         sizes="(max-width: 768px) 100vw, 33vw"
       />
 
-      <div className="absolute bottom-2 left-2 right-2 glass-surface-soft border border-[var(--glass-stroke-base)] p-2 rounded-xl">
+      <div className="absolute bottom-2 left-2 right-2 bg-[var(--wuhu-bg-surface)] border border-white/20 p-2 rounded-xl">
         <div className="flex items-center justify-between">
           <div className="flex gap-1">
             {validCandidates.map((url, idx) => (
@@ -69,9 +69,9 @@ export default function ImageSectionCandidateMode({
                 <button
                   onClick={() => onSelectCandidateIndex(panelId, idx)}
                   className={`w-8 h-8 rounded border-2 overflow-hidden ${idx === safeSelectedIndex
-                    ? 'border-[var(--glass-accent-from)]'
-                    : 'border-[var(--glass-stroke-base)] hover:border-[var(--glass-stroke-focus)]'
-                    }`}
+                    ? 'border-[var(--wuhu-neon-pink)]'
+                    : 'border-white/20 hover:border-[var(--wuhu-neon-purple)]'
+                    } transition-all`}
                 >
                   <MediaImageWithLoading
                     src={url}
@@ -86,7 +86,7 @@ export default function ImageSectionCandidateMode({
                       event.stopPropagation()
                       onPreviewImage(url)
                     }}
-                    className="absolute -top-1 -right-1 w-4 h-4 glass-btn-base glass-btn-soft text-[var(--glass-text-primary)] rounded-full flex items-center justify-center opacity-0 group-hover/thumb:opacity-100 transition-opacity"
+                    className="absolute -top-1 -right-1 w-4 h-4 bg-[var(--wuhu-bg-surface)] text-white rounded-full flex items-center justify-center opacity-0 group-hover/thumb:opacity-100 transition-all"
                     title={t('image.enlargePreview')}
                   >
                     <AppIcon name="searchPlus" className="w-2.5 h-2.5" />
@@ -100,7 +100,7 @@ export default function ImageSectionCandidateMode({
             <button
               onClick={() => onCancelCandidate(panelId)}
               disabled={isConfirming}
-              className="glass-btn-base glass-btn-secondary px-2 py-1 text-xs rounded disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-[var(--wuhu-bg-surface)] border border-white/20 hover:bg-white/5 px-2 py-1 text-xs rounded text-white/70 hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               取消候选
             </button>
@@ -121,7 +121,7 @@ export default function ImageSectionCandidateMode({
                 }
               }}
               disabled={isConfirming}
-              className="glass-btn-base glass-btn-primary flex items-center gap-1 rounded px-2 py-1 text-xs disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] shadow-[0_0_20px_rgba(167,87,255,0.3)] hover:shadow-[0_0_30px_rgba(167,87,255,0.4)] text-white flex items-center gap-1 rounded px-2 py-1 text-xs transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isConfirming ? (
                 <TaskStatusInline state={confirmingState} className="text-white [&>span]:text-white [&_svg]:text-white" />
@@ -133,7 +133,7 @@ export default function ImageSectionCandidateMode({
         </div>
       </div>
 
-      <div className="glass-chip glass-chip-success absolute top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 text-xs">
+      <div className="bg-[var(--wuhu-neon-purple)]/20 text-[var(--wuhu-neon-purple)] absolute top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 text-xs rounded-lg">
         {t('image.candidateCount', { count: safeSelectedIndex + 1 })}/{validCandidates.length}
         {candidateData.candidates.length > validCandidates.length &&
           ` (${t('image.candidateGenerating', { count: candidateData.candidates.length - validCandidates.length })})`}

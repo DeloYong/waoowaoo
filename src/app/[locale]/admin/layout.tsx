@@ -34,19 +34,19 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
   ]
 
   return (
-    <div className="min-h-screen bg-[var(--glass-bg-canvas)]">
+    <div className="min-h-screen bg-[var(--wuhu-bg-canvas)]">
       <div className="flex">
         {/* 侧边栏 */}
-        <aside className="w-64 min-h-screen bg-[var(--glass-bg-surface)] border-r border-[var(--glass-stroke-soft)] p-6">
+        <aside className="w-64 min-h-screen bg-[var(--wuhu-bg-surface)] border-r border-[rgba(167, 87, 255, 0.2)] p-6">
           <div className="mb-8">
-            <h1 className="text-xl font-bold text-[var(--glass-text-primary)]">管理员后台</h1>
+            <h1 className="text-xl font-bold text-[white]">管理员后台</h1>
           </div>
           <nav className="space-y-2">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="flex items-center gap-3 px-4 py-3 rounded-lg text-[var(--glass-text-secondary)] hover:bg-[var(--glass-bg-surface-strong)] hover:text-[var(--glass-text-primary)] transition-colors"
+                className="flex items-center gap-3 px-4 py-3 rounded-lg text-[rgba(255,255,255,0.7)] hover:bg-[var(--wuhu-bg-surface)] hover:text-[white] transition-colors"
               >
                 <span>{item.icon}</span>
                 <span>{item.label}</span>

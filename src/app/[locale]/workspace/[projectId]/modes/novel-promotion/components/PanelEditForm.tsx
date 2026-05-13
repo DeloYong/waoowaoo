@@ -94,13 +94,13 @@ export function CharacterPickerModal({
     <GlassModalShell open onClose={onClose} size="md" title={ts('panel.selectCharacter')}>
       <div className="max-h-[60vh] space-y-4 overflow-y-auto">
         {characters.length === 0 ? (
-          <p className="py-8 text-center text-[var(--glass-text-secondary)]">{ts('panel.noCharacterAssets')}</p>
+          <p className="py-8 text-center text-[rgba(255,255,255,0.7)]">{ts('panel.noCharacterAssets')}</p>
         ) : (
           characters.map(char => {
             const appearances = char.appearances || []
             return (
               <GlassSurface key={char.id} variant="panel" className="space-y-2 p-3">
-                <h5 className="text-sm font-medium text-[var(--glass-text-primary)]">{char.name}</h5>
+                <h5 className="text-sm font-medium text-[white]">{char.name}</h5>
                 <div className="flex flex-wrap gap-2">
                   {appearances.map((app: CharacterAppearance) => {
                     const appearanceName = app.changeReason || ts('panel.defaultAppearance')
@@ -155,7 +155,7 @@ export function LocationPickerModal({
     <GlassModalShell open onClose={onClose} size="md" title={ts('panel.selectLocation')}>
       <div className="max-h-[60vh] overflow-y-auto">
         {locations.length === 0 ? (
-          <p className="py-8 text-center text-[var(--glass-text-secondary)]">{ts('panel.noLocationAssets')}</p>
+          <p className="py-8 text-center text-[rgba(255,255,255,0.7)]">{ts('panel.noLocationAssets')}</p>
         ) : (
           <div className="grid grid-cols-2 gap-3">
             {locations.map(loc => {
@@ -165,18 +165,18 @@ export function LocationPickerModal({
                   key={loc.id}
                   type="button"
                   onClick={() => onSelect(loc.name)}
-                  className={`rounded-[var(--glass-radius-md)] border px-3 py-3 text-left transition-colors ${
+                  className={`rounded-[0.75rem] border px-3 py-3 text-left transition-colors ${
                     isSelected
-                      ? 'bg-[var(--glass-tone-success-bg)] text-[var(--glass-tone-success-fg)]'
-                      : 'bg-[var(--glass-bg-muted)] text-[var(--glass-text-secondary)]'
+                      ? 'bg-[rgba(167, 87, 255, 0.2)] text-[var(--wuhu-neon-purple)]'
+                      : 'bg-[rgba(255,255,255,0.05)] text-[rgba(255,255,255,0.7)]'
                   }`}
                 >
-                  <div className="font-medium text-[var(--glass-text-primary)] flex items-center gap-1.5">
-                    <AppIcon name="imageAlt" className="h-3.5 w-3.5 text-[var(--glass-text-tertiary)]" />
+                  <div className="font-medium text-[white] flex items-center gap-1.5">
+                    <AppIcon name="imageAlt" className="h-3.5 w-3.5 text-[rgba(255,255,255,0.5)]" />
                     <span>{loc.name}</span>
                   </div>
                   {isSelected ? (
-                    <span className="text-xs text-[var(--glass-tone-success-fg)]">{ts('panel.selected')}</span>
+                    <span className="text-xs text-[var(--wuhu-neon-purple)]">{ts('panel.selected')}</span>
                   ) : null}
                 </button>
               )

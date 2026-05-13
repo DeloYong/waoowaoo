@@ -27,15 +27,15 @@ export default function CharacterCardHeader(props: CharacterCardHeaderProps) {
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-sm font-semibold text-[var(--glass-text-primary)]">{props.characterName}</span>
-            <span className="text-xs text-[var(--glass-text-tertiary)] bg-[var(--glass-bg-muted)] px-2 py-0.5 rounded">{props.changeReason}</span>
+            <span className="text-sm font-semibold text-[white]">{props.characterName}</span>
+            <span className="text-xs text-[rgba(255,255,255,0.5)] bg-[rgba(255,255,255,0.05)] px-2 py-0.5 rounded">{props.changeReason}</span>
             {props.isPrimaryAppearance ? (
-              <span className="text-xs text-[var(--glass-tone-success-fg)] bg-[var(--glass-tone-success-bg)] px-2 py-0.5 rounded">{t('character.primary')}</span>
+              <span className="text-xs text-[var(--wuhu-neon-purple)] bg-[rgba(167, 87, 255, 0.2)] px-2 py-0.5 rounded">{t('character.primary')}</span>
             ) : (
-              <span className="text-xs text-[var(--glass-tone-info-fg)] bg-[var(--glass-tone-info-bg)] px-2 py-0.5 rounded">{t('character.secondary')}</span>
+              <span className="text-xs text-[var(--wuhu-neon-cyan)] bg-[rgba(0, 255, 255, 0.1)] px-2 py-0.5 rounded">{t('character.secondary')}</span>
             )}
           </div>
-          <div className="text-xs text-[var(--glass-text-tertiary)]">
+          <div className="text-xs text-[rgba(255,255,255,0.5)]">
             {props.selectedIndex !== null ? t('image.optionSelected', { number: props.selectedIndex + 1 }) : t('image.selectFirst')}
           </div>
         </div>
@@ -47,12 +47,12 @@ export default function CharacterCardHeader(props: CharacterCardHeaderProps) {
   return (
     <div className="space-y-1">
       <div className="flex items-center justify-between gap-1">
-        <div className="text-xs font-semibold text-[var(--glass-text-primary)] truncate" title={props.characterName}>
+        <div className="text-xs font-semibold text-[white] truncate" title={props.characterName}>
           {props.characterName}
         </div>
         <div className="flex items-center gap-1">{props.actions}</div>
       </div>
-      <div className="text-xs text-[var(--glass-text-secondary)] truncate" title={props.changeReason}>
+      <div className="text-xs text-[rgba(255,255,255,0.7)] truncate" title={props.changeReason}>
         {props.changeReason}
       </div>
     </div>

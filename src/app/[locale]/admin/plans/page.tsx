@@ -93,13 +93,13 @@ export default function PlansPage() {
   }
 
   if (loading) {
-    return <div className="text-[var(--glass-text-secondary)]">加载中...</div>
+    return <div className="text-[rgba(255,255,255,0.7)]">加载中...</div>
   }
 
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-[var(--glass-text-primary)]">
+        <h2 className="text-2xl font-bold text-[white]">
           套餐管理
         </h2>
       </div>
@@ -108,110 +108,110 @@ export default function PlansPage() {
         {plans.map((plan) => (
           <div
             key={plan.id}
-            className="bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)] p-6"
+            className="bg-[var(--wuhu-bg-surface)] rounded-lg border border-[rgba(167, 87, 255, 0.2)] p-6"
           >
             {editingPlan === plan.id ? (
               /* 编辑模式 */
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-[var(--glass-text-primary)]">
+                <h3 className="text-lg font-semibold text-[white]">
                   编辑套餐: {plan.id}
                 </h3>
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-[var(--glass-text-secondary)] mb-1">
+                    <label className="block text-sm font-medium text-[rgba(255,255,255,0.7)] mb-1">
                       套餐名称
                     </label>
                     <input
                       type="text"
                       value={editForm.name || ''}
                       onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                      className="w-full px-3 py-2 border border-[var(--glass-stroke-base)] rounded bg-[var(--glass-bg-canvas)] text-[var(--glass-text-primary)]"
+                      className="w-full px-3 py-2 border border-[rgba(167, 87, 255, 0.2)] rounded bg-[var(--wuhu-bg-canvas)] text-[white]"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-[var(--glass-text-secondary)] mb-1">
+                    <label className="block text-sm font-medium text-[rgba(255,255,255,0.7)] mb-1">
                       月付价格 (¥)
                     </label>
                     <input
                       type="number"
                       value={editForm.monthlyPrice ?? 0}
                       onChange={(e) => setEditForm({ ...editForm, monthlyPrice: parseFloat(e.target.value) })}
-                      className="w-full px-3 py-2 border border-[var(--glass-stroke-base)] rounded bg-[var(--glass-bg-canvas)] text-[var(--glass-text-primary)]"
+                      className="w-full px-3 py-2 border border-[rgba(167, 87, 255, 0.2)] rounded bg-[var(--wuhu-bg-canvas)] text-[white]"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-[var(--glass-text-secondary)] mb-1">
+                    <label className="block text-sm font-medium text-[rgba(255,255,255,0.7)] mb-1">
                       年付价格 (¥, 留空表示无年付)
                     </label>
                     <input
                       type="number"
                       value={editForm.yearlyPrice ?? ''}
                       onChange={(e) => setEditForm({ ...editForm, yearlyPrice: e.target.value ? parseFloat(e.target.value) : null })}
-                      className="w-full px-3 py-2 border border-[var(--glass-stroke-base)] rounded bg-[var(--glass-bg-canvas)] text-[var(--glass-text-primary)]"
+                      className="w-full px-3 py-2 border border-[rgba(167, 87, 255, 0.2)] rounded bg-[var(--wuhu-bg-canvas)] text-[white]"
                       placeholder="可选"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-[var(--glass-text-secondary)] mb-1">
+                    <label className="block text-sm font-medium text-[rgba(255,255,255,0.7)] mb-1">
                       每月积分
                     </label>
                     <input
                       type="number"
                       value={editForm.monthlyCredits ?? 0}
                       onChange={(e) => setEditForm({ ...editForm, monthlyCredits: parseInt(e.target.value) })}
-                      className="w-full px-3 py-2 border border-[var(--glass-stroke-base)] rounded bg-[var(--glass-bg-canvas)] text-[var(--glass-text-primary)]"
+                      className="w-full px-3 py-2 border border-[rgba(167, 87, 255, 0.2)] rounded bg-[var(--wuhu-bg-canvas)] text-[white]"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-[var(--glass-text-secondary)] mb-1">
+                    <label className="block text-sm font-medium text-[rgba(255,255,255,0.7)] mb-1">
                       视频时长上限 (秒)
                     </label>
                     <input
                       type="number"
                       value={editForm.maxVideoSeconds ?? 0}
                       onChange={(e) => setEditForm({ ...editForm, maxVideoSeconds: parseInt(e.target.value) })}
-                      className="w-full px-3 py-2 border border-[var(--glass-stroke-base)] rounded bg-[var(--glass-bg-canvas)] text-[var(--glass-text-primary)]"
+                      className="w-full px-3 py-2 border border-[rgba(167, 87, 255, 0.2)] rounded bg-[var(--wuhu-bg-canvas)] text-[white]"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-[var(--glass-text-secondary)] mb-1">
+                    <label className="block text-sm font-medium text-[rgba(255,255,255,0.7)] mb-1">
                       并发任务数
                     </label>
                     <input
                       type="number"
                       value={editForm.maxConcurrency ?? 0}
                       onChange={(e) => setEditForm({ ...editForm, maxConcurrency: parseInt(e.target.value) })}
-                      className="w-full px-3 py-2 border border-[var(--glass-stroke-base)] rounded bg-[var(--glass-bg-canvas)] text-[var(--glass-text-primary)]"
+                      className="w-full px-3 py-2 border border-[rgba(167, 87, 255, 0.2)] rounded bg-[var(--wuhu-bg-canvas)] text-[white]"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-[var(--glass-text-secondary)] mb-1">
+                    <label className="block text-sm font-medium text-[rgba(255,255,255,0.7)] mb-1">
                       试用天数 (0 表示无试用)
                     </label>
                     <input
                       type="number"
                       value={editForm.trialDays ?? 0}
                       onChange={(e) => setEditForm({ ...editForm, trialDays: parseInt(e.target.value) })}
-                      className="w-full px-3 py-2 border border-[var(--glass-stroke-base)] rounded bg-[var(--glass-bg-canvas)] text-[var(--glass-text-primary)]"
+                      className="w-full px-3 py-2 border border-[rgba(167, 87, 255, 0.2)] rounded bg-[var(--wuhu-bg-canvas)] text-[white]"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-[var(--glass-text-secondary)] mb-1">
+                    <label className="block text-sm font-medium text-[rgba(255,255,255,0.7)] mb-1">
                       排序顺序
                     </label>
                     <input
                       type="number"
                       value={editForm.sortOrder ?? 0}
                       onChange={(e) => setEditForm({ ...editForm, sortOrder: parseInt(e.target.value) })}
-                      className="w-full px-3 py-2 border border-[var(--glass-stroke-base)] rounded bg-[var(--glass-bg-canvas)] text-[var(--glass-text-primary)]"
+                      className="w-full px-3 py-2 border border-[rgba(167, 87, 255, 0.2)] rounded bg-[var(--wuhu-bg-canvas)] text-[white]"
                     />
                   </div>
                 </div>
@@ -224,7 +224,7 @@ export default function PlansPage() {
                     onChange={(e) => setEditForm({ ...editForm, isActive: e.target.checked })}
                     className="rounded"
                   />
-                  <label htmlFor={`active-${plan.id}`} className="text-sm text-[var(--glass-text-secondary)]">
+                  <label htmlFor={`active-${plan.id}`} className="text-sm text-[rgba(255,255,255,0.7)]">
                     启用此套餐
                   </label>
                 </div>
@@ -251,7 +251,7 @@ export default function PlansPage() {
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <div className="flex items-center gap-3">
-                      <h3 className="text-lg font-semibold text-[var(--glass-text-primary)]">
+                      <h3 className="text-lg font-semibold text-[white]">
                         {plan.name}
                       </h3>
                       <span className={`px-2 py-1 text-xs rounded-full ${
@@ -267,7 +267,7 @@ export default function PlansPage() {
                         </span>
                       )}
                     </div>
-                    <p className="text-sm text-[var(--glass-text-tertiary)] mt-1">
+                    <p className="text-sm text-[rgba(255,255,255,0.5)] mt-1">
                       ID: {plan.id} | 排序: {plan.sortOrder}
                     </p>
                   </div>
@@ -292,39 +292,39 @@ export default function PlansPage() {
                 </div>
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                  <div className="bg-[var(--glass-bg-canvas)] rounded p-3">
-                    <div className="text-[var(--glass-text-tertiary)]">月付价格</div>
-                    <div className="text-lg font-semibold text-[var(--glass-text-primary)] mt-1">
+                  <div className="bg-[var(--wuhu-bg-canvas)] rounded p-3">
+                    <div className="text-[rgba(255,255,255,0.5)]">月付价格</div>
+                    <div className="text-lg font-semibold text-[white] mt-1">
                       {plan.monthlyPrice < 0 ? '联系商务' : `¥${plan.monthlyPrice}`}
                     </div>
                   </div>
-                  <div className="bg-[var(--glass-bg-canvas)] rounded p-3">
-                    <div className="text-[var(--glass-text-tertiary)]">年付价格</div>
-                    <div className="text-lg font-semibold text-[var(--glass-text-primary)] mt-1">
+                  <div className="bg-[var(--wuhu-bg-canvas)] rounded p-3">
+                    <div className="text-[rgba(255,255,255,0.5)]">年付价格</div>
+                    <div className="text-lg font-semibold text-[white] mt-1">
                       {plan.yearlyPrice === null ? '无' : plan.yearlyPrice < 0 ? '联系商务' : `¥${plan.yearlyPrice}`}
                     </div>
                   </div>
-                  <div className="bg-[var(--glass-bg-canvas)] rounded p-3">
-                    <div className="text-[var(--glass-text-tertiary)]">每月积分</div>
-                    <div className="text-lg font-semibold text-[var(--glass-text-primary)] mt-1">
+                  <div className="bg-[var(--wuhu-bg-canvas)] rounded p-3">
+                    <div className="text-[rgba(255,255,255,0.5)]">每月积分</div>
+                    <div className="text-lg font-semibold text-[white] mt-1">
                       {plan.monthlyCredits}
                     </div>
                   </div>
-                  <div className="bg-[var(--glass-bg-canvas)] rounded p-3">
-                    <div className="text-[var(--glass-text-tertiary)]">视频时长</div>
-                    <div className="text-lg font-semibold text-[var(--glass-text-primary)] mt-1">
+                  <div className="bg-[var(--wuhu-bg-canvas)] rounded p-3">
+                    <div className="text-[rgba(255,255,255,0.5)]">视频时长</div>
+                    <div className="text-lg font-semibold text-[white] mt-1">
                       {plan.maxVideoSeconds} 秒
                     </div>
                   </div>
-                  <div className="bg-[var(--glass-bg-canvas)] rounded p-3">
-                    <div className="text-[var(--glass-text-tertiary)]">并发任务</div>
-                    <div className="text-lg font-semibold text-[var(--glass-text-primary)] mt-1">
+                  <div className="bg-[var(--wuhu-bg-canvas)] rounded p-3">
+                    <div className="text-[rgba(255,255,255,0.5)]">并发任务</div>
+                    <div className="text-lg font-semibold text-[white] mt-1">
                       {plan.maxConcurrency}
                     </div>
                   </div>
-                  <div className="bg-[var(--glass-bg-canvas)] rounded p-3">
-                    <div className="text-[var(--glass-text-tertiary)]">试用期</div>
-                    <div className="text-lg font-semibold text-[var(--glass-text-primary)] mt-1">
+                  <div className="bg-[var(--wuhu-bg-canvas)] rounded p-3">
+                    <div className="text-[rgba(255,255,255,0.5)]">试用期</div>
+                    <div className="text-lg font-semibold text-[white] mt-1">
                       {plan.trialDays > 0 ? `${plan.trialDays} 天` : '无'}
                     </div>
                   </div>

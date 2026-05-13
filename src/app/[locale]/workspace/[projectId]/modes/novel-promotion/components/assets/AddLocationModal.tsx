@@ -132,17 +132,17 @@ export default function AddLocationModal({
   }
 
   return (
-    <div className="fixed inset-0 bg-[var(--glass-overlay)] flex items-center justify-center z-50 p-4">
-      <div className="bg-[var(--glass-bg-surface)] rounded-xl shadow-xl max-w-2xl w-full max-h-[85vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-[var(--bg-black/60 backdrop-blur-sm)] flex items-center justify-center z-50 p-4">
+      <div className="bg-[var(--wuhu-bg-surface)] rounded-xl shadow-xl max-w-2xl w-full max-h-[85vh] overflow-y-auto">
         <div className="p-6">
           {/* 标题 */}
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold text-[var(--glass-text-primary)]">
+            <h3 className="text-lg font-semibold text-[white]">
               {t('modal.addLocation')}
             </h3>
             <button
               onClick={onClose}
-              className="w-8 h-8 rounded-full hover:bg-[var(--glass-bg-muted)] flex items-center justify-center text-[var(--glass-text-tertiary)] hover:text-[var(--glass-text-secondary)] transition-colors"
+              className="w-8 h-8 rounded-full hover:bg-[rgba(255,255,255,0.05)] flex items-center justify-center text-[rgba(255,255,255,0.5)] hover:text-[rgba(255,255,255,0.7)] transition-colors"
             >
               <XMarkIcon className="w-5 h-5" />
             </button>
@@ -151,21 +151,21 @@ export default function AddLocationModal({
           <div className="space-y-5">
             {/* 场景名称 */}
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-[var(--glass-text-secondary)]">
-                {t('location.name')} <span className="text-[var(--glass-tone-danger-fg)]">*</span>
+              <label className="block text-sm font-medium text-[rgba(255,255,255,0.7)]">
+                {t('location.name')} <span className="text-[var(--wuhu-neon-pink)]">*</span>
               </label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder={t('modal.namePlaceholder')}
-                className="w-full px-3 py-2 border border-[var(--glass-stroke-strong)] rounded-lg text-sm focus:ring-2 focus:ring-[var(--glass-tone-info-fg)] focus:border-[var(--glass-stroke-focus)]"
+                className="w-full px-3 py-2 border border-[rgba(167, 87, 255, 0.4)] rounded-lg text-sm focus:ring-2 focus:ring-[var(--wuhu-neon-cyan)] focus:border-[var(--wuhu-neon-cyan)]"
               />
             </div>
 
             {/* 风格选择 */}
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-[var(--glass-text-secondary)]">
+              <label className="block text-sm font-medium text-[rgba(255,255,255,0.7)]">
                 {t('modal.artStyle')}
               </label>
               <div className="grid grid-cols-2 gap-2">
@@ -175,8 +175,8 @@ export default function AddLocationModal({
                     type="button"
                     onClick={() => setArtStyle(style.value)}
                     className={`px-3 py-2 rounded-lg text-sm border transition-all flex items-center ${artStyle === style.value
-                      ? 'border-[var(--glass-stroke-focus)] bg-[var(--glass-tone-info-bg)] text-[var(--glass-tone-info-fg)]'
-                      : 'border-[var(--glass-stroke-base)] hover:border-[var(--glass-stroke-strong)] text-[var(--glass-text-secondary)]'
+                      ? 'border-[var(--wuhu-neon-cyan)] bg-[rgba(0, 255, 255, 0.1)] text-[var(--wuhu-neon-cyan)]'
+                      : 'border-[rgba(167, 87, 255, 0.2)] hover:border-[rgba(167, 87, 255, 0.4)] text-[rgba(255,255,255,0.7)]'
                       }`}
                   >
                     <span>{style.label}</span>
@@ -186,8 +186,8 @@ export default function AddLocationModal({
             </div>
 
             {/* AI 设计区域 */}
-            <div className="bg-[var(--glass-tone-info-bg)] rounded-xl p-4 space-y-3 border border-[var(--glass-stroke-focus)]">
-              <div className="flex items-center gap-2 text-sm font-medium text-[var(--glass-tone-info-fg)]">
+            <div className="bg-[rgba(0, 255, 255, 0.1)] rounded-xl p-4 space-y-3 border border-[var(--wuhu-neon-cyan)]">
+              <div className="flex items-center gap-2 text-sm font-medium text-[var(--wuhu-neon-cyan)]">
                 <SparklesIcon className="w-4 h-4" />
                 <span>{t('modal.aiDesign')}{tc('optional')}</span>
               </div>
@@ -197,7 +197,7 @@ export default function AddLocationModal({
                   value={aiInstruction}
                   onChange={(e) => setAiInstruction(e.target.value)}
                   placeholder={t('modal.aiDesignPlaceholderLocation')}
-                  className="flex-1 px-3 py-2 bg-[var(--glass-bg-surface)] border border-[var(--glass-stroke-focus)] rounded-lg text-sm focus:ring-2 focus:ring-[var(--glass-tone-info-fg)] focus:border-[var(--glass-stroke-focus)]"
+                  className="flex-1 px-3 py-2 bg-[var(--wuhu-bg-surface)] border border-[var(--wuhu-neon-cyan)] rounded-lg text-sm focus:ring-2 focus:ring-[var(--wuhu-neon-cyan)] focus:border-[var(--wuhu-neon-cyan)]"
                   disabled={isAiDesigning}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
@@ -209,7 +209,7 @@ export default function AddLocationModal({
                 <button
                   onClick={handleAiDesign}
                   disabled={isAiDesigning || !aiInstruction.trim()}
-                  className="px-4 py-2 bg-[var(--glass-accent-from)] text-white rounded-lg hover:bg-[var(--glass-accent-to)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-sm whitespace-nowrap"
+                  className="px-4 py-2 bg-[var(--wuhu-neon-purple)] text-white rounded-lg hover:bg-[var(--wuhu-neon-pink)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-sm whitespace-nowrap"
                 >
                   {isAiDesigning ? (
                     <TaskStatusInline state={aiDesigningState} className="text-white [&>span]:text-white [&_svg]:text-white" />
@@ -221,31 +221,31 @@ export default function AddLocationModal({
                   )}
                 </button>
               </div>
-              <p className="text-xs text-[var(--glass-tone-info-fg)]">
+              <p className="text-xs text-[var(--wuhu-neon-cyan)]">
                 {t('modal.aiDesignTip')}
               </p>
             </div>
 
             {/* 场景描述 */}
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-[var(--glass-text-secondary)]">
-                {t('location.description')} <span className="text-[var(--glass-tone-danger-fg)]">*</span>
+              <label className="block text-sm font-medium text-[rgba(255,255,255,0.7)]">
+                {t('location.description')} <span className="text-[var(--wuhu-neon-pink)]">*</span>
               </label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder={t('modal.descPlaceholder')}
-                className="w-full h-36 px-3 py-2 border border-[var(--glass-stroke-strong)] rounded-lg text-sm focus:ring-2 focus:ring-[var(--glass-tone-info-fg)] focus:border-[var(--glass-stroke-focus)] resize-none"
+                className="w-full h-36 px-3 py-2 border border-[rgba(167, 87, 255, 0.4)] rounded-lg text-sm focus:ring-2 focus:ring-[var(--wuhu-neon-cyan)] focus:border-[var(--wuhu-neon-cyan)] resize-none"
                 disabled={isAiDesigning}
               />
             </div>
           </div>
 
           {/* 按钮区 */}
-          <div className="flex gap-3 justify-end mt-6 pt-4 border-t border-[var(--glass-stroke-base)]">
+          <div className="flex gap-3 justify-end mt-6 pt-4 border-t border-[rgba(167, 87, 255, 0.2)]">
             <button
               onClick={onClose}
-              className="px-4 py-2 text-[var(--glass-text-secondary)] bg-[var(--glass-bg-muted)] rounded-lg hover:bg-[var(--glass-bg-muted)] transition-colors text-sm"
+              className="px-4 py-2 text-[rgba(255,255,255,0.7)] bg-[rgba(255,255,255,0.05)] rounded-lg hover:bg-[rgba(255,255,255,0.05)] transition-colors text-sm"
               disabled={isSubmitting}
             >
               {t('common.cancel')}
@@ -253,7 +253,7 @@ export default function AddLocationModal({
             <button
               onClick={handleSubmit}
               disabled={isSubmitting || !name.trim() || !description.trim()}
-              className="px-4 py-2 bg-[var(--glass-accent-from)] text-white rounded-lg hover:bg-[var(--glass-accent-to)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center gap-2"
+              className="px-4 py-2 bg-[var(--wuhu-neon-purple)] text-white rounded-lg hover:bg-[var(--wuhu-neon-pink)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center gap-2"
             >
               {isSubmitting ? (
                 <TaskStatusInline state={submitState} className="text-white [&>span]:text-white [&_svg]:text-white" />

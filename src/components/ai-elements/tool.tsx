@@ -71,7 +71,7 @@ export const ToolHeader = ({
     <button
       type="button"
       className={joinClassName(
-        "flex w-full items-center justify-between px-3 py-2 text-left text-xs font-medium text-[var(--glass-text-secondary)]",
+        "flex w-full items-center justify-between px-3 py-2 text-left text-xs font-medium text-[rgba(255,255,255,0.7)]",
         className,
       )}
       onClick={() => setIsOpen(!isOpen)}
@@ -114,7 +114,7 @@ export type ToolInputProps = HTMLAttributes<HTMLDivElement> & {
 
 export const ToolInput = ({ className, input, ...props }: ToolInputProps) => (
   <div className={joinClassName("space-y-1", className)} {...props}>
-    <div className="mb-1 text-xs text-[var(--glass-text-tertiary)]">Parameters</div>
+    <div className="mb-1 text-xs text-[rgba(255,255,255,0.5)]">Parameters</div>
     <pre className="max-h-56 overflow-x-auto overflow-y-auto rounded-md bg-muted/50 p-3 text-xs leading-relaxed">
       {formatJson(input)}
     </pre>
@@ -135,7 +135,7 @@ export const ToolOutput = ({
   if (!(output || errorText)) return null;
   return (
     <div className={joinClassName("space-y-1", className)} {...props}>
-      <div className="mb-1 text-xs text-[var(--glass-text-tertiary)]">
+      <div className="mb-1 text-xs text-[rgba(255,255,255,0.5)]">
         {errorText ? "Error" : "Result"}
       </div>
       <div className={errorText ? "text-red-500" : undefined}>

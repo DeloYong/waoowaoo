@@ -149,7 +149,7 @@ export default function StoryboardGroup({
       {(isSubmittingStoryboardTask || isSelectingCandidate) && (
         <TaskStatusOverlay
           state={groupOverlayState}
-          className="z-10 rounded-lg bg-[var(--glass-bg-surface-modal)]/90"
+          className="z-10 rounded-lg bg-[var(--wuhu-bg-card)]/90"
         />
       )}
 

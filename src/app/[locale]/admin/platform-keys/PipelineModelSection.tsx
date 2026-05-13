@@ -182,13 +182,13 @@ export default function PipelineModelSection({
   }
 
   return (
-    <div className="bg-[var(--glass-bg-surface)] rounded-lg border border-[var(--glass-stroke-soft)] p-6">
+    <div className="bg-[var(--wuhu-bg-surface)] rounded-lg border border-[rgba(167, 87, 255, 0.2)] p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-lg font-semibold text-[var(--glass-text-primary)]">
+          <h3 className="text-lg font-semibold text-[white]">
             流程模型配置
           </h3>
-          <p className="text-sm text-[var(--glass-text-tertiary)] mt-1">
+          <p className="text-sm text-[rgba(255,255,255,0.5)] mt-1">
             为每个流程步骤设置系统默认模型，所有用户将使用这些模型
           </p>
         </div>
@@ -254,10 +254,10 @@ export default function PipelineModelSection({
             return (
               <div
                 key={pipeline}
-                className="flex flex-col sm:flex-row sm:items-center gap-3 py-3 border-t border-[var(--glass-stroke-soft)]"
+                className="flex flex-col sm:flex-row sm:items-center gap-3 py-3 border-t border-[rgba(167, 87, 255, 0.2)]"
               >
                 <div className="sm:w-32 shrink-0">
-                  <span className="text-sm font-medium text-[var(--glass-text-primary)]">
+                  <span className="text-sm font-medium text-[white]">
                     {label}
                   </span>
                 </div>
@@ -270,7 +270,7 @@ export default function PipelineModelSection({
                         : ''
                       }
                       onChange={(e) => handleModelSelect(pipeline, e.target.value)}
-                      className="w-full px-3 py-2 border border-[var(--glass-stroke-base)] rounded bg-[var(--glass-bg-canvas)] text-[var(--glass-text-primary)] text-sm"
+                      className="w-full px-3 py-2 border border-[rgba(167, 87, 255, 0.2)] rounded bg-[var(--wuhu-bg-canvas)] text-[white] text-sm"
                     >
                       <option value="">选择模型</option>
                       {Object.entries(getFilteredModelsByProvider(pipeline)).map(([provider, models]) => (
@@ -293,11 +293,11 @@ export default function PipelineModelSection({
                 ) : (
                   <div className="flex-1">
                     {assignment?.provider && assignment?.model ? (
-                      <code className="px-3 py-1.5 bg-[var(--glass-bg-canvas)] rounded font-mono text-sm text-[var(--glass-text-secondary)]">
+                      <code className="px-3 py-1.5 bg-[var(--wuhu-bg-canvas)] rounded font-mono text-sm text-[rgba(255,255,255,0.7)]">
                         {PROVIDER_LABELS[assignment.provider] || assignment.provider} :: {assignment.model}
                       </code>
                     ) : (
-                      <span className="text-sm text-[var(--glass-text-tertiary)]">未配置</span>
+                      <span className="text-sm text-[rgba(255,255,255,0.5)]">未配置</span>
                     )}
                   </div>
                 )}
@@ -309,8 +309,8 @@ export default function PipelineModelSection({
 
       {/* 模型统计 */}
       {!editing && (
-        <div className="mt-4 pt-4 border-t border-[var(--glass-stroke-soft)]">
-          <p className="text-xs text-[var(--glass-text-tertiary)]">
+        <div className="mt-4 pt-4 border-t border-[rgba(167, 87, 255, 0.2)]">
+          <p className="text-xs text-[rgba(255,255,255,0.5)]">
             已配置: {(Object.values(assignments || {}).filter(a => a?.provider && a?.model).length)} / {Object.keys(PIPELINE_LABELS).length} 个流程步骤
           </p>
         </div>

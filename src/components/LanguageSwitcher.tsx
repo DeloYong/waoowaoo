@@ -96,15 +96,15 @@ export default function LanguageSwitcher() {
                     onClick={() => setIsMenuOpen((prev) => !prev)}
                     aria-label={SWITCH_CONFIRM_COPY[targetLocale].triggerLabel}
                     aria-expanded={isMenuOpen}
-                    className="glass-btn-base glass-btn-secondary inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm"
+                    className="bg-[var(--wuhu-bg-surface)] border border-white/20 hover:bg-white/5 rounded-lg text-white/70 hover:text-white transition-all inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm"
                 >
                     <AppIcon name="globe" className="h-4 w-4" />
                     <span>{LANGUAGE_LABELS[currentLocale]}</span>
-                    <AppIcon name="chevronDown" className="h-4 w-4 text-[var(--glass-text-tertiary)]" />
+                    <AppIcon name="chevronDown" className="h-4 w-4 text-[rgba(255,255,255,0.5)]" />
                 </button>
 
                 {isMenuOpen ? (
-                    <div className="glass-surface-modal absolute right-0 z-50 mt-2 w-44 rounded-xl p-2">
+                    <div className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_40px_rgba(167,87,255,0.2)] rounded-xl absolute right-0 z-50 mt-2 w-44 rounded-xl p-2">
                         {(Object.entries(LANGUAGE_LABELS) as Array<[Locale, string]>).map(([locale, label]) => {
                             const isActive = locale === currentLocale
                             return (
@@ -113,8 +113,8 @@ export default function LanguageSwitcher() {
                                     type="button"
                                     onClick={() => requestLanguageSwitch(locale)}
                                     className={`w-full rounded-lg px-3 py-2 text-left text-sm transition-colors ${isActive
-                                        ? 'bg-[var(--glass-fill-active)] text-[var(--glass-text-primary)]'
-                                        : 'text-[var(--glass-text-secondary)] hover:bg-[var(--glass-fill-hover)] hover:text-[var(--glass-text-primary)]'
+                                        ? 'bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-[white]'
+                                        : 'text-[rgba(255,255,255,0.7)] hover:bg-white/5 hover:text-[white]'
                                         }`}
                                 >
                                     {label}

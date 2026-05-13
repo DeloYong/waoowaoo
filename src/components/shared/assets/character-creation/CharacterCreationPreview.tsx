@@ -28,7 +28,7 @@ export default function CharacterCreationPreview({
 
   return (
     <div
-      className="border-2 border-dashed border-[var(--glass-stroke-base)] rounded-lg p-4 flex flex-col items-center justify-center cursor-pointer hover:border-[var(--glass-stroke-focus)] hover:bg-[var(--glass-tone-info-bg)] transition-all relative min-h-[120px]"
+      className="border-2 border-dashed border-white/20 rounded-lg p-4 flex flex-col items-center justify-center cursor-pointer hover:border-[var(--wuhu-neon-pink)] hover:bg-[var(--wuhu-neon-purple)]/10 transition-all relative min-h-[120px]"
       onDrop={onDrop}
       onDragOver={(e) => { e.preventDefault(); e.stopPropagation() }}
       onClick={() => fileInputRef.current?.click()}
@@ -58,22 +58,22 @@ export default function CharacterCreationPreview({
                     e.stopPropagation()
                     onClearReference(index)
                   }}
-                  className="glass-btn-base glass-btn-tone-danger absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-xs"
+                  className="absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-xs bg-red-500/20 text-red-400 hover:bg-red-500/30"
                 >
                   ×
                 </button>
               </div>
             ))}
           </div>
-          <p className="text-xs text-center text-[var(--glass-text-secondary)]">
+          <p className="text-xs text-center text-white/70">
             {t('character.selectedCount', { count: referenceImagesBase64.length })}
           </p>
         </div>
       ) : (
         <>
-          <PhotoIcon className="w-10 h-10 text-[var(--glass-text-tertiary)] mb-2" />
-          <p className="text-sm text-[var(--glass-text-secondary)]">{t('character.dropOrClick')}</p>
-          <p className="text-xs text-[var(--glass-text-tertiary)] mt-1">{t('character.maxReferenceImages')}</p>
+          <PhotoIcon className="w-10 h-10 text-white/40 mb-2" />
+          <p className="text-sm text-white/70">{t('character.dropOrClick')}</p>
+          <p className="text-xs text-white/40 mt-1">{t('character.maxReferenceImages')}</p>
         </>
       )}
     </div>
