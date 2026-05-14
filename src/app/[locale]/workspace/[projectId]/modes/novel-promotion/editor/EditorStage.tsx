@@ -109,9 +109,23 @@ export default function EditorStage({
     }
   }
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     if (downloadUrl) {
-      window.open(downloadUrl, '_blank')
+      try {
+        const response = await fetch(downloadUrl)
+        const blob = await response.blob()
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = `complete-video-${Date.now()}.mp4`
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+        URL.revokeObjectURL(url)
+      } catch (err) {
+        console.error('Download failed:', err)
+        window.open(downloadUrl, '_blank')
+      }
     }
   }
 
@@ -191,7 +205,14 @@ export default function EditorStage({
               {selectedClip ? selectedClip.name : t('player.noVideoSelected')}
             </h3>
             <div className="flex-1 rounded-lg overflow-hidden bg-black flex items-center justify-center">
-              {selectedClip ? (
+              {generationStatus === 'completed' && generatedVideoUrl ? (
+                <video
+                  src={generatedVideoUrl}
+                  controls
+                  className="w-full h-full object-contain"
+                  autoPlay
+                />
+              ) : selectedClip ? (
                 <video
                   src={selectedClip.videoUrl}
                   controls
