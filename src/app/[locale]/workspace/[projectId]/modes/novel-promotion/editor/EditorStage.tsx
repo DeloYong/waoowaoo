@@ -72,6 +72,11 @@ export default function EditorStage({
     }
   }, [projectId, episodeId])
 
+  // 组件加载时立即获取一次状态，恢复之前生成的视频
+  useEffect(() => {
+    fetchStatus()
+  }, [fetchStatus])
+
   const handleGenerate = async () => {
     if (generationStatus === 'generating') return
 
@@ -104,8 +109,11 @@ export default function EditorStage({
   }
 
   const handlePreviewGeneratedVideo = () => {
-    if (generatedVideoUrl) {
-      window.open(generatedVideoUrl, '_blank')
+    // 视频已经在页面显示，滚动到播放器位置
+    const videoPlayer = document.querySelector('video')
+    if (videoPlayer) {
+      videoPlayer.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      videoPlayer.play().catch(() => {})
     }
   }
 
@@ -202,7 +210,11 @@ export default function EditorStage({
         <div className="col-span-6">
           <div className="bg-[var(--wuhu-bg-card)] border border-[var(--wuhu-neon-purple)]/30 shadow-[0_0_40px_rgba(167,87,255,0.2)] rounded-xl p-4 h-[calc(100vh-200px)] flex flex-col">
             <h3 className="text-sm font-semibold mb-4 text-rgba(255,255,255,0.9)">
-              {selectedClip ? selectedClip.name : t('player.noVideoSelected')}
+              {generationStatus === 'completed' && generatedVideoUrl
+                ? t('player.generatedFullVideo')
+                : selectedClip
+                  ? selectedClip.name
+                  : t('player.noVideoSelected')}
             </h3>
             <div className="flex-1 rounded-lg overflow-hidden bg-black flex items-center justify-center">
               {generationStatus === 'completed' && generatedVideoUrl ? (
@@ -276,7 +288,7 @@ export default function EditorStage({
                     className="bg-gradient-to-r from-[var(--wuhu-neon-purple)] to-[var(--wuhu-neon-pink)] text-white shadow-[0_0_20px_rgba(167,87,255,0.3)] hover:shadow-[0_0_30px_rgba(167,87,255,0.4)] rounded-lg transition-all flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium w-full mb-3"
                   >
                     <AppIcon name="play" className="w-4 h-4" />
-                    {t('buttons.previewFullVideo')}
+                    播放完整视频
                   </button>
 
                   <button

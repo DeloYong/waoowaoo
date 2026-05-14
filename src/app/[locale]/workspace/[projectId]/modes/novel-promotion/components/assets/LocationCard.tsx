@@ -192,6 +192,24 @@ export default function LocationCard({
 
     const selectionHeaderActions = (
       <>
+        {onCopyFromGlobal && (
+          <button
+            onClick={onCopyFromGlobal}
+            className="w-6 h-6 rounded hover:bg-[rgba(0, 255, 255, 0.1)] flex items-center justify-center transition-colors"
+            title={t('character.copyFromGlobal')}
+          >
+            <AppIcon name="copy" className="w-4 h-4 text-[var(--wuhu-neon-cyan)]" />
+          </button>
+        )}
+        {onSaveToGlobal && (
+          <button
+            onClick={onSaveToGlobal}
+            className="w-6 h-6 rounded hover:bg-[rgba(167, 87, 255, 0.2)] flex items-center justify-center transition-colors"
+            title={t('character.saveToGlobal')}
+          >
+            <AppIcon name="upload" className="w-4 h-4 text-[var(--wuhu-neon-purple)]" />
+          </button>
+        )}
         <ImageGenerationInlineCountButton
           prefix={isGroupTaskRunning ? (
             <>
