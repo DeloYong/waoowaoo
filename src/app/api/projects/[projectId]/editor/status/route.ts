@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { requireUserAuth, isErrorResponse } from '@/lib/api-auth'
 import { apiHandler, ApiError } from '@/lib/api-errors'
-import { getSignedUrl } from '@/lib/storage'
+import { getSignedUrl, DEFAULT_SIGNED_URL_EXPIRES_SECONDS } from '@/lib/storage'
 
 // GET - 查询视频剪辑任务状态
 export const GET = apiHandler(async (
@@ -63,14 +63,15 @@ export const GET = apiHandler(async (
     : task.status === 'processing' || task.status === 'pending' ? 'generating'
     : 'idle'
 
-  const videoUrl = task.resultUrl ? getSignedUrl(task.resultUrl) : undefined
+  const videoUrl = task.resultUrl ? getSignedUrl(task.resultUrl, DEFAULT_SIGNED_URL_EXPIRES_SECONDS, true) : undefined
+  const downloadUrl = task.resultUrl ? getSignedUrl(task.resultUrl, DEFAULT_SIGNED_URL_EXPIRES_SECONDS, false) : undefined
 
   return NextResponse.json({
     success: true,
     status,
     progress: task.progress,
     videoUrl,
-    downloadUrl: videoUrl,
+    downloadUrl,
     message: task.errorMessage || undefined,
   })
 })

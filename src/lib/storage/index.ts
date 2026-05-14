@@ -74,16 +74,18 @@ export async function getSignedObjectUrl(key: string, expiresInSeconds: number =
   })
 }
 
-export function getSignedUrl(key: string, expiresInSeconds: number = DEFAULT_SIGNED_URL_EXPIRES_SECONDS): string {
+export function getSignedUrl(key: string, expiresInSeconds: number = DEFAULT_SIGNED_URL_EXPIRES_SECONDS, inline: boolean = false): string {
   const provider = getStorageProvider()
   if (provider.kind === 'local') {
-    // 本地文件服务使用动态路由 [...path]，路径需要按 '/' 分割，每个部分单独编码
-    // 例如: "videos/abc.mp4" -> "/api/files/videos/abc.mp4"
     const encodedPath = key.split('/').map(segment => encodeURIComponent(segment)).join('/')
     return `/api/files/${encodedPath}`
   }
 
-  return `/api/storage/sign?key=${encodeURIComponent(key)}&expires=${encodeURIComponent(String(expiresInSeconds))}`
+  let url = `/api/storage/sign?key=${encodeURIComponent(key)}&expires=${encodeURIComponent(String(expiresInSeconds))}`
+  if (inline) {
+    url += '&inline=true'
+  }
+  return url
 }
 
 export function getSignedUrls(keys: string[], expiresInSeconds: number = DEFAULT_SIGNED_URL_EXPIRES_SECONDS): string[] {
@@ -141,4 +143,5 @@ export async function downloadAndUploadVideo(
   }, maxRetries, RETRY_DELAY_BASE_MS)
 }
 
+export { DEFAULT_SIGNED_URL_EXPIRES_SECONDS } from './utils'
 export * from './signed-urls'
