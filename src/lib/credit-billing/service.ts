@@ -74,6 +74,7 @@ export async function freezeCredits(
 
       // 使用 FOR UPDATE 行锁锁定用户余额记录，防止并发读取
       // 这确保了在事务期间其他事务无法读取或修改该行
+      // 表名：user_balances（通过 Prisma @@map 设置）
       const balance = await tx.$queryRaw<Array<{
         subscriptionCredits: bigint
         permanentCredits: bigint
@@ -303,14 +304,18 @@ export async function confirmCreditDeduct(
         const permFrozen = typeof breakdown.permanentToFreeze === 'number' ? breakdown.permanentToFreeze : 0
         // 先退 subscription（因为冻结时先从 subscription 扣的），再退 permanent
         subscriptionRefund = Math.min(refundCredits, subFrozen)
-        permanentRefund = refundCredits - subscriptionRefund
+        permanentRefund = Math.max(0, refundCredits - subscriptionRefund)
         // 确保 permanentRefund 不超过 permanentFrozen
         if (permanentRefund > permFrozen) {
           permanentRefund = permFrozen
-          subscriptionRefund = refundCredits - permanentRefund
+          // 确保 subscriptionRefund 非负
+          subscriptionRefund = Math.max(0, refundCredits - permanentRefund)
         }
-      } catch {
+      } catch (parseError) {
+        console.error('[Billing] confirmCreditDeduct: failed to parse freeze metadata', parseError)
         // 解析失败时退到 permanent（兼容旧记录）
+        subscriptionRefund = 0
+        permanentRefund = refundCredits
       }
 
       console.log('[Billing] confirmCreditDeduct', {
@@ -379,7 +384,11 @@ export async function confirmCreditDeduct(
       })
     })
     return true
-  } catch {
+  } catch (error) {
+    console.error('[Billing] operation failed:', {
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    })
     return false
   }
 }
@@ -413,13 +422,18 @@ export async function unfreezeCredits(freezeId: string): Promise<boolean> {
         const permFrozen = typeof breakdown.permanentToFreeze === 'number' ? breakdown.permanentToFreeze : 0
         // 全额退还，按冻结时的比例
         subscriptionRefund = Math.min(credits, subFrozen)
-        permanentRefund = credits - subscriptionRefund
+        permanentRefund = Math.max(0, credits - subscriptionRefund)
+        // 确保 permanentRefund 不超过 permanentFrozen
         if (permanentRefund > permFrozen) {
           permanentRefund = permFrozen
-          subscriptionRefund = credits - permanentRefund
+          // 确保 subscriptionRefund 非负
+          subscriptionRefund = Math.max(0, credits - permanentRefund)
         }
-      } catch {
+      } catch (parseError) {
+        console.error('[Billing] unfreezeCredits: failed to parse freeze metadata', parseError)
         // 解析失败时退到 permanent（兼容旧记录）
+        subscriptionRefund = 0
+        permanentRefund = credits
       }
 
       await tx.balanceFreeze.update({
@@ -465,7 +479,11 @@ export async function unfreezeCredits(freezeId: string): Promise<boolean> {
       })
     })
     return true
-  } catch {
+  } catch (error) {
+    console.error('[Billing] operation failed:', {
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    })
     return false
   }
 }
@@ -542,7 +560,11 @@ export async function grantCredits(
       })
     })
     return true
-  } catch {
+  } catch (error) {
+    console.error('[Billing] operation failed:', {
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    })
     return false
   }
 }

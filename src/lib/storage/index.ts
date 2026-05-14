@@ -77,7 +77,10 @@ export async function getSignedObjectUrl(key: string, expiresInSeconds: number =
 export function getSignedUrl(key: string, expiresInSeconds: number = DEFAULT_SIGNED_URL_EXPIRES_SECONDS): string {
   const provider = getStorageProvider()
   if (provider.kind === 'local') {
-    return `/api/files/${encodeURIComponent(key)}`
+    // 本地文件服务使用动态路由 [...path]，路径需要按 '/' 分割，每个部分单独编码
+    // 例如: "videos/abc.mp4" -> "/api/files/videos/abc.mp4"
+    const encodedPath = key.split('/').map(segment => encodeURIComponent(segment)).join('/')
+    return `/api/files/${encodedPath}`
   }
 
   return `/api/storage/sign?key=${encodeURIComponent(key)}&expires=${encodeURIComponent(String(expiresInSeconds))}`

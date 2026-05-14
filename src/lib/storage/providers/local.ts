@@ -50,7 +50,10 @@ export class LocalStorageProvider implements StorageProvider {
 
   async getSignedObjectUrl(params: SignedUrlParams): Promise<string> {
     void params.expiresInSeconds
-    return `/api/files/${encodeURIComponent(normalizeKey(params.key))}`
+    const key = normalizeKey(params.key)
+    // 本地文件服务使用动态路由 [...path]，路径需要按 '/' 分割，每个部分单独编码
+    const encodedPath = key.split('/').map(segment => encodeURIComponent(segment)).join('/')
+    return `/api/files/${encodedPath}`
   }
 
   async getObjectBuffer(key: string): Promise<Buffer> {
