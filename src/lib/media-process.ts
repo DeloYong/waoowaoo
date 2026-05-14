@@ -44,6 +44,13 @@ export async function processMediaResult(options: ProcessMediaOptions): Promise<
       return await uploadObject(buffer, key, undefined, contentType)
     }
 
+    // 本地文件路径：直接读取上传，不通过 fetch
+    if (source.startsWith('/') && !source.startsWith('http')) {
+      const fs = await import('node:fs/promises')
+      const buffer = await fs.readFile(source)
+      return await uploadObject(buffer, key, undefined, contentType)
+    }
+
     if (type === 'video') {
       return await downloadAndUploadVideo(source, key, 3, downloadHeaders)
     }
