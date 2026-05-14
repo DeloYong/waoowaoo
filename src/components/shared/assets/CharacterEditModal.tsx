@@ -294,7 +294,7 @@ export function CharacterEditModal({
                             <textarea
                                 value={editingIntroduction}
                                 onChange={(e) => setEditingIntroduction(e.target.value)}
-                                rows={3}
+                                rows={6}
                                 className="bg-[var(--wuhu-bg-surface)] border border-white/20 text-white placeholder:text-white/40 rounded-lg focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(255,100,200,0.3)] w-full px-3 py-2 resize-none"
                                 placeholder={t('modal.introductionPlaceholder')}
                             />

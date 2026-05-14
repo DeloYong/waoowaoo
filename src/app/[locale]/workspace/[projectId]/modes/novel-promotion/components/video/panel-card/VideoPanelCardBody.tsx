@@ -101,7 +101,7 @@ export default function VideoPanelCardBody({ runtime }: VideoPanelCardBodyProps)
                   onChange={(event) => promptEditor.setEditingPrompt(event.target.value)}
                   autoFocus
                   className="w-full text-xs p-2 pr-16 border border-[var(--wuhu-neon-purple)]/40 rounded-lg bg-[var(--wuhu-bg-surface)] text-white/70 focus:outline-none focus:ring-1 focus:ring-[var(--wuhu-neon-cyan)] resize-none"
-                  rows={3}
+                  rows={6}
                   placeholder={t('promptModal.placeholder')}
                 />
                 <div className="absolute right-1 top-1 flex flex-col gap-1">

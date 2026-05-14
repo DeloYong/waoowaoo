@@ -167,7 +167,7 @@ export default function AIDataModalFormPane({
           </span>
         </div>
         <AutoGrowTextarea
-          rows={3}
+          rows={6}
           value={description}
           onChange={e => onDescriptionChange(e.target.value)}
           placeholder={t('insert.placeholder.description')}
@@ -327,7 +327,7 @@ export default function AIDataModalFormPane({
                   <div>
                     <FL>{t('aiData.actingGuide')}</FL>
                     <textarea
-                      rows={2}
+                      rows={4}
                       value={actingChar.acting}
                       onChange={e => onActingCharacterChange(actingCharIdx, 'acting', e.target.value)}
                       className="w-full px-3 py-2 text-sm bg-[var(--wuhu-bg-surface)] border border-[var(--wuhu-neon-purple)]/30 rounded-xl text-white placeholder:text-white/30 focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(255,100,200,0.3)] outline-none transition-all resize-none"
@@ -343,7 +343,7 @@ export default function AIDataModalFormPane({
       {/* ④ 视频提示词 — 折叠 */}
       <CollapseSection label={t('aiData.videoPrompt')} iconName="video">
         <AutoGrowTextarea
-          rows={4}
+          rows={6}
           value={videoPrompt}
           onChange={e => onVideoPromptChange(e.target.value)}
           placeholder={t('panel.videoPromptPlaceholder')}

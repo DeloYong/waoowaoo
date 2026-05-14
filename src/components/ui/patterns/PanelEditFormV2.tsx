@@ -95,7 +95,7 @@ export default function PanelEditFormV2({
       <GlassField label={t('panel.sceneDescription')}>
         <GlassTextarea
           density="compact"
-          rows={2}
+          rows={5}
           value={panelData.description || ''}
           onChange={(event) => onUpdate({ description: event.target.value })}
           placeholder={t('panel.sceneDescriptionPlaceholder')}
@@ -105,7 +105,7 @@ export default function PanelEditFormV2({
       <GlassField label={t('panel.videoPrompt')} hint={t('panel.videoPromptHint')}>
         <GlassTextarea
           density="compact"
-          rows={2}
+          rows={4}
           value={panelData.videoPrompt || ''}
           onChange={(event) => onUpdate({ videoPrompt: event.target.value })}
           placeholder={t('panel.videoPromptPlaceholder')}

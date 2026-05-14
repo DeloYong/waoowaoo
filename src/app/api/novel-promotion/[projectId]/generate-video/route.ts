@@ -225,7 +225,7 @@ export const POST = apiHandler(async (
       return NextResponse.json({ tasks: [], total: 0 })
     }
 
-    const results = await Promise.all(
+    const results = await Promise.allSettled(
       panels.map(async (panel) => {
         const payloadClone = { ...body, generationOptions: { ...(body.generationOptions || {}) } }
         if (typeof payloadClone.generationOptions.duration !== 'number' && typeof panel.duration === 'number') {
@@ -249,7 +249,17 @@ export const POST = apiHandler(async (
       }),
     )
 
-    return NextResponse.json({ tasks: results, total: panels.length })
+    const successfulTasks = results
+      .filter((result): result is PromiseFulfilledResult<Awaited<ReturnType<typeof submitTask>>> => result.status === 'fulfilled')
+      .map((result) => result.value)
+    const failedCount = results.filter((r) => r.status === 'rejected').length
+
+    return NextResponse.json({
+      tasks: successfulTasks,
+      total: panels.length,
+      successful: successfulTasks.length,
+      failed: failedCount,
+    })
   }
 
   const storyboardId = body?.storyboardId
