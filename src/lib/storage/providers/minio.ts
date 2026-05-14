@@ -24,6 +24,7 @@ export class MinioStorageProvider implements StorageProvider {
 
   private readonly bucket: string
   private readonly endpoint: string
+  private readonly externalEndpoint?: string
   private readonly region: string
   private readonly forcePathStyle: boolean
   private readonly accessKeyId: string
@@ -32,6 +33,7 @@ export class MinioStorageProvider implements StorageProvider {
 
   constructor() {
     this.endpoint = requireEnv('MINIO_ENDPOINT')
+    this.externalEndpoint = process.env.MINIO_EXTERNAL_ENDPOINT
     this.accessKeyId = requireEnv('MINIO_ACCESS_KEY')
     this.secretAccessKey = requireEnv('MINIO_SECRET_KEY')
     this.bucket = requireEnv('MINIO_BUCKET')
@@ -109,9 +111,24 @@ export class MinioStorageProvider implements StorageProvider {
   }
 
   async getSignedObjectUrl(params: SignedUrlParams): Promise<string> {
+    let client = await this.getClient()
+
+    // 如果配置了外部 endpoint，使用外部 endpoint 生成 signed URL
+    if (this.externalEndpoint) {
+      const { S3Client } = await this.loadSdk()
+      client = new S3Client({
+        endpoint: this.externalEndpoint,
+        region: this.region,
+        forcePathStyle: this.forcePathStyle,
+        credentials: {
+          accessKeyId: this.accessKeyId,
+          secretAccessKey: this.secretAccessKey,
+        },
+      })
+    }
+
     const sdk = await this.loadSdk()
     const presigner = await this.loadPresigner()
-    const client = await this.getClient()
 
     return await presigner.getSignedUrl(
       client,
