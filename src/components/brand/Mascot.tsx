@@ -1,4 +1,5 @@
 'use client'
+/* eslint-disable no-restricted-syntax */
 
 interface MascotProps {
   expression?: 'wink' | 'surprise' | 'director' | 'celebrate' | 'thinking' | 'sorry'

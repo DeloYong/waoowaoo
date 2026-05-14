@@ -71,7 +71,8 @@ async function downloadFile(url: string, outputPath: string): Promise<void> {
   await fs.writeFile(outputPath, Buffer.from(arrayBuffer))
 }
 
-async function getVideoDuration(videoPath: string): Promise<number> {
+// 暂时保留，后续可能需要使用
+async function _getVideoDuration(videoPath: string): Promise<number> {
   const { stdout } = await exec(`ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "${videoPath}"`)
   return parseFloat(stdout.trim())
 }
@@ -79,7 +80,7 @@ async function getVideoDuration(videoPath: string): Promise<number> {
 async function concatenateVideosWithTransitions(
   inputVideos: string[],
   outputPath: string,
-  transitionDuration: number = TRANSITION_DURATION,
+  _transitionDuration: number = TRANSITION_DURATION,
 ): Promise<void> {
   if (inputVideos.length === 0) {
     throw new Error('No input videos provided for concatenation')
@@ -158,7 +159,7 @@ async function addWatermark(
 
 async function handleVideoEditingTask(job: Job<TaskJobData>): Promise<{ resultUrl: string; episodeId: string }> {
   const payload = job.data.payload as VideoEditingTaskPayload
-  const { projectId, episodeId, shardVideos } = payload
+  const { projectId: _projectId, episodeId, shardVideos } = payload
 
   if (!shardVideos || shardVideos.length === 0) {
     throw new Error('No shard videos provided for editing')
