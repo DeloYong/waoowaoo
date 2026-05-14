@@ -731,7 +731,7 @@ export async function uploadAudioSourceToCos(source: string | Buffer, keyPrefix:
 
 export function toSignedUrlIfCos(keyOrUrl: string | null | undefined, ttlSeconds = 3600) {
   if (!keyOrUrl) return null
-  return keyOrUrl.startsWith('images/') || keyOrUrl.startsWith('voice/') || keyOrUrl.startsWith('video/')
+  return keyOrUrl.startsWith('images/') || keyOrUrl.startsWith('voice/') || keyOrUrl.startsWith('video/') || keyOrUrl.startsWith('videos/')
     ? getSignedUrl(keyOrUrl, ttlSeconds)
     : keyOrUrl
 }
