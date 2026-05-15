@@ -44,7 +44,7 @@ export const GET = apiHandler(async (request: Request) => {
 
   try {
     // 1. 获取用户概览信息
-    const [userBalance, userSubscription, totalUsage] = await Promise.all([
+    const [userBalance, userSubscription] = await Promise.all([
       prisma.userBalance.findUnique({
         where: { userId: session.user.id },
         select: {
@@ -58,15 +58,6 @@ export const GET = apiHandler(async (request: Request) => {
         where: { userId: session.user.id },
         include: { plan: true },
       }),
-      prisma.balanceTransaction.aggregate({
-        where: {
-          userId: session.user.id,
-          type: 'consume',
-          createdAt: { gte: startDate, lte: endDate },
-        },
-        _sum: { amount: true },
-        _count: { id: true },
-      }),
     ])
 
     // 2. 获取消耗趋势数据 - 从 balanceTransaction 表读取
@@ -76,26 +67,41 @@ export const GET = apiHandler(async (request: Request) => {
       taskCount: number
     }> = []
 
-    const transactionStats = await prisma.balanceTransaction.groupBy({
-      by: ['createdAt'],
+    // 需要查询所有记录来手动聚合（因为 credit_deduct 的 amount 为 0，实际消耗在 billingMeta 中）
+    const allTransactions = await prisma.balanceTransaction.findMany({
       where: {
         userId: session.user.id,
-        type: 'consume',
+        type: { in: ['consume', 'credit_deduct'] },
         createdAt: { gte: startDate, lte: endDate },
       },
-      _sum: { amount: true },
-      _count: { id: true },
+      select: {
+        id: true,
+        type: true,
+        amount: true,
+        billingMeta: true,
+        createdAt: true,
+      },
       orderBy: { createdAt: 'asc' },
     })
 
     // 按天聚合
     const trendMap = new Map<string, { totalCredits: number; taskCount: number }>()
-    transactionStats.forEach(stat => {
-      const dateStr = stat.createdAt.toISOString().split('T')[0]
+    allTransactions.forEach(record => {
+      const dateStr = record.createdAt.toISOString().split('T')[0]
       const existing = trendMap.get(dateStr) || { totalCredits: 0, taskCount: 0 }
+
+      // 计算消耗量：credit_deduct 从 billingMeta 取 chargedCredits，consume 用 amount
+      const billingMeta = record.billingMeta ? JSON.parse(record.billingMeta) : {}
+      let usage = 0
+      if (record.type === 'credit_deduct') {
+        usage = billingMeta.chargedCredits || billingMeta.credits || 0
+      } else {
+        usage = Math.abs(record.amount.toNumber())
+      }
+
       trendMap.set(dateStr, {
-        totalCredits: existing.totalCredits + Math.abs(stat._sum.amount?.toNumber() || 0),
-        taskCount: existing.taskCount + stat._count.id,
+        totalCredits: existing.totalCredits + usage,
+        taskCount: existing.taskCount + 1,
       })
     })
 
@@ -109,7 +115,7 @@ export const GET = apiHandler(async (request: Request) => {
       prisma.balanceTransaction.findMany({
         where: {
           userId: session.user.id,
-          type: 'consume',
+          type: { in: ['consume', 'credit_deduct'] },
           createdAt: { gte: startDate, lte: endDate },
         },
         orderBy: { createdAt: 'desc' },
@@ -119,29 +125,61 @@ export const GET = apiHandler(async (request: Request) => {
       prisma.balanceTransaction.count({
         where: {
           userId: session.user.id,
-          type: 'consume',
+          type: { in: ['consume', 'credit_deduct'] },
           createdAt: { gte: startDate, lte: endDate },
         },
       }),
     ])
 
-    // 格式化明细数据 - 从 billingMeta 中解析详细信息
+    // 查询相关的 freeze 元数据（用于 credit_deduct 记录）
+    const freezeIds = usageRecords.filter(r => r.freezeId).map(r => r.freezeId!)
+    const freezes = freezeIds.length > 0
+      ? await prisma.balanceFreeze.findMany({
+        where: { id: { in: freezeIds } },
+        select: { id: true, metadata: true, source: true },
+      })
+      : []
+    const freezeMap = new Map(freezes.map(f => [f.id, f]))
+
+    // 格式化明细数据 - 同时处理现金消费和积分消费两种类型
     const formattedRecords = usageRecords.map(record => {
       const billingMeta = record.billingMeta ? JSON.parse(record.billingMeta) : {}
+      const freeze = record.freezeId ? freezeMap.get(record.freezeId) : null
+      const freezeMeta = freeze?.metadata ? JSON.parse(freeze.metadata) : {}
+
+      // credit_deduct 类型从 freeze 中获取详细信息，amount 用 chargedCredits
+      const isCreditType = record.type === 'credit_deduct'
+      const cost = isCreditType
+        ? (billingMeta.chargedCredits || billingMeta.credits || 0)
+        : Math.abs(record.amount.toNumber())
+
+      // 从 freeze 元数据或 billingMeta 获取详情
+      const detailMeta = { ...freezeMeta, ...billingMeta }
+
       return {
         id: record.id,
         projectId: record.projectId,
-        projectName: record.projectId, // 后续可以补充项目名查询
-        apiType: billingMeta.apiType || 'unknown',
-        model: billingMeta.model || 'unknown',
-        action: record.taskType || 'consume',
-        quantity: billingMeta.quantity || 1,
-        unit: billingMeta.unit || 'call',
-        cost: Math.abs(record.amount.toNumber()),
-        metadata: billingMeta,
+        projectName: record.projectId,
+        apiType: detailMeta.apiType || detailMeta.source || 'unknown',
+        model: detailMeta.model || 'unknown',
+        action: record.taskType || detailMeta.action || record.type,
+        quantity: detailMeta.quantity || 1,
+        unit: detailMeta.unit || (isCreditType ? 'credit' : 'call'),
+        cost,
+        isCredit: isCreditType,
+        metadata: detailMeta,
         createdAt: record.createdAt.toISOString(),
       }
     })
+
+    // 计算周期内总使用量
+    const periodUsage = allTransactions.reduce((sum, record) => {
+      if (record.type === 'credit_deduct') {
+        const billingMeta = record.billingMeta ? JSON.parse(record.billingMeta) : {}
+        return sum + (billingMeta.chargedCredits || billingMeta.credits || 0)
+      }
+      return sum + Math.abs(record.amount.toNumber())
+    }, 0)
 
     // 4. 构造返回结果
     const overview = {
@@ -149,8 +187,8 @@ export const GET = apiHandler(async (request: Request) => {
       availableCredits: (userBalance?.subscriptionCredits || 0) + (userBalance?.permanentCredits || 0) - (userBalance?.frozenCredits || 0),
       frozenCredits: userBalance?.frozenCredits || 0,
       totalSpent: userBalance?.totalSpent?.toNumber() || 0,
-      periodUsage: Math.abs(totalUsage._sum.amount?.toNumber() || 0),
-      periodTaskCount: totalUsage._count.id || 0,
+      periodUsage,
+      periodTaskCount: allTransactions.length,
       subscription: userSubscription ? {
         planId: userSubscription.planId,
         planName: userSubscription.plan.name,

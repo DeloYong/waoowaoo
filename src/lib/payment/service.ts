@@ -309,14 +309,88 @@ export async function getUserOrders(
   }
 }
 
+const DEFAULT_PACKAGES = [
+  {
+    id: 'pkg-mini',
+    name: '迷你包',
+    credits: 500,
+    price: 9.9,
+    originalPrice: 14.9,
+    bonusCredits: 0,
+    isPopular: false,
+    isActive: true,
+    sortOrder: 0,
+    description: '适合轻度使用，体验AI创作',
+  },
+  {
+    id: 'pkg-small',
+    name: '小型包',
+    credits: 2000,
+    price: 29.9,
+    originalPrice: 39.9,
+    bonusCredits: 200,
+    isPopular: false,
+    isActive: true,
+    sortOrder: 1,
+    description: '额外赠送200积分',
+  },
+  {
+    id: 'pkg-medium',
+    name: '中型包',
+    credits: 5000,
+    price: 69.9,
+    originalPrice: 99.9,
+    bonusCredits: 500,
+    isPopular: true,
+    isActive: true,
+    sortOrder: 2,
+    description: '热门推荐，高性价比',
+  },
+  {
+    id: 'pkg-large',
+    name: '大型包',
+    credits: 12000,
+    price: 149.9,
+    originalPrice: 199.9,
+    bonusCredits: 2000,
+    isPopular: false,
+    isActive: true,
+    sortOrder: 3,
+    description: '创作者首选，赠送2000积分',
+  },
+  {
+    id: 'pkg-xl',
+    name: '超大包',
+    credits: 30000,
+    price: 299.9,
+    originalPrice: 399.9,
+    bonusCredits: 5000,
+    isPopular: false,
+    isActive: true,
+    sortOrder: 4,
+    description: '重度用户专属，赠送5000积分',
+  },
+]
+
 /**
  * 获取充值套餐列表
  */
 export async function getRechargePackages(): Promise<RechargePackageInfo[]> {
-  const packages = await prisma.rechargePackage.findMany({
+  let packages = await prisma.rechargePackage.findMany({
     where: { isActive: true },
     orderBy: [{ sortOrder: 'asc' }, { price: 'asc' }],
   })
+
+  // 如果没有套餐，自动创建默认套餐
+  if (packages.length === 0) {
+    for (const pkg of DEFAULT_PACKAGES) {
+      await prisma.rechargePackage.create({ data: pkg })
+    }
+    packages = await prisma.rechargePackage.findMany({
+      where: { isActive: true },
+      orderBy: [{ sortOrder: 'asc' }, { price: 'asc' }],
+    })
+  }
 
   return packages.map((pkg) => {
     const totalCredits = pkg.credits + pkg.bonusCredits
