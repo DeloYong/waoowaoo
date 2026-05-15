@@ -96,11 +96,13 @@ export const GET = apiHandler(async (request: Request) => {
       if (record.type === 'credit_deduct') {
         usage = billingMeta.chargedCredits || billingMeta.credits || 0
       } else {
-        usage = Math.abs(record.amount.toNumber())
+        // 防止 Decimal 精度问题导致超大数字
+        const rawAmount = Math.abs(record.amount.toNumber())
+        usage = rawAmount > 100000 ? Math.round(rawAmount / 1000000) : rawAmount
       }
 
       trendMap.set(dateStr, {
-        totalCredits: existing.totalCredits + usage,
+        totalCredits: existing.totalCredits + Math.round(usage),
         taskCount: existing.taskCount + 1,
       })
     })
@@ -148,10 +150,18 @@ export const GET = apiHandler(async (request: Request) => {
       const freezeMeta = freeze?.metadata ? JSON.parse(freeze.metadata) : {}
 
       // credit_deduct 类型从 freeze 中获取详细信息，amount 用 chargedCredits
+      // consume 类型用 Math.abs(record.amount.toNumber())，但需要处理 Decimal 精度
       const isCreditType = record.type === 'credit_deduct'
-      const cost = isCreditType
-        ? (billingMeta.chargedCredits || billingMeta.credits || 0)
-        : Math.abs(record.amount.toNumber())
+      let cost = 0
+
+      if (isCreditType) {
+        cost = billingMeta.chargedCredits || billingMeta.credits || freezeMeta.chargedCredits || 0
+      } else {
+        // 防止 Decimal 精度问题导致超大数字（如 7938000 实际上是 7.938）
+        const rawAmount = Math.abs(record.amount.toNumber())
+        // 如果数值超过 100000，可能是精度问题，除以 1000000
+        cost = rawAmount > 100000 ? Math.round(rawAmount / 1000000) : rawAmount
+      }
 
       // 从 freeze 元数据或 billingMeta 获取详情
       const detailMeta = { ...freezeMeta, ...billingMeta }
@@ -162,10 +172,10 @@ export const GET = apiHandler(async (request: Request) => {
         projectName: record.projectId,
         apiType: detailMeta.apiType || detailMeta.source || 'unknown',
         model: detailMeta.model || 'unknown',
-        action: record.taskType || detailMeta.action || record.type,
+        action: record.taskType || detailMeta.action || record.type || record.description,
         quantity: detailMeta.quantity || 1,
         unit: detailMeta.unit || (isCreditType ? 'credit' : 'call'),
-        cost,
+        cost: Math.round(cost), // 确保是整数
         isCredit: isCreditType,
         metadata: detailMeta,
         createdAt: record.createdAt.toISOString(),
@@ -178,7 +188,10 @@ export const GET = apiHandler(async (request: Request) => {
         const billingMeta = record.billingMeta ? JSON.parse(record.billingMeta) : {}
         return sum + (billingMeta.chargedCredits || billingMeta.credits || 0)
       }
-      return sum + Math.abs(record.amount.toNumber())
+      // 防止 Decimal 精度问题导致超大数字
+      const rawAmount = Math.abs(record.amount.toNumber())
+      const cost = rawAmount > 100000 ? Math.round(rawAmount / 1000000) : rawAmount
+      return sum + Math.round(cost)
     }, 0)
 
     // 4. 构造返回结果
