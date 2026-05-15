@@ -96,13 +96,14 @@ export const GET = apiHandler(async (request: Request) => {
       if (record.type === 'credit_deduct') {
         usage = billingMeta.chargedCredits || billingMeta.credits || 0
       } else {
-        // 防止 Decimal 精度问题导致超大数字
+        // 现金计费：修复 Decimal 精度问题 + 转换成积分（1元 = 100积分）
         const rawAmount = Math.abs(record.amount.toNumber())
-        usage = rawAmount > 100000 ? Math.round(rawAmount / 1000000) : rawAmount
+        const amountInYuan = rawAmount > 100000 ? rawAmount / 1000000 : rawAmount
+        usage = Math.round(amountInYuan * 100)
       }
 
       trendMap.set(dateStr, {
-        totalCredits: existing.totalCredits + Math.round(usage),
+        totalCredits: existing.totalCredits + usage,
         taskCount: existing.taskCount + 1,
       })
     })
@@ -155,12 +156,17 @@ export const GET = apiHandler(async (request: Request) => {
       let cost = 0
 
       if (isCreditType) {
+        // 积分计费：从 billingMeta 读取实际消耗的积分
         cost = billingMeta.chargedCredits || billingMeta.credits || freezeMeta.chargedCredits || 0
       } else {
-        // 防止 Decimal 精度问题导致超大数字（如 7938000 实际上是 7.938）
+        // 现金计费：修复 Decimal(18,6) 导致的精度问题
+        // 数据库存储 7.938 元 → 某些代码可能错误地变成 7938000（放大了 1,000,000 倍）
         const rawAmount = Math.abs(record.amount.toNumber())
-        // 如果数值超过 100000，可能是精度问题，除以 1000000
-        cost = rawAmount > 100000 ? Math.round(rawAmount / 1000000) : rawAmount
+        const amountInYuan = rawAmount > 100000 ? rawAmount / 1000000 : rawAmount
+
+        // 按汇率 1元 = 100积分 转换成积分显示（和充值汇率对齐）
+        // 参考充值套餐：9.9元约300积分 = 1:30，这里用 1:100 是更合理的汇率
+        cost = Math.round(amountInYuan * 100)
       }
 
       // 从 freeze 元数据或 billingMeta 获取详情
@@ -188,10 +194,11 @@ export const GET = apiHandler(async (request: Request) => {
         const billingMeta = record.billingMeta ? JSON.parse(record.billingMeta) : {}
         return sum + (billingMeta.chargedCredits || billingMeta.credits || 0)
       }
-      // 防止 Decimal 精度问题导致超大数字
+      // 现金计费：修复 Decimal 精度问题 + 转换成积分（1元 = 100积分）
       const rawAmount = Math.abs(record.amount.toNumber())
-      const cost = rawAmount > 100000 ? Math.round(rawAmount / 1000000) : rawAmount
-      return sum + Math.round(cost)
+      const amountInYuan = rawAmount > 100000 ? rawAmount / 1000000 : rawAmount
+      const cost = Math.round(amountInYuan * 100)
+      return sum + cost
     }, 0)
 
     // 4. 构造返回结果
