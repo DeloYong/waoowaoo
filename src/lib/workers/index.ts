@@ -37,3 +37,17 @@ async function shutdown(signal: string) {
 
 process.on('SIGINT', () => void shutdown('SIGINT'))
 process.on('SIGTERM', () => void shutdown('SIGTERM'))
+
+process.on('uncaughtException', (error) => {
+  _ulogError('[Workers] uncaughtException', {
+    message: error.message,
+    name: error.name,
+    stack: error.stack?.split('\n').slice(0, 5).join('\n'),
+  })
+})
+
+process.on('unhandledRejection', (reason) => {
+  _ulogError('[Workers] unhandledRejection', {
+    message: reason instanceof Error ? reason.message : String(reason),
+  })
+})
