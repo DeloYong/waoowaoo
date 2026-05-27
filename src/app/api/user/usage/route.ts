@@ -3,6 +3,7 @@ import { requireUserAuth, isErrorResponse, badRequest } from '@/lib/api-auth'
 import { prisma } from '@/lib/prisma'
 import { startOfDay, subDays, parseISO } from 'date-fns'
 import { apiHandler } from '@/lib/api-errors'
+import { normalizeConsumeAmount } from '@/lib/billing/consume-amount-fix'
 
 export const GET = apiHandler(async (request: Request) => {
   const authResult = await requireUserAuth()
@@ -96,10 +97,8 @@ export const GET = apiHandler(async (request: Request) => {
       if (record.type === 'credit_deduct') {
         usage = billingMeta.chargedCredits || billingMeta.credits || 0
       } else {
-        // 现金计费：修复 Decimal 精度问题 + 转换成积分（1元 = 100积分）
-        const rawAmount = Math.abs(record.amount.toNumber())
-        const amountInYuan = rawAmount > 100000 ? rawAmount / 1000000 : rawAmount
-        usage = Math.round(amountInYuan * 100)
+        // 现金计费：修复历史数据精度异常
+        usage = normalizeConsumeAmount(record.amount.toNumber())
       }
 
       trendMap.set(dateStr, {
@@ -159,14 +158,8 @@ export const GET = apiHandler(async (request: Request) => {
         // 积分计费：从 billingMeta 读取实际消耗的积分
         cost = billingMeta.chargedCredits || billingMeta.credits || freezeMeta.chargedCredits || 0
       } else {
-        // 现金计费：修复 Decimal(18,6) 导致的精度问题
-        // 数据库存储 7.938 元 → 某些代码可能错误地变成 7938000（放大了 1,000,000 倍）
-        const rawAmount = Math.abs(record.amount.toNumber())
-        const amountInYuan = rawAmount > 100000 ? rawAmount / 1000000 : rawAmount
-
-        // 按汇率 1元 = 100积分 转换成积分显示（和充值汇率对齐）
-        // 参考充值套餐：9.9元约300积分 = 1:30，这里用 1:100 是更合理的汇率
-        cost = Math.round(amountInYuan * 100)
+        // 现金计费：修复历史数据精度异常（包括 Decimal 精度放大、积分值误存等）
+        cost = normalizeConsumeAmount(record.amount.toNumber())
       }
 
       // 从 freeze 元数据或 billingMeta 获取详情
@@ -194,11 +187,8 @@ export const GET = apiHandler(async (request: Request) => {
         const billingMeta = record.billingMeta ? JSON.parse(record.billingMeta) : {}
         return sum + (billingMeta.chargedCredits || billingMeta.credits || 0)
       }
-      // 现金计费：修复 Decimal 精度问题 + 转换成积分（1元 = 100积分）
-      const rawAmount = Math.abs(record.amount.toNumber())
-      const amountInYuan = rawAmount > 100000 ? rawAmount / 1000000 : rawAmount
-      const cost = Math.round(amountInYuan * 100)
-      return sum + cost
+      // 现金计费：修复历史数据精度异常
+      return sum + normalizeConsumeAmount(record.amount.toNumber())
     }, 0)
 
     // 4. 构造返回结果

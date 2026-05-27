@@ -29,3 +29,47 @@ describe('User Usage API - Dual Billing Support', () => {
     expect(creditBillingModule.confirmCreditDeduct).toBeDefined()
   })
 })
+
+describe('normalizeConsumeAmount - cash billing amount fix', () => {
+  it('handles normal amounts within reasonable range (yuan to credits)', async () => {
+    const { normalizeConsumeAmount } = await import('@/lib/billing/consume-amount-fix')
+
+    // 7.938 yuan -> 794 credits
+    expect(normalizeConsumeAmount(7.938)).toBe(794)
+    // 0.25 yuan -> 25 credits
+    expect(normalizeConsumeAmount(0.25)).toBe(25)
+    // 100 yuan -> 10000 credits
+    expect(normalizeConsumeAmount(100)).toBe(10000)
+  })
+
+  it('fixes Decimal precision amplified by 1,000,000x', async () => {
+    const { normalizeConsumeAmount } = await import('@/lib/billing/consume-amount-fix')
+
+    // 7.938000 -> read as 7938000 (decimal point swallowed)
+    expect(normalizeConsumeAmount(7938000)).toBe(794)
+  })
+
+  it('fixes Decimal precision amplified by 1,000x', async () => {
+    const { normalizeConsumeAmount } = await import('@/lib/billing/consume-amount-fix')
+
+    // 7.938 -> read as 7938 (3 decimal places swallowed)
+    expect(normalizeConsumeAmount(7938)).toBe(794)
+  })
+
+  it('correctly handles various edge case magnitudes', async () => {
+    const { normalizeConsumeAmount } = await import('@/lib/billing/consume-amount-fix')
+
+    // 0.1 yuan read as 100000 (decimal swallowed) -> 10 credits
+    expect(normalizeConsumeAmount(100000)).toBe(10)
+    // 1.72 yuan read as 1720 (thousandx) -> 172 credits
+    expect(normalizeConsumeAmount(1720)).toBe(172)
+  })
+
+  it('handles negative amounts correctly', async () => {
+    const { normalizeConsumeAmount } = await import('@/lib/billing/consume-amount-fix')
+
+    // Negative amounts should return positive credits
+    expect(normalizeConsumeAmount(-7.938)).toBe(794)
+    expect(normalizeConsumeAmount(-7938000)).toBe(794)
+  })
+})
