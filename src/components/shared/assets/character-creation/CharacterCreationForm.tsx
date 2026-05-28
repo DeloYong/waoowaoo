@@ -238,21 +238,6 @@ export default function CharacterCreationForm({
 
       {createMode === 'description' && (
         <>
-          <div className="space-y-2">
-            <label className="text-white/70 block">
-              {isSubAppearance ? t('character.modifyDescription') : t('character.description')} <span className="text-red-400">*</span>
-            </label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={4}
-              placeholder={isSubAppearance
-                ? t('character.modifyDescriptionPlaceholder')
-                : t('character.descPlaceholder')}
-              className="bg-[var(--wuhu-bg-surface)] border border-white/20 text-white placeholder:text-white/40 rounded-lg focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(255,100,200,0.3)] w-full px-3 py-2 text-sm resize-none"
-            />
-          </div>
-
           {!isSubAppearance && (
             <div className="bg-[var(--wuhu-bg-surface)] rounded-xl p-4 space-y-3 border border-white/20">
               <div className="flex items-center gap-2 text-sm font-medium text-[var(--wuhu-neon-purple)]">
@@ -284,6 +269,21 @@ export default function CharacterCreationForm({
               </div>
             </div>
           )}
+
+          <div className="space-y-2">
+            <label className="text-white/70 block">
+              {isSubAppearance ? t('character.modifyDescription') : t('character.description')} <span className="text-red-400">*</span>
+            </label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={4}
+              placeholder={isSubAppearance
+                ? t('character.modifyDescriptionPlaceholder')
+                : t('character.descPlaceholder')}
+              className="bg-[var(--wuhu-bg-surface)] border border-white/20 text-white placeholder:text-white/40 rounded-lg focus:border-[var(--wuhu-neon-pink)] focus:shadow-[0_0_15px_rgba(255,100,200,0.3)] w-full px-3 py-2 text-sm resize-none"
+            />
+          </div>
         </>
       )}
     </div>
