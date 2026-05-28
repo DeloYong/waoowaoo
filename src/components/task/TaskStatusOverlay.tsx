@@ -19,7 +19,7 @@ export default function TaskStatusOverlay({ state, className }: TaskStatusOverla
     <div
       className={[
         'absolute inset-0 flex flex-col items-center justify-center',
-        'bg-[var(--bg-black/60 backdrop-blur-sm)]',
+        'bg-black/60 backdrop-blur-sm',
         className || '',
       ].join(' ').trim()}
     >

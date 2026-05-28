@@ -172,10 +172,15 @@ export default function VoiceSettings({
                                 voiceFileInputRef.current?.click()
                             }}
                             disabled={uploadVoice.isPending}
-                            className="flex-1 min-w-[80px] px-2 py-1.5 bg-[var(--wuhu-bg-surface)] border border-[rgba(167, 87, 255, 0.2)] rounded-lg text-xs text-[rgba(255,255,255,0.7)] font-medium hover:border-[var(--wuhu-neon-purple)] hover:bg-[rgba(167, 87, 255, 0.2)] hover:text-[var(--wuhu-neon-purple)] transition-all relative group whitespace-nowrap"
+                            className={`flex-1 min-w-[80px] px-2 py-1.5 rounded-lg text-xs font-medium transition-all relative group whitespace-nowrap ${
+                                uploadVoice.isPending
+                                    ? 'bg-white/10 text-white/50 cursor-not-allowed'
+                                    : 'bg-[var(--wuhu-bg-surface)] border border-[rgba(167, 87, 255, 0.4)] text-white hover:border-[var(--wuhu-neon-cyan)] hover:bg-[rgba(0,255,255,0.1)] hover:text-[var(--wuhu-neon-cyan)]'
+                            }`}
                         >
                             <div className="flex items-center justify-center gap-1">
-                                {hasCustomVoice && <div className="w-1.5 h-1.5 bg-[var(--wuhu-neon-purple)] rounded-full flex-shrink-0"></div>}
+                                {!uploadVoice.isPending && <AppIcon name="upload" className="w-3 h-3 flex-shrink-0" />}
+                                {hasCustomVoice && !uploadVoice.isPending && <div className="w-1.5 h-1.5 bg-[var(--wuhu-neon-purple)] rounded-full flex-shrink-0"></div>}
                                 <span>{uploadVoice.isPending ? t('tts.uploading') : hasCustomVoice ? t('tts.uploaded') : t('tts.uploadAudio')}</span>
                             </div>
                         </button>

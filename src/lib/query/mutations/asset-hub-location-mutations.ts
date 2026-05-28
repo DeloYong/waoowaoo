@@ -215,10 +215,9 @@ export function useSelectLocationImage() {
       if (latestRequestId !== context.requestId) return
       restoreLocationQuerySnapshots(queryClient, context.previousQueries)
     },
-    onSettled: (_data, _error, variables) => {
-      if (variables.confirm) {
-        void invalidateLocations()
-      }
+    onSettled: (_data, _error) => {
+      // 无论是否 confirm，都需要刷新缓存，确保与服务器状态一致
+      void invalidateLocations()
     },
   })
 }

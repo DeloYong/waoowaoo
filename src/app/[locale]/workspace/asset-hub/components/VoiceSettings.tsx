@@ -135,10 +135,15 @@ export default function VoiceSettings({
                 <button
                     onClick={() => voiceFileInputRef.current?.click()}
                     disabled={uploadVoice.isPending}
-                    className="border border-white/20 text-white/70 hover:border-[var(--wuhu-neon-pink)] hover:text-white hover:bg-white/10 flex-1 min-w-[70px] px-2 py-1.5 rounded-lg text-xs font-medium transition-all relative group whitespace-nowrap"
+                    className={`flex-1 min-w-[70px] px-2 py-1.5 rounded-lg text-xs font-medium transition-all relative group whitespace-nowrap ${
+                        uploadVoice.isPending
+                            ? 'bg-white/10 text-white/50 cursor-not-allowed'
+                            : 'border border-white/20 text-white hover:border-[var(--wuhu-neon-cyan)] hover:text-[var(--wuhu-neon-cyan)] hover:bg-[rgba(0,255,255,0.1)]'
+                    }`}
                 >
                     <div className="flex items-center justify-center gap-1">
-                        {hasCustomVoice && <div className="w-1.5 h-1.5 bg-[var(--wuhu-neon-cyan)] rounded-full flex-shrink-0"></div>}
+                        {!uploadVoice.isPending && <AppIcon name="upload" className="w-3 h-3 flex-shrink-0" />}
+                        {hasCustomVoice && !uploadVoice.isPending && <div className="w-1.5 h-1.5 bg-[var(--wuhu-neon-cyan)] rounded-full flex-shrink-0"></div>}
                         <span>{uploadVoice.isPending ? t('voiceSettings.uploading') : hasCustomVoice ? t('voiceSettings.uploaded') : t('voiceSettings.uploadAudio')}</span>
                     </div>
                 </button>

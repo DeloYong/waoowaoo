@@ -239,9 +239,9 @@ export function useSelectCharacterImage() {
       restoreCharacterQuerySnapshots(queryClient, context.previousQueries)
     },
     onSettled: (_data, _error, variables) => {
-      if (variables.confirm) {
-        void invalidateCharacters()
-      }
+      // 无论是否 confirm，都需要刷新缓存，确保与服务器状态一致
+      // 这解决了"选择图片有时候无效"的问题 - 乐观更新可能被其他查询覆盖
+      void invalidateCharacters()
     },
   })
 }

@@ -257,10 +257,10 @@ export function useSelectProjectCharacterImage(projectId: string) {
             queryClient.setQueryData(queryKeys.projectAssets.all(projectId), context.previousAssets)
             queryClient.setQueryData(queryKeys.projectData(projectId), context.previousProject)
         },
-        onSettled: (_data, _error, variables) => {
-            if (variables.confirm) {
-                void invalidateProjectAssets()
-            }
+        onSettled: (_data, _error) => {
+            // 无论是否 confirm，都需要刷新缓存，确保与服务器状态一致
+            // 这解决了"选择图片有时候无效"的问题 - 乐观更新可能被其他查询覆盖
+            void invalidateProjectAssets()
         },
     })
 }
