@@ -48,7 +48,7 @@ CREATE TABLE `RechargePackage` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
-ALTER TABLE `PaymentOrder` ADD CONSTRAINT `PaymentOrder_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `PaymentOrder` ADD CONSTRAINT `PaymentOrder_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- Insert default recharge packages
 INSERT INTO `RechargePackage` (`id`, `name`, `credits`, `price`, `originalPrice`, `bonusCredits`, `isPopular`, `isActive`, `sortOrder`, `createdAt`, `updatedAt`) VALUES
