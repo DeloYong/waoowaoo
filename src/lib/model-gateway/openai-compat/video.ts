@@ -1,8 +1,11 @@
+import sharp from 'sharp'
 import { normalizeToBase64ForGeneration } from '@/lib/media/outbound-image'
 import type { GenerateResult } from '@/lib/generators/base'
 import type { OpenAICompatVideoRequest } from '../types'
 import { createOpenAICompatClient, parseDataUrl, resolveOpenAICompatClientConfig } from './common'
 import { toFile } from 'openai'
+
+const MAX_VIDEO_INPUT_WIDTH = 6000
 
 type OpenAIVideoSize = '720x1280' | '1280x720' | '1024x1792' | '1792x1024'
 type OpenAIVideoSeconds = '4' | '8' | '12'
@@ -141,8 +144,21 @@ async function toUploadFileFromImageUrl(imageUrl: string): Promise<File> {
   if (!parsed) {
     throw new Error('OPENAI_COMPAT_VIDEO_INPUT_REFERENCE_INVALID')
   }
-  const bytes = Buffer.from(parsed.base64, 'base64')
-  return await toFile(bytes, 'input-reference.png', { type: parsed.mimeType })
+  let bytes = Buffer.from(parsed.base64, 'base64')
+  let mimeType = parsed.mimeType
+
+  // 检查并缩放图片尺寸，确保不超过外部 API 的最大宽度限制
+  const metadata = await sharp(bytes).metadata()
+  if (metadata.width && metadata.width > MAX_VIDEO_INPUT_WIDTH) {
+    const resized = await sharp(bytes)
+      .resize(MAX_VIDEO_INPUT_WIDTH, undefined, { withoutEnlargement: true })
+      .jpeg({ quality: 95 })
+      .toBuffer()
+    bytes = Buffer.from(resized)
+    mimeType = 'image/jpeg'
+  }
+
+  return await toFile(bytes, 'input-reference.png', { type: mimeType })
 }
 
 export async function generateVideoViaOpenAICompat(request: OpenAICompatVideoRequest): Promise<GenerateResult> {

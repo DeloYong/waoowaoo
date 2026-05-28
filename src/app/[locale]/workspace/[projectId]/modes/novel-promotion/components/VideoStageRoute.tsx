@@ -12,6 +12,7 @@ export default function VideoStageRoute() {
   const { projectId, episodeId } = useWorkspaceProvider()
   const { clips, storyboards } = useWorkspaceEpisodeStageData()
   const userModelsQuery = useUserModels()
+  const defaultVideoModel = userModelsQuery.data?.defaultModels?.videoModel || ''
   const defaultLipSyncModel = userModelsQuery.data?.defaultModels?.lipSyncModel || undefined
   const normalizedClips: VideoClip[] = clips.map((clip) => ({
     id: clip.id,
@@ -28,7 +29,7 @@ export default function VideoStageRoute() {
       episodeId={episodeId}
       storyboards={storyboards}
       clips={normalizedClips}
-      defaultVideoModel=""
+      defaultVideoModel={defaultVideoModel}
       defaultLipSyncModel={defaultLipSyncModel}
       capabilityOverrides={runtime.capabilityOverrides}
       videoRatio={runtime.videoRatio ?? undefined}
