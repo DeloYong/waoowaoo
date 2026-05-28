@@ -1014,6 +1014,7 @@ model GlobalCharacter {
   @@index([userId])
   @@index([folderId])
   @@index([customVoiceMediaId])
+  @@unique([userId, name]) // 防止同一用户下同名角色重复
   @@map("global_characters")
 }
 
@@ -1067,6 +1068,7 @@ model GlobalLocation {
 
   @@index([userId])
   @@index([folderId])
+  @@unique([userId, name, assetKind]) // 防止同一用户下同类型同名场景/道具重复
   @@map("global_locations")
 }
 

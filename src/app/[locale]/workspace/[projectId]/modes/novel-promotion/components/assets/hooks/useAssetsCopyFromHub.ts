@@ -28,6 +28,7 @@ export function useAssetsCopyFromHub({ projectId, onRefresh, showToast }: UseAss
   const saveToGlobalAsset = useSaveAssetToGlobal(projectId)
   const [copyFromGlobalTarget, setCopyFromGlobalTarget] = useState<GlobalCopyTarget | null>(null)
   const [isGlobalCopyInFlight, setIsGlobalCopyInFlight] = useState(false)
+  const [savingAssetIds, setSavingAssetIds] = useState<Set<string>>(new Set())
 
   const handleCopyFromGlobal = useCallback((characterId: string) => {
     setCopyFromGlobalTarget({ type: 'character', targetId: characterId })
@@ -79,10 +80,17 @@ export function useAssetsCopyFromHub({ projectId, onRefresh, showToast }: UseAss
     }
   }, [copyFromGlobalAsset, copyFromGlobalTarget, onRefresh, showToast, t])
 
+  const isSavingToGlobal = useCallback((assetId: string): boolean => {
+    return savingAssetIds.has(assetId)
+  }, [savingAssetIds])
+
   const handleSaveToGlobal = useCallback(async (
     kind: 'character' | 'location' | 'prop' | 'voice',
     assetId: string,
   ) => {
+    if (savingAssetIds.has(assetId)) return
+
+    setSavingAssetIds((prev) => new Set(prev).add(assetId))
     try {
       await saveToGlobalAsset.mutateAsync({ kind, assetId })
 
@@ -98,8 +106,14 @@ export function useAssetsCopyFromHub({ projectId, onRefresh, showToast }: UseAss
       if (!isAbortError(error)) {
         showToast(t('assetLibrary.saveFailed', { error: getErrorMessage(error) }), 'error')
       }
+    } finally {
+      setSavingAssetIds((prev) => {
+        const next = new Set(prev)
+        next.delete(assetId)
+        return next
+      })
     }
-  }, [saveToGlobalAsset, showToast, t])
+  }, [saveToGlobalAsset, savingAssetIds, showToast, t])
 
   return {
     copyFromGlobalTarget,
@@ -111,5 +125,6 @@ export function useAssetsCopyFromHub({ projectId, onRefresh, showToast }: UseAss
     handleConfirmCopyFromGlobal,
     handleCloseCopyPicker,
     handleSaveToGlobal,
+    isSavingToGlobal,
   }
 }

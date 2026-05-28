@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client'
 import { prisma } from '@/lib/prisma'
 import { NextRequest } from 'next/server'
 import { ApiError, getRequestId } from '@/lib/api-errors'
@@ -1209,41 +1210,58 @@ async function saveCharacterToGlobal(
     return { success: true, globalAssetId: existingCharacter.id, alreadyExists: true }
   }
 
-  // 创建全局角色
-  const globalCharacter = await prisma.globalCharacter.create({
-    data: {
-      userId: access.userId,
-      folderId: folderId || null,
-      name: projectCharacter.name,
-      aliases: projectCharacter.aliases,
-      profileData: projectCharacter.profileData,
-      profileConfirmed: projectCharacter.profileConfirmed,
-      voiceId: projectCharacter.voiceId,
-      voiceType: projectCharacter.voiceType,
-      customVoiceUrl: projectCharacter.customVoiceUrl,
-      customVoiceMediaId: projectCharacter.customVoiceMediaId,
-    },
-  })
-
-  // 复制所有形象
-  for (const appearance of projectCharacter.appearances) {
-    await prisma.globalCharacterAppearance.create({
+  try {
+    // 创建全局角色
+    const globalCharacter = await prisma.globalCharacter.create({
       data: {
-        characterId: globalCharacter.id,
-        appearanceIndex: appearance.appearanceIndex,
-        changeReason: appearance.changeReason,
-        description: appearance.description,
-        descriptions: appearance.descriptions,
-        imageUrl: appearance.imageUrl,
-        imageMediaId: appearance.imageMediaId,
-        imageUrls: appearance.imageUrls,
-        previousImageUrls: encodeImageUrls([]),
-        selectedIndex: appearance.selectedIndex,
+        userId: access.userId,
+        folderId: folderId || null,
+        name: projectCharacter.name,
+        aliases: projectCharacter.aliases,
+        profileData: projectCharacter.profileData,
+        profileConfirmed: projectCharacter.profileConfirmed,
+        voiceId: projectCharacter.voiceId,
+        voiceType: projectCharacter.voiceType,
+        customVoiceUrl: projectCharacter.customVoiceUrl,
+        customVoiceMediaId: projectCharacter.customVoiceMediaId,
       },
     })
-  }
 
-  return { success: true, globalAssetId: globalCharacter.id }
+    // 复制所有形象
+    for (const appearance of projectCharacter.appearances) {
+      await prisma.globalCharacterAppearance.create({
+        data: {
+          characterId: globalCharacter.id,
+          appearanceIndex: appearance.appearanceIndex,
+          changeReason: appearance.changeReason,
+          description: appearance.description,
+          descriptions: appearance.descriptions,
+          imageUrl: appearance.imageUrl,
+          imageMediaId: appearance.imageMediaId,
+          imageUrls: appearance.imageUrls,
+          previousImageUrls: encodeImageUrls([]),
+          selectedIndex: appearance.selectedIndex,
+        },
+      })
+    }
+
+    return { success: true, globalAssetId: globalCharacter.id }
+  } catch (error) {
+    // 捕获并发场景下的唯一约束冲突
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+      const duplicateCharacter = await prisma.globalCharacter.findFirst({
+        where: {
+          userId: access.userId,
+          name: projectCharacter.name,
+        },
+        select: { id: true },
+      })
+      if (duplicateCharacter) {
+        return { success: true, globalAssetId: duplicateCharacter.id, alreadyExists: true }
+      }
+    }
+    throw error
+  }
 }
 
 async function saveLocationToGlobal(
@@ -1282,33 +1300,51 @@ async function saveLocationToGlobal(
     return { success: true, globalAssetId: existingLocation.id, alreadyExists: true }
   }
 
-  // 创建全局场景/道具
-  const globalLocation = await prisma.globalLocation.create({
-    data: {
-      userId: access.userId,
-      folderId: folderId || null,
-      name: projectLocation.name,
-      summary: projectLocation.summary,
-      assetKind: effectiveKind,
-    },
-  })
-
-  // 复制所有图片
-  for (const image of projectLocation.images) {
-    await prisma.globalLocationImage.create({
+  try {
+    // 创建全局场景/道具
+    const globalLocation = await prisma.globalLocation.create({
       data: {
-        locationId: globalLocation.id,
-        imageIndex: image.imageIndex,
-        description: image.description,
-        availableSlots: image.availableSlots,
-        imageUrl: image.imageUrl,
-        imageMediaId: image.imageMediaId,
-        isSelected: image.isSelected,
+        userId: access.userId,
+        folderId: folderId || null,
+        name: projectLocation.name,
+        summary: projectLocation.summary,
+        assetKind: effectiveKind,
       },
     })
-  }
 
-  return { success: true, globalAssetId: globalLocation.id }
+    // 复制所有图片
+    for (const image of projectLocation.images) {
+      await prisma.globalLocationImage.create({
+        data: {
+          locationId: globalLocation.id,
+          imageIndex: image.imageIndex,
+          description: image.description,
+          availableSlots: image.availableSlots,
+          imageUrl: image.imageUrl,
+          imageMediaId: image.imageMediaId,
+          isSelected: image.isSelected,
+        },
+      })
+    }
+
+    return { success: true, globalAssetId: globalLocation.id }
+  } catch (error) {
+    // 捕获并发场景下的唯一约束冲突
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+      const duplicateLocation = await prisma.globalLocation.findFirst({
+        where: {
+          userId: access.userId,
+          name: projectLocation.name,
+          assetKind: effectiveKind,
+        },
+        select: { id: true },
+      })
+      if (duplicateLocation) {
+        return { success: true, globalAssetId: duplicateLocation.id, alreadyExists: true }
+      }
+    }
+    throw error
+  }
 }
 
 async function saveVoiceToGlobal(

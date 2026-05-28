@@ -50,6 +50,7 @@ interface CharacterSectionProps {
     onVoiceSelectFromHub: (characterId: string) => void  // 🆕 从资产中心选择音色
     onCopyFromGlobal: (characterId: string) => void  // 🆕 从资产中心复制
     onSaveToGlobal: (characterId: string) => void  // 🆕 保存到资产中心
+    isSavingToGlobal: (assetId: string) => boolean  // 🆕 检查是否正在保存到资产中心
     // 辅助函数
     getAppearances: (character: Character) => CharacterAppearance[]
     /** 分集筛选：仅显示指定 ID 的角色，null 表示显示全部 */
@@ -93,6 +94,7 @@ export default function CharacterSection({
     onVoiceSelectFromHub,
     onCopyFromGlobal,
     onSaveToGlobal,
+    isSavingToGlobal,
     getAppearances,
     filterIds = null,
     // 🔥 V7：待确认角色
@@ -293,9 +295,10 @@ export default function CharacterSection({
                                     {/* 保存到资产中心按钮 */}
                                     <button
                                         onClick={() => onSaveToGlobal(character.id)}
-                                        className="text-xs text-[var(--wuhu-neon-purple)] hover:text-[var(--wuhu-neon-purple)] flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-[rgba(167, 87, 255, 0.2)] transition-colors"
+                                        disabled={isSavingToGlobal(character.id)}
+                                        className="text-xs text-[var(--wuhu-neon-purple)] hover:text-[var(--wuhu-neon-purple)] flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-[rgba(167, 87, 255, 0.2)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
-                                        <AppIcon name="upload" className="w-4 h-4" />
+                                        <AppIcon name={isSavingToGlobal(character.id) ? "loader" : "upload"} className={`w-4 h-4 ${isSavingToGlobal(character.id) ? "animate-spin" : ""}`} />
                                         {t("character.saveToGlobal")}
                                     </button>
                                     {/* 从资产中心复制按钮 */}

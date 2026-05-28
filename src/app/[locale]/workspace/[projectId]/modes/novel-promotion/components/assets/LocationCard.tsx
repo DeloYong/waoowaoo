@@ -35,6 +35,7 @@ interface LocationCardProps {
   onImageEdit?: (locationId: string, imageIndex: number) => void  // 新增：图片编辑
   onCopyFromGlobal?: () => void
   onSaveToGlobal?: () => void
+  isSavingToGlobal?: boolean
   activeTaskKeys?: Set<string>
   onClearTaskKey?: (key: string) => void
   projectId: string
@@ -54,6 +55,7 @@ export default function LocationCard({
   onImageEdit,
   onCopyFromGlobal,
   onSaveToGlobal,
+  isSavingToGlobal = false,
   activeTaskKeys = new Set(),
   projectId,
   onConfirmSelection
@@ -204,10 +206,11 @@ export default function LocationCard({
         {onSaveToGlobal && (
           <button
             onClick={onSaveToGlobal}
-            className="w-6 h-6 rounded hover:bg-[rgba(167, 87, 255, 0.2)] flex items-center justify-center transition-colors"
+            disabled={isSavingToGlobal}
+            className="w-6 h-6 rounded hover:bg-[rgba(167, 87, 255, 0.2)] flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             title={t('character.saveToGlobal')}
           >
-            <AppIcon name="upload" className="w-4 h-4 text-[var(--wuhu-neon-purple)]" />
+            <AppIcon name={isSavingToGlobal ? "loader" : "upload"} className={`w-4 h-4 text-[var(--wuhu-neon-purple)] ${isSavingToGlobal ? "animate-spin" : ""}`} />
           </button>
         )}
         <ImageGenerationInlineCountButton
@@ -367,10 +370,11 @@ export default function LocationCard({
       {onSaveToGlobal && (
           <button
             onClick={onSaveToGlobal}
-          className="text-xs text-[var(--wuhu-neon-purple)] hover:text-[var(--wuhu-neon-purple)] flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-[rgba(167, 87, 255, 0.2)] transition-colors flex-shrink-0"
+            disabled={isSavingToGlobal}
+          className="text-xs text-[var(--wuhu-neon-purple)] hover:text-[var(--wuhu-neon-purple)] flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-[rgba(167, 87, 255, 0.2)] transition-colors flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
           title={t('character.saveToGlobal')}
         >
-          <AppIcon name="upload" className="w-4 h-4" />
+          <AppIcon name={isSavingToGlobal ? "loader" : "upload"} className={`w-4 h-4 ${isSavingToGlobal ? "animate-spin" : ""}`} />
           <span>{t('character.saveToGlobal')}</span>
         </button>
       )}

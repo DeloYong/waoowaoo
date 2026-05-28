@@ -37,6 +37,7 @@ interface LocationSectionProps {
     onImageEdit: (locationId: string, imageIndex: number, locationName: string) => void
     onCopyFromGlobal: (locationId: string) => void  // 🆕 从资产中心复制
     onSaveToGlobal: (locationId: string) => void  // 🆕 保存到资产中心
+    isSavingToGlobal: (assetId: string) => boolean  // 🆕 检查是否正在保存到资产中心
     /** 分集筛选：仅显示指定 ID 的场景/道具，null 表示显示全部 */
     filterIds?: Set<string> | null
 }
@@ -61,6 +62,7 @@ export default function LocationSection({
     onImageEdit,
     onCopyFromGlobal,
     onSaveToGlobal,
+    isSavingToGlobal,
     filterIds = null,
 }: LocationSectionProps) {
     const t = useTranslations('assets')
@@ -149,6 +151,7 @@ export default function LocationSection({
                         onImageEdit={(locId, imgIdx) => onImageEdit(locId, imgIdx, location.name)}
                         onCopyFromGlobal={() => onCopyFromGlobal(location.id)}
                         onSaveToGlobal={() => onSaveToGlobal(location.id)}
+                        isSavingToGlobal={isSavingToGlobal(location.id)}
                         activeTaskKeys={activeTaskKeys}
                         onClearTaskKey={onClearTaskKey}
                         projectId={projectId}

@@ -237,6 +237,7 @@ export default function AssetsStage({
     handleConfirmCopyFromGlobal,
     handleCloseCopyPicker,
     handleSaveToGlobal,
+    isSavingToGlobal,
   } = useAssetsCopyFromHub({
     projectId,
     onRefresh,
@@ -434,6 +435,7 @@ export default function AssetsStage({
             onVoiceSelectFromHub={handleVoiceSelectFromHub}
             onCopyFromGlobal={handleCopyFromGlobal}
             onSaveToGlobal={(characterId) => handleSaveToGlobal('character', characterId)}
+            isSavingToGlobal={isSavingToGlobal}
             getAppearances={getAppearances}
             filterIds={episodeAssetIds?.charIds ?? null}
             // 🔥 V7：待确认角色档案内嵌到 CharacterSection
@@ -469,6 +471,7 @@ export default function AssetsStage({
             onImageEdit={(locId, imgIdx) => handleOpenLocationImageEdit(locId, imgIdx)}
             onCopyFromGlobal={handleCopyLocationFromGlobal}
             onSaveToGlobal={(locationId) => handleSaveToGlobal('location', locationId)}
+            isSavingToGlobal={isSavingToGlobal}
             filterIds={episodeAssetIds?.locIds ?? null}
           />
       )}
@@ -495,6 +498,7 @@ export default function AssetsStage({
             onImageEdit={() => undefined}
             onCopyFromGlobal={handleCopyPropFromGlobal}
             onSaveToGlobal={(propId) => handleSaveToGlobal('prop', propId)}
+            isSavingToGlobal={isSavingToGlobal}
             filterIds={episodeAssetIds?.propIds ?? null}
           />
       )}
