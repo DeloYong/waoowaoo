@@ -15,6 +15,7 @@ import StoryboardGroupFailedAlert from './StoryboardGroupFailedAlert'
 import StoryboardGroupDialogs from './StoryboardGroupDialogs'
 import type { StoryboardGroupProps } from './StoryboardGroup.types'
 import { AppIcon } from '@/components/ui/icons'
+import { GlassButton } from '@/components/ui/primitives'
 
 export default function StoryboardGroup({
   storyboard,
@@ -204,8 +205,31 @@ export default function StoryboardGroup({
                   ))}
                 </div>
               ) : (
-                <div className="whitespace-pre-wrap p-3 text-sm text-white/70">
-                  {clip.content}
+                <div className="p-6 text-center">
+                  {isSubmittingStoryboardTextTask ? (
+                    <div className="flex flex-col items-center gap-3">
+                      <div className="h-10 w-10 animate-spin rounded-full border-2 border-[var(--wuhu-neon-purple)] border-t-transparent" />
+                      <p className="text-sm text-white/70">AI正在生成分镜脚本，请稍候...</p>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center gap-4">
+                      <div className="h-12 w-12 rounded-full bg-[var(--wuhu-neon-purple)]/20 flex items-center justify-center">
+                        <AppIcon name="sparkles" className="h-6 w-6 text-[var(--wuhu-neon-purple)]" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-white/90 mb-1">分镜脚本尚未生成</p>
+                        <p className="text-xs text-white/50">点击下方按钮，让AI为你自动划分镜头和撰写画面描述</p>
+                      </div>
+                      <GlassButton
+                        variant="primary"
+                        size="md"
+                        onClick={onRegenerateText}
+                      >
+                        <AppIcon name="sparkles" className="h-4 w-4" />
+                        <span>AI生成分镜脚本</span>
+                      </GlassButton>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
