@@ -212,8 +212,7 @@ export default function AssetHubPage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     characterId: voiceDesignCharacter.id,
-                    voiceId,
-                    audioBase64
+                    voiceDesign: { voiceId, audioBase64 },
                 })
             })
 
