@@ -4,15 +4,19 @@ import EditorStage from './EditorStage'
 import { useWorkspaceStageRuntime } from '../WorkspaceStageRuntimeContext'
 import { useWorkspaceEpisodeStageData } from '../hooks/useWorkspaceEpisodeStageData'
 import { useWorkspaceProvider } from '../WorkspaceProvider'
+import { sortStoryboardsByClipOrder } from '../components/storyboard/hooks/storyboard-state-utils'
 import type { NovelPromotionStoryboard } from '@/types/project'
 
 export default function EditorStageRoute() {
   const runtime = useWorkspaceStageRuntime()
   const { projectId, episodeId } = useWorkspaceProvider()
-  const { storyboards } = useWorkspaceEpisodeStageData()
+  const { storyboards, clips } = useWorkspaceEpisodeStageData()
+
+  // 按 clip 的顺序排序 storyboards，确保视频分段顺序正确
+  const sortedStoryboards = sortStoryboardsByClipOrder(storyboards, clips)
 
   // 从 storyboards[].panels[] 中获取有视频的片段
-  const videoClips = storyboards
+  const videoClips = sortedStoryboards
     .flatMap((storyboard: NovelPromotionStoryboard) =>
       (storyboard.panels || [])
         .filter((panel) =>
