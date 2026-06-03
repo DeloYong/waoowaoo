@@ -48,20 +48,29 @@ export default function EditorStage({
   const fetchStatus = useCallback(async () => {
     try {
       const res = await fetch(`/api/projects/${projectId}/editor/status?episodeId=${episodeId}`)
-      const data: GenerationResponse = await res.json()
+      const data = await res.json()
 
-      setGenerationStatus(data.status)
-      setProgress(data.progress)
-      if (data.message) setStatusMessage(data.message)
+      if (!res.ok || !data.success) {
+        // 任务不存在（还没生成过），保持 idle 状态
+        if (data.code === 'NOT_FOUND') {
+          setGenerationStatus('idle')
+        }
+        return
+      }
 
-      if (data.status === 'completed') {
-        setGeneratedVideoUrl(data.videoUrl || null)
-        setDownloadUrl(data.downloadUrl || null)
+      const statusData = data as GenerationResponse
+      setGenerationStatus(statusData.status)
+      setProgress(statusData.progress)
+      if (statusData.message) setStatusMessage(statusData.message)
+
+      if (statusData.status === 'completed') {
+        setGeneratedVideoUrl(statusData.videoUrl || null)
+        setDownloadUrl(statusData.downloadUrl || null)
         if (intervalRef.current) {
           clearInterval(intervalRef.current)
           intervalRef.current = null
         }
-      } else if (data.status === 'failed') {
+      } else if (statusData.status === 'failed') {
         if (intervalRef.current) {
           clearInterval(intervalRef.current)
           intervalRef.current = null
@@ -69,6 +78,8 @@ export default function EditorStage({
       }
     } catch (err) {
       console.error('Failed to fetch generation status:', err)
+      // 出错时保持或恢复 idle 状态，确保生成按钮可以显示
+      setGenerationStatus(prev => prev === 'generating' ? prev : 'idle')
     }
   }, [projectId, episodeId])
 
