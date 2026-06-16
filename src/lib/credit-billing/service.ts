@@ -618,7 +618,6 @@ export async function revokeCredits(
       const toNum = (v: unknown): number =>
         typeof v === 'number' ? v : (v as { toNumber: () => number }).toNumber()
       const subBalance = toNum(balance.subscriptionCredits)
-      const permBalance = toNum(balance.permanentCredits)
       const subDeduct = Math.min(credits, subBalance)
       const permDeduct = credits - subDeduct
       // 永久积分允许扣到负数(标记 metadata 供后续清算)

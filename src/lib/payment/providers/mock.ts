@@ -7,8 +7,6 @@
 
 import type { PaymentProvider } from '../types'
 
-let refundCounter = 0
-
 export const mockProvider: PaymentProvider = {
   createOrder: async () => ({
     orderNo: `MOCK-${Date.now()}`,
@@ -29,8 +27,7 @@ export const mockProvider: PaymentProvider = {
     rawData,
   }),
 
-  refund: async ({ orderNo, amount, reason }) => {
-    refundCounter += 1
+  refund: async () => {
     // 测试可配置:通过 MOCK_REFUND_FAIL=1 环境变量强制失败
     if (process.env.MOCK_REFUND_FAIL === '1') {
       return false

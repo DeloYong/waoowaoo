@@ -83,7 +83,7 @@ export function buildWechatUnifiedOrderXml(input: WechatUnifiedOrderInput): stri
  */
 export async function parseWechatXmlResponse(xml: string): Promise<Record<string, string>> {
   // 简单实现: 先去掉 XML 声明和外层 <xml> 包装
-  let body = xml.replace(/<\?xml[^?]*\?>/g, '').replace(/<xml>|<\/xml>/g, '')
+  const body = xml.replace(/<\?xml[^?]*\?>/g, '').replace(/<xml>|<\/xml>/g, '')
   const result: Record<string, string> = {}
   const re = /<([A-Za-z_]+)>([\s\S]*?)<\/\1>/g
   let match

@@ -7,7 +7,7 @@
  * - 配置从参数传入,便于测试和未来多租户
  */
 
-import { createVerify, constants } from 'node:crypto'
+import { createVerify } from 'node:crypto'
 import type { PaymentMethod } from './types'
 
 export interface AlipayVerifyConfig {
