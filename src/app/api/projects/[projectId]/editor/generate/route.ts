@@ -17,6 +17,11 @@ export const POST = apiHandler(async (
   if (isErrorResponse(authResult)) return authResult
   const { session } = authResult
 
+  // 从 Accept-Language 头解析用户首选 locale
+  const acceptLanguage = request.headers.get('accept-language') || ''
+  const rawLocale = acceptLanguage.split(',')[0]?.split('-')[0]?.toLowerCase() || 'zh'
+  const locale: 'zh' | 'en' = rawLocale === 'en' ? 'en' : 'zh'
+
   // 验证用户是项目所有者
   const project = await prisma.project.findUnique({
     where: { id: projectId },
@@ -83,7 +88,7 @@ export const POST = apiHandler(async (
       payload: {
         shardVideos,
         meta: {
-          locale: 'zh', // TODO: 从用户信息获取
+          locale,
         },
       },
     },
@@ -93,7 +98,7 @@ export const POST = apiHandler(async (
   await addTaskJob({
     taskId,
     type: TASK_TYPE.VIDEO_EDITING,
-    locale: 'zh', // TODO: 从用户信息获取
+    locale,
     projectId,
     episodeId,
     targetType: 'video_editing',
