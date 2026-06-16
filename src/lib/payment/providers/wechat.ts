@@ -1,13 +1,12 @@
 /**
  * 微信支付 Provider
  *
- * 当前实现:
- * - createOrder: 构造统一下单 XML + 解析响应(POST 调用留作下一 sprint)
+ * 实现:
+ * - createOrder: 构造统一下单 XML + POST 到 unifiedorder + 解析 code_url
  * - 签名/验签基于 MD5
  * - 商户号/API Key 从 env 读取
  *
- * 真实接入需要:
- * - POST https://api.mch.weixin.qq.com/pay/unifiedorder
+ * 未来:
  * - 异步回调(支付通知)验签
  * - 退款申请 API
  */
@@ -18,6 +17,8 @@ import {
   parseWechatXmlResponse,
 } from './wechat-sdk'
 import type { PaymentProvider } from '../types'
+
+const WECHAT_UNIFIEDORDER_URL = 'https://api.mch.weixin.qq.com/pay/unifiedorder'
 
 export const wechatProvider: PaymentProvider = {
   createOrder: async ({ amount, orderNo, description, clientIp }) => {
@@ -45,17 +46,37 @@ export const wechatProvider: PaymentProvider = {
       tradeType: 'NATIVE',
     })
 
-    // TODO: 实际 POST 到 https://api.mch.weixin.qq.com/pay/unifiedorder
-    // 当前返回构造的 XML 供测试/调试
+    // POST 到微信支付
+    const response = await fetch(WECHAT_UNIFIEDORDER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/xml' },
+      body: xml,
+    })
+    const responseXml = await response.text()
+    const parsed = await parseWechatXmlResponse(responseXml)
+
+    if (parsed.return_code !== 'SUCCESS') {
+      throw new Error(
+        `WeChat unifiedorder failed: ${parsed.return_msg || 'unknown error'} (code=${parsed.return_code})`
+      )
+    }
+
+    if (parsed.result_code && parsed.result_code !== 'SUCCESS') {
+      throw new Error(
+        `WeChat unifiedorder business error: ${parsed.err_code_des || parsed.err_code || 'unknown'}`
+      )
+    }
+
     return {
       orderNo,
-      qrCode: `data:text/xml;base64,${Buffer.from(xml).toString('base64')}`,
+      qrCode: parsed.code_url,
       rawData: {
-        xml,
+        prepayId: parsed.prepay_id,
+        codeUrl: parsed.code_url,
+        tradeType: parsed.trade_type,
         totalFee,
         appId,
         mchId,
-        note: 'WeChat API POST not implemented - use mock for now',
       },
     }
   },

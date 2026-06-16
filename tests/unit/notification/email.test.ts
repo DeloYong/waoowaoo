@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { sendEmail, sendPaymentSuccessEmail, consoleTransport } from '@/lib/notification/email'
+import { sendEmail, sendPaymentSuccessEmail, sendRefundSuccessEmail, consoleTransport } from '@/lib/notification/email'
 
 describe('notification/email - sendEmail', () => {
   beforeEach(() => {
@@ -99,6 +99,46 @@ describe('notification/email - sendPaymentSuccessEmail', () => {
       '[Email:Console]',
       expect.objectContaining({
         subject: expect.stringContaining('充值成功'),
+      })
+    )
+  })
+})
+
+describe('notification/email - sendRefundSuccessEmail', () => {
+  beforeEach(() => {
+    vi.spyOn(console, 'log').mockImplementation(() => {})
+  })
+
+  it('sends Chinese refund email by default', async () => {
+    const result = await sendRefundSuccessEmail({
+      email: 'user@example.com',
+      refundAmount: 49,
+      creditsDeducted: 1000,
+      orderNo: 'PAY123',
+      reason: 'duplicate payment',
+    })
+    expect(result.ok).toBe(true)
+    expect(console.log).toHaveBeenCalledWith(
+      '[Email:Console]',
+      expect.objectContaining({
+        subject: expect.stringContaining('退款成功'),
+        to: 'user@example.com',
+      })
+    )
+  })
+
+  it('sends English refund email when locale=en', async () => {
+    await sendRefundSuccessEmail({
+      email: 'user@example.com',
+      refundAmount: 49,
+      creditsDeducted: 1000,
+      orderNo: 'PAY123',
+      locale: 'en',
+    })
+    expect(console.log).toHaveBeenCalledWith(
+      '[Email:Console]',
+      expect.objectContaining({
+        subject: expect.stringContaining('Refund processed'),
       })
     )
   })

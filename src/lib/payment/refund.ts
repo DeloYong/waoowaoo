@@ -97,6 +97,32 @@ export async function refundOrder(req: RefundRequest): Promise<RefundResult> {
     if (revoked) creditsDeducted = creditsToRevoke
   }
 
+  // 6. 异步发送退款成功邮件(失败不影响业务)
+  void (async () => {
+    try {
+      const user = await prisma.user.findUnique({
+        where: { id: order.userId },
+        select: { email: true },
+      })
+      if (user?.email) {
+        const { sendRefundSuccessEmail } = await import('@/lib/notification/email')
+        await sendRefundSuccessEmail({
+          email: user.email,
+          refundAmount,
+          creditsDeducted,
+          orderNo: order.orderNo,
+          reason: req.reason,
+          locale: 'zh',
+        })
+      }
+    } catch (emailError) {
+      console.warn('[Payment] refund email failed', {
+        orderNo: order.orderNo,
+        error: emailError instanceof Error ? emailError.message : String(emailError),
+      })
+    }
+  })()
+
   return {
     ok: true,
     refundId: thirdPartyRefundId,

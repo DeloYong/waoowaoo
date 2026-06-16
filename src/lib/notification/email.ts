@@ -88,3 +88,26 @@ export async function sendPaymentSuccessEmail(params: {
       : `感谢您的充值!\n订单号: ${params.orderNo}\n金额: ¥${params.amount}\n积分: ${params.credits}\n\n您的积分已成功到账。`,
   })
 }
+
+/**
+ * 业务级邮件 - 退款成功
+ */
+export async function sendRefundSuccessEmail(params: {
+  email: string
+  refundAmount: number
+  creditsDeducted: number
+  orderNo: string
+  reason?: string
+  locale?: 'zh' | 'en'
+}): Promise<EmailResult> {
+  const isEn = params.locale === 'en'
+  return sendEmail({
+    to: params.email,
+    subject: isEn
+      ? `Refund processed - ¥${params.refundAmount} returned`
+      : `退款成功 - 已退回 ¥${params.refundAmount}`,
+    body: isEn
+      ? `Your refund has been processed.\nOrder: ${params.orderNo}\nRefund amount: ¥${params.refundAmount}\nCredits deducted: ${params.creditsDeducted}\nReason: ${params.reason || 'user request'}\n\nThe amount will be returned to your original payment method.`
+      : `您的退款已处理完成。\n订单号: ${params.orderNo}\n退款金额: ¥${params.refundAmount}\n扣减积分: ${params.creditsDeducted}\n退款原因: ${params.reason || '用户申请'}\n\n款项将原路返回您的支付账户。`,
+  })
+}
