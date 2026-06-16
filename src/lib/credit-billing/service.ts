@@ -568,3 +568,102 @@ export async function grantCredits(
     return false
   }
 }
+
+/**
+ * 回收积分(用于退款)
+ *
+ * 与 grantCredits 对称:
+ * - 先扣 subscription(因为充值时先入 subscription),再扣 permanent
+ * - 允许负余额(标记 metadata 供后续清算)
+ * - 幂等键:同一 idempotencyKey 重复调用不重复扣
+ *
+ * 注意:此函数专门用于"已发放积分的回收",不适用于冻结/扣减场景
+ */
+export async function revokeCredits(
+  userId: string,
+  credits: number,
+  options?: {
+    reason?: string
+    operatorId?: string
+    idempotencyKey?: string
+  }
+): Promise<boolean> {
+  if (credits <= 0) return false
+
+  try {
+    await prisma.$transaction(async (tx) => {
+      // 幂等检查
+      if (options?.idempotencyKey) {
+        const existing = await tx.balanceTransaction.findFirst({
+          where: {
+            userId,
+            type: 'credit_revoke',
+            idempotencyKey: options.idempotencyKey,
+          },
+        })
+        if (existing) {
+          return
+        }
+      }
+
+      const balance = await tx.userBalance.findUnique({
+        where: { userId },
+        select: { subscriptionCredits: true, permanentCredits: true },
+      })
+      if (!balance) {
+        throw new Error(`UserBalance not found for userId=${userId}`)
+      }
+
+      // 按订阅优先顺序扣减
+      const toNum = (v: unknown): number =>
+        typeof v === 'number' ? v : (v as { toNumber: () => number }).toNumber()
+      const subBalance = toNum(balance.subscriptionCredits)
+      const permBalance = toNum(balance.permanentCredits)
+      const subDeduct = Math.min(credits, subBalance)
+      const permDeduct = credits - subDeduct
+      // 永久积分允许扣到负数(标记 metadata 供后续清算)
+
+      await tx.userBalance.update({
+        where: { userId },
+        data: {
+          subscriptionCredits: { decrement: subDeduct },
+          permanentCredits: { decrement: permDeduct },
+        },
+      })
+
+      await tx.balanceTransaction.create({
+        data: {
+          userId,
+          type: 'credit_revoke',
+          amount: new Prisma.Decimal(-credits),
+          balanceAfter: new Prisma.Decimal(0),
+          description: options?.reason || `积分回收: ${credits}`,
+          operatorId: options?.operatorId || null,
+          idempotencyKey: options?.idempotencyKey || null,
+          billingMeta: JSON.stringify({
+            credits,
+            subDeduct,
+            permDeduct,
+          }),
+        },
+      })
+
+      trackEvent({
+        event: 'billing.revoke',
+        userId,
+        credits,
+        subDeduct,
+        permDeduct,
+        reason: options?.reason,
+      })
+    })
+    return true
+  } catch (error) {
+    console.error('[Billing] revokeCredits failed:', {
+      userId,
+      credits,
+      error: error instanceof Error ? error.message : String(error),
+    })
+    return false
+  }
+}

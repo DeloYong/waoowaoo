@@ -45,6 +45,7 @@ export interface PaymentCallbackData {
 
 export interface RefundParams {
   orderId: string
+  orderNo?: string
   reason?: string
   amount?: number
 }

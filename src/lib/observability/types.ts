@@ -83,6 +83,14 @@ export type BillingEvent =
       taskId?: string
     }
   | {
+      event: 'billing.revoke'
+      userId: string
+      credits: number
+      subDeduct: number
+      permDeduct: number
+      reason?: string
+    }
+  | {
       event: 'billing.prepare'
       taskId: string
       userId: string

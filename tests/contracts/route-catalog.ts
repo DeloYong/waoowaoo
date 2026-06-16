@@ -164,6 +164,7 @@ const ROUTE_FILES = [
   'src/app/api/payment/orders/[orderId]/route.ts',
   'src/app/api/payment/orders/route.ts',
   'src/app/api/payment/packages/route.ts',
+  'src/app/api/payment/refund/route.ts',
   'src/app/api/runs/[runId]/cancel/route.ts',
   'src/app/api/runs/[runId]/events/route.ts',
   'src/app/api/runs/[runId]/route.ts',
