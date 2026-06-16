@@ -1,20 +1,42 @@
 /**
  * 支付宝 Provider
  *
- * 真实实现需要:
+ * 真实实现:
  * - 沙箱/生产网关地址(从 env)
  * - 应用私钥(创建订单时用,从 env)
  * - 应用公钥(验签时用,从 env)
  *
- * 当前实现为可测试骨架,createOrder/refund 标注为 NotImplemented
  * 验签逻辑在 signature.ts,不在此处
  */
 
+import { buildAlipayCreateOrderUrl } from './alipay-sdk'
 import type { PaymentProvider } from '../types'
 
 export const alipayProvider: PaymentProvider = {
-  createOrder: async () => {
-    throw new Error('Alipay createOrder not implemented (use mock for now)')
+  createOrder: async ({ amount, orderNo, description }) => {
+    const appId = process.env.ALIPAY_APP_ID
+    const privateKey = process.env.ALIPAY_PRIVATE_KEY
+    const gateway = process.env.ALIPAY_GATEWAY ?? 'https://openapi.alipaydev.com/gateway.do'
+    const notifyUrl = process.env.ALIPAY_NOTIFY_URL
+    if (!appId || !privateKey || !notifyUrl || !orderNo) {
+      throw new Error('Alipay env config or orderNo missing: ALIPAY_APP_ID/PRIVATE_KEY/NOTIFY_URL')
+    }
+
+    const paymentUrl = buildAlipayCreateOrderUrl({
+      appId,
+      privateKey,
+      gateway,
+      notifyUrl,
+      outTradeNo: orderNo,
+      totalAmount: String(amount),
+      subject: description || `订单 ${orderNo}`,
+    })
+
+    return {
+      orderNo,
+      paymentUrl,
+      rawData: { paymentUrl, gateway, appId },
+    }
   },
 
   queryOrder: async () => {

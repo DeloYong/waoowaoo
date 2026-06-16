@@ -19,6 +19,8 @@ export interface CreateOrderParams {
   clientIp?: string
   returnUrl?: string
   notifyUrl?: string
+  /** 内部使用:provider.createOrder 时由 service 注入 */
+  orderNo?: string
 }
 
 export interface PaymentOrderInfo {
@@ -58,10 +60,10 @@ export interface PaymentProvider {
    * 创建支付订单
    */
   createOrder(params: CreateOrderParams): Promise<{
-    orderNo: string
+    orderNo?: string
     paymentUrl?: string
     qrCode?: string
-    rawData: Record<string, unknown>
+    rawData?: Record<string, unknown>
   }>
 
   /**

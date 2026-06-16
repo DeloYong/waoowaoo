@@ -64,12 +64,21 @@ export async function createPaymentOrder(
     },
   })
 
-  // TODO: 根据支付方式调用具体的支付提供商创建支付链接
-  // 这里暂时返回模拟的支付URL，后续接入支付宝、微信等
-  const paymentUrl = await generatePaymentUrl(paymentMethod, orderNo, amount, {
-    returnUrl,
+  // 调用支付提供商创建支付链接
+  const { getPaymentProvider } = await import('./providers')
+  const provider = getPaymentProvider(paymentMethod)
+  const providerResult = await provider.createOrder({
+    userId,
+    credits,
+    amount,
+    paymentMethod,
+    paymentChannel: paymentChannel ?? undefined,
+    packageId: packageId ?? undefined,
     description: params.description || `充值 ${credits} 积分`,
+    returnUrl: returnUrl ?? undefined,
+    orderNo,
   })
+  const paymentUrl = providerResult.paymentUrl || `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/payment/mock?orderNo=${orderNo}&method=${paymentMethod}&amount=${amount}`
 
   return {
     orderId: order.id,
