@@ -196,6 +196,29 @@ export async function handlePaymentSuccess(callbackData: PaymentCallbackData): P
       })
     })
 
+    // 3. 异步发送支付成功邮件(失败不影响业务)
+    try {
+      const user = await prisma.user.findUnique({
+        where: { id: order.userId },
+        select: { email: true },
+      })
+      if (user?.email) {
+        const { sendPaymentSuccessEmail } = await import('@/lib/notification/email')
+        await sendPaymentSuccessEmail({
+          email: user.email,
+          credits: order.credits,
+          amount: order.amount.toNumber(),
+          orderNo,
+          locale: 'zh',
+        })
+      }
+    } catch (emailError) {
+      console.warn('[Payment] email notification failed', {
+        orderNo,
+        error: emailError instanceof Error ? emailError.message : String(emailError),
+      })
+    }
+
     console.log('[Payment] Payment success, credits granted:', {
       orderNo,
       userId: order.userId,

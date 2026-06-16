@@ -13,6 +13,7 @@ import { withUserConcurrencyGate } from './user-concurrency-gate'
 import { assertTaskActive, toSignedUrlIfCos, uploadVideoSourceToCos } from './utils'
 import { createScopedLogger } from '@/lib/logging/core'
 import { updateVideoEditingTaskStatus } from '@/lib/task/video-editing'
+import { detectGpuEncoder } from '@/lib/media/gpu-encoder'
 
 const exec = promisify(execCallback)
 
@@ -92,6 +93,9 @@ async function concatenateVideosWithTransitions(
     return
   }
 
+  // 检测可用编码器(GPU 优先,失败回退 CPU)
+  const { encoder } = await detectGpuEncoder({ useCache: true })
+
   // First pass: normalize all videos to same resolution and codec
   const tempDir = path.dirname(outputPath)
   const normalizedVideos: string[] = []
@@ -99,7 +103,7 @@ async function concatenateVideosWithTransitions(
   for (let i = 0; i < inputVideos.length; i++) {
     const normalizedPath = path.join(tempDir, `normalized-${i}.mp4`)
     // Normalize to 1080p, h264, aac, same frame rate
-    await exec(`ffmpeg -y -i "${inputVideos[i]}" -vf "scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2" -c:v libx264 -c:a aac -r 30 "${normalizedPath}"`)
+    await exec(`ffmpeg -y -i "${inputVideos[i]}" -vf "scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2" -c:v ${encoder} -c:a aac -r 30 "${normalizedPath}"`)
     normalizedVideos.push(normalizedPath)
   }
 
@@ -111,7 +115,7 @@ async function concatenateVideosWithTransitions(
   const command = `ffmpeg -y ${normalizedVideos.map(v => `-i "${v}"`).join(' ')} \
     -filter_complex "${filterComplex}" \
     -map "[outv]" \
-    -c:v libx264 \
+    -c:v ${encoder} \
     "${outputPath}"`
 
   await exec(command)
@@ -125,19 +129,22 @@ async function addIntroOutro(
 ): Promise<void> {
   const tempDir = path.dirname(outputPath)
 
+  // 检测可用编码器
+  const { encoder } = await detectGpuEncoder({ useCache: true })
+
   // Normalize intro and outro to match main video specs
   const normalizedIntro = path.join(tempDir, 'normalized-intro.mp4')
   const normalizedOutro = path.join(tempDir, 'normalized-outro.mp4')
 
-  await exec(`ffmpeg -y -i "${introPath}" -vf "scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2" -c:v libx264 -c:a aac -r 30 "${normalizedIntro}"`)
-  await exec(`ffmpeg -y -i "${outroPath}" -vf "scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2" -c:v libx264 -c:a aac -r 30 "${normalizedOutro}"`)
+  await exec(`ffmpeg -y -i "${introPath}" -vf "scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2" -c:v ${encoder} -c:a aac -r 30 "${normalizedIntro}"`)
+  await exec(`ffmpeg -y -i "${outroPath}" -vf "scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2" -c:v ${encoder} -c:a aac -r 30 "${normalizedOutro}"`)
 
   // Concatenate intro + main + outro
   const command = `ffmpeg -y \
     -i "${normalizedIntro}" -i "${inputVideo}" -i "${normalizedOutro}" \
     -filter_complex "[0:v][0:a][1:v][1:a][2:v][2:a]concat=n=3:v=1:a=1[outv][outa]" \
     -map "[outv]" -map "[outa]" \
-    -c:v libx264 -c:a aac \
+    -c:v ${encoder} -c:a aac \
     "${outputPath}"`
 
   await exec(command)
@@ -148,10 +155,13 @@ async function addWatermark(
   watermarkPath: string,
   outputPath: string,
 ): Promise<void> {
+  // 检测可用编码器
+  const { encoder } = await detectGpuEncoder({ useCache: true })
+
   // Add watermark to bottom right corner, 20px padding, scaled to 10% width
   const command = `ffmpeg -y -i "${inputVideo}" -i "${watermarkPath}" \
     -filter_complex "[1:v]scale=iw*0.1:-1[wm];[0:v][wm]overlay=W-w-20:H-h-20:format=auto" \
-    -c:v libx264 -c:a aac \
+    -c:v ${encoder} -c:a aac \
     "${outputPath}"`
 
   await exec(command)
