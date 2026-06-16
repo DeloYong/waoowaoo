@@ -6,11 +6,13 @@
  */
 
 import { alipayProvider } from './alipay'
+import { wechatProvider } from './wechat'
 import { mockProvider } from './mock'
 import type { PaymentProvider } from '../types'
 
 const providers: Record<string, PaymentProvider> = {
   alipay: alipayProvider,
+  wechat: wechatProvider,
   mock: mockProvider,
 }
 
